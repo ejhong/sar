@@ -1,0 +1,133 @@
+{
+  "id": "t03_mechanism",
+  "order": 3,
+  "tag": "mechanism",
+  "eyebrow": "03 \u00b7 Mechanism",
+  "title": "'Depth' is the azimuth spacing of surface scatterers, rescaled",
+  "question": "What exactly does the steering matrix respond to, if not motion?",
+  "finding": "Interference between surface scatterers. Two point targets \u0394x apart produce a shift that oscillates with sub-aperture position at a rate set by \u0394x, and the focusing step relabels that rate as a depth of 8.9 \u00d7 \u0394x model-metres. Regular courses give a harmonic ladder of 'levels' whose spacing follows the satellite heading; and because the offset band's difference kernel is about 80 m long, scatterers far outside the patch contribute too, folding onto the depth axis by aliasing.",
+  "limitations": "The clean predictions use isotropic point scatterers; aspect-dependent 'flash' and layover mixing add more terms of the same kind. The constant 8.9 depends on the declared sound wavelength \u03bb\u209b, which is a free parameter (T4).",
+  "method": "Clutter-free two-scatterer scenes at 1, 2, 3, 4 m separation and at 3 to 40 m; a 60-line periodic wall in three degrees of realism; the realistic wall at three headings with a harmonic-comb fit of the level spacing. Same bank and patch as T1; transect spectra averaged over 160 pixels.",
+  "figures": [
+    {
+      "file": "/Users/eugene/prj/sar/results/t03_mechanism/figs/t03_two_scatterers.png",
+      "caption": "<b>The mechanism in its simplest form.</b> Two point scatterers a distance \u0394x apart in azimuth, nothing else. The reference/offset shift oscillates with the sub-aperture position at a rate proportional to \u0394x, and the steering-matrix 'depth' lands at \u0394x \u00d7 \u03bb\u209b sin\u03b8 / \u03bb = 8.9 \u0394x. A pair of rocks 3 m apart is a 'structure' 27 m underground."
+    },
+    {
+      "file": "/Users/eugene/prj/sar/results/t03_mechanism/figs/t03_wall.png",
+      "caption": "<b>A wall of courses becomes a ladder of 'levels'.</b> Sixty parallel lines of scatterers 0.79 m apart, the plan view of one side face's course edges, averaged over 160 transect pixels. The spectrum is a harmonic series of the course spacing (dotted lines at multiples of 7.0 model-metres): perfectly identical courses light up only a few harmonics, realistic random block brightness fills in the series with a fitted fundamental of 6.9 m, and diffuse face scatter leaves it in place. Stacked, evenly spaced 'floors' under a stepped monument are what regular masonry looks like after this processing."
+    },
+    {
+      "file": "/Users/eugene/prj/sar/results/t03_mechanism/figs/t03_heading.png",
+      "caption": "<b>Depth depends on the satellite's heading.</b> The realistic wall imaged with the flight line rotated 0\u00b0, 15\u00b0 and 30\u00b0 relative to the courses (curves offset for clarity; dotted combs at multiples of the predicted spacing). A harmonic-comb fit recovers the level spacing, which follows the 1/cos law of the course spacing projected on the azimuth axis. Real buried architecture cannot move when the satellite changes heading; these features do, because they are surface geometry projected on the azimuth axis."
+    },
+    {
+      "file": "/Users/eugene/prj/sar/results/t03_mechanism/figs/t03_nonlocal.png",
+      "caption": "<b>The 'structure' under a pixel is made of things tens of metres away.</b> One scatterer at the patch centre and a second one at 3, 6, 12, 20 or 40 m. The offset band differs from the reference band by a sliver only 88 Hz wide, whose impulse response is about 80 m long, so scatterers well outside the 32-pixel patch modulate the measured shift as strongly as neighbours do. Separations beyond the depth axis' Nyquist limit fold back: the 20 m and 40 m scatterers appear at 107 m and 71 m, exactly where aliasing predicts. This is why every scene fills the whole depth axis regardless of patch size (T4)."
+    }
+  ],
+  "metrics": {
+    "depth_per_metre_separation": 8.86215107245308,
+    "two_scatterers": [
+      {
+        "separation_m": 1.0,
+        "predicted_depth_m": 8.86215107245308,
+        "measured_depth_m": 7.73665788625154
+      },
+      {
+        "separation_m": 2.0,
+        "predicted_depth_m": 17.72430214490616,
+        "measured_depth_m": 16.33294442653103
+      },
+      {
+        "separation_m": 3.0,
+        "predicted_depth_m": 26.586453217359242,
+        "measured_depth_m": 27.508116928894363
+      },
+      {
+        "separation_m": 4.0,
+        "predicted_depth_m": 35.44860428981232,
+        "measured_depth_m": 36.10440346917385
+      }
+    ],
+    "wall": [
+      {
+        "variant": "ideal: identical courses 0.79 m apart",
+        "comb_spacing_m": 9.774436090225564,
+        "predicted_spacing_m": 7.001099347237934,
+        "comb_score": 1.4523606563956928
+      },
+      {
+        "variant": "random block amplitudes (\u03c3 = 0.5 ln)",
+        "comb_spacing_m": 6.887218045112782,
+        "predicted_spacing_m": 7.001099347237934,
+        "comb_score": 1.383734272567367
+      },
+      {
+        "variant": "random amplitudes + diffuse face scatter",
+        "comb_spacing_m": 6.867167919799499,
+        "predicted_spacing_m": 7.001099347237934,
+        "comb_score": 1.3223366670523309
+      }
+    ],
+    "heading": [
+      {
+        "heading_deg": 0.0,
+        "predicted_spacing_m": 7.001099347237934,
+        "comb_spacing_m": 6.887218045112782,
+        "comb_score": 1.383734272567367
+      },
+      {
+        "heading_deg": 15.0,
+        "predicted_spacing_m": 7.248071390880014,
+        "comb_spacing_m": 7.228070175438596,
+        "comb_score": 1.4532032161584922
+      },
+      {
+        "heading_deg": 30.0,
+        "predicted_spacing_m": 8.08417318550227,
+        "comb_spacing_m": 8.030075187969924,
+        "comb_score": 1.7374910817293938
+      }
+    ],
+    "nonlocal": [
+      {
+        "distance_m": 3.0,
+        "shift_rms_millipx": 2.97069647357642,
+        "unaliased_depth_m": 26.586453217359242,
+        "aliased_prediction_m": 26.586453217359242,
+        "measured_depth_m": 26.648488274866413
+      },
+      {
+        "distance_m": 6.0,
+        "shift_rms_millipx": 10.1385346198171,
+        "unaliased_depth_m": 53.172906434718485,
+        "aliased_prediction_m": 53.172906434718485,
+        "measured_depth_m": 53.29697654973283
+      },
+      {
+        "distance_m": 12.0,
+        "shift_rms_millipx": 9.063771874603326,
+        "unaliased_depth_m": 106.34581286943697,
+        "aliased_prediction_m": 106.34581286943697,
+        "measured_depth_m": 106.59395309946565
+      },
+      {
+        "distance_m": 20.0,
+        "shift_rms_millipx": 12.134144072986828,
+        "unaliased_depth_m": 177.24302144906162,
+        "aliased_prediction_m": 106.34581286943697,
+        "measured_depth_m": 106.59395309946565
+      },
+      {
+        "distance_m": 40.0,
+        "shift_rms_millipx": 8.897343084926979,
+        "unaliased_depth_m": 354.48604289812323,
+        "aliased_prediction_m": 70.89720857962465,
+        "measured_depth_m": 70.4895496302918
+      }
+    ],
+    "runtime_s": 11.047543048858643
+  },
+  "date": "2026-09-19"
+}

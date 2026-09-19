@@ -1,0 +1,175 @@
+{
+  "id": "t05_motion",
+  "order": 5,
+  "tag": "threshold",
+  "eyebrow": "05 \u00b7 Injected motion",
+  "title": "A centimetre of real vibration barely registers, and its 'depth' is its frequency",
+  "question": "Grant the premise: if the ground really vibrated, would the method see it, and would it locate it?",
+  "finding": "Barely, and no. A patch oscillating with 1 cm amplitude changes its trajectories by at most 3.6 times their static structure; at 0.1 Hz the change is 1.05 times. Ambient seismic motion is nanometres to microns. The reference and offset bands overlap by 98%, so the motion's phase history cancels between them and only band-edge leakage responds. Where a response exists, the focusing step converts its frequency into a depth at 10.9 m per Hz.",
+  "limitations": "A coherent single-frequency oscillation of a whole patch is a best case; the clutter under the patch was kept static. Larger band offsets would raise the response somewhat, at the price of even stronger static interference terms.",
+  "method": "Static desert SLC plus a synthesised vibrating patch (linear superposition), 5 frequencies \u00d7 7 amplitudes from 1 \u00b5m to 1 cm; response measured as the change of the patch's 256 trajectories relative to the same patch at rest, compared with the rms of the static trajectories.",
+  "figures": [
+    {
+      "file": "/Users/eugene/prj/sar/results/t05_motion/figs/t05_sensitivity.png",
+      "caption": "<b>Response to genuine motion.</b> A 12 m patch of ground oscillates coherently along the line of sight; the curves show how much its 256 trajectories change relative to the same patch at rest. Even a centimetre of vibration changes the trajectories by less than the static structure they already had (dashed), and slow motion changes them by almost nothing. The reason is the design: the reference and offset bands overlap by 98%, the motion's phase history is identical in both and cancels in the overlap, and only leakage at the band edges survives. Ambient seismic motion (shaded) is three to six orders of magnitude below the first visible response."
+    },
+    {
+      "file": "/Users/eugene/prj/sar/results/t05_motion/figs/t05_depth_is_frequency.png",
+      "caption": "<b>Motion has no depth, only a frequency.</b> Isolating the vibration-induced part of the trajectories at an absurd 1 cm amplitude and focusing it: the steering step maps the vibration's frequency onto the depth axis at 10.9 model-metres per hertz (dotted lines mark the prediction; the 2 Hz case also shows its second harmonic at twice the depth). A patch of surface that shakes faster is drawn 'deeper'. Whatever such a tomogram shows, it cannot be a chamber."
+    }
+  ],
+  "metrics": {
+    "thresholds_snr3": [
+      {
+        "freq_hz": 0.1,
+        "threshold_amp_m": null,
+        "max_snr": 1.051634709345419
+      },
+      {
+        "freq_hz": 0.5,
+        "threshold_amp_m": null,
+        "max_snr": 1.351952627710796
+      },
+      {
+        "freq_hz": 1.0,
+        "threshold_amp_m": null,
+        "max_snr": 1.5156111033043287
+      },
+      {
+        "freq_hz": 2.0,
+        "threshold_amp_m": 0.009859567541941203,
+        "max_snr": 3.0395597376367194
+      },
+      {
+        "freq_hz": 5.0,
+        "threshold_amp_m": 0.0037893680691471307,
+        "max_snr": 3.576764261656045
+      }
+    ],
+    "static_rms_px": 0.0034065870136045077,
+    "depth_per_hz_m": 10.86776405717771,
+    "sub_aperture_duration_s": 1.9620995342241612,
+    "depth_rows": [
+      {
+        "freq_hz": 1.0,
+        "predicted_depth_m": 10.86776405717771,
+        "measured_depth_m": 11.175172502363335
+      },
+      {
+        "freq_hz": 2.0,
+        "predicted_depth_m": 21.73552811435542,
+        "measured_depth_m": 42.981432701397445
+      },
+      {
+        "freq_hz": 5.0,
+        "predicted_depth_m": 54.33882028588855,
+        "measured_depth_m": 54.15660520376078
+      }
+    ],
+    "response_rms_px": {
+      "0.1": [
+        5.379784565692874e-07,
+        7.3447803864057095e-06,
+        5.5735671428504105e-05,
+        0.00016467801297846308,
+        0.000549245328859909,
+        0.0016622894942340976,
+        0.0035824851439118554
+      ],
+      "0.5": [
+        6.627140735051329e-07,
+        7.498688364852651e-06,
+        6.809591296787923e-05,
+        0.00020091290203754132,
+        0.0006583169125678005,
+        0.0019021582249053256,
+        0.0046055442645680875
+      ],
+      "1.0": [
+        8.013003729795684e-07,
+        9.525200359788374e-06,
+        8.219613045286869e-05,
+        0.00024296858891507495,
+        0.0007930339819069361,
+        0.0021927197153491424,
+        0.005163061102191326
+      ],
+      "2.0": [
+        2.230875990453347e-06,
+        1.3565890163847345e-05,
+        0.00012005745005013287,
+        0.00035642332860452014,
+        0.0011715578496632165,
+        0.003394611917390031,
+        0.010354524729308373
+      ],
+      "5.0": [
+        4.016206585905294e-06,
+        3.3775343960180136e-05,
+        0.0003295494785358066,
+        0.0009874753051194087,
+        0.003287190826737582,
+        0.009796197188044602,
+        0.012184558684482198
+      ]
+    },
+    "snr_vs_static": {
+      "0.1": [
+        0.00015792300458518238,
+        0.002156052482168715,
+        0.016361147155765803,
+        0.04834105581944827,
+        0.16123038298051656,
+        0.4879633156574592,
+        1.051634709345419
+      ],
+      "0.5": [
+        0.00019453901246570994,
+        0.0022012320057893642,
+        0.019989482932897987,
+        0.058977769020775866,
+        0.19324823054240312,
+        0.5583765268020127,
+        1.351952627710796
+      ],
+      "1.0": [
+        0.0002352208734958198,
+        0.002796112449718337,
+        0.02412858680098619,
+        0.07132317123994142,
+        0.23279428317547285,
+        0.6436705437413814,
+        1.5156111033043287
+      ],
+      "2.0": [
+        0.0006548712777757167,
+        0.00398225265043011,
+        0.035242736959506034,
+        0.1046276895852394,
+        0.3439095625576262,
+        0.996484723223962,
+        3.0395597376367194
+      ],
+      "5.0": [
+        0.0011789531780242854,
+        0.009914716349617755,
+        0.0967388994379775,
+        0.28987232710505806,
+        0.9649513761456536,
+        2.875663280850487,
+        3.576764261656045
+      ]
+    },
+    "amps_m": [
+      1e-06,
+      1e-05,
+      0.0001,
+      0.0003,
+      0.001,
+      0.003,
+      0.01
+    ],
+    "runtime_s": 63.16084003448486
+  },
+  "date": "2026-09-19"
+}

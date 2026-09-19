@@ -1,0 +1,17 @@
+# private inputs (Drive links, screenshots, chat exports)
+inputs/
+# environments and caches
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+results/cache/
+# large data
+data/
+*.h5
+*.tif
+*.tiff
+*.nitf
+*.npy
+*.npz
+.DS_Store

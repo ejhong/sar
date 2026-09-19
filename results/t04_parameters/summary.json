@@ -1,0 +1,55 @@
+{
+  "id": "t04_parameters",
+  "order": 4,
+  "tag": "artifact",
+  "eyebrow": "04 \u00b7 Processing choices",
+  "title": "The depth axis is set by the processing, not the ground",
+  "question": "Do the 'depths' survive changes that a physical measurement would ignore?",
+  "finding": "No. The patch size changes the shape of the structures (thin shafts with small patches, rounded chambers with large ones), the declared sound wavelength rescales the axis freely, and the sub-aperture width sets the extent of the depth axis and rearranges the features within it. Every knob of the processing redraws the underground.",
+  "limitations": "Only one value of each parameter is varied at a time; the sensitivity to real data's additional quirks (residual focusing errors, Doppler-centroid drift, ionosphere) can only be larger.",
+  "method": "Desert and pyramid azimuth transects re-run with patch 16/32/64 px, \u03bb\u209b 0.24/0.48/0.96 m, and sub-aperture width 30/50/70%. (Band edges are snapped to whole FFT bins throughout; with fractional edges a small scene-wide common term appears, which the median-trajectory subtraction removes.)",
+  "figures": [
+    {
+      "file": "/Users/eugene/prj/sar/results/t04_parameters/figs/t04_patch.png",
+      "caption": "<b>The patch size sets the shape of the 'structures'.</b> Empty desert, same transect, with 16, 32 and 64 pixel patches. Top: the replication-variant score. Bottom: the mean paper-variant spectrum; the dotted line marks the depth that a separation of one patch width would give. Small patches draw thin vertical shafts, large patches draw rounded chambers, and every patch size fills the same depth range, because scatterers far outside the patch contribute through the 80 m difference kernel and alias onto the axis (T3)."
+    },
+    {
+      "file": "/Users/eugene/prj/sar/results/t04_parameters/figs/t04_lambda.png",
+      "caption": "<b>The declared 'sound wavelength' is a free rescaling of the depth axis.</b> The same pyramid transect labelled with \u03bb\u209b = 0.24, 0.48 (the 2022 paper's value, from an assumed 6 km/s and 12.5 kHz) and 0.96 m. The image does not change; the numbers on the axis do. The replication protocol calibrated \u03bb on a tomb of known depth, which makes any one feature land at any depth one likes."
+    },
+    {
+      "file": "/Users/eugene/prj/sar/results/t04_parameters/figs/t04_bandwidth.png",
+      "caption": "<b>Change the sub-aperture width and the structures rearrange.</b> The pyramid transect with sub-apertures of 30%, 50% and 70% of the processed band. Note the depth axes: the sweep step changes with the width, and the extent of the depth axis is simply the Nyquist depth of that step (\u03c0 / \u0394Kz), so the deepest 'structure' any run can show is fixed by K, the band and \u03bbs before a single pixel is processed. The pattern within the axis changes as well. Real geology would not care how the Doppler spectrum is sliced."
+    }
+  ],
+  "metrics": {
+    "patch": [
+      {
+        "patch_px": 16,
+        "patch_m": 4.0,
+        "blob_width_px_along_transect": 5.0,
+        "blob_height_depth_steps": 7.0,
+        "depth_of_patch_width_m": 35.44860428981232,
+        "spectrum_above_patch_cap_fraction": 0.744974387866681
+      },
+      {
+        "patch_px": 32,
+        "patch_m": 8.0,
+        "blob_width_px_along_transect": 8.0,
+        "blob_height_depth_steps": 7.0,
+        "depth_of_patch_width_m": 70.89720857962465,
+        "spectrum_above_patch_cap_fraction": 0.4905500857883041
+      },
+      {
+        "patch_px": 64,
+        "patch_m": 16.0,
+        "blob_width_px_along_transect": 12.0,
+        "blob_height_depth_steps": 7.0,
+        "depth_of_patch_width_m": 141.7944171592493,
+        "spectrum_above_patch_cap_fraction": 0.0
+      }
+    ],
+    "runtime_s": 51.83703804016113
+  },
+  "date": "2026-09-19"
+}

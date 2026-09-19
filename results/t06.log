@@ -1,0 +1,20 @@
+  pyramid pixels: 14s
+  empty desert: 29s
+wrote /Users/eugene/prj/sar/results/t06_ordering/summary.json
+{
+ "frac_significant": {
+  "pyramid pixels": 0.052,
+  "empty desert": 0.05466666666666667
+ },
+ "n_pixels": 1500,
+ "n_permutations": 60,
+ "median_true_score": {
+  "pyramid pixels": 0.29690570320009424,
+  "empty desert": 0.2996431368519284
+ },
+ "median_null_score": {
+  "pyramid pixels": 0.29780962736581,
+  "empty desert": 0.29888976872490164
+ },
+ "runtime_s": 29.134543895721436
+}

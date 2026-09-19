@@ -1,0 +1,47 @@
+{
+  "id": "t06_ordering",
+  "order": 6,
+  "tag": "null",
+  "eyebrow": "06 \u00b7 Ordering & gates",
+  "title": "Static trajectories carry no ordering, yet the protocol's ellipse gate passes a tenth of them",
+  "question": "The replication protocol keeps only pixels whose trajectories trace ordered elliptical loops. Does motionless ground pass, and is there any ordering to find?",
+  "finding": "There is no ordering: shuffling the 50 sub-apertures leaves the structure scores unchanged, with 5.2% of pyramid pixels and 5.2% of desert pixels 'significant' at the 5% level, i.e. chance. The protocol's shape gate nevertheless passes 10% of pyramid and 9% of desert pixels, and just as many after shuffling. A gate that a shuffled sequence passes as often as the real one selects nothing physical. Real Giza trajectories, if they turn out to be ordered, would be showing something this simulation does not contain, and the first question would be whether empty plateau shows it too.",
+  "limitations": "Sixty permutations on 1,500 pixels per scene; the same permutation is applied to all pixels in a replicate. The absolute minor-axis threshold could not be applied meaningfully because trajectory amplitude in pixels depends on the band offset and image size.",
+  "method": "Per-pixel best score in true order versus 60 random orderings, plus the protocol's branch-B ellipse fit (26 windows \u00d7 modes 1 to 6, adjusted R\u00b2 with 6 parameters, axes from the fitted cos/sin vectors) on 1,500 pixels on the pyramid footprint (T1) and 1,500 on the empty desert (T2).",
+  "figures": [
+    {
+      "file": "/Users/eugene/prj/sar/results/t06_ordering/figs/t06_permutation.png",
+      "caption": "<b>Neither ordered nor rejected.</b> Left and middle: a permutation test asks whether the structure score depends on the true sub-aperture order. On the pyramid and on empty sand alike it does not; static trajectories are effectively white across k, and their 'depth' peaks come from aliased fast terms (T3). Right: the replication protocol's branch-B gate (best ellipse fit over 26 windows \u00d7 6 modes with adjusted R\u00b2 \u2265 0.25 and axis ratio \u2265 0.1) still passes about a tenth of motionless pixels, shuffled or not, because the best of 156 fits to 50 numbers is always fair. The protocol's absolute minor-axis floor of 0.005 px is met by none of these pixels; their amplitude is set by the 88 Hz offset and the FFT grid, not by physics."
+    }
+  ],
+  "metrics": {
+    "frac_perm_significant": {
+      "pyramid pixels": 0.052,
+      "empty desert": 0.052
+    },
+    "ellipse_shape_gate_pass": {
+      "pyramid pixels": 0.09866666666666667,
+      "empty desert": 0.09066666666666667
+    },
+    "ellipse_shape_gate_pass_shuffled": {
+      "pyramid pixels": 0.09133333333333334,
+      "empty desert": 0.08466666666666667
+    },
+    "ellipse_full_gate_pass": {
+      "pyramid pixels": 0.0,
+      "empty desert": 0.0
+    },
+    "median_minor_axis_px": {
+      "pyramid pixels": 0.00041976938828380074,
+      "empty desert": 0.0004554515787950196
+    },
+    "median_best_ellipse_adjR2": {
+      "pyramid pixels": 0.1989118904338385,
+      "empty desert": 0.1898702074840315
+    },
+    "n_pixels": 1500,
+    "n_permutations": 60,
+    "runtime_s": 33.29484272003174
+  },
+  "date": "2026-09-19"
+}

@@ -1,0 +1,45 @@
+{
+  "id": "t01_static_pyramid",
+  "order": 1,
+  "tag": "artifact",
+  "eyebrow": "01 \u00b7 Static scene",
+  "title": "A motionless pyramid on solid ground produces a full 'tomogram'",
+  "question": "If nothing moves and nothing is buried, does the method still draw structures at depth?",
+  "finding": "Yes. With every scatterer frozen and no subsurface at all, both published focusing variants fill the depth axis with blobs, streaks and layered bands. The best-fit score averages 0.31 on the pyramid and 0.31 on bare desert, and the winning depths scatter across the whole axis.",
+  "limitations": "A simulation with an idealised, straight-line spotlight geometry and a stylised pyramid. The exact pattern of blobs depends on the random scene; the fact that a pattern appears does not.",
+  "method": "Scene: 348,713 point scatterers (course edges with aspect-dependent 'flash', diffuse face scatter, rocks) plus speckle clutter, synthesised into a 1280 \u00d7 1024 SLC. Pipeline: K = 50 reference/offset sub-aperture pairs (half-band, 88 Hz offset snapped to 4 FFT bins), 32 \u00d7 32 complex cross-correlation to 1/1000 px, global common-mode removal, \u03bb\u209b = 0.48 m. Grid: 54,000 pixels at 1 m, run time 4.3 min.",
+  "figures": [
+    {
+      "file": "/Users/eugene/prj/sar/results/t01_static_pyramid/figs/t01_slc.png",
+      "caption": "<b>The input.</b> A simulated X-band single-look complex image at 0.25 m pixels of a motionless stepped pyramid on flat desert clutter. Layover folds the near face and apex toward the radar (up). Nothing exists below the ground plane. The orange and green lines are the transects analysed below; the dashed box is the 2-D grid."
+    },
+    {
+      "file": "/Users/eugene/prj/sar/results/t01_static_pyramid/figs/t01_transect_az.png",
+      "caption": "<b>Azimuth transect.</b> Top: image amplitude along the line (the two bright stretches are the side faces). Middle and bottom: the two published depth-focusing variants applied to the same 50-step trajectories. Both fill the whole depth axis with blobs, streaks and layered bands. The desert between the faces is as 'structured' as the pyramid."
+    },
+    {
+      "file": "/Users/eugene/prj/sar/results/t01_static_pyramid/figs/t01_transect_rg.png",
+      "caption": "<b>Range transect.</b> Same treatment down the middle of the pyramid. The laid-over apex and near face (left of about \u221255 m) and the desert (right) produce indistinguishable 'tomograms'."
+    },
+    {
+      "file": "/Users/eugene/prj/sar/results/t01_static_pyramid/figs/t01_maps.png",
+      "caption": "<b>Maps over the whole pyramid at 1 m spacing.</b> Left: the image. Middle: for every pixel, the best steering-fit score at any depth. Right: the depth that wins. Neither map knows where the pyramid is: the score is as high on empty desert as on the monument, and the winning depths are scattered across the full axis."
+    },
+    {
+      "file": "/Users/eugene/prj/sar/results/t01_static_pyramid/figs/t01_trajectories.png",
+      "caption": "<b>What a 'micro-motion trajectory' looks like.</b> The 50 reference/offset displacement vectors for one pixel on the near face, one on a side face and one on bare desert, in pixels (1 px = 0.25 m). Amplitudes are a few thousandths of a pixel, about a millimetre, and the loops look the same whether or not there is a pyramid under the patch. The scene never moved: these are deterministic properties of static scattering."
+    }
+  ],
+  "metrics": {
+    "grid_pixels": 54000,
+    "runtime_s": 258.80866980552673,
+    "mean_best_adjR2_pyramid": 0.30645185708999634,
+    "mean_best_adjR2_desert": 0.3080204129219055,
+    "frac_adjR2_gt_0p5_pyramid": 0.013728078446162549,
+    "frac_adjR2_gt_0p5_desert": 0.01346188830271057,
+    "trajectory_rms_px": 0.007339921294636644,
+    "trajectory_rms_mm": 1.834980323659161,
+    "scatterers": 348713
+  },
+  "date": "2026-09-19"
+}

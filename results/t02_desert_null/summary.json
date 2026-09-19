@@ -1,0 +1,37 @@
+{
+  "id": "t02_desert_null",
+  "order": 2,
+  "tag": "null",
+  "eyebrow": "02 \u00b7 Null control",
+  "title": "Empty desert gives the same 'structures' as the pyramid",
+  "question": "Is the output any different when there is no pyramid at all?",
+  "finding": "No. On a scene of flat desert clutter the per-pixel structure scores have the same distribution as on the pyramid (means 0.31 vs 0.31; Kolmogorov\u2013Smirnov distance 0.01), the trajectories have the same amplitude, and the winning depths spread the same way.",
+  "limitations": "Speckle is fully developed and Gaussian in this simulation; real desert has texture, but texture only adds more deterministic structure to the trajectories, not less.",
+  "method": "Identical pipeline and grid as T1 on a scene containing only clutter and sparse rocks; scores compared pixel by pixel with T1's pyramid footprint.",
+  "figures": [
+    {
+      "file": "/Users/eugene/prj/sar/results/t02_desert_null/figs/t02_transect_az.png",
+      "caption": "<b>Desert only.</b> Flat ground with speckle and a few rocks, same transect, same pipeline. The 'tomogram' is as busy as the pyramid's."
+    },
+    {
+      "file": "/Users/eugene/prj/sar/results/t02_desert_null/figs/t02_histograms.png",
+      "caption": "<b>Same distributions.</b> Left: the best steering-fit score per pixel for pixels on the pyramid, on the desert around it, and on a scene with no pyramid at all. Right: the depths those best fits land at. If the method saw anything through the stone, the blue curves would differ from the orange."
+    },
+    {
+      "file": "/Users/eugene/prj/sar/results/t02_desert_null/figs/t02_maps.png",
+      "caption": "<b>Spot the pyramid.</b> Best-fit score maps for the pyramid scene and the empty scene on the same grid. The monument occupies the upper middle of the left panel and leaves no trace."
+    }
+  ],
+  "metrics": {
+    "mean_best_adjR2_pyramid": 0.30645185708999634,
+    "mean_best_adjR2_desert_scene": 0.30577531456947327,
+    "frac_gt_0p5_pyramid": 0.013728078446162549,
+    "frac_gt_0p5_desert_scene": 0.013092592592592593,
+    "ks_statistic": 0.009612881597418688,
+    "ks_pvalue": 0.074280704560997,
+    "runtime_s": 259.97252202033997,
+    "trajectory_rms_px_desert": 0.006491091789105842,
+    "trajectory_rms_px_pyramid": 0.007339921294636644
+  },
+  "date": "2026-09-19"
+}
