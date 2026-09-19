@@ -1,6 +1,8 @@
 """Shared configuration, caching and reporting for the experiments."""
 import json, os, sys, time, hashlib
 import numpy as np
+from pathlib import Path
+from dataclasses import asdict
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
@@ -23,8 +25,21 @@ def geometry():
 
 
 def cache_path(name, **params):
-    key = hashlib.md5(json.dumps(params, sort_keys=True, default=str).encode()).hexdigest()[:10]
+    # Include implementation and shared settings, so edits cannot reuse old results.
+    source = hashlib.sha256()
+    for path in sorted(Path(ROOT, "sarsim").glob("*.py")) + [Path(__file__)]:
+        source.update(path.read_bytes())
+    params = {"source": source.hexdigest(), "params": params}
+    key = hashlib.sha256(json.dumps(params, sort_keys=True, default=str).encode()).hexdigest()[:16]
     return os.path.join(CACHE, f"{name}_{key}.npy")
+
+
+def array_fingerprint(array):
+    array = np.ascontiguousarray(array)
+    digest = hashlib.sha256()
+    digest.update(str((array.dtype.str, array.shape)).encode())
+    digest.update(array.tobytes())
+    return digest.hexdigest()
 
 
 def pyramid_scene(geom, rotation_deg=8.0, seed=0, **kw):
@@ -42,7 +57,9 @@ def desert_scene(geom, seed=0):
 
 
 def make_slc(name, scat, geom, seed=0, ground=GROUND_I, shape=SHAPE, **params):
-    path = cache_path(name, seed=seed, ground=ground, shape=shape, **params)
+    scatterers = None if scat is None else {k: array_fingerprint(v) for k, v in vars(scat).items()}
+    path = cache_path(name, seed=seed, ground=ground, shape=shape, geom=asdict(geom),
+                      scatterers=scatterers, r_centre=R_CENTRE, **params)
     if os.path.exists(path):
         return np.load(path)
     t0 = time.time()
@@ -57,10 +74,21 @@ def axes(geom, shape=SHAPE):
 
 
 def write_summary(test_id, summary):
+    from experiments.reporting import refine_summary
+    summary = refine_summary(summary)
     d = os.path.join(RESULTS, test_id)
     os.makedirs(os.path.join(d, "figs"), exist_ok=True)
+    for figure in summary.get("figures", []):
+        path = Path(figure["file"])
+        if path.is_absolute():
+            figure["file"] = str(path.relative_to(ROOT))
+    summary["provenance"] = {
+        "python": sys.version.split()[0], "numpy": np.__version__,
+        "source_sha256": hashlib.sha256(Path(sys.argv[0]).read_bytes()).hexdigest()
+            if Path(sys.argv[0]).is_file() else None,
+    }
     with open(os.path.join(d, "summary.json"), "w") as f:
-        json.dump(summary, f, indent=2, default=float)
+        json.dump(summary, f, indent=2, default=float, allow_nan=False)
     print(f"wrote {d}/summary.json")
 
 
@@ -102,10 +130,11 @@ def grid(geom, shape=SHAPE, stride=GRID_STRIDE):
 def analyze_scene(tag, slc, geom, bank=None, patch=32, lam_s=0.48, force=False, **kw):
     """Run transects + the 2-D grid through the pipeline; cache the arrays."""
     bank = default_bank() if bank is None else bank
-    path = cache_path("analysis_" + tag, bank=bank.__dict__, patch=patch, lam_s=lam_s, **kw)
+    path = cache_path("analysis_" + tag, bank=bank.__dict__, patch=patch, lam_s=lam_s,
+                      slc=array_fingerprint(slc), geom=asdict(geom), **kw)
     path = path.replace(".npy", ".npz")
     if os.path.exists(path) and not force:
-        d = np.load(path, allow_pickle=True)
+        d = np.load(path, allow_pickle=False)
         return {k: d[k] for k in d.files}
     t0 = time.time()
     out = {}

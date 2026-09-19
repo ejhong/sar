@@ -24,7 +24,8 @@ def build_scene(g):
 
 
 def volume(g, bank, slc):
-    path = cache_path("t07_volume", stride=STRIDE, bank=bank.__dict__).replace(".npy", ".npz")
+    path = cache_path("t07_volume", stride=STRIDE, bank=bank.__dict__,
+                      slc=array_fingerprint(slc), geom=g.__dict__).replace(".npy", ".npz")
     x, r = axes(g)
     rows = np.arange(np.searchsorted(x, -135), np.searchsorted(x, 135), STRIDE)
     cols = np.arange(np.searchsorted(r, -125), np.searchsorted(r, 85), STRIDE)

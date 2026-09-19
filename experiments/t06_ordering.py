@@ -61,7 +61,7 @@ def main():
         null = np.zeros((N_PERM, N_PIX))
         for p in range(N_PERM):
             null[p] = focus_windows(qs[:, rng.permutation(q.shape[1]), :], kz, z)[0].max(axis=1)
-        pval = (null >= true[None, :]).mean(axis=0)
+        pval = (1 + (null >= true[None, :]).sum(axis=0)) / (N_PERM + 1)
         r2, ba, b, shape, full = ellipse_gate(qs)
         r2s, bas, bs, shapes, fulls = ellipse_gate(qs[:, rng.permutation(q.shape[1]), :])
         res[name] = {"true": true, "null": null, "pval": pval, "r2": r2, "ba": ba, "b": b, "shape": shape, "full": full,
@@ -73,13 +73,13 @@ def main():
         axs[0].hist(d["true"], bins=bins, density=True, histtype="step", lw=2, color=viz.SERIES[i], label=f"{name}, true order")
         axs[0].hist(d["null"].ravel(), bins=bins, density=True, histtype="step", lw=2, ls="--", color=viz.SERIES[i], label=f"{name}, shuffled")
     axs[0].set_xlabel(r"best adjusted $R^{2}$ over all depths"); axs[0].set_ylabel("density"); axs[0].legend(fontsize=8)
-    axs[0].set_title("Shuffling the sub-aperture order changes nothing", loc="left")
+    axs[0].set_title("True and shuffled orders give similar score distributions", loc="left")
     fr = [float((d["pval"] < 0.05).mean()) for d in res.values()]
     axs[1].bar(range(2), fr, color=[viz.SERIES[0], viz.SERIES[1]], width=0.55)
     axs[1].set_xticks(range(2)); axs[1].set_xticklabels(list(res.keys()))
     axs[1].axhline(0.05, color=viz.SERIES[7], lw=1, ls="--"); axs[1].text(1.3, 0.09, "5% = chance", color=viz.SERIES[7], fontsize=8.5, ha="right")
     axs[1].set_ylim(0, 0.5); axs[1].set_ylabel("fraction of pixels 'ordered' (p < 0.05)")
-    axs[1].set_title("No detectable ordering across k", loc="left")
+    axs[1].set_title("Rejections near the nominal 5% rate", loc="left")
     for i, v in enumerate(fr):
         axs[1].text(i, v + 0.012, f"{v:.1%}", ha="center", fontsize=9, color=viz.INK2)
     gp = [float(d["shape"].mean()) for d in res.values()]; gps = [float(d["shape_shuffled"].mean()) for d in res.values()]
@@ -87,14 +87,14 @@ def main():
     axs[2].bar(xx - 0.17, gp, width=0.3, color=[viz.SERIES[0], viz.SERIES[1]], label="true order")
     axs[2].bar(xx + 0.17, gps, width=0.3, color=[viz.SERIES[0], viz.SERIES[1]], alpha=0.45, label="shuffled")
     axs[2].set_xticks(xx); axs[2].set_xticklabels(list(res.keys())); axs[2].set_ylim(0, 0.5)
-    axs[2].set_ylabel("fraction passing the ellipse gate"); axs[2].set_title("The protocol's ellipse gate passes ~1 in 10 anyway", loc="left")
+    axs[2].set_ylabel("fraction passing the ellipse gate"); axs[2].set_title("Shape-only gate: about 1 in 10 passes", loc="left")
     for i in range(2):
         axs[2].text(i - 0.17, gp[i] + 0.012, f"{gp[i]:.0%}", ha="center", fontsize=9, color=viz.INK2)
         axs[2].text(i + 0.17, gps[i] + 0.012, f"{gps[i]:.0%}", ha="center", fontsize=9, color=viz.INK2)
     axs[2].legend(fontsize=8, loc="upper right")
     fig.tight_layout()
     figs.append({"file": viz.finish(fig, f"{fd}/t06_permutation.png"), "caption":
-                 "<b>Neither ordered nor rejected.</b> Left and middle: a permutation test asks whether the structure score depends on the true sub-aperture order. On the pyramid and on empty sand alike it does not; static trajectories are effectively white across k, and their 'depth' peaks come from aliased fast terms (T3). Right: the replication protocol's branch-B gate (best ellipse fit over 26 windows × 6 modes with adjusted R² ≥ 0.25 and axis ratio ≥ 0.1) still passes about a tenth of motionless pixels, shuffled or not, because the best of 156 fits to 50 numbers is always fair. The protocol's absolute minor-axis floor of 0.005 px is met by none of these pixels; their amplitude is set by the 88 Hz offset and the FFT grid, not by physics."})
+                 "<b>Shape and amplitude are separate checks.</b> Left and middle: a permutation test asks whether the structure score depends on the true sub-aperture order. On both simulated scenes, rejection rates are close to the nominal level for this statistic. Right: the replication protocol's branch-B gate (best ellipse fit over 26 windows × 6 modes with adjusted R² ≥ 0.25 and axis ratio ≥ 0.1) still passes about a tenth of motionless pixels, shuffled or not, after searching 156 window/mode combinations. The protocol's absolute minor-axis floor of 0.005 px is met by none of these pixels; therefore the full gate rejects all sampled pixels in this run."})
     m = {"frac_perm_significant": dict(zip(res.keys(), fr)), "ellipse_shape_gate_pass": dict(zip(res.keys(), gp)),
          "ellipse_shape_gate_pass_shuffled": dict(zip(res.keys(), gps)),
          "ellipse_full_gate_pass": {k: float(d["full"].mean()) for k, d in res.items()},
@@ -103,10 +103,10 @@ def main():
          "n_pixels": N_PIX, "n_permutations": N_PERM, "runtime_s": time.time() - t0}
     summary = {
         "id": TEST, "order": 6, "tag": "null", "eyebrow": "06 · Ordering & gates",
-        "title": "Static trajectories carry no ordering, yet the protocol's ellipse gate passes a tenth of them",
+        "title": "The shape gate passes some static pixels; the full gate rejects them",
         "question": "The replication protocol keeps only pixels whose trajectories trace ordered elliptical loops. Does motionless ground pass, and is there any ordering to find?",
-        "finding": f"There is no ordering: shuffling the 50 sub-apertures leaves the structure scores unchanged, with {fr[0]:.1%} of pyramid pixels and {fr[1]:.1%} of desert pixels 'significant' at the 5% level, i.e. chance. The protocol's shape gate nevertheless passes {gp[0]:.0%} of pyramid and {gp[1]:.0%} of desert pixels, and just as many after shuffling. A gate that a shuffled sequence passes as often as the real one selects nothing physical. Real Giza trajectories, if they turn out to be ordered, would be showing something this simulation does not contain, and the first question would be whether empty plateau shows it too.",
-        "limitations": "Sixty permutations on 1,500 pixels per scene; the same permutation is applied to all pixels in a replicate. The absolute minor-axis threshold could not be applied meaningfully because trajectory amplitude in pixels depends on the band offset and image size.",
+        "finding": f"This statistic finds little evidence of ordering: shuffling the 50 sub-apertures leaves the structure scores unchanged, with {fr[0]:.1%} of pyramid pixels and {fr[1]:.1%} of desert pixels 'significant' at the 5% level, i.e. chance. The protocol's shape gate nevertheless passes {gp[0]:.0%} of pyramid and {gp[1]:.0%} of desert pixels, and just as many after shuffling. The implemented full gate, including the 0.005 px minor-axis floor, accepts none of the sampled pixels. Shape-only acceptance must not be reported as acceptance by the full protocol. Real Giza trajectories, if they turn out to be ordered, would be showing something this simulation does not contain, and the first question would be whether empty plateau shows it too.",
+        "limitations": "Sixty permutations on 1,500 pixels from one realization per scene; spatially dependent samples share each permutation. A near-chance rejection rate is not proof that every form of ordering is absent. The full gate accepts zero pixels at the tested amplitude scale.",
         "method": "Per-pixel best score in true order versus 60 random orderings, plus the protocol's branch-B ellipse fit (26 windows × modes 1 to 6, adjusted R² with 6 parameters, axes from the fitted cos/sin vectors) on 1,500 pixels on the pyramid footprint (T1) and 1,500 on the empty desert (T2).",
         "figures": figs, "metrics": m, "date": time.strftime("%Y-%m-%d"),
     }

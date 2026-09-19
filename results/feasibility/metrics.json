@@ -1,0 +1,200 @@
+{
+  "scope": "SYNTHETIC ONLY. No real satellite scene or surveyed cavity labels were processed.",
+  "versions": {
+    "python": "3.11.3",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "sklearn": "1.9.1",
+    "matplotlib": "3.11.2"
+  },
+  "motion": {
+    "model": "single ideal coherent scatterer; not a focused SAR image",
+    "wavelength_m": 0.031,
+    "duration_s": 8.0,
+    "pulse_rate_hz": 512.0,
+    "pulse_snr_db": 20.0,
+    "frequency_hz": 7.5,
+    "noise": "independent circular complex Gaussian; perfect platform compensation",
+    "threshold_calibration_trials": 2000,
+    "test_trials_per_amplitude": 800,
+    "rows": [
+      {
+        "amplitude_um": 0.0,
+        "phase_detection_rate": 0.01125,
+        "intensity_detection_rate": 0.0125,
+        "phase_detection_and_correct_frequency_rate": 0.0
+      },
+      {
+        "amplitude_um": 1.0,
+        "phase_detection_rate": 0.0125,
+        "intensity_detection_rate": 0.00875,
+        "phase_detection_and_correct_frequency_rate": 0.0
+      },
+      {
+        "amplitude_um": 3.0,
+        "phase_detection_rate": 0.01,
+        "intensity_detection_rate": 0.015,
+        "phase_detection_and_correct_frequency_rate": 0.0
+      },
+      {
+        "amplitude_um": 10.0,
+        "phase_detection_rate": 0.05125,
+        "intensity_detection_rate": 0.01375,
+        "phase_detection_and_correct_frequency_rate": 0.0375
+      },
+      {
+        "amplitude_um": 30.0,
+        "phase_detection_rate": 0.99875,
+        "intensity_detection_rate": 0.0175,
+        "phase_detection_and_correct_frequency_rate": 0.99875
+      },
+      {
+        "amplitude_um": 100.0,
+        "phase_detection_rate": 1.0,
+        "intensity_detection_rate": 0.0125,
+        "phase_detection_and_correct_frequency_rate": 1.0
+      },
+      {
+        "amplitude_um": 300.0,
+        "phase_detection_rate": 1.0,
+        "intensity_detection_rate": 0.00875,
+        "phase_detection_and_correct_frequency_rate": 1.0
+      }
+    ]
+  },
+  "waves": {
+    "model": "2D SH half-space; infinite cylindrical cavity; known Ricker source",
+    "shear_speed_m_s": 2000.0,
+    "radius_m": 20.0,
+    "intrinsic_attenuation": false,
+    "source_position_m": [
+      -150.0,
+      10.0
+    ],
+    "window_s": 0.7,
+    "rows": [
+      {
+        "frequency_hz": 8.0,
+        "depth_m": 60.0,
+        "radius_m": 20.0,
+        "relative_waveform_L2_change": 0.2296027718623767,
+        "peak_difference_over_peak_baseline": 0.15340992103712547
+      },
+      {
+        "frequency_hz": 8.0,
+        "depth_m": 120.0,
+        "radius_m": 20.0,
+        "relative_waveform_L2_change": 0.19359751750650084,
+        "peak_difference_over_peak_baseline": 0.10656787092118787
+      },
+      {
+        "frequency_hz": 8.0,
+        "depth_m": 240.0,
+        "radius_m": 20.0,
+        "relative_waveform_L2_change": 0.14095125043530063,
+        "peak_difference_over_peak_baseline": 0.06415162075978213
+      },
+      {
+        "frequency_hz": 25.0,
+        "depth_m": 60.0,
+        "radius_m": 20.0,
+        "relative_waveform_L2_change": 0.3378273143696995,
+        "peak_difference_over_peak_baseline": 0.2300709765433704
+      },
+      {
+        "frequency_hz": 25.0,
+        "depth_m": 120.0,
+        "radius_m": 20.0,
+        "relative_waveform_L2_change": 0.24519872928634628,
+        "peak_difference_over_peak_baseline": 0.12425242713041204
+      },
+      {
+        "frequency_hz": 25.0,
+        "depth_m": 240.0,
+        "radius_m": 20.0,
+        "relative_waveform_L2_change": 0.1411147083750983,
+        "peak_difference_over_peak_baseline": 0.05474418651234634
+      }
+    ],
+    "numerical_check": {
+      "baseline_waveform_correlation_coarse_fine": 0.998574073594526,
+      "cavity_difference_correlation_coarse_fine": 0.9542313549032486,
+      "fine_grid_relative_waveform_L2_change_depth120": 0.2325623170937749,
+      "coarse_dx_m": 5.0,
+      "fine_dx_m": 2.5
+    },
+    "warning": "Relative noiseless changes are not satellite detection probabilities or validated depth limits."
+  },
+  "ai": {
+    "note": "Artificial datasets designed to isolate confounding; NOT measured SAR performance.",
+    "sites": 80,
+    "patches_per_site": 40,
+    "seeds": 10,
+    "summary": [
+      {
+        "experiment": "matched_sites_planted_signal",
+        "split": "held_out_sites",
+        "signal_shift_sd": 0.0,
+        "mean_auc": 0.494852578125,
+        "sd_across_10_seeds": 0.005626493310050623,
+        "min_auc": 0.4876625,
+        "max_auc": 0.5049222656249999
+      },
+      {
+        "experiment": "matched_sites_planted_signal",
+        "split": "held_out_sites",
+        "signal_shift_sd": 0.3,
+        "mean_auc": 0.5799004296875,
+        "sd_across_10_seeds": 0.007656707434893771,
+        "min_auc": 0.5686648437499999,
+        "max_auc": 0.589791015625
+      },
+      {
+        "experiment": "matched_sites_planted_signal",
+        "split": "held_out_sites",
+        "signal_shift_sd": 1.0,
+        "mean_auc": 0.7568618359375,
+        "sd_across_10_seeds": 0.005430919649520042,
+        "min_auc": 0.747294140625,
+        "max_auc": 0.7631921875000001
+      },
+      {
+        "experiment": "matched_sites_planted_signal",
+        "split": "held_out_sites",
+        "signal_shift_sd": 2.0,
+        "mean_auc": 0.9190103125,
+        "sd_across_10_seeds": 0.002770654365744796,
+        "min_auc": 0.9137761718749999,
+        "max_auc": 0.9230734375
+      },
+      {
+        "experiment": "site_identity_only",
+        "split": "held_out_sites",
+        "signal_shift_sd": 0.0,
+        "mean_auc": 0.51003125,
+        "sd_across_10_seeds": 0.06724641312460465,
+        "min_auc": 0.39375,
+        "max_auc": 0.58875
+      },
+      {
+        "experiment": "site_identity_only",
+        "split": "random_patches",
+        "signal_shift_sd": 0.0,
+        "mean_auc": 1.0,
+        "sd_across_10_seeds": 0.0,
+        "min_auc": 1.0,
+        "max_auc": 1.0
+      }
+    ]
+  },
+  "elapsed_seconds": 902.0798962116241,
+  "phase_readout": {
+    "amplitude_um": 30.0,
+    "max_phase_error_um": 5.3290705182007514e-14,
+    "max_translation_px": 3.5223743719229127e-14,
+    "steps": 41,
+    "scope": "Uniform phase rotation only; no spatial motion or SAR focusing."
+  },
+  "date": "2026-09-19",
+  "source": "Adapted from SAR-Voids-Quick-Experiments.zip supplied with this project."
+}

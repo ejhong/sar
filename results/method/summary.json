@@ -2,7 +2,7 @@
   "id": "method",
   "figures": [
     {
-      "file": "/Users/eugene/prj/sar/results/method/figs/m00_subapertures.png",
+      "file": "results/method/figs/m00_subapertures.png",
       "caption": "<b>Sub-apertures.</b> Top: the image's azimuth spectrum, whose axis is simultaneously Doppler frequency, slow time along the 3.9 s aperture and look angle across 2.8\u00b0. Three of the fifty reference/offset band pairs are drawn. Bottom: the pyramid seen through those three bands. Each is a lower-resolution image from a slightly different angle; the speckle and the bright block facets change between them. The pipeline's 'micro-motion' is the sub-pixel shift between the reference and offset versions of each 32 \u00d7 32 patch, tracked across the fifty pairs."
     }
   ]

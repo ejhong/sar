@@ -5,3 +5,5 @@ pillow>=10
 h5py>=3.11
 tifffile>=2024.1
 pytest>=8
+scikit-image>=0.25
+scikit-learn>=1.6,<2

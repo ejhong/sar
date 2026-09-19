@@ -8,6 +8,7 @@ __pycache__/
 results/cache/
 # large data
 data/
+!docs/data/
 *.h5
 *.tif
 *.tiff

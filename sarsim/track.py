@@ -41,6 +41,8 @@ def patch_shifts(R, O, rows, cols, patch=32, upsample=1000, normalize=False, chu
                  parabolic=True):
     rows = np.asarray(rows, int)
     cols = np.asarray(cols, int)
+    if rows.size == 0 or rows.shape != cols.shape:
+        raise ValueError("provide matching, nonempty target coordinates")
     N = patch
     h = N // 2
     H, Wd = R.shape
@@ -64,6 +66,8 @@ def patch_shifts(R, O, rows, cols, patch=32, upsample=1000, normalize=False, chu
         sl = slice(i, i + chunk)
         PR = Rv[rows[sl] - h, cols[sl] - h]
         PO = Ov[rows[sl] - h, cols[sl] - h]
+        if np.any(np.sum(np.abs(PR) ** 2, axis=(1, 2)) == 0) or np.any(np.sum(np.abs(PO) ** 2, axis=(1, 2)) == 0):
+            raise ValueError("cannot estimate displacement from a patch with no signal")
         X = np.fft.fft2(PR) * np.conj(np.fft.fft2(PO))
         if normalize:
             X = X / (np.abs(X) + 1e-12 * np.abs(X).max())

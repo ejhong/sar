@@ -24,6 +24,8 @@ class SubapBank:
     taper_bins: int = 0
 
     def bands(self, geom, Nx=None):
+        if self.K < 2 or not 0 < self.sub_frac < 1 or self.delta_hz <= 0:
+            raise ValueError("need K >= 2, 0 < sub_frac < 1, and a positive band offset")
         B = geom.nu_band
         Bs = self.sub_frac * B
         dnu = self.delta_hz / geom.V
@@ -32,9 +34,13 @@ class SubapBank:
             dnu = max(1, round(dnu / dbin)) * dbin
             Bs = round(Bs / dbin) * dbin
             step = np.floor((B - Bs - dnu) / (self.K - 1) / dbin) * dbin
+            if step < dbin:
+                raise ValueError("image is too small for distinct snapped sub-apertures; reduce K or sub_frac")
             start = np.ceil(-B / 2 / dbin) * dbin
             lo = start + np.arange(self.K) * step
         else:
+            if Bs + dnu >= B:
+                raise ValueError("reference and offset bands leave no room for the sweep")
             lo = np.linspace(-B / 2, B / 2 - Bs - dnu, self.K)
         return {"nu_lo_ref": lo, "nu_lo_off": lo + dnu, "width": Bs, "dnu": dnu,
                 "nu_c": lo + (Bs + dnu) / 2}

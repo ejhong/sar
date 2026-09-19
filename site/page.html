@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Doppler Tomography, Tested</title>
+  <meta name="description" content="A stationary surface can produce an underground-looking image. A reproducible study of what one radar reconstruction measures, what it misses, and what would make a convincing test.">
+  <link rel="canonical" href="https://ejhong.github.io/sar/">
+  <link rel="stylesheet" href="style.css">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Doppler Tomography, Tested">
+  <meta property="og:description" content="Known scenes. Reproducible experiments. What does one radar reconstruction actually measure?">
+  <meta property="og:url" content="https://ejhong.github.io/sar/">
+  <meta property="og:image" content="https://ejhong.github.io/sar/$hero_src">
+  <meta name="twitter:card" content="summary_large_image">
+  <script src="site.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap">
+  <a class="wordmark" href="#overview" aria-label="SAR field notes, overview"><span class="radar-mark" aria-hidden="true">◒</span> SAR <span>/ FIELD NOTES</span></a>
+  <span class="header-date">$updated</span>
+  <a class="header-code" href="https://github.com/ejhong/sar">Source code ↗</a>
+</div></header>
+<main id="main">
+<section class="hero" id="overview"><div class="wrap">
+  <div class="hero-grid"><div>
+    <p class="eyebrow">A reconstruction study · Synthetic evidence</p>
+    <h1>Doppler tomography,<br><em>tested.</em></h1>
+    <p class="deck">A stationary surface can produce an underground-looking image. What does the reconstruction actually measure?</p>
+    <p class="hero-description">We reconstruct the single-image method behind the Khafre underground-city claims, feed it known scenes, and test what the output means.</p>
+    <a class="jump-link" href="#experiments">Explore the evidence <span aria-hidden="true">↓</span></a>
+  </div><aside class="study-at-a-glance" aria-label="Study at a glance">
+    <span class="eyebrow">What the evidence says</span>
+    <ol>
+      <li><strong>Patterns can arise without a subsurface.</strong><p>Static scattering produces layered output in this reconstruction.</p></li>
+      <li><strong>The measurement matters.</strong><p>Motion phase, patch translation and cavity location are distinct quantities.</p></li>
+      <li><strong>Field validation remains open.</strong><p>No real satellite cavity detection is established by these simulations.</p></li>
+    </ol>
+    <span class="study-status"><span aria-hidden="true"></span> $count scene experiments · 4 supporting controls</span>
+  </aside></div>
+  <div class="hero-visual">$hero</div>
+</div></section>
+<nav class="toc" aria-label="Main sections"><div class="wrap">
+  <a href="#overview">Overview</a><a href="#method">How it works</a><a href="#experiments">Experiments</a><a href="#signal">Signal &amp; inference</a><a href="#next">Next tests</a><a href="#reproduce">Reproduce</a>
+</div></nav>
+<section class="section" id="method"><div class="wrap">
+  <div class="section-heading"><span class="section-number">01 / THE MECHANISM</span><h2>How surface spacing<br>becomes model depth.</h2><p>We reconstructed two focusing variants from the published descriptions. In the static examples, changes in the surface interference pattern become patch shifts; oscillations in those shifts become peaks on a depth-labelled axis.</p></div>
+  <ol class="method-steps">
+    <li><span>01</span><h3>Start with a complex image</h3><p>The simulated radar image records amplitude and phase from a known stationary scene.</p></li>
+    <li><span>02</span><h3>Slice the Doppler spectrum</h3><p>Sweep 50 overlapping reference/offset sub-aperture pairs across the processed band.</p></li>
+    <li><span>03</span><h3>Measure patch shifts</h3><p>Cross-correlate 32 × 32 pixel patches. Each target gets a sequence of 50 displacement vectors.</p></li>
+    <li><span>04</span><h3>Focus along a model axis</h3><p>Project or fit oscillations in that sequence using depth-dependent steering vectors.</p></li>
+  </ol>
+  <div class="scale-lab" id="scale-lab"><div>
+    <span class="eyebrow">Explore the prediction</span><h3>Change the scale.<br>Watch the depth move.</h3>
+    <p>For the ideal two-scatterer mechanism, the predicted peak follows surface separation and the declared wavelength. The geometry here is fixed at X-band and 35° incidence.</p>
+    <p class="small">This is an algebraic illustration. The measured examples in T3 have finite-resolution error; sufficiently large depths can alias.</p>
+  </div><div class="scale-controls">
+    <label for="separation">Surface separation <output id="separation-value" for="separation">3.0 m</output></label>
+    <input id="separation" type="range" min="1" max="10" step="0.1" value="3">
+    <label for="wavelength">Declared wavelength <output id="wavelength-value" for="wavelength">0.48 m</output></label>
+    <input id="wavelength" type="range" min="0.24" max="2.2" step="0.01" value="0.48">
+    <div class="depth-result"><span>Predicted unaliased model depth</span><output id="predicted-depth" for="separation wavelength">26.6 <small>m</small></output></div>
+    <p class="equation">z = Δx × λₛ sin θ / λ</p><button class="text-button" id="reset-scale" type="button">Reset to the T3 example ↺</button>
+    <noscript><p>Enable JavaScript to adjust these values. The default prediction is 26.6 m.</p></noscript>
+  </div></div>
+  <details class="technical"><summary>Read the equations and processing settings <span aria-hidden="true">+</span></summary><div class="method-detail">
+    <p>For this straight-line model, Doppler frequency maps to an effective slow time and along-track platform offset. Image columns themselves are not a raw time series. The implemented steering wavenumber is K<sub>z</sub> = 4πB / (λ<sub>s</sub>R sin θ), with B taken from that offset. Substitution gives z = Δx λ<sub>s</sub> sin θ / λ for the ideal interfering-pair example.</p>
+    <p>The paper-style output is |a(z)ᴴY|²/K². The window-fit output takes the maximum adjusted R² across 25-sample windows. It is a fit score, not a probability of geology; maximizing over depths and windows increases opportunities to fit incidental structure.</p>
+    <div class="settings"><dl><dt>Carrier / incidence</dt><dd>9.65 GHz / 35°</dd><dt>Pixels / processed band</dt><dd>0.25 m / 80% of sampling bandwidth</dd><dt>Sub-apertures</dt><dd>50 half-band pairs, 88 Hz nominal offset snapped to FFT bins</dd></dl><dl><dt>Patch / refinement</dt><dd>32 × 32 / 1,000× DFT refinement</dd><dt>Shared component</dt><dd>Median trajectory removed, except where stated</dd><dt>Depth axis</dt><dd>160 samples up to 97% of the sampling Nyquist depth</dd></dl></div>
+    <p>The ideal focused-image simulator includes layover, occlusion, aspect-dependent scatterer gain and speckle. The original Giza data and authors' implementation have not been validated here. See the linked code for all reconstruction choices.</p>
+  </div></details>
+</div></section>
+<section class="section evidence" id="experiments"><div class="wrap">
+  <div class="section-heading"><span class="section-number">02 / THE EXPERIMENTS</span><h2>Follow the evidence,<br>one question at a time.</h2><p>Each experiment shows its result alongside its assumptions and limits. Start with the <a href="#t03_mechanism">surface-spacing mechanism in T3</a>, or the <a href="#t07_wells">rendered columns in T7</a>. Open a row to inspect the figures and numbers.</p></div>
+  <div class="evidence-toolbar"><span>$count completed scene experiments</span><button id="expand-experiments" class="text-button" type="button">Expand all experiments +</button></div>
+  $experiments
+  $robustness
+</div></section>
+$controls
+<section class="section roadmap" id="next"><div class="wrap">
+  <div class="section-heading"><span class="section-number">04 / WHAT WOULD CHANGE THE EVIDENCE</span><h2>Build the missing links.<br>Test on ground truth.</h2><p>A useful next question is whether radar measurements add information about surveyed cavities beyond what the visible surface and geology already predict.</p></div>
+  <div class="roadmap-grid">
+    <article><span class="roadmap-number">01</span><h3>Repeat the reconstruction on real scenes</h3><p>Use documented complex acquisitions and matched pyramid, plateau and urban controls. Check registration, processing assumptions, the full selection gate and false alarms before interpreting a volume.</p><span class="status">Planned · real data required</span></article>
+    <article><span class="roadmap-number">02</span><h3>Connect a cavity to a radar measurement</h3><p>Calibrate the source, material properties and surface displacement. Carry that motion through acquisition and focusing, then compare a phase-sensitive estimator with the patch-shift pipeline under the same noise and clutter.</p><span class="status">Open · forward models are uncoupled</span></article>
+    <article><span class="roadmap-number">03</span><h3>Use independently surveyed positives and negatives</h3><p>Start with several simpler surveyed quarry or tunnel sites. Match intact controls by geology and surface conditions. An unmapped area is unknown, not a confirmed negative. Reserve entire sites for the final test.</p><span class="status">Planned · surveys and matched controls</span></article>
+    <article><span class="roadmap-number">04</span><h3>Measure added information</h3><p>Compare surface-only, radar-amplitude, complex and repeated-acquisition features. Mask entrances and infrastructure, use spatial placebo labels, report false alarms per area, and test detection, depth and shape separately.</p><span class="status">Planned · evaluation fixed in advance</span></article>
+  </div>
+  <p class="roadmap-close">Repeated-acquisition deformation monitoring is also a distinct route worth evaluating. A stable old cavity need not produce measurable deformation. A high classifier score, a visual match, and a measured subsurface location are different levels of evidence.</p>
+</div></section>
+<section class="section" id="reproduce"><div class="wrap">
+  <div class="section-heading"><span class="section-number">05 / OPEN NOTEBOOK</span><h2>Inspect the numbers.<br>Run it yourself.</h2><p>The page is generated from experiment reports. Results, source code and assumptions are available for inspection; the supporting controls run independently of the longer pyramid simulations.</p></div>
+  <div class="reproduce-grid"><div><h3>Run the numerical checks</h3><pre><code>python3.11 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+.venv/bin/python -m pytest tests</code></pre><h3>Run the supporting experiments</h3><pre><code>.venv/bin/python experiments/feasibility.py
+.venv/bin/python experiments/robustness.py
+.venv/bin/python build_site.py</code></pre><p class="small">For all seven scene experiments and the opening figure: <code>.venv/bin/python experiments/run_all.py</code>. Scene runs take several minutes each; runtime depends on the machine.</p></div>
+  <div class="data-panel"><span class="eyebrow">Data &amp; code</span><h3>A result should be inspectable.</h3><div class="download-links">$downloads<a href="data/feasibility.json" download>Supporting controls ↓</a><a href="data/robustness.json" download>Robustness checks ↓</a><a href="data/ai_control_runs.csv" download>AI runs · CSV ↓</a><a href="data/two_scatterer_seeds.csv" download>Spacing runs · CSV ↓</a><a href="data/motion_detection.csv" download>Receiver trials · CSV ↓</a><a href="data/wave_sensitivity.csv" download>Wave response · CSV ↓</a></div><p><a href="https://github.com/ejhong/sar">Browse the repository ↗</a></p><p class="small">Numerical checks include independent steering calibration, a complete two-scatterer run, wavelength rescaling, blank-input handling and cache invalidation. Constant trajectories are excluded from window fits; blank patches are rejected rather than reported as displacements.</p><p class="version-note">Supporting run: $versions</p></div></div>
+  <details class="technical glossary"><summary>A short radar glossary <span aria-hidden="true">+</span></summary><dl>
+    <dt>SAR</dt><dd>Synthetic aperture radar: a moving radar combines echoes to form an image.</dd><dt>SLC</dt><dd>A single-look complex image, retaining amplitude and phase.</dd><dt>Sub-aperture</dt><dd>A subset of the acquisition's aperture or processed Doppler spectrum.</dd><dt>Layover</dt><dd>Different heights and ground locations can occupy the same radar-image pixels.</dd><dt>Model depth</dt><dd>The coordinate assigned by the steering model. It needs independent calibration and validation.</dd><dt>Adjusted R²</dt><dd>A measure of fit to a selected oscillation model. It is not a detection probability.</dd><dt>Aliasing</dt><dd>Different oscillation rates can become indistinguishable after sampling.</dd><dt>Held-out site</dt><dd>An entire physical location reserved for evaluation, with none of its patches used for training.</dd>
+  </dl></details>
+</div></section>
+<section class="section sources" id="sources"><div class="wrap">
+  <div class="section-heading"><span class="section-number">REFERENCES</span><h2>Sources &amp; context.</h2><p>The <a href="https://www.mdpi.com/2072-4292/18/16/2679">2022 paper was retracted in August 2026</a>. The experiments here stand on their stated inputs and results; publication history does not substitute for a test.</p></div>
+  <ol>
+    <li><span>Original method</span><a href="https://arxiv.org/abs/2208.00811">Biondi &amp; Malanga (2022), SAR Doppler tomography of the Great Pyramid ↗</a></li>
+    <li><span>Reconstruction reference</span><a href="https://github.com/BiondiProtocol/Replication-and-Verification-Biondi-Protocol">Replication and Verification: Biondi Protocol ↗</a></li>
+    <li><span>Registration</span><a href="https://doi.org/10.1364/OL.33.000156">Guizar-Sicairos et al. (2008), efficient subpixel image registration ↗</a></li>
+    <li><span>Controlled vibrometry</span><a href="https://epublications.marquette.edu/electric_fac/571/">Wang et al. (2012), SAR-based vibration estimation ↗</a></li>
+    <li><span>Evaluation</span><a href="https://scikit-learn.org/stable/modules/cross_validation.html#cross-validation-iterators-for-grouped-data">Scikit-learn: cross-validation for grouped observations ↗</a></li>
+    <li><span>Surface deformation</span><a href="https://pubs.usgs.gov/fs/fs06903/">USGS: measuring human-induced land subsidence from space ↗</a></li>
+    <li><span>Comparison images</span><a href="https://github.com/ejhong/sar/blob/main/results/t07_wells/published/CREDITS.md">Image sources, descriptions and copyright credits ↗</a></li>
+  </ol>
+</div></section>
+</main>
+<footer><div class="wrap"><p>Research &amp; simulations by <a href="https://github.com/ejhong">ejhong</a>.</p><p>An open notebook. Read the assumptions, inspect the results, rerun the test.</p><a href="#overview">Back to top ↑</a></div></footer>
+<dialog id="figure-dialog" aria-label="Enlarged research figure"><button type="button" id="close-figure" aria-label="Close enlarged figure">Close ×</button><img id="enlarged-figure" alt=""><p id="enlarged-caption"></p><a id="original-figure" href="#">Open original image ↗</a></dialog>
+</body>
+</html>

@@ -18,6 +18,11 @@ def kz_for_bank(bank, geom, lam_s, Nx=None):
 
 
 def nyquist_depth(kz):
+    kz = np.asarray(kz)
+    if kz.ndim != 1 or kz.size < 2 or not np.isfinite(kz).all():
+        raise ValueError("need at least two finite steering wavenumbers")
+    if not (np.all(np.diff(kz) > 0) or np.all(np.diff(kz) < 0)):
+        raise ValueError("steering wavenumbers must be strictly ordered and distinct")
     dk = np.median(np.diff(kz))
     return np.pi / abs(dk)
 
@@ -37,13 +42,19 @@ def focus_paper(Yc, kz, z):
 
 
 def focus_windows(q, kz, z, W=25, chunk=4096):
-    """Max-over-windows adjusted R^2 of the steering fit; q [P, K, 2] real. Returns (score [P, Z], best window [P, Z])."""
+    """Max-over-windows adjusted R^2; q [P, K, 2] real.
+
+    Constant trajectories have no defined R^2. Exclude those windows and return
+    score 0, best window -1 when none is usable; this is not a perfect fit.
+    """
     P, K, _ = q.shape
+    if not 3 <= W <= K:
+        raise ValueError("window length must be between 3 and the trajectory length")
     nW = K - W + 1
     Z = z.size
     n, p = 2 * W, 4
     best = np.full((P, Z), -np.inf)
-    best_w = np.zeros((P, Z), np.int16)
+    best_w = np.full((P, Z), -1, np.int16)
     for w in range(nW):
         kzw = kz[w:w + W]
         X = np.stack([np.cos(np.outer(z, kzw)), np.sin(np.outer(z, kzw))], axis=2)  # [Z, W, 2]
@@ -59,10 +70,12 @@ def focus_windows(q, kz, z, W=25, chunk=4096):
             ssres = np.clip(ssq[:, None] - fitE, 0, None)
             r2 = 1 - ssres / np.maximum(sstot[:, None], 1e-30)
             adj = 1 - (1 - r2) * (n - 1) / (n - p - 1)
+            usable = sstot > np.maximum(1e-30, ssq * 1e-14)
+            adj = np.where(usable[:, None], adj, -np.inf)
             better = adj > best[i:i + chunk]
             best[i:i + chunk] = np.where(better, adj, best[i:i + chunk])
             best_w[i:i + chunk] = np.where(better, w, best_w[i:i + chunk])
-    return best, best_w
+    return np.where(best_w >= 0, best, 0.0), best_w
 
 
 def permute(q, rng):

@@ -1,258 +1,186 @@
-"""Generate docs/index.html from results/*/summary.json. Add a test = add a results folder and rerun."""
-import glob, html, json, os, shutil, time
+"""Build the research notebook from portable experiment reports and figures."""
+from datetime import date
+from pathlib import Path
+import html
+import json
+import re
+import shutil
+from string import Template
 
-ROOT = os.path.dirname(os.path.abspath(__file__))
-RESULTS = os.path.join(ROOT, "results")
-DOCS = os.path.join(ROOT, "docs")
-SITE_URL = "https://ejhong.github.io/sar/"
+from PIL import Image
+from experiments.reporting import refine_summary
+
+ROOT = Path(__file__).resolve().parent
+RESULTS = ROOT / "results"
+DOCS = ROOT / "docs"
 REPO_URL = "https://github.com/ejhong/sar"
-
-TITLE = "Doppler Tomography, Tested"
-DECK = ("A reproducible test of the single-image “SAR Doppler tomography” behind the Khafre underground-city claims. "
-        "A simulated pyramid that never moves, on ground that contains nothing, produces the same kind of structures at depth. "
-        "Every figure here comes from code in the repository and reruns in minutes on a laptop.")
-
-PLANNED = [
-    ("08 · Real data", "The ICEYE Dwell scene of Giza", "Run the identical pipeline on a 25-second ICEYE Dwell Fine acquisition (27 Aug 2025): Khafre versus empty plateau versus the Sphinx versus Cairo apartment blocks, with the same statistics as T1 and T2."),
-    ("09 · Known chambers", "Positive control inside Khufu", "The King's and Queen's chambers and the Grand Gallery sit at surveyed positions. A method that maps 648 m wells should locate 10 m rooms 40 m up. Score the tomograms against the survey, against chance."),
-    ("10 · Cross-geometry", "Ascending versus descending", "Real subsurface architecture is fixed in the ground. Compare tomograms from two headings; T3 predicts the features will move by the projected-spacing law."),
-    ("11 · Learned null", "A classifier that cannot tell", "Train a small discriminator on tomograms from simulated static scenes versus the real pyramid; an AUC near 0.5 is the machine-learning form of T2."),
-]
-
-SOURCES = [
-    ("Biondi & Malanga 2022, <i>Synthetic Aperture Radar Doppler Tomography Reveals Details of Undiscovered High-Resolution Internal Structure of the Great Pyramid of Giza</i>, arXiv:2208.00811 (Remote Sensing 14, 5231; retracted 10 August 2026)", "https://arxiv.org/abs/2208.00811"),
-    ("Retraction notice, Remote Sensing 18, 2679 (2026)", "https://www.mdpi.com/2072-4292/18/16/2679"),
-    ("Retraction Watch, 31 August 2026: journal retracts paper claiming network of corridors inside the Great Pyramid", "https://retractionwatch.com/2026/08/31/retraction-corridors-inside-great-pyramid-giza/"),
-    ("Seyfzadeh, <i>Replication and Verification: Biondi Protocol</i>, GitHub, 17 September 2026 (protocol v1.5, K = 50 sub-apertures, B_shift = 88 Hz, 32 × 32 px u-PCC, W = 25 steering fit)", "https://github.com/BiondiProtocol/Replication-and-Verification-Biondi-Protocol"),
-    ("Biondi, <i>Scanning Inside Volcanoes with Synthetic Aperture Radar Echography Tomographic Doppler Imaging</i>, Remote Sensing 14, 3828 (2022)", "https://www.mdpi.com/2072-4292/14/15/3828"),
-    ("Guizar-Sicairos, Thurman & Fienup 2008, <i>Efficient subpixel image registration algorithms</i>, Optics Letters 33, 156 (the upsampled-DFT registration used for the patch shifts)", "https://doi.org/10.1364/OL.33.000156"),
-    ("Peterson 1993, <i>Observations and modeling of seismic background noise</i>, USGS Open-File Report 93-322 (ambient ground-motion levels)", "https://pubs.usgs.gov/publication/ofr93322"),
-    ("ICEYE Dwell imaging modes (25 s spotlight collection; CSI and SAR video products)", "https://www.iceye.com/sar-data/imaging-modes/dwell"),
-    ("Khafre Research Project images (March 2025) as reproduced by readmultiplex.com, <i>Below the Giza pyramid plateau</i>, 21 March 2025; shown in T7 at reduced size for comparison and critique", "https://readmultiplex.com/2025/03/21/below-the-giza-pyramid-plateau-new-radar-discoveries-will-shock-the-world/"),
-    ("Khafre Research Project composite slide as reproduced by Türkiye Today, March 2025", "https://www.turkiyetoday.com/culture/innovative-radar-technology-unveils-hidden-chambers-below-gizas-great-pyramids-136092/"),
-]
+EXPERIMENTS = {
+    "t01_static_pyramid": ("Static scene", "Patterns without buried objects", "t01_transect_az", "t01_maps"),
+    "t02_desert_null": ("Null control", "Desert and pyramid scores overlap", "t02_histograms", "t02_maps"),
+    "t03_mechanism": ("Mechanism", "Surface spacing predicts the peak", "t03_two_scatterers", "t03_nonlocal"),
+    "t04_parameters": ("Parameters", "The depth scale is a processing choice", "t04_lambda", "t04_patch"),
+    "t05_motion": ("Positive input", "Motion enters; frequency becomes depth", "t05_sensitivity", "t05_depth_is_frequency"),
+    "t06_ordering": ("Selection gates", "The full gate rejects these static pixels", "t06_permutation"),
+    "t07_wells": ("Rendering", "Surface features become columns", "t07_compare", "t07_plan"),
+}
 
 
-def esc(s):
-    return html.escape(str(s), quote=True)
+def esc(value):
+    return html.escape(str(value), quote=True)
 
 
-def fmt(v):
-    if isinstance(v, float):
-        if v == 0:
-            return "0"
-        if abs(v) >= 1000 or abs(v) < 0.001:
-            return f"{v:.3g}"
-        return f"{v:.3f}".rstrip("0").rstrip(".")
-    return str(v)
+def plain(value):
+    return html.unescape(re.sub(r"<[^>]+>", "", str(value)))
 
 
-def metrics_table(m):
-    rows = []
-    for k, v in m.items():
-        if isinstance(v, (int, float, str)) or v is None:
-            rows.append(f"<tr><td>{esc(k)}</td><td class='num'>{esc(fmt(v))}</td></tr>")
-        elif isinstance(v, list) and v and isinstance(v[0], dict):
-            keys = list(v[0].keys())
-            sub = "<table><tr>" + "".join(f"<th>{esc(x)}</th>" for x in keys) + "</tr>"
-            for row in v:
-                sub += "<tr>" + "".join(f"<td class='num'>{esc(fmt(row.get(x)))}</td>" for x in keys) + "</tr>"
-            sub += "</table>"
-            rows.append(f"<tr><td>{esc(k)}</td><td>{sub}</td></tr>")
-        elif isinstance(v, dict) and all(isinstance(x, (int, float, str)) or x is None for x in v.values()):
-            sub = ", ".join(f"{esc(a)}: {esc(fmt(b))}" for a, b in v.items())
-            rows.append(f"<tr><td>{esc(k)}</td><td>{sub}</td></tr>")
-    return "<table><tr><th>metric</th><th>value</th></tr>" + "".join(rows) + "</table>" if rows else ""
+def fmt(value):
+    if value is None:
+        return "—"
+    return f"{value:.4g}" if isinstance(value, float) else str(value)
 
 
-def load_tests():
-    tests = []
-    for p in sorted(glob.glob(os.path.join(RESULTS, "*", "summary.json"))):
-        with open(p) as f:
-            t = json.load(f)
-        if t.get("id") != "method":
-            tests.append(t)
-    return sorted(tests, key=lambda t: t.get("order", 99))
-
-
-def method_figures():
-    p = os.path.join(RESULTS, "method", "summary.json")
-    if not os.path.exists(p):
-        return ""
-    with open(p) as f:
-        t = json.load(f)
-    out = ""
-    for fg in t.get("figures", []):
-        rel = copy_fig(t, fg)
-        out += f"""<figure class="wide"><div class="frame"><img src="{rel}" alt="" loading="lazy"></div><figcaption>{fg.get('caption','')}</figcaption></figure>\n"""
-    return out
-
-
-JPEG_ABOVE_BYTES = 600_000
-
-
-def copy_fig(test, fig):
-    """Copy a figure into docs/figs; speckle-heavy PNGs above 600 KB become quality-88 JPEGs."""
-    src = fig["file"]
-    dst_dir = os.path.join(DOCS, "figs", test["id"])
-    os.makedirs(dst_dir, exist_ok=True)
-    base = os.path.basename(src)
-    if os.path.getsize(src) > JPEG_ABOVE_BYTES:
-        from PIL import Image
-        base = os.path.splitext(base)[0] + ".jpg"
-        dst = os.path.join(dst_dir, base)
-        im = Image.open(src).convert("RGB")
-        im.save(dst, "JPEG", quality=88, optimize=True)
-        # remove a stale PNG of the same name
-        stale = os.path.join(dst_dir, os.path.basename(src))
-        if os.path.exists(stale):
-            os.remove(stale)
+def resolve_figure(value):
+    path = Path(value)
+    if path.is_absolute():
+        if "results" in path.parts:
+            path = ROOT.joinpath(*path.parts[path.parts.index("results"):])
     else:
-        dst = os.path.join(dst_dir, base)
-        shutil.copyfile(src, dst)
-    return f"figs/{test['id']}/{base}"
+        path = ROOT / path
+    path = path.resolve()
+    if not path.is_relative_to(RESULTS.resolve()):
+        raise ValueError(f"Figure outside results: {value}")
+    if not path.is_file():
+        raise FileNotFoundError(path)
+    return path
 
 
-def card(t):
-    return f"""<article class="card" id="card-{esc(t['id'])}">
-  <span class="tag {esc(t.get('tag',''))}">{esc(t.get('tag','')) or 'test'}</span>
-  <div class="eyebrow" style="margin-top:12px">{esc(t.get('eyebrow',''))}</div>
-  <h3><a href="#{esc(t['id'])}">{esc(t['title'])}</a></h3>
-  <p class="question">{esc(t['question'])}</p>
-  <dl><dt>Finding</dt><dd>{esc(t['finding'])}</dd><dt>Limitations</dt><dd>{esc(t['limitations'])}</dd></dl>
-</article>"""
+def copy_figure(group, source):
+    source = resolve_figure(source)
+    destination = DOCS / "figs" / group
+    destination.mkdir(parents=True, exist_ok=True)
+    with Image.open(source) as im:
+        width, height = im.size
+        if source.suffix.lower() == ".png" and source.stat().st_size > 600_000:
+            name = source.stem + ".jpg"
+            im.convert("RGB").save(destination / name, "JPEG", quality=90, optimize=True)
+        else:
+            name = source.name
+            shutil.copyfile(source, destination / name)
+    return f"figs/{group}/{name}", width, height
 
 
-def planned_card(eyebrow, title, text):
-    return f"""<article class="card">
-  <span class="tag planned">planned</span>
-  <div class="eyebrow" style="margin-top:12px">{esc(eyebrow)}</div>
-  <h3>{esc(title)}</h3>
-  <p class="question">{esc(text)}</p>
-</article>"""
+def figure(group, item, eager=False):
+    src, width, height = copy_figure(group, item["file"])
+    caption = item.get("caption", "")
+    alt = item.get("alt") or plain(caption).split(". ")[0].rstrip(".")
+    priority = 'loading="eager" fetchpriority="high"' if eager else 'loading="lazy"'
+    return f'''<figure class="research-figure"><a class="figure-link" href="{src}" data-zoom aria-label="Enlarge figure: {esc(alt)}"><img src="{src}" width="{width}" height="{height}" alt="{esc(alt)}" {priority} decoding="async"><span class="zoom-hint" aria-hidden="true">View full size ↗</span></a><figcaption>{caption}</figcaption></figure>'''
 
 
-def section(t):
-    figs = ""
-    for fg in t.get("figures", []):
-        rel = copy_fig(t, fg)
-        figs += f"""<figure class="wide"><div class="frame"><img src="{rel}" alt="{esc(fg.get('alt', ''))}" loading="lazy"></div><figcaption>{fg.get('caption','')}</figcaption></figure>\n"""
-    metrics = metrics_table(t.get("metrics", {}))
-    return f"""<section class="part" id="{esc(t['id'])}"><div class="wrap">
-  <div class="part-head"><div class="n">{esc(t.get('eyebrow',''))}</div><h2>{esc(t['title'])}</h2></div>
-  <div class="prose"><p class="lede">{esc(t['question'])}</p></div>
-  <div class="finding"><div class="label">Finding</div><div>{esc(t['finding'])}</div></div>
-  <div class="prose"><p><b>What was run.</b> {esc(t.get('method',''))}</p></div>
-  {figs}
-  <details><summary class="kicker" style="cursor:pointer">Numbers behind this test</summary>{metrics}</details>
-  <div class="limits" style="margin-top:22px"><div class="label">Limitations</div><div>{esc(t['limitations'])}</div></div>
-</div></section>"""
+def json_report(path):
+    return json.loads(path.read_text())
 
 
-def method_section(geom_summary, params):
-    grow = "".join(f"<tr><td>{esc(k)}</td><td class='num'>{esc(fmt(v))}</td></tr>" for k, v in geom_summary.items())
-    prow = "".join(f"<tr><td>{esc(k)}</td><td>{esc(v)}</td></tr>" for k, v in params.items())
-    return f"""<section class="part" id="method"><div class="wrap">
-  <div class="part-head"><div class="n">Method</div><h2>What the published pipeline actually computes</h2></div>
-  <div class="prose">
-    <p class="lede">Strip away the springs, magma and “sonic imaging”, and the 2022 paper together with the 2026 replication protocol describe a definite computation on one focused radar image. This site reimplements it and feeds it scenes whose contents are known exactly.</p>
-    <ol>
-      <li><b>One SLC.</b> A single-look complex image, azimuth by slant range. Its 2-D Fourier transform has a rectangular support; the azimuth (Doppler) axis maps one-to-one onto slow time, platform position and look angle.</li>
-      <li><b>Sub-aperture pairs.</b> Two band-pass filters, each half the Doppler band wide and offset from one another by 88 Hz, are swept across the spectrum in K = 50 steps. Each step yields a reference image and an offset image with slightly different look angles.</li>
-      <li><b>“Micro-motion.”</b> At every pixel of interest a 32 × 32 patch of the reference image is cross-correlated with the same patch of the offset image and the peak located to a thousandth of a pixel. The 50 resulting shift vectors are the pixel's trajectory. The paper calls this vibration; it is the change of the local interference pattern with look angle.</li>
-      <li><b>“Tomography.”</b> A steering matrix borrowed from multi-baseline SAR tomography, exp(j K<sub>z</sub> z), is applied along the trajectory with K<sub>z</sub> = 4π B<sub>⊥</sub> / (λ<sub>s</sub> r sin θ), where B<sub>⊥</sub> is the platform's <i>along-track</i> offset at each sub-aperture and λ<sub>s</sub> a declared “sound wavelength” (0.48 m). The paper projects the complex trajectory on the steering vectors; the replication protocol fits cos and sin of K<sub>z</sub>z over 25-sample windows and keeps the best adjusted R². Either way the depth axis is the trajectory's oscillation rate, relabelled.</li>
-    </ol>
-    <p>Substituting the definitions gives the result that drives everything below: two scatterers a distance Δx apart in azimuth produce a trajectory that oscillates at a rate proportional to Δx, and the focusing step places it at</p>
-    <p style="text-align:center"><b>z = Δx · λ<sub>s</sub> sin θ / λ ≈ 8.9 Δx</b> (for X-band at 35° incidence)</p>
-    <p>with the constant a free choice. Depth is surface geometry in disguise.</p>
-  </div>
-  {method_figures()}
-  <h3>Simulation and pipeline settings</h3>
-  <div class="figrow"><div><table><tr><th>geometry</th><th></th></tr>{grow}</table></div><div><table><tr><th>pipeline</th><th></th></tr>{prow}</table></div></div>
-  <div class="prose"><p>The simulator synthesises the focused image in the spectral domain from explicit point scatterers, with layover, occlusion, aspect-dependent “flash” from block facets, fully developed speckle clutter, and optional line-of-sight vibration applied as a phase history. Nothing in the simulator knows about depth. Code: <a href="{REPO_URL}">{REPO_URL}</a>.</p></div>
-</div></section>"""
+def copy_data(name, value):
+    destination = DOCS / "data"
+    destination.mkdir(exist_ok=True)
+    (destination / name).write_text(json.dumps(value, indent=2, allow_nan=False))
+    return f"data/{name}"
+
+
+def metrics_table(values):
+    rows = []
+    for key, value in values.items():
+        label = key.replace("_", " ")
+        if isinstance(value, dict):
+            rendered = metrics_table(value)
+        elif isinstance(value, list) and value and isinstance(value[0], dict):
+            keys = list(value[0])
+            heads = "".join(f"<th scope='col'>{esc(k.replace('_', ' '))}</th>" for k in keys)
+            cells = "".join("<tr>" + "".join(f"<td>{esc(fmt(row.get(k)))}</td>" for k in keys) + "</tr>" for row in value)
+            rendered = f"<div class='table-scroll' tabindex='0' role='region' aria-label='{esc(label)}'><table><thead><tr>{heads}</tr></thead><tbody>{cells}</tbody></table></div>"
+        else:
+            rendered = esc(fmt(value))
+        rows.append(f"<tr><th scope='row'>{esc(label)}</th><td>{rendered}</td></tr>")
+    return "<div class='table-scroll' tabindex='0' role='region' aria-label='Experiment metrics'><table class='metrics'><tbody>" + "".join(rows) + "</tbody></table></div>"
+
+
+def experiment_section(report):
+    key = report["id"]
+    label, short, *lead = EXPERIMENTS.get(key, ("Experiment", report["title"]))
+    figures = report.get("figures", [])
+    first = [f for name in lead for f in figures if Path(f["file"]).stem == name]
+    rest = [f for f in figures if f not in first]
+    if not first and figures:
+        first, rest = figures[:1], figures[1:]
+    body = "".join(figure(key, f) for f in first)
+    if rest:
+        body += f"<details class='more-figures'><summary>{len(rest)} additional figures &amp; comparisons <span aria-hidden='true'>+</span></summary><div class='additional-figures'>" + "".join(figure(key, f) for f in rest) + "</div></details>"
+    data = copy_data(key + ".json", report)
+    source_note = ""
+    if key == "t07_wells":
+        source_note = f"<p class='source-note'>Published comparison images belong to the Khafre Research Project. <a href='{REPO_URL}/blob/main/results/t07_wells/published/CREDITS.md'>Image sources &amp; credits</a>. The synthetic rendering does not establish the origin of the published features.</p>"
+    return f'''<details class="experiment" id="{key}"><summary><span class="experiment-number">{report['order']:02d}</span><span class="experiment-heading"><span class="eyebrow">{esc(label)}</span><span class="experiment-title">{esc(short)}</span></span><span class="expand" aria-hidden="true">+</span></summary><div class="experiment-body"><h3>{esc(report['title'])}</h3><p class="experiment-question">{esc(report['question'])}</p><p class="finding">{esc(report['finding'])}</p><div class="scope"><strong>What this leaves open</strong><p>{esc(report['limitations'])}</p></div>{body}{source_note}<details class="technical"><summary>Method, numbers &amp; reproducibility <span aria-hidden="true">+</span></summary><p>{esc(report.get('method', ''))}</p>{metrics_table(report.get('metrics', {}))}<p class="resource-links"><a href="{REPO_URL}/blob/main/experiments/{key}.py">Experiment code ↗</a><a href="{data}" download>Results JSON ↓</a></p></details></div></details>'''
+
+
+def support_figure(stem, caption, alt):
+    return figure("feasibility", {"file": f"results/feasibility/{stem}.png", "caption": caption, "alt": alt})
+
+
+def controls_section(data):
+    phase30 = next(r for r in data["motion"]["rows"] if r["amplitude_um"] == 30)
+    null = data["motion"]["rows"][0]
+    site = next(r for r in data["ai"]["summary"] if r["experiment"] == "site_identity_only" and r["split"] == "held_out_sites")
+    wave = data["waves"]["numerical_check"]
+    download = copy_data("feasibility.json", data)
+    readout = support_figure("phase_readout", "<b>Two measurements of the same input.</b> A patch receives a uniform phase rotation. Its phase follows the imposed cycle; its translation remains zero. This is an algebraic control, with no SAR focusing or physical scene motion.", "Imposed and recovered phase-equivalent displacement agree, while patch translation stays at zero")
+    receiver = support_figure("motion_detection", "<b>An ideal pulse-time receiver.</b> Separate noise trials set the threshold before evaluation. The model contains one coherent scatterer, independent noise and perfect platform compensation; its frequency lies exactly on a Fourier bin.", "Detection rises with imposed vibration amplitude in the ideal phase receiver; pulse intensity stays near false-alarm level")
+    waves = support_figure("cavity_wave_response", "<b>A mechanical connection in a controlled model.</b> Difference between cavity and cavity-free surface waveforms under the same prescribed source. These normalized differences are not satellite detection probabilities.", "Surface wave differences for ideal cylindrical cavities centered 60, 120 and 240 metres deep")
+    ai = support_figure("ai_controls", "<b>High scores can have the wrong explanation.</b> Left: site recognition supplies a perfect patch-split score. Right: a separately planted feature supports generalization to unseen sites. Error bars show variation across ten synthetic datasets.", "AUC falls from 1 to about 0.51 with whole-site holdouts; a planted transferable signal raises held-out-site AUC")
+    return f'''<section class="section support" id="signal"><div class="wrap"><div class="section-heading"><span class="section-number">03 / SIGNAL &amp; INFERENCE</span><h2>A measurable signal is<br>only the first step.</h2><p>Could underground geometry affect surface motion in a way radar can use? These supporting experiments examine separate parts of that chain.</p></div>
+<ol class="signal-chain"><li><span>01</span><strong>Underground geometry</strong><small>Cavity, material, source</small></li><li><span>02</span><strong>Surface motion</strong><small>Amplitude and wave pattern</small></li><li><span>03</span><strong>Radar measurement</strong><small>Phase, noise, processing</small></li><li><span>04</span><strong>Validated inference</strong><small>Detection, depth, geometry</small></li></ol>
+<p class="chain-note">The wave and receiver models below are independent. No calibrated cavity-to-radar simulation or field detection is demonstrated here.</p>
+<article class="support-study" id="phase-control"><div class="study-copy"><span class="eyebrow">S1 / What is measured</span><h3>Phase and translation answer different questions.</h3><p>A correlation peak tells us how far a patch shifts. A phase measurement can respond while that shift remains zero. This explains why T5's response cannot be treated as a universal limit on radar vibration measurements.</p><p>The control applies a phase rotation equivalent to a ±30 μm displacement. Both estimators receive exactly the same patch.</p></div><div>{readout}</div></article>
+<details class="support-detail"><summary>How sensitive is an ideal phase receiver? <span aria-hidden="true">+</span></summary><div class="detail-inner"><p>With a 3.1 cm wavelength, 8 s record, 512 pulses/s and 20 dB per-pulse signal-to-noise ratio, the phase detector finds the 30 μm input in <strong>{phase30['phase_detection_rate']:.1%}</strong> of 800 trials. Independent zero-signal trials produce <strong>{null['phase_detection_rate']:.2%}</strong> detections against a nominal 1% threshold. Distributed clutter, autofocus, atmospheric effects and real acquisition geometry are absent.</p>{receiver}<p>Airborne vibration measurements provide a precedent for controlled target vibrometry; they do not validate satellite cavity mapping. <a href="https://epublications.marquette.edu/electric_fac/571/">Wang et al., 2012 ↗</a></p></div></details>
+<article class="support-study" id="wave-control"><div class="study-copy"><span class="eyebrow">S2 / The physical connection</span><h3>A cavity can change the surface wavefield.</h3><p>A simple shear-wave model gives different surface responses with and without a buried cavity. The location and timing of the difference change with cavity depth.</p><p>The model represents an infinitely long cylindrical cavity with radius 20 m. It has a known active source, uniform rock and no intrinsic attenuation. Its displacement amplitude is uncalibrated.</p></div><div>{waves}</div></article>
+<p class="study-footnote">Numerical check: halving grid spacing gives a cavity-perturbation correlation of {wave['cavity_difference_correlation_coarse_fine']:.3f}; the relative change at 120 m shifts from 24.5% to {wave['fine_grid_relative_waveform_L2_change_depth120']:.1%}. This supports the qualitative model effect, not a depth limit.</p>
+<article class="support-study" id="learning-control"><div class="study-copy"><span class="eyebrow">S3 / Learning from the right evidence</span><h3>A model can recognize a site without detecting a cavity.</h3><p>In the site-only control, randomly split patches score AUC 1.00. Holding out whole sites reduces it to <strong>{site['mean_auc']:.2f}</strong>, near chance. No transferable cavity signal was supplied.</p><p>A second control deliberately supplies a transferable feature and gets better held-out performance. Test for added information beyond location, geology and visible surface clues.</p></div><div>{ai}</div></article>
+<p class="source-note">Supporting models adapted and rerun from the supplied SAR-Voids-Quick-Experiments package. All data here are synthetic. <a href="{REPO_URL}/blob/main/experiments/feasibility.py">Code ↗</a> · <a href="{download}" download>Results &amp; versions ↓</a></p></div></section>'''
+
+
+def robustness_section(data):
+    src = figure("robustness", {"file": "results/robustness/robustness.png", "caption": "<b>Stress-testing the examples.</b> Left: ten phase realizations at each of four surface separations. Right: the ordering statistic tested on planted noisy sinusoids and independent noise. These are checks of the model and statistic, not field validation.", "alt": "Peak depths across forty two-scatterer runs and permutation rejection rates for ordered and noise controls"})
+    ordering = data["ordering_control"]
+    url = copy_data("robustness.json", data)
+    return f'''<details class="robustness"><summary><span><span class="eyebrow">Additional checks</span><strong>Do the examples survive simple stress tests?</strong></span><span class="expand" aria-hidden="true">+</span></summary><div class="detail-inner"><p>Across {data['runs']} two-scatterer runs, median peak error relative to the spacing prediction is {data['median_peak_error_m']:.2f} m; the largest is {data['max_peak_error_m']:.2f} m. End-to-end reruns at three wavelengths verify the predicted rescaling.</p><p>The permutation test flags {ordering['ordered_rejection_fraction']:.1%} of planted ordered trajectories and {ordering['noise_rejection_fraction']:.1%} of independent-noise trajectories, at a nominal 5% level. It is sensitive to this positive control, which is generated in trajectory space rather than through a radar simulation.</p>{src}<p class="resource-links"><a href="{REPO_URL}/blob/main/experiments/robustness.py">Code ↗</a><a href="{url}" download>Results ↓</a></p></div></details>'''
 
 
 def build():
-    tests = load_tests()
-    os.makedirs(os.path.join(DOCS, "figs"), exist_ok=True)
-    import sys
-    sys.path.insert(0, ROOT)
-    from sarsim import Geometry
-    geom_summary = {k: (float(v) if not isinstance(v, str) else v) for k, v in Geometry().summary().items()}
-    params = {"sub-aperture pairs K": "50", "sub-aperture width": "50% of the processed band", "reference/offset shift": "88 Hz (snapped to 4 FFT bins)",
-              "patch": "32 × 32 px complex cross-correlation, unnormalised", "sub-pixel refinement": "upsampled DFT to 1/1000 px + parabolic peak",
-              "common-mode": "global median trajectory removed", "declared wavelength λs": "0.48 m (paper)", "depth focus": "paper: |a(z)ᴴY|²; replication: max-over-windows adjusted R², W = 25",
-              "depth grid": "160 steps to 97% of the Nyquist depth"}
-    cards = "\n".join(card(t) for t in tests) + "\n" + "\n".join(planned_card(*p) for p in PLANNED)
-    sections = "\n".join(section(t) for t in tests)
-    toc = "".join(f'<li><a href="#{esc(t["id"])}">{esc(t.get("eyebrow","").split("·")[-1].strip())}</a></li>' for t in tests)
-    sources = "".join(f'<li><a href="{esc(u)}">{s}</a></li>' for s, u in SOURCES)
-    updated = time.strftime("%-d %B %Y")
-    page = f"""<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{esc(TITLE)}</title>
-<meta name="description" content="{esc(DECK)}">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
-<meta property="og:type" content="website">
-<meta property="og:title" content="{esc(TITLE)}">
-<meta property="og:description" content="{esc(DECK)}">
-<meta property="og:url" content="{SITE_URL}">
-<meta property="og:image" content="{SITE_URL}figs/t01_static_pyramid/t01_slc.jpg">
-</head>
-<body>
-<a class="skip-link" href="#main">Skip to content</a>
-<header class="masthead"><div class="wrap">
-  <div class="eyebrow">Radar, pyramids &amp; a method under test</div>
-  <h1 style="margin-top:14px">{esc(TITLE)}</h1>
-  <p class="deck">{esc(DECK)}</p>
-  <div class="verdict"><b>Where this stands.</b> The 2022 paper was retracted in August 2026 for “serious methodological flaws”. The tests here go one step further than the retraction: they show <i>what</i> the method computes and reproduce its characteristic output, layered bands, repeated units and wells that all end at the same floor, from a scene that contains nothing and never moves. The next phase runs the same code on a real 25-second ICEYE scene of Giza.</div>
-  <div class="meta"><span><b>Updated</b> {esc(updated)}</span><span><a href="{REPO_URL}">Code, experiments &amp; results</a></span><span><b>Phase</b> simulation complete · real data next</span></div>
-</div></header>
-<nav class="toc" aria-label="On this page"><div class="wrap"><ol>
-  <li><a href="#tests">Tests</a></li><li><a href="#method">Method</a></li>{toc}<li><a href="#roadmap">Roadmap</a></li><li><a href="#sources">Sources</a></li>
-</ol></div></nav>
-<main id="main">
-<section class="part" id="tests"><div class="wrap">
-  <div class="part-head"><div class="n">Tests</div><h2>Seven tests, one verdict</h2></div>
-  <div class="prose"><p>Each test keeps its question, finding and limitations together. Tests are numbered in the order they were run; later ones will be added as the real-data phase proceeds and earlier ones stay as run.</p></div>
-  <div class="cards">
-{cards}
-  </div>
-</div></section>
-{method_section(geom_summary, params)}
-{sections}
-<section class="part" id="roadmap"><div class="wrap">
-  <div class="part-head"><div class="n">Roadmap</div><h2>What comes next</h2></div>
-  <div class="prose">
-    <p>The simulation phase settles what the method is. The real-data phase asks whether the published Giza results behave like the simulation, using an ICEYE X33 Dwell Fine scene acquired on 27 August 2025 (25 s illumination, 600 MHz bandwidth, SLC of 9.8 GB, with ICEYE's own colour sub-aperture and SAR-video products as a zero-code check of how strongly the pyramid's scattering changes with look angle).</p>
-    <ul>
-      <li>Same pipeline, same statistics, on Khafre, empty plateau, Sphinx and Cairo housing (T8).</li>
-      <li>Positive control against the surveyed chambers of Khufu (T9).</li>
-      <li>Two headings, one ground: do the features move as T3 predicts (T10)?</li>
-      <li>A discriminator trained to tell real from simulated tomograms (T11).</li>
-    </ul>
-    <p>Anyone can rerun everything: <code>pip install -r requirements.txt</code>, then <code>python experiments/t01_static_pyramid.py</code> and so on, then <code>python build_site.py</code>.</p>
-  </div>
-</div></section>
-<section class="part" id="sources"><div class="wrap">
-  <div class="part-head"><div class="n">Sources</div><h2>Papers, notices and code</h2></div>
-  <div class="prose"><ol>{sources}</ol></div>
-</div></section>
-</main>
-<footer><div class="wrap">Built from <code>results/*/summary.json</code> by <code>build_site.py</code>. Figures are generated by the experiment scripts; none are edited by hand. Simulation and analysis by ejhong with Claude Fable 5.1 (Anthropic).</div></footer>
-</body>
-</html>
-"""
-    with open(os.path.join(DOCS, "index.html"), "w") as f:
-        f.write(page)
-    print(f"wrote docs/index.html with {len(tests)} tests")
+    DOCS.mkdir(exist_ok=True)
+    tests = sorted([refine_summary(json_report(path)) for path in RESULTS.glob("t*/summary.json")], key=lambda x: x["order"])
+    controls = json_report(RESULTS / "feasibility" / "metrics.json")
+    robustness = json_report(RESULTS / "robustness" / "metrics.json")
+    overview = RESULTS / "overview" / "overview.png"
+    if overview.is_file():
+        hero_item = {"file": str(overview), "caption": "<b>Known input. Computed output.</b> A stationary simulated pyramid, with no buried objects, and the normalized depth spectrum along one transect. Brightness is relative spectral power, not confidence in an underground structure.", "alt": "Stationary simulated pyramid and its depth-like spectral output along a marked transect"}
+        hero = figure("overview", hero_item, eager=True)
+        hero_src = copy_figure("overview", str(overview))[0]
+    else:
+        hero = figure("t03_mechanism", tests[2]["figures"][0], eager=True)
+        hero_src = copy_figure("t03_mechanism", tests[2]["figures"][0]["file"])[0]
+    sections = "".join(experiment_section(t) for t in tests)
+    for filename in list((RESULTS / "feasibility").glob("*.csv")) + list((RESULTS / "robustness").glob("*.csv")):
+        shutil.copyfile(filename, DOCS / "data" / filename.name)
+    latest = max(t.get("date", "2026-09-19") for t in tests + [controls, robustness])
+    updated = date.fromisoformat(latest).strftime("%d %B %Y").lstrip("0")
+    versions = " · ".join(f"{esc(k)} {esc(v)}" for k, v in controls.get("versions", {}).items())
+    downloads = "".join(f"<a href='data/{t['id']}.json' download>T{t['order']} results ↓</a>" for t in tests)
+    template = Template((ROOT / "site" / "page.html").read_text())
+    page = template.substitute(updated=updated, hero=hero, hero_src=hero_src, count=len(tests),
+                               experiments=sections, controls=controls_section(controls),
+                               robustness=robustness_section(robustness), downloads=downloads, versions=versions)
+    (DOCS / "index.html").write_text(page)
+    print(f"Built docs/index.html: {len(tests)} scene experiments, supporting controls, robustness checks")
 
 
 if __name__ == "__main__":
