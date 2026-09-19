@@ -74,6 +74,17 @@ try {
   assert.equal(await evaluate("[...document.querySelectorAll('.experiment')].every(d=>d.open)"),true);
   await evaluate("document.querySelector('#expand-experiments').click()");
   assert.equal(await evaluate("[...document.querySelectorAll('.experiment')].every(d=>!d.open)"),true);
+  assert.equal(await evaluate("document.querySelectorAll('.experiment').length"),7);
+  await evaluate("location.hash='t07_surface_controls'");
+  await until("document.querySelector('#t07_surface_controls').open");
+  await until("Math.abs(document.querySelector('#t07_surface_controls').getBoundingClientRect().top - 80) < 5");
+  await screenshot('t7-controls');
+  await evaluate("location.hash='t07_wells'");
+  await until("document.querySelector('#t07_wells').open");
+  await until("Math.abs(document.querySelector('#t07_wells').getBoundingClientRect().top - 85) < 5");
+  assert.equal(await evaluate("document.querySelector('#t07_wells').closest('section').id"),'appendix');
+  assert.equal(await evaluate("document.querySelector('#t07_wells').classList.contains('experiment')"),false);
+  await screenshot('illustrative-appendix');
   const dataStatus = await evaluate("Promise.all([...document.querySelectorAll('a[download]')].map(async a=>{const r=await fetch(a.href); if(a.pathname.endsWith('.json')) await r.json(); else if(!(await r.text()).includes(',')) return false; return r.ok}))");
   assert(dataStatus.length >= 9 && dataStatus.every(Boolean));
   for(const width of [1440,768,390,320]) {
@@ -88,9 +99,11 @@ try {
     await screenshot(`method-${width}`);
     await evaluate("document.querySelector('#phase-control').scrollIntoView({behavior:'instant',block:'start'})");
     await screenshot(`signal-${width}`);
+    await evaluate("document.querySelector('#t07_surface_controls').open=true; document.querySelector('#t07_surface_controls').scrollIntoView({behavior:'instant',block:'start'})");
+    await screenshot(`t7-${width}`);
   }
   assert.deepEqual(errors,[]);
-  console.log(JSON.stringify({passed:true,widths:[1440,768,390,320],checks:['slider input and keyboard','reset','deep link','figure dialog and Escape','expand/collapse','JSON downloads','all images decode','no overflow with all details open','no browser or HTTP errors'],screenshots:screenshotDir},null,2));
+  console.log(JSON.stringify({passed:true,widths:[1440,768,390,320],checks:['slider input and keyboard','reset','deep link','figure dialog and Escape','expand/collapse','seven numbered experiments','legacy T7 opens illustrative appendix','JSON and CSV downloads','all images decode','no overflow with all details open','no browser or HTTP errors'],screenshots:screenshotDir},null,2));
 } finally {
   await send('Page.close'); ws.close();
 }

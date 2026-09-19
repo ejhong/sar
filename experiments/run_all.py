@@ -8,7 +8,10 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def main():
-    scripts = sorted((ROOT / "experiments").glob("t[0-9][0-9]_*.py"))
+    scripts = sorted(path for path in (ROOT / "experiments").glob("t[0-9][0-9]_*.py")
+                     if path.name != "t07_wells.py")
+    # The previous T7 is an appendix, not an eighth numbered experiment.
+    scripts.append(ROOT / "experiments" / "t07_wells.py")
     scripts += [ROOT / "experiments" / name for name in ("feasibility.py", "robustness.py", "overview.py")]
     for script in scripts:
         print(f"Running {script.name}", flush=True)

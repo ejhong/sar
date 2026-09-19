@@ -1,4 +1,8 @@
-"""T7: the wells. A pyramid with eight bright corner-like scatterers, rendered the way the Khafre slides were."""
+"""Illustrative appendix (formerly T7): hand-placed surface points and chosen rendering settings.
+
+This file retains its original name for existing links. It does not explain the
+Khafre observations. The controlled replacement is t07_surface_controls.py.
+"""
 import os, time, json, numpy as np
 from common import *
 from sarsim import viz, run_pipeline, point_targets, concat
@@ -11,7 +15,7 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 TEST = "t07_wells"
 ROT = 8.0
 STRIDE = 5                     # pixels = 1.25 m
-LAM_S_SLIDES = 2.2             # declared wavelength that stretches the depth axis to ~630 m, as in the published slides
+LAM_S_SLIDES = 2.2             # chosen to illustrate a ~630 m display extent; not an inferred calibration
 BRIGHT_AMP = 8.0
 
 
@@ -53,7 +57,7 @@ def main():
     br = by * np.sin(g.theta)                                   # slant range of the bright scatterers
     P = np.log10(np.abs(H) ** 2 + 1e-14)
     V = gaussian_filter(P, sigma=(1.0, 1.0, 1.5))
-    zs = z * LAM_S_SLIDES / 0.48                                # depth axis as the slides label it
+    zs = z * LAM_S_SLIDES / 0.48                                # deliberately rescaled illustration axis
     ext_map = [xs[0], xs[-1], rs[-1], rs[0]]
     # arris geometry: the near face's two edges run from the near base corners to the laid-over apex
     L2 = PYRAMID["base"] / 2
@@ -78,13 +82,13 @@ def main():
     axs[1].set_title("plan view of the volume: total trajectory power, jet colormap", loc="left"); axs[1].set_xlabel("azimuth (m)"); axs[1].set_yticklabels([])
     fig.tight_layout()
     figs.append({"file": viz.finish(fig, f"{fd}/t07_plan.png"), "caption":
-                 "<b>Wells and walls, in plan.</b> Left: the simulated image, with eight bright point-like scatterers at the base corners and mid-edges of the pyramid (where real monuments have trihedral corners, temple walls and entrances). Right: the total power of the depth volume above each pixel, in the jet colormap of the published slides. Each bright point owns a dark square exactly one patch wide (8 m): a dominant scatterer pins the patch's shift near zero. The two red bands run along the upper edges of the laid-over near face, where its bright course masonry and the laid-over side faces share the same pixels and interfere strongly. The dashed line marks the slice below."})
+                 "<b>Constructed input and rendered power.</b> Eight ideal point scatterers are deliberately added at corners and edge midpoints. Their realism at Khafre is not established. The output includes dark regions near those points and bright face-edge bands. The dashed line marks the selected section."})
     # ---------- figure 2: vertical slices, published style
     fig, axs = plt.subplots(3, 1, figsize=(12.5, 12.5))
     def show(ax, sl, extent, title):
         ax.imshow(sl.T, origin="upper", aspect="auto", extent=extent, cmap="jet", interpolation="bicubic",
                   vmin=np.percentile(V, 3), vmax=np.percentile(V, 99.5))
-        ax.set_title(title, loc="left"); ax.set_ylabel("depth as the slides label it (m)")
+        ax.set_title(title, loc="left"); ax.set_ylabel("illustrative rescaled depth (m)")
         a2 = ax.twinx(); a2.set_ylim(z[-1], z[0]); a2.set_ylabel("model depth, λs = 0.48 m", color=viz.MUTED); a2.tick_params(colors=viz.MUTED)
     c0 = int(np.argmin(np.abs(rs - R_SLICE)))
     show(axs[0], V[:, c0, :], [xs[0], xs[-1], zs[-1], zs[0]], f"azimuth slice at slant range {rs[c0]:.0f} m, crossing the two bright bands along the near face's upper edges (dotted)")
@@ -99,7 +103,7 @@ def main():
     axs[2].axvline(br[i_pt], color="white", lw=0.8, ls=":", alpha=0.9); axs[2].set_xlabel("slant range (m)")
     fig.tight_layout()
     figs.append({"file": viz.finish(fig, f"{fd}/t07_slices.png"), "caption":
-                 "<b>The columns in section, rendered the published way.</b> Paper-variant magnitude tomograms, smoothed and drawn in jet as in the Khafre slides, with the depth axis stretched to 630 m by declaring λs = 2.2 m instead of the paper's 0.48 m (right-hand axes). Top: crossing the two bright bands, each hangs a bright, rung-banded column from the surface to the bottom of the axis (dotted). Middle: through the left band. Bottom: through an isolated bright point, which hangs a dark column instead, next to the bright column of the band that ends at that corner. Nothing under the surface differs between these places; the columns end where the axis ends, so every column reaches the same floor."})
+                 "<b>Sections through an illustrative volume.</b> These views use smoothing and a chosen wavelength of 2.2 m to stretch the displayed depth extent. The right axes retain the 0.48 m model scale. This is not a measured depth calibration for the published images."})
     # ---------- figure 2b: side by side with the published slide
     PUB = os.path.join(RESULTS, TEST, "published")
     import matplotlib.image as mpimg
@@ -112,17 +116,17 @@ def main():
     axs[1].imshow(sl.T, origin="upper", aspect="auto", extent=[rs[0], rs[-1], zs[-1], zs[0]], cmap="jet", interpolation="bicubic",
                   vmin=np.percentile(V, 3), vmax=np.percentile(V, 99.5))
     axs[1].set_title(f"simulation: range slice at azimuth {xs[j1]:.0f} m through the right band, static pyramid", loc="left")
-    axs[1].set_xlabel("slant range (m)"); axs[1].set_ylabel("depth as the slides label it (m)")
+    axs[1].set_xlabel("slant range (m)"); axs[1].set_ylabel("illustrative rescaled depth (m)")
     fig.tight_layout()
     figs.append({"file": viz.finish(fig, f"{fd}/t07_compare.png"), "caption":
-                 "<b>Side by side.</b> Left: one of the tomogram slides released by the Khafre Research Project in March 2025, reproduced at reduced size for comparison (copyright its authors). Right: a slice of the simulated volume through the right-hand bright band, same colormap, same smoothing, same kind of axis. Neither scene needs anything under the ground to look like this."})
+                 "<b>A visual comparison only.</b> Left: a Khafre Research Project slide, copyright its authors. Right: a constructed surface-only simulation with chosen display settings. Resemblance does not establish the origin of the published features or reproduce their processing."})
     # ---------- published images: what was shown, and what was drawn from it
     figs.append({"file": os.path.join(PUB, "khafre_composite_slide.jpg"), "caption":
                  "<b>Published composite slide.</b> Plan view of the pyramid footprint with circled 'wells', vertical sections with columns, and hand annotations placing Khafre's known chambers (Belzoni's chamber, the lower chamber) on blobs. Reproduced at reduced size for critique; copyright the Khafre Research Project."})
     figs.append({"file": os.path.join(PUB, "khafre_cad_ramps.jpg"), "caption":
-                 "<b>Published CAD illustration.</b> The eight cylinders with spiral ramps, numbered, under a wireframe pyramid with five stepped structures. This is an interpretation drawn from slides like the ones above, not a data image: the columns' horizontal rungs became coils. Reproduced at reduced size for critique; copyright the Khafre Research Project."})
+                 "<b>Published CAD illustration.</b> Cylinders and spiral ramps depict the project's interpretation. Their geometry is not independently validated here. Reproduced at reduced size for critique; copyright the Khafre Research Project."})
     figs.append({"file": os.path.join(PUB, "khafre_cad_coils.jpg"), "caption":
-                 "<b>Published CAD illustration.</b> The same wells drawn as cylinders wrapped in coils, standing on two cubes said to lie at 648 m. The cubes are where the columns end, which in this method is the bottom of the depth axis. Reproduced at reduced size for critique; copyright the Khafre Research Project."})
+                 "<b>Published CAD illustration.</b> Cylinders, coils and basal blocks depict the project's interpretation. Their depths and shapes are not measured by this illustration. Reproduced at reduced size for critique; copyright the Khafre Research Project."})
     # ---------- figure 3: 3-D isosurfaces, bright walls and dark wells
     from skimage import measure
     dx_ = xs[1] - xs[0]; dr_ = rs[1] - rs[0]; dz_ = zs[1] - zs[0]
@@ -156,7 +160,7 @@ def main():
     ax.xaxis.pane.fill = ax.yaxis.pane.fill = ax.zaxis.pane.fill = False
     fig.tight_layout()
     figs.append({"file": viz.finish(fig, f"{fd}/t07_isosurface.png"), "caption":
-                 "<b>The same volume in three dimensions.</b> Depth downward, the pyramid footprint and the eight bright points drawn at the surface. The volume is smoothed along depth so that the columns read as columns. Blue: the lowest-power voxels, vertical wells under the bright points and under the laid-over interior of the near face. Orange: the highest-power voxels, walls under the two bright bands. Both kinds stop together at the bottom of the axis. The published CAD drawing turned columns like these into smooth cylinders with spiral ramps; the data contain rung-banded columns, square because the patch is, and no spirals."})
+                 "<b>Chosen isosurfaces after depth smoothing.</b> Blue marks the lowest-power regions and orange the highest-power regions. The thresholds and smoothing determine the rendered shapes; all share the finite computed volume. No spiral geometry or published feature is reproduced here."})
     # ---------- figure 4: rungs
     spacing = 0.79 / np.cos(np.deg2rad(ROT))
     scale = g.depth_scale(0.48)
@@ -181,7 +185,7 @@ def main():
     ax.set_title(f"Rungs: mean depth spectra by region, dotted at multiples of the projected course spacing ({scale*spacing:.1f} m)", loc="left")
     fig.tight_layout()
     figs.append({"file": viz.finish(fig, f"{fd}/t07_rungs.png"), "caption":
-                 f"<b>Where the rungs sit.</b> Mean depth spectra of the pixels under the arrises, under the bright points and on open desert, with dotted lines every {scale*spacing:.1f} model-metres, the projected course spacing. A harmonic-comb fit gives the spacings in the legend: they differ from region to region and none follows the course spacing cleanly. The rungs are the discrete azimuth separations of whatever scatterers dominate each patch, so every place has its own ladder."})
+                 f"<b>Spectra in selected regions.</b> Mean depth spectra under the face edges, added points and open desert. Dotted lines are {scale*spacing:.1f} model-metres apart. The fitted periods vary by region and do not cleanly follow one course spacing; this does not measure or explain a published spiral."})
     pt_ratio = float(np.median((np.abs(H[point_mask]) ** 2).sum(axis=1)) / np.median((np.abs(H[desert_mask]) ** 2).sum(axis=1)))
     ar_ratio = float(np.median((np.abs(H[arris_mask]) ** 2).sum(axis=1)) / np.median((np.abs(H[desert_mask]) ** 2).sum(axis=1)))
     d = rung_rows[0]["comb_spacing_m"]; score = rung_rows[0]["comb_score"]
@@ -189,11 +193,11 @@ def main():
          "depth_axis_max_m_paper": float(z[-1]), "power_ratio_point_wells_vs_desert": pt_ratio, "power_ratio_bright_bands_vs_desert": ar_ratio,
          "rungs": rung_rows, "predicted_course_spacing_depth_m": float(scale * spacing), "isosurface_percentiles": [2.0, 98.0], "runtime_s": time.time() - t0}
     summary = {
-        "id": TEST, "order": 7, "tag": "artifact", "eyebrow": "07 · The wells",
-        "title": "Wells that all reach the same floor, from the corners and edges of a static pyramid",
-        "question": "Can the specific published imagery, vertical wells with rungs descending to a common floor, come out of a scene with nothing underneath?",
-        "finding": f"Yes. A vertical column one patch wide (8 m) hangs under every compact or edge-like surface feature and runs to the bottom of the depth axis, which is the Nyquist limit of the sweep and therefore the same floor for all of them; declaring a sound wavelength of 2.2 m puts that floor at 630 m. Under an isolated bright point the column is dark ({pt_ratio:.2f} of the desert's power), because the dominant scatterer pins the patch's shift near zero; along the upper edges of the laid-over near face, where two faces' masonry share pixels, it is bright and banded by rungs whose depths differ from place to place. Rungs, not spirals: the spiral ramps exist only in the published CAD drawing.",
-        "limitations": "The bright points are placed by hand at plausible positions; on the real plateau their locations would be set by real corners, temples and modern objects. Whether a real feature reads as a bright or a dark column depends on how strongly it dominates its patch, so the published columns cannot be attributed to a specific surface object without the data.",
+        "id": TEST, "order": 7, "role": "illustration", "tag": "illustration", "eyebrow": "Appendix · Constructed rendering",
+        "title": "Illustration: surface points and rendering choices",
+        "question": "What does a deliberately constructed scene look like after chosen rendering settings?",
+        "finding": f"Near the hand-placed points, power is {pt_ratio:.2f} times the desert reference; the selected bright bands have {ar_ratio:.2f} times that reference. Smoothing and thresholding make column-like forms in this example.",
+        "limitations": "No field data, independently justified surface targets, full acceptance gate or validated depth calibration. Point count and the displayed depth extent were deliberately chosen. This is an illustration, not evidence that the Khafre features share this origin.",
         "method": "T1's pyramid plus eight point scatterers of amplitude 8 at the base corners and mid-edges; paper-variant volume on a 1.25 m grid (36,000 pixels); log-magnitude smoothed with a Gaussian of 1 sample in position and 1.5 in depth; jet colormap and bicubic interpolation to match the published rendering; marching-cubes isosurfaces at the 2nd and 98th percentiles of the volume smoothed along depth.",
         "figures": figs, "metrics": m, "date": time.strftime("%Y-%m-%d"),
     }

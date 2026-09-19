@@ -1,0 +1,304 @@
+{
+  "id": "t07_surface_controls",
+  "order": 7,
+  "tag": "controlled",
+  "eyebrow": "07 \u00b7 Paired surface controls",
+  "title": "Add surface targets; measure what changes before rendering",
+  "question": "How much of the column-like output depends on deliberately inserted surface points, and does it pass the implemented acceptance gate?",
+  "finding": "At strength 8, median unsmoothed power near the original eight points is 0.28 times the same locations in the unchanged pyramid. Across the three random layouts it ranges from 0.26 to 0.35. The implemented full gate accepts no sampled pixels in any of the 13 scenes.",
+  "limitations": "One background realization, three random perimeter layouts and ideal point targets with prescribed amplitudes. Added points have no terrain-shadowing or object-specific scattering model. Spatial samples overlap, and strength variants reuse the same layouts. Power changes and depth-bin suppression are descriptive responses, not validated column detections. Neither the point count nor the output depth limit predicts a Khafre structure. This tests our reconstruction and T6 gate implementation, not the original data or complete Khafre workflow.",
+  "method": "Thirteen paired scenes: unchanged pyramid; original corner/midpoint layout at multipliers 1, 4 and 8; three random perimeter layouts at those same multipliers, with seeded relative amplitudes uniform on [0.5, 1.5]. All reuse the same pyramid, clutter seed, point phases, radar geometry, 50 sub-aperture pairs, 32-pixel patches, 2.5 m target grid, common-mode rule, 0.48 m wavelength and 160 model-depth bins. Regional raw power is compared with the identical baseline pixels in fixed 8 m squares. The T6 shape and full gates are applied to every grid trajectory. No smoothing, isosurfaces, per-scene normalization or depth rescaling is used. The displayed random example is always seed 101.",
+  "figures": [
+    {
+      "file": "results/t07_surface_controls/figs/t07_paired_metrics.png",
+      "alt": "Paired power ratios and depth-bin suppression at three strengths for four prescribed point layouts",
+      "caption": "<b>Paired measurements before smoothing.</b> Each added-point region is compared with exactly the same pixels in the unchanged pyramid. Lines connect three prescribed strengths for one layout; each value is a median over eight ideal targets. The three random layouts use seeds 101\u2013103 and fixed random relative amplitudes. Shared pixels and one background do not provide independent field trials. All per-point measurements are downloadable."
+    },
+    {
+      "file": "results/t07_surface_controls/figs/t07_controlled_maps.png",
+      "alt": "Unchanged pyramid, original point layout and first random point layout, with shared scales and unsmoothed depth sections",
+      "caption": "<b>Same scene, same settings.</b> Unchanged pyramid, original eight-point layout, and the first seeded random layout. Each column shares one baseline reference and fixed colour limits. All panels use nearest-neighbour display with no smoothing; the vertical section is fixed from the original front-midpoint geometry before examining output. Circled points are deliberately added synthetic targets. Brightness is reconstruction power, not acceptance by a detection gate."
+    }
+  ],
+  "metrics": {
+    "design": {
+      "scene_seed": 0,
+      "rotation_deg": 8.0,
+      "strengths": [
+        1.0,
+        4.0,
+        8.0
+      ],
+      "random_seeds": [
+        101,
+        102,
+        103
+      ],
+      "n_points_per_layout": 8,
+      "grid_spacing_m": 2.5,
+      "random_layout_rule": "Uniform choice of base side and uniform position along it; reject image separations below 12 m",
+      "minimum_random_point_image_separation_m": 12.0,
+      "point_phase_seed": 3,
+      "sampled_pixels_per_scene": 9072,
+      "probe_width_m": 8.0,
+      "remote_region": "More than 12 image-metres from every target in every layout",
+      "remote_pixels": 7468,
+      "wavelength_m": 0.48,
+      "patch_pixels": 32,
+      "common_mode": "Same rule in every scene: subtract the median trajectory of the full fixed grid",
+      "smoothing": "none",
+      "relative_amplitude_distribution": "uniform [0.5, 1.5] for random layouts; 1 for original",
+      "added_target_model": "Ideal isotropic points at z=0; no shadowing or object-specific scattering model",
+      "gate": {
+        "adjusted_r2_min": 0.25,
+        "axis_ratio_min": 0.1,
+        "minor_axis_min_px": 0.005,
+        "window_samples": 25,
+        "modes": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "representative_panels": [
+        "baseline",
+        "original_8",
+        "random_101_8"
+      ]
+    },
+    "runs": [
+      {
+        "run": "baseline",
+        "layout": "none",
+        "strength": 0.0,
+        "sampled_pixels": 9072,
+        "median_point_power_ratio": null,
+        "minimum_point_power_ratio": null,
+        "maximum_point_power_ratio": null,
+        "median_point_depth_suppression_fraction": null,
+        "remote_power_ratio": 1.0,
+        "shape_gate_count": 832,
+        "full_gate_count": 0,
+        "shape_gate_fraction": 0.09171075837742504,
+        "full_gate_fraction": 0.0
+      },
+      {
+        "run": "original_1",
+        "layout": "original",
+        "strength": 1.0,
+        "sampled_pixels": 9072,
+        "median_point_power_ratio": 0.9407984365712456,
+        "minimum_point_power_ratio": 0.8877545990206598,
+        "maximum_point_power_ratio": 0.9952423223489736,
+        "median_point_depth_suppression_fraction": 0.6499999999999999,
+        "remote_power_ratio": 1.0000704152830708,
+        "shape_gate_count": 840,
+        "full_gate_count": 0,
+        "shape_gate_fraction": 0.09259259259259259,
+        "full_gate_fraction": 0.0
+      },
+      {
+        "run": "original_4",
+        "layout": "original",
+        "strength": 4.0,
+        "sampled_pixels": 9072,
+        "median_point_power_ratio": 0.5291483237881511,
+        "minimum_point_power_ratio": 0.464721183891662,
+        "maximum_point_power_ratio": 0.7951722827322517,
+        "median_point_depth_suppression_fraction": 0.890625,
+        "remote_power_ratio": 1.0033380404994199,
+        "shape_gate_count": 838,
+        "full_gate_count": 0,
+        "shape_gate_fraction": 0.09237213403880071,
+        "full_gate_fraction": 0.0
+      },
+      {
+        "run": "original_8",
+        "layout": "original",
+        "strength": 8.0,
+        "sampled_pixels": 9072,
+        "median_point_power_ratio": 0.2754999233767172,
+        "minimum_point_power_ratio": 0.1957716512286232,
+        "maximum_point_power_ratio": 0.5391626191946264,
+        "median_point_depth_suppression_fraction": 0.9781249999999999,
+        "remote_power_ratio": 1.014850202635391,
+        "shape_gate_count": 836,
+        "full_gate_count": 0,
+        "shape_gate_fraction": 0.09215167548500881,
+        "full_gate_fraction": 0.0
+      },
+      {
+        "run": "random_101_1",
+        "layout": "random_101",
+        "strength": 1.0,
+        "sampled_pixels": 9072,
+        "median_point_power_ratio": 0.9474086210411473,
+        "minimum_point_power_ratio": 0.8602144132518764,
+        "maximum_point_power_ratio": 0.9756948658942156,
+        "median_point_depth_suppression_fraction": 0.65,
+        "remote_power_ratio": 1.0002273957820984,
+        "shape_gate_count": 820,
+        "full_gate_count": 0,
+        "shape_gate_fraction": 0.09038800705467372,
+        "full_gate_fraction": 0.0
+      },
+      {
+        "run": "random_101_4",
+        "layout": "random_101",
+        "strength": 4.0,
+        "sampled_pixels": 9072,
+        "median_point_power_ratio": 0.5663920259271285,
+        "minimum_point_power_ratio": 0.4341826651542106,
+        "maximum_point_power_ratio": 0.8345892959904113,
+        "median_point_depth_suppression_fraction": 0.84375,
+        "remote_power_ratio": 1.0040772621176774,
+        "shape_gate_count": 836,
+        "full_gate_count": 0,
+        "shape_gate_fraction": 0.09215167548500881,
+        "full_gate_fraction": 0.0
+      },
+      {
+        "run": "random_101_8",
+        "layout": "random_101",
+        "strength": 8.0,
+        "sampled_pixels": 9072,
+        "median_point_power_ratio": 0.2575579123476446,
+        "minimum_point_power_ratio": 0.19735168863093708,
+        "maximum_point_power_ratio": 0.602775550641615,
+        "median_point_depth_suppression_fraction": 0.95,
+        "remote_power_ratio": 1.0166237278361858,
+        "shape_gate_count": 824,
+        "full_gate_count": 0,
+        "shape_gate_fraction": 0.09082892416225749,
+        "full_gate_fraction": 0.0
+      },
+      {
+        "run": "random_102_1",
+        "layout": "random_102",
+        "strength": 1.0,
+        "sampled_pixels": 9072,
+        "median_point_power_ratio": 0.9544235836210293,
+        "minimum_point_power_ratio": 0.9009700597838478,
+        "maximum_point_power_ratio": 0.9782301218813142,
+        "median_point_depth_suppression_fraction": 0.609375,
+        "remote_power_ratio": 1.0002816341430596,
+        "shape_gate_count": 846,
+        "full_gate_count": 0,
+        "shape_gate_fraction": 0.09325396825396826,
+        "full_gate_fraction": 0.0
+      },
+      {
+        "run": "random_102_4",
+        "layout": "random_102",
+        "strength": 4.0,
+        "sampled_pixels": 9072,
+        "median_point_power_ratio": 0.6437293853937348,
+        "minimum_point_power_ratio": 0.3702169809723317,
+        "maximum_point_power_ratio": 0.8131324502611873,
+        "median_point_depth_suppression_fraction": 0.81875,
+        "remote_power_ratio": 1.0049433552286382,
+        "shape_gate_count": 865,
+        "full_gate_count": 0,
+        "shape_gate_fraction": 0.09534832451499119,
+        "full_gate_fraction": 0.0
+      },
+      {
+        "run": "random_102_8",
+        "layout": "random_102",
+        "strength": 8.0,
+        "sampled_pixels": 9072,
+        "median_point_power_ratio": 0.33978705213695837,
+        "minimum_point_power_ratio": 0.1358682975933962,
+        "maximum_point_power_ratio": 0.545857163514891,
+        "median_point_depth_suppression_fraction": 0.9625,
+        "remote_power_ratio": 1.0200323985368693,
+        "shape_gate_count": 861,
+        "full_gate_count": 0,
+        "shape_gate_fraction": 0.09490740740740741,
+        "full_gate_fraction": 0.0
+      },
+      {
+        "run": "random_103_1",
+        "layout": "random_103",
+        "strength": 1.0,
+        "sampled_pixels": 9072,
+        "median_point_power_ratio": 0.9668619158963718,
+        "minimum_point_power_ratio": 0.9051161291860855,
+        "maximum_point_power_ratio": 0.998026082291142,
+        "median_point_depth_suppression_fraction": 0.625,
+        "remote_power_ratio": 1.000212491480322,
+        "shape_gate_count": 830,
+        "full_gate_count": 0,
+        "shape_gate_fraction": 0.09149029982363316,
+        "full_gate_fraction": 0.0
+      },
+      {
+        "run": "random_103_4",
+        "layout": "random_103",
+        "strength": 4.0,
+        "sampled_pixels": 9072,
+        "median_point_power_ratio": 0.6770632618208392,
+        "minimum_point_power_ratio": 0.524311383685496,
+        "maximum_point_power_ratio": 0.8839014032344097,
+        "median_point_depth_suppression_fraction": 0.846875,
+        "remote_power_ratio": 1.0027617123853825,
+        "shape_gate_count": 837,
+        "full_gate_count": 0,
+        "shape_gate_fraction": 0.09226190476190477,
+        "full_gate_fraction": 0.0
+      },
+      {
+        "run": "random_103_8",
+        "layout": "random_103",
+        "strength": 8.0,
+        "sampled_pixels": 9072,
+        "median_point_power_ratio": 0.34569042794360616,
+        "minimum_point_power_ratio": 0.220953852560447,
+        "maximum_point_power_ratio": 0.6991317565051115,
+        "median_point_depth_suppression_fraction": 0.9468749999999999,
+        "remote_power_ratio": 1.0106545787242898,
+        "shape_gate_count": 818,
+        "full_gate_count": 0,
+        "shape_gate_fraction": 0.09016754850088184,
+        "full_gate_fraction": 0.0
+      }
+    ],
+    "display": {
+      "amplitude_reference": 2.973376750946045,
+      "plan_power_reference": 0.00015802808799141792,
+      "depth_power_reference": 7.098503176842178e-07,
+      "fixed_section_slant_range_m": -60.0,
+      "amplitude_limits_db": [
+        -50,
+        5
+      ],
+      "plan_limits_db": [
+        -15,
+        15
+      ],
+      "depth_limits_db": [
+        -25,
+        25
+      ]
+    },
+    "total_full_gate_pixel_scene_samples": 0,
+    "depth_axis_max_m": 137.5405846444718,
+    "background_unchanged": true,
+    "runtime_s": 41.778303146362305
+  },
+  "downloads": [
+    "scene_runs.csv",
+    "point_measurements.csv",
+    "point_design.csv",
+    "design.json"
+  ],
+  "date": "2026-09-19",
+  "provenance": {
+    "python": "3.11.3",
+    "numpy": "2.4.6",
+    "source_sha256": "e8e27ef41c59985ffa09fcca3a0531d59eae4d432610c863a0d5d1361a9b97e6"
+  }
+}

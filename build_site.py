@@ -21,7 +21,7 @@ EXPERIMENTS = {
     "t04_parameters": ("Parameters", "The depth scale is a processing choice", "t04_lambda", "t04_patch"),
     "t05_motion": ("Positive input", "Motion enters; frequency becomes depth", "t05_sensitivity", "t05_depth_is_frequency"),
     "t06_ordering": ("Selection gates", "The full gate rejects these static pixels", "t06_permutation"),
-    "t07_wells": ("Rendering", "Surface features become columns", "t07_compare", "t07_plan"),
+    "t07_surface_controls": ("Paired controls", "What changes when surface points are added?", "t07_paired_metrics", "t07_controlled_maps"),
 }
 
 
@@ -117,10 +117,38 @@ def experiment_section(report):
     if rest:
         body += f"<details class='more-figures'><summary>{len(rest)} additional figures &amp; comparisons <span aria-hidden='true'>+</span></summary><div class='additional-figures'>" + "".join(figure(key, f) for f in rest) + "</div></details>"
     data = copy_data(key + ".json", report)
+    extra_downloads = ""
+    for filename in report.get("downloads", []):
+        destination = key + "_" + filename
+        shutil.copyfile(RESULTS / key / filename, DOCS / "data" / destination)
+        extra_downloads += f'<a href="data/{destination}" download>{esc(Path(filename).stem.replace("_", " ").capitalize())} ↓</a>'
     source_note = ""
-    if key == "t07_wells":
-        source_note = f"<p class='source-note'>Published comparison images belong to the Khafre Research Project. <a href='{REPO_URL}/blob/main/results/t07_wells/published/CREDITS.md'>Image sources &amp; credits</a>. The synthetic rendering does not establish the origin of the published features.</p>"
-    return f'''<details class="experiment" id="{key}"><summary><span class="experiment-number">{report['order']:02d}</span><span class="experiment-heading"><span class="eyebrow">{esc(label)}</span><span class="experiment-title">{esc(short)}</span></span><span class="expand" aria-hidden="true">+</span></summary><div class="experiment-body"><h3>{esc(report['title'])}</h3><p class="experiment-question">{esc(report['question'])}</p><p class="finding">{esc(report['finding'])}</p><div class="scope"><strong>What this leaves open</strong><p>{esc(report['limitations'])}</p></div>{body}{source_note}<details class="technical"><summary>Method, numbers &amp; reproducibility <span aria-hidden="true">+</span></summary><p>{esc(report.get('method', ''))}</p>{metrics_table(report.get('metrics', {}))}<p class="resource-links"><a href="{REPO_URL}/blob/main/experiments/{key}.py">Experiment code ↗</a><a href="{data}" download>Results JSON ↓</a></p></details></div></details>'''
+    if key == "t07_surface_controls":
+        source_note = "<p class='source-note'>The previous eight-point rendering is retained in the <a href='#t07_wells'>illustrative appendix</a>. It is excluded from the numbered evidence and does not reproduce the Khafre observations.</p>"
+        body = gate_table(report["metrics"]["runs"]) + body
+    return f'''<details class="experiment" id="{key}"><summary><span class="experiment-number">{report['order']:02d}</span><span class="experiment-heading"><span class="eyebrow">{esc(label)}</span><span class="experiment-title">{esc(short)}</span></span><span class="expand" aria-hidden="true">+</span></summary><div class="experiment-body"><h3>{esc(report['title'])}</h3><p class="experiment-question">{esc(report['question'])}</p><p class="finding">{esc(report['finding'])}</p><div class="scope"><strong>What this leaves open</strong><p>{esc(report['limitations'])}</p></div>{body}{source_note}<details class="technical"><summary>Method, numbers &amp; reproducibility <span aria-hidden="true">+</span></summary><p>{esc(report.get('method', ''))}</p>{metrics_table(report.get('metrics', {}))}<p class="resource-links"><a href="{REPO_URL}/blob/main/experiments/{key}.py">Experiment code ↗</a><a href="{data}" download>Results JSON ↓</a>{extra_downloads}</p></details></div></details>'''
+
+
+def gate_table(runs):
+    rows = []
+    for run in runs:
+        name = ("Unchanged pyramid" if run["layout"] == "none" else
+                "Original layout" if run["layout"] == "original" else
+                "Random layout " + run["layout"].split("_")[-1])
+        rows.append(f"<tr><th scope='row'>{esc(name)}</th><td>{fmt(run['strength'])}</td><td>{fmt(run['median_point_power_ratio'])}</td><td>{run['shape_gate_count']:,}</td><td>{run['full_gate_count']:,}</td></tr>")
+    return f'''<details class="technical"><summary>Check the power response and both acceptance gates <span aria-hidden="true">+</span></summary><p>Every scene uses the same {runs[0]['sampled_pixels']:,} grid locations. Counts are dependent pixels, not independent detections. The full gate adds the 0.005 px minor-axis floor to the shape requirements. Power ratios compare fixed point regions with those same locations in the unchanged scene; no ratio is assigned to the baseline itself.</p><div class="table-scroll" tabindex="0" role="region" aria-label="Paired controls and acceptance gates"><table><thead><tr><th scope="col">Layout</th><th scope="col">Strength</th><th scope="col">Median power ratio</th><th scope="col">Shape-only passes</th><th scope="col">Full-gate passes</th></tr></thead><tbody>{''.join(rows)}</tbody></table></div></details>'''
+
+
+def appendix_section(report):
+    key = report["id"]
+    data = copy_data(key + ".json", report)
+    figures = report.get("figures", [])
+    leading = [f for f in figures if Path(f["file"]).stem in ("t07_plan", "t07_isosurface")]
+    rest = [f for f in figures if f not in leading]
+    body = "".join(figure(key, f) for f in leading)
+    if rest:
+        body += "<details class='more-figures'><summary>Earlier comparisons and additional renderings <span aria-hidden='true'>+</span></summary><div class='additional-figures'>" + "".join(figure(key, f) for f in rest) + "</div></details>"
+    return f'''<section class="section appendix" id="appendix"><div class="wrap"><div class="section-heading"><span class="section-number">APPENDIX / ILLUSTRATION</span><h2>A constructed example,<br>with a narrower role.</h2><p>The former T7 is retained for transparency. Eight bright surface points and presentation settings were deliberately chosen. The eight-point arrangement and the roughly 630 m displayed extent are inputs to this illustration, not independent predictions about Khafre. See <a href="#t07_surface_controls">the paired T7 controls</a> for measured effects before smoothing.</p></div><details class="support-detail" id="{key}"><summary>Illustration: surface points and rendering choices <span aria-hidden="true">+</span></summary><div class="detail-inner"><p class="finding">{esc(report['finding'])}</p><div class="scope"><strong>Illustrative scope</strong><p>{esc(report['limitations'])}</p></div>{body}<p class="source-note">Published comparison images belong to the Khafre Research Project. <a href="{REPO_URL}/blob/main/results/t07_wells/published/CREDITS.md">Image sources &amp; credits</a>. These renderings do not establish how the published features were produced.</p><details class="technical"><summary>Illustration settings and archived numbers <span aria-hidden="true">+</span></summary><p>{esc(report['method'])}</p>{metrics_table(report['metrics'])}<p class="resource-links"><a href="{REPO_URL}/blob/main/experiments/t07_wells.py">Illustration code ↗</a><a href="{data}" download>Illustration results ↓</a></p></details></div></details></div></section>'''
 
 
 def support_figure(stem, caption, alt):
@@ -157,7 +185,9 @@ def robustness_section(data):
 
 def build():
     DOCS.mkdir(exist_ok=True)
-    tests = sorted([refine_summary(json_report(path)) for path in RESULTS.glob("t*/summary.json")], key=lambda x: x["order"])
+    reports = [refine_summary(json_report(path)) for path in RESULTS.glob("t*/summary.json")]
+    tests = sorted([report for report in reports if report.get("role") != "illustration"], key=lambda x: x["order"])
+    illustrations = [report for report in reports if report.get("role") == "illustration"]
     controls = json_report(RESULTS / "feasibility" / "metrics.json")
     robustness = json_report(RESULTS / "robustness" / "metrics.json")
     overview = RESULTS / "overview" / "overview.png"
@@ -178,7 +208,8 @@ def build():
     template = Template((ROOT / "site" / "page.html").read_text())
     page = template.substitute(updated=updated, hero=hero, hero_src=hero_src, count=len(tests),
                                experiments=sections, controls=controls_section(controls),
-                               robustness=robustness_section(robustness), downloads=downloads, versions=versions)
+                               robustness=robustness_section(robustness), downloads=downloads, versions=versions,
+                               appendix="".join(appendix_section(report) for report in illustrations))
     (DOCS / "index.html").write_text(page)
     print(f"Built docs/index.html: {len(tests)} scene experiments, supporting controls, robustness checks")
 

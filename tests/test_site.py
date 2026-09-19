@@ -11,12 +11,17 @@ class Page(HTMLParser):
     def __init__(self, text):
         super().__init__()
         self.ids, self.references, self.images = [], [], []
+        self.experiments, self.details = [], {}
         self.feed(text)
 
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
         if "id" in attrs:
             self.ids.append(attrs["id"])
+            if "experiment" in attrs.get("class", "").split():
+                self.experiments.append(attrs["id"])
+            if tag == "details":
+                self.details[attrs["id"]] = attrs
         for name in ("href", "src"):
             if attrs.get(name):
                 self.references.append(attrs[name])
@@ -61,3 +66,14 @@ def test_site_fonts_are_packaged_with_their_licenses():
     for font, license in (("newsreader.ttf", "Newsreader-LICENSE.txt"), ("ibm-plex-mono.ttf", "IBMPlexMono-LICENSE.txt")):
         assert (build_site.DOCS / "fonts" / font).stat().st_size > 10_000
         assert "SIL OPEN FONT LICENSE" in (build_site.DOCS / "fonts" / license).read_text()
+
+
+def test_constructed_illustration_is_separate_from_numbered_experiments():
+    page = Page((build_site.DOCS / "index.html").read_text())
+    assert set(page.experiments) == set(build_site.EXPERIMENTS)
+    assert len(page.experiments) == 7
+    assert "t07_surface_controls" in page.experiments
+    assert "t07_wells" in page.details
+    assert "t07_wells" not in page.experiments
+    archived = json.loads((build_site.DOCS / "data" / "t07_wells.json").read_text())
+    assert archived["role"] == "illustration"

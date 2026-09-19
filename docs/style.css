@@ -130,6 +130,8 @@ td{font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
 .technical>p{font-size:14px;margin-top:15px}
 .resource-links{display:flex;gap:24px;flex-wrap:wrap;font-family:var(--mono);font-size:11px!important}
 .source-note,.study-footnote{font-size:12px;line-height:1.8;max-width:880px;margin:24px 0;color:var(--muted)}
+.appendix{border-top:1px solid var(--rule)}
+.appendix .support-detail{scroll-margin-top:85px}
 .robustness{border:1px solid var(--rule);background:var(--soft);margin-top:35px}
 .robustness>summary{display:flex;justify-content:space-between;align-items:center;gap:22px;padding:25px 30px}
 .robustness strong{display:block;font-family:var(--serif);font-size:26px;line-height:1.3;font-weight:400;margin-top:8px}

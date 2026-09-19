@@ -22,6 +22,13 @@ Run the small supporting studies independently:
 .venv/bin/python build_site.py
 ```
 
+Run the paired T7 surface-target comparison (13 scenes; several minutes):
+
+```bash
+.venv/bin/python experiments/t07_surface_controls.py
+.venv/bin/python build_site.py
+```
+
 Run every scene experiment, supporting control, overview figure, and the site build:
 
 ```bash
@@ -33,7 +40,9 @@ The two full scene analyses take several minutes each. Other controls are smalle
 ## Contents
 
 - `sarsim/`: radar geometry, scenes, focused-image synthesis, sub-apertures, patch registration, and two focusing formulations.
-- `experiments/t01_*` through `t07_*`: stationary pyramid, desert, spacing mechanism, parameter sensitivity, imposed vibration, selection gates, and column renderings.
+- `experiments/t01_*` through `t06_*`: stationary pyramid, desert, spacing mechanism, parameter sensitivity, imposed vibration, and selection gates.
+- `experiments/t07_surface_controls.py`: one fixed pyramid with no added points, the original eight-point layout, and three seeded random perimeter layouts. Three prescribed strength settings give 13 scenes. Paired measurements use unsmoothed power at identical pixels, a fixed depth scale, shared display references, and the T6 acceptance gate on every grid trajectory. Per-point design and measurements, scene summaries, and all settings are committed and downloadable.
+- `experiments/t07_wells.py`: the former T7, now an explicitly illustrative appendix. Hand-placed points, depth rescaling, smoothing and chosen isosurfaces produce renderings; these do not explain the Khafre observations. The legacy filename and page anchor remain usable. The all-experiments runner also regenerates this appendix.
 - `experiments/feasibility.py`: ideal pulse receiver, shear-wave cavity model, AI site-confounding controls, and a same-input phase-versus-translation check. Adapted from the supplied `SAR-Voids-Quick-Experiments.zip`; the script is self-contained and does not require private inputs.
 - `experiments/robustness.py`: 40 two-scatterer runs, wavelength rescaling, and positive/null controls for the permutation statistic.
 - `experiments/overview.py`: opening figure from the scene arrays.
@@ -51,6 +60,8 @@ Scene cache keys include scatterer data, geometry, image content and numerical s
 The cavity-wave and radar-receiver models are **not coupled**. The wave amplitude is uncalibrated; the receiver imposes its own amplitudes. The AI controls are artificial datasets, not trained satellite classifiers. No real satellite scene or surveyed void labels were processed in these new controls.
 
 In T6, the shape-only gate passes some static pixels, while the implemented full gate accepts none at the tested scale. T5's response relative to a known static baseline is not a calibrated detection limit. The page reports these distinctions explicitly.
+
+T7 is a paired sensitivity study of this reconstruction, not an independent replication of Khafre. Its 13 scenes share one background; strength variants reuse the same points and phases. The three random layouts and their relative amplitudes are chosen by fixed seeds before inspecting outputs. Added points are ideal isotropic targets without terrain shadowing or an object-specific scattering model. The measured power response is separate from acceptance by the implemented gate. No published column count, depth, or shape is predicted by these controls.
 
 To add an experiment, save `results/<id>/summary.json` with `id`, `order`, `title`, `question`, `finding`, `limitations`, `method`, `figures`, and `metrics`. Figure paths are relative to the repository. Add its short label and leading figures to `EXPERIMENTS` in `build_site.py`. Update report language in `experiments/reporting.py` where needed, then rebuild.
 

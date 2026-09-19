@@ -64,9 +64,13 @@ def refine_summary(summary):
         captions["t06_permutation"] = "<b>Check all parts of a gate.</b> True and shuffled score distributions, permutation rejection rates, and shape-only acceptance. The right panel excludes the amplitude floor. With that floor included, the implemented full gate accepts none of the sampled static pixels."
     elif t == "t07_wells":
         summary.update(
-            title="Surface features produce columns with a shared display floor",
+            role="illustration",
+            tag="illustration",
+            eyebrow="Appendix · Constructed rendering",
+            title="Illustration: surface points and rendering choices",
+            question="What can an intentionally constructed surface scene look like after depth smoothing and chosen display settings?",
             finding=f"In this constructed scene, dominant point scatterers produce dark columns ({m['power_ratio_point_wells_vs_desert']:.2f} times desert power), while mixed face edges produce bright bands ({m['power_ratio_bright_bands_vs_desert']:.2f} times desert power). The displayed volume ends at {m['depth_axis_max_m_paper']:.1f} model-metres, or {m['depth_axis_max_m_slides']:.1f} m after a chosen wavelength rescaling.",
-            limitations="Bright points are placed by hand, and smoothing and display thresholds are chosen for illustration. Visual resemblance cannot establish how the published images were produced or identify the cause of their features. The simulation neither reproduces nor measures spiral ramps, and its rung spacings do not cleanly follow a single course period.",
+            limitations="Eight bright points are placed by hand. The 2.2 m wavelength, smoothing and display thresholds are chosen for illustration. This example does not apply T6's acceptance gate. Neither the point count nor the roughly 630 m display floor is an independent prediction. Visual resemblance does not establish the origin of the Khafre features, validate the surface targets' realism, or reproduce the original processing. This illustration neither reproduces nor measures spiral ramps.",
         )
         captions["t07_compare"] = "<b>Published and synthetic images.</b> Left: a Khafre Research Project slide, reproduced at reduced size for critique; copyright its authors. Right: a synthetic slice with no buried objects, using a similar display style. Resemblance is an illustration, not a reproduction of the original data or proof of its origin."
         captions["t07_plan"] = "<b>The constructed scene and its power map.</b> Eight added point scatterers are circled in the input. Dominant points produce dark patches; mixed face edges produce bright bands. The dashed line marks a transect. Locations and display settings were chosen for this illustration."
@@ -74,6 +78,7 @@ def refine_summary(summary):
         captions["khafre_cad_ramps"] = "<b>Published interpretation.</b> A CAD illustration of cylinders and spiral ramps beneath a wireframe pyramid. The illustration is distinct from a measured radar image. Reproduced at reduced size for critique; copyright the Khafre Research Project."
         captions["khafre_cad_coils"] = "<b>Another published CAD view.</b> Cylinders, coils, and basal blocks depict the project's interpretation. Their shapes and depths are not independently validated here. Reproduced at reduced size for critique; copyright the Khafre Research Project."
         captions["t07_isosurface"] = "<b>A rendering of the synthetic volume.</b> Low-power regions (blue) and high-power regions (orange) appear as columns or walls after smoothing along depth. Their common lower boundary is the end of this computed volume. Isosurface shape depends on the chosen threshold and smoothing."
+        captions["t07_rungs"] = "<b>Spectra in selected regions of the constructed scene.</b> The comb fits differ across regions and do not cleanly follow one course spacing. This comparison does not measure or explain a published spiral structure."
     for figure in summary.get("figures", []):
         stem = Path(figure["file"]).stem
         if stem in captions:
