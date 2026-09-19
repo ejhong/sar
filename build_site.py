@@ -13,10 +13,10 @@ DECK = ("A reproducible test of the single-image “SAR Doppler tomography” be
         "Every figure here comes from code in the repository and reruns in minutes on a laptop.")
 
 PLANNED = [
-    ("07 · Real data", "The ICEYE Dwell scene of Giza", "Run the identical pipeline on a 25-second ICEYE Dwell Fine acquisition (27 Aug 2025): Khafre versus empty plateau versus the Sphinx versus Cairo apartment blocks, with the same statistics as T1 and T2."),
-    ("08 · Known chambers", "Positive control inside Khufu", "The King's and Queen's chambers and the Grand Gallery sit at surveyed positions. A method that maps 648 m wells should locate 10 m rooms 40 m up. Score the tomograms against the survey, against chance."),
-    ("09 · Cross-geometry", "Ascending versus descending", "Real subsurface architecture is fixed in the ground. Compare tomograms from two headings; T3 predicts the features will move by the projected-spacing law."),
-    ("10 · Learned null", "A classifier that cannot tell", "Train a small discriminator on tomograms from simulated static scenes versus the real pyramid; an AUC near 0.5 is the machine-learning form of T2."),
+    ("08 · Real data", "The ICEYE Dwell scene of Giza", "Run the identical pipeline on a 25-second ICEYE Dwell Fine acquisition (27 Aug 2025): Khafre versus empty plateau versus the Sphinx versus Cairo apartment blocks, with the same statistics as T1 and T2."),
+    ("09 · Known chambers", "Positive control inside Khufu", "The King's and Queen's chambers and the Grand Gallery sit at surveyed positions. A method that maps 648 m wells should locate 10 m rooms 40 m up. Score the tomograms against the survey, against chance."),
+    ("10 · Cross-geometry", "Ascending versus descending", "Real subsurface architecture is fixed in the ground. Compare tomograms from two headings; T3 predicts the features will move by the projected-spacing law."),
+    ("11 · Learned null", "A classifier that cannot tell", "Train a small discriminator on tomograms from simulated static scenes versus the real pyramid; an AUC near 0.5 is the machine-learning form of T2."),
 ]
 
 SOURCES = [
@@ -210,7 +210,7 @@ def build():
   <div class="eyebrow">Radar, pyramids &amp; a method under test</div>
   <h1 style="margin-top:14px">{esc(TITLE)}</h1>
   <p class="deck">{esc(DECK)}</p>
-  <div class="verdict"><b>Where this stands.</b> The 2022 paper was retracted in August 2026 for “serious methodological flaws”. The tests here go one step further than the retraction: they show <i>what</i> the method computes and reproduce its characteristic output, layered bands and repeated units at depth, from a scene that contains nothing and never moves. The next phase runs the same code on a real 25-second ICEYE scene of Giza.</div>
+  <div class="verdict"><b>Where this stands.</b> The 2022 paper was retracted in August 2026 for “serious methodological flaws”. The tests here go one step further than the retraction: they show <i>what</i> the method computes and reproduce its characteristic output, layered bands, repeated units and wells that all end at the same floor, from a scene that contains nothing and never moves. The next phase runs the same code on a real 25-second ICEYE scene of Giza.</div>
   <div class="meta"><span><b>Updated</b> {esc(updated)}</span><span><a href="{REPO_URL}">Code, experiments &amp; results</a></span><span><b>Phase</b> simulation complete · real data next</span></div>
 </div></header>
 <nav class="toc" aria-label="On this page"><div class="wrap"><ol>
@@ -218,7 +218,7 @@ def build():
 </ol></div></nav>
 <main id="main">
 <section class="part" id="tests"><div class="wrap">
-  <div class="part-head"><div class="n">Tests</div><h2>Six tests, one verdict</h2></div>
+  <div class="part-head"><div class="n">Tests</div><h2>Seven tests, one verdict</h2></div>
   <div class="prose"><p>Each test keeps its question, finding and limitations together. Tests are numbered in the order they were run; later ones will be added as the real-data phase proceeds and earlier ones stay as run.</p></div>
   <div class="cards">
 {cards}
@@ -231,10 +231,10 @@ def build():
   <div class="prose">
     <p>The simulation phase settles what the method is. The real-data phase asks whether the published Giza results behave like the simulation, using an ICEYE X33 Dwell Fine scene acquired on 27 August 2025 (25 s illumination, 600 MHz bandwidth, SLC of 9.8 GB, with ICEYE's own colour sub-aperture and SAR-video products as a zero-code check of how strongly the pyramid's scattering changes with look angle).</p>
     <ul>
-      <li>Same pipeline, same statistics, on Khafre, empty plateau, Sphinx and Cairo housing (T7).</li>
-      <li>Positive control against the surveyed chambers of Khufu (T8).</li>
-      <li>Two headings, one ground: do the features move as T3 predicts (T9)?</li>
-      <li>A discriminator trained to tell real from simulated tomograms (T10).</li>
+      <li>Same pipeline, same statistics, on Khafre, empty plateau, Sphinx and Cairo housing (T8).</li>
+      <li>Positive control against the surveyed chambers of Khufu (T9).</li>
+      <li>Two headings, one ground: do the features move as T3 predicts (T10)?</li>
+      <li>A discriminator trained to tell real from simulated tomograms (T11).</li>
     </ul>
     <p>Anyone can rerun everything: <code>pip install -r requirements.txt</code>, then <code>python experiments/t01_static_pyramid.py</code> and so on, then <code>python build_site.py</code>.</p>
   </div>

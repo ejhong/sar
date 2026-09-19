@@ -1,0 +1,65 @@
+{
+  "id": "t07_wells",
+  "order": 7,
+  "tag": "artifact",
+  "eyebrow": "07 \u00b7 The wells",
+  "title": "Wells that all reach the same floor, from the corners and edges of a static pyramid",
+  "question": "Can the specific published imagery, vertical wells with rungs descending to a common floor, come out of a scene with nothing underneath?",
+  "finding": "Yes. A vertical column one patch wide (8 m) hangs under every compact or edge-like surface feature and runs to the bottom of the depth axis, which is the Nyquist limit of the sweep and therefore the same floor for all of them; declaring a sound wavelength of 2.2 m puts that floor at 630 m. Under an isolated bright point the column is dark (0.20 of the desert's power), because the dominant scatterer pins the patch's shift near zero; along the upper edges of the laid-over near face, where two faces' masonry share pixels, it is bright and banded by rungs whose depths differ from place to place. Rungs, not spirals: the spiral ramps exist only in the published CAD drawing.",
+  "limitations": "The bright points are placed by hand at plausible positions; on the real plateau their locations would be set by real corners, temples and modern objects. Whether a real feature reads as a bright or a dark column depends on how strongly it dominates its patch, so the published columns cannot be attributed to a specific surface object without the data.",
+  "method": "T1's pyramid plus eight point scatterers of amplitude 8 at the base corners and mid-edges; paper-variant volume on a 1.25 m grid (36,000 pixels); log-magnitude smoothed with a Gaussian of 1 sample in position and 1.5 in depth; jet colormap and bicubic interpolation to match the published rendering; marching-cubes isosurfaces at the 2nd and 98th percentiles of the volume smoothed along depth.",
+  "figures": [
+    {
+      "file": "/Users/eugene/prj/sar/results/t07_wells/figs/t07_plan.png",
+      "caption": "<b>Wells and walls, in plan.</b> Left: the simulated image, with eight bright point-like scatterers at the base corners and mid-edges of the pyramid (where real monuments have trihedral corners, temple walls and entrances). Right: the total power of the depth volume above each pixel, in the jet colormap of the published slides. Each bright point owns a dark square exactly one patch wide (8 m): a dominant scatterer pins the patch's shift near zero. The two red bands run along the upper edges of the laid-over near face, where its bright course masonry and the laid-over side faces share the same pixels and interfere strongly. The dashed line marks the slice below."
+    },
+    {
+      "file": "/Users/eugene/prj/sar/results/t07_wells/figs/t07_slices.png",
+      "caption": "<b>The columns in section, rendered the published way.</b> Paper-variant magnitude tomograms, smoothed and drawn in jet as in the Khafre slides, with the depth axis stretched to 630 m by declaring \u03bbs = 2.2 m instead of the paper's 0.48 m (right-hand axes). Top: crossing the two bright bands, each hangs a bright, rung-banded column from the surface to the bottom of the axis (dotted). Middle: through the left band. Bottom: through an isolated bright point, which hangs a dark column instead, next to the bright column of the band that ends at that corner. Nothing under the surface differs between these places; the columns end where the axis ends, so every column reaches the same floor."
+    },
+    {
+      "file": "/Users/eugene/prj/sar/results/t07_wells/figs/t07_isosurface.png",
+      "caption": "<b>The same volume in three dimensions.</b> Depth downward, the pyramid footprint and the eight bright points drawn at the surface. The volume is smoothed along depth so that the columns read as columns. Blue: the lowest-power voxels, vertical wells under the bright points and under the laid-over interior of the near face. Orange: the highest-power voxels, walls under the two bright bands. Both kinds stop together at the bottom of the axis. The published CAD drawing turned columns like these into smooth cylinders with spiral ramps; the data contain rung-banded columns, square because the patch is, and no spirals."
+    },
+    {
+      "file": "/Users/eugene/prj/sar/results/t07_wells/figs/t07_rungs.png",
+      "caption": "<b>Where the rungs sit.</b> Mean depth spectra of the pixels under the arrises, under the bright points and on open desert, with dotted lines every 7.1 model-metres, the projected course spacing. A harmonic-comb fit gives the spacings in the legend: they differ from region to region and none follows the course spacing cleanly. The rungs are the discrete azimuth separations of whatever scatterers dominate each patch, so every place has its own ladder."
+    }
+  ],
+  "metrics": {
+    "n_bright": 8,
+    "bright_amplitude": 8.0,
+    "grid_pixels": 36288,
+    "depth_axis_max_m_slides": 630.3943462871625,
+    "depth_axis_max_m_paper": 137.5405846444718,
+    "power_ratio_point_wells_vs_desert": 0.2010549157857895,
+    "power_ratio_bright_bands_vs_desert": 4.841829776763916,
+    "rungs": [
+      {
+        "region": "bright bands (walls)",
+        "pixels": 1068,
+        "comb_spacing_m": 8.170426065162907,
+        "comb_score": 1.0746838162272958
+      },
+      {
+        "region": "wells under bright points (dark)",
+        "pixels": 210,
+        "comb_spacing_m": 6.887218045112782,
+        "comb_score": 1.1497783231887102
+      },
+      {
+        "region": "open desert",
+        "pixels": 4104,
+        "comb_spacing_m": 7.7293233082706765,
+        "comb_score": 1.0587759041991218
+      }
+    ],
+    "predicted_course_spacing_depth_m": 7.069903158782965,
+    "isosurface_percentiles": [
+      2.0,
+      98.0
+    ],
+    "runtime_s": 1.8106727600097656
+  },
+  "date": "2026-09-19"
+}

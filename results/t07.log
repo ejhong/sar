@@ -1,0 +1,20 @@
+  synthesized pyramid_rot8_corners: 348721 scatterers in 13s
+  pair 1/50  (3s)
+  pair 11/50  (30s)
+  pair 21/50  (55s)
+  pair 31/50  (80s)
+  pair 41/50  (106s)
+  pair 50/50  (129s)
+wrote /Users/eugene/prj/sar/results/t07_wells/summary.json
+{
+ "n_bright": 8,
+ "bright_amplitude": 8.0,
+ "grid_pixels": 36288,
+ "depth_axis_max_m_slides": 630.3943462871625,
+ "depth_axis_max_m_paper": 137.5405846444718,
+ "rung_comb_spacing_m": 7.7293233082706765,
+ "predicted_course_spacing_depth_m": 7.069903158782965,
+ "comb_score": 1.2174768097977025,
+ "isosurface_percentile": 98.7,
+ "runtime_s": 142.90979480743408
+}

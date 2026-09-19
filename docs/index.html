@@ -21,15 +21,15 @@
   <div class="eyebrow">Radar, pyramids &amp; a method under test</div>
   <h1 style="margin-top:14px">Pillars from Nothing</h1>
   <p class="deck">A reproducible test of the single-image “SAR Doppler tomography” behind the Khafre underground-city claims. A simulated pyramid that never moves, on ground that contains nothing, produces the same kind of structures at depth. Every figure here comes from code in the repository and reruns in minutes on a laptop.</p>
-  <div class="verdict"><b>Where this stands.</b> The 2022 paper was retracted in August 2026 for “serious methodological flaws”. The tests here go one step further than the retraction: they show <i>what</i> the method computes and reproduce its characteristic output, layered bands and repeated units at depth, from a scene that contains nothing and never moves. The next phase runs the same code on a real 25-second ICEYE scene of Giza.</div>
+  <div class="verdict"><b>Where this stands.</b> The 2022 paper was retracted in August 2026 for “serious methodological flaws”. The tests here go one step further than the retraction: they show <i>what</i> the method computes and reproduce its characteristic output, layered bands, repeated units and wells that all end at the same floor, from a scene that contains nothing and never moves. The next phase runs the same code on a real 25-second ICEYE scene of Giza.</div>
   <div class="meta"><span><b>Updated</b> 19 September 2026</span><span><a href="https://github.com/ejhong/sar">Code, experiments &amp; results</a></span><span><b>Phase</b> simulation complete · real data next</span></div>
 </div></header>
 <nav class="toc" aria-label="On this page"><div class="wrap"><ol>
-  <li><a href="#tests">Tests</a></li><li><a href="#method">Method</a></li><li><a href="#t01_static_pyramid">Static scene</a></li><li><a href="#t02_desert_null">Null control</a></li><li><a href="#t03_mechanism">Mechanism</a></li><li><a href="#t04_parameters">Processing choices</a></li><li><a href="#t05_motion">Injected motion</a></li><li><a href="#t06_ordering">Ordering &amp; gates</a></li><li><a href="#roadmap">Roadmap</a></li><li><a href="#sources">Sources</a></li>
+  <li><a href="#tests">Tests</a></li><li><a href="#method">Method</a></li><li><a href="#t01_static_pyramid">Static scene</a></li><li><a href="#t02_desert_null">Null control</a></li><li><a href="#t03_mechanism">Mechanism</a></li><li><a href="#t04_parameters">Processing choices</a></li><li><a href="#t05_motion">Injected motion</a></li><li><a href="#t06_ordering">Ordering &amp; gates</a></li><li><a href="#t07_wells">The wells</a></li><li><a href="#roadmap">Roadmap</a></li><li><a href="#sources">Sources</a></li>
 </ol></div></nav>
 <main id="main">
 <section class="part" id="tests"><div class="wrap">
-  <div class="part-head"><div class="n">Tests</div><h2>Six tests, one verdict</h2></div>
+  <div class="part-head"><div class="n">Tests</div><h2>Seven tests, one verdict</h2></div>
   <div class="prose"><p>Each test keeps its question, finding and limitations together. Tests are numbered in the order they were run; later ones will be added as the real-data phase proceeds and earlier ones stay as run.</p></div>
   <div class="cards">
 <article class="card" id="card-t01_static_pyramid">
@@ -74,27 +74,34 @@
   <p class="question">The replication protocol keeps only pixels whose trajectories trace ordered elliptical loops. Does motionless ground pass, and is there any ordering to find?</p>
   <dl><dt>Finding</dt><dd>There is no ordering: shuffling the 50 sub-apertures leaves the structure scores unchanged, with 5.2% of pyramid pixels and 5.2% of desert pixels &#x27;significant&#x27; at the 5% level, i.e. chance. The protocol&#x27;s shape gate nevertheless passes 10% of pyramid and 9% of desert pixels, and just as many after shuffling. A gate that a shuffled sequence passes as often as the real one selects nothing physical. Real Giza trajectories, if they turn out to be ordered, would be showing something this simulation does not contain, and the first question would be whether empty plateau shows it too.</dd><dt>Limitations</dt><dd>Sixty permutations on 1,500 pixels per scene; the same permutation is applied to all pixels in a replicate. The absolute minor-axis threshold could not be applied meaningfully because trajectory amplitude in pixels depends on the band offset and image size.</dd></dl>
 </article>
+<article class="card" id="card-t07_wells">
+  <span class="tag artifact">artifact</span>
+  <div class="eyebrow" style="margin-top:12px">07 · The wells</div>
+  <h3><a href="#t07_wells">Wells that all reach the same floor, from the corners and edges of a static pyramid</a></h3>
+  <p class="question">Can the specific published imagery, vertical wells with rungs descending to a common floor, come out of a scene with nothing underneath?</p>
+  <dl><dt>Finding</dt><dd>Yes. A vertical column one patch wide (8 m) hangs under every compact or edge-like surface feature and runs to the bottom of the depth axis, which is the Nyquist limit of the sweep and therefore the same floor for all of them; declaring a sound wavelength of 2.2 m puts that floor at 630 m. Under an isolated bright point the column is dark (0.20 of the desert&#x27;s power), because the dominant scatterer pins the patch&#x27;s shift near zero; along the upper edges of the laid-over near face, where two faces&#x27; masonry share pixels, it is bright and banded by rungs whose depths differ from place to place. Rungs, not spirals: the spiral ramps exist only in the published CAD drawing.</dd><dt>Limitations</dt><dd>The bright points are placed by hand at plausible positions; on the real plateau their locations would be set by real corners, temples and modern objects. Whether a real feature reads as a bright or a dark column depends on how strongly it dominates its patch, so the published columns cannot be attributed to a specific surface object without the data.</dd></dl>
+</article>
 <article class="card">
   <span class="tag planned">planned</span>
-  <div class="eyebrow" style="margin-top:12px">07 · Real data</div>
+  <div class="eyebrow" style="margin-top:12px">08 · Real data</div>
   <h3>The ICEYE Dwell scene of Giza</h3>
   <p class="question">Run the identical pipeline on a 25-second ICEYE Dwell Fine acquisition (27 Aug 2025): Khafre versus empty plateau versus the Sphinx versus Cairo apartment blocks, with the same statistics as T1 and T2.</p>
 </article>
 <article class="card">
   <span class="tag planned">planned</span>
-  <div class="eyebrow" style="margin-top:12px">08 · Known chambers</div>
+  <div class="eyebrow" style="margin-top:12px">09 · Known chambers</div>
   <h3>Positive control inside Khufu</h3>
   <p class="question">The King&#x27;s and Queen&#x27;s chambers and the Grand Gallery sit at surveyed positions. A method that maps 648 m wells should locate 10 m rooms 40 m up. Score the tomograms against the survey, against chance.</p>
 </article>
 <article class="card">
   <span class="tag planned">planned</span>
-  <div class="eyebrow" style="margin-top:12px">09 · Cross-geometry</div>
+  <div class="eyebrow" style="margin-top:12px">10 · Cross-geometry</div>
   <h3>Ascending versus descending</h3>
   <p class="question">Real subsurface architecture is fixed in the ground. Compare tomograms from two headings; T3 predicts the features will move by the projected-spacing law.</p>
 </article>
 <article class="card">
   <span class="tag planned">planned</span>
-  <div class="eyebrow" style="margin-top:12px">10 · Learned null</div>
+  <div class="eyebrow" style="margin-top:12px">11 · Learned null</div>
   <h3>A classifier that cannot tell</h3>
   <p class="question">Train a small discriminator on tomograms from simulated static scenes versus the real pyramid; an AUC near 0.5 is the machine-learning form of T2.</p>
 </article>
@@ -192,15 +199,28 @@
   <details><summary class="kicker" style="cursor:pointer">Numbers behind this test</summary><table><tr><th>metric</th><th>value</th></tr><tr><td>frac_perm_significant</td><td>pyramid pixels: 0.052, empty desert: 0.052</td></tr><tr><td>ellipse_shape_gate_pass</td><td>pyramid pixels: 0.099, empty desert: 0.091</td></tr><tr><td>ellipse_shape_gate_pass_shuffled</td><td>pyramid pixels: 0.091, empty desert: 0.085</td></tr><tr><td>ellipse_full_gate_pass</td><td>pyramid pixels: 0, empty desert: 0</td></tr><tr><td>median_minor_axis_px</td><td>pyramid pixels: 0.00042, empty desert: 0.000455</td></tr><tr><td>median_best_ellipse_adjR2</td><td>pyramid pixels: 0.199, empty desert: 0.19</td></tr><tr><td>n_pixels</td><td class='num'>1500</td></tr><tr><td>n_permutations</td><td class='num'>60</td></tr><tr><td>runtime_s</td><td class='num'>33.295</td></tr></table></details>
   <div class="limits" style="margin-top:22px"><div class="label">Limitations</div><div>Sixty permutations on 1,500 pixels per scene; the same permutation is applied to all pixels in a replicate. The absolute minor-axis threshold could not be applied meaningfully because trajectory amplitude in pixels depends on the band offset and image size.</div></div>
 </div></section>
+<section class="part" id="t07_wells"><div class="wrap">
+  <div class="part-head"><div class="n">07 · The wells</div><h2>Wells that all reach the same floor, from the corners and edges of a static pyramid</h2></div>
+  <div class="prose"><p class="lede">Can the specific published imagery, vertical wells with rungs descending to a common floor, come out of a scene with nothing underneath?</p></div>
+  <div class="finding"><div class="label">Finding</div><div>Yes. A vertical column one patch wide (8 m) hangs under every compact or edge-like surface feature and runs to the bottom of the depth axis, which is the Nyquist limit of the sweep and therefore the same floor for all of them; declaring a sound wavelength of 2.2 m puts that floor at 630 m. Under an isolated bright point the column is dark (0.20 of the desert&#x27;s power), because the dominant scatterer pins the patch&#x27;s shift near zero; along the upper edges of the laid-over near face, where two faces&#x27; masonry share pixels, it is bright and banded by rungs whose depths differ from place to place. Rungs, not spirals: the spiral ramps exist only in the published CAD drawing.</div></div>
+  <div class="prose"><p><b>What was run.</b> T1&#x27;s pyramid plus eight point scatterers of amplitude 8 at the base corners and mid-edges; paper-variant volume on a 1.25 m grid (36,000 pixels); log-magnitude smoothed with a Gaussian of 1 sample in position and 1.5 in depth; jet colormap and bicubic interpolation to match the published rendering; marching-cubes isosurfaces at the 2nd and 98th percentiles of the volume smoothed along depth.</p></div>
+  <figure class="wide"><div class="frame"><img src="figs/t07_wells/t07_plan.jpg" alt="" loading="lazy"></div><figcaption><b>Wells and walls, in plan.</b> Left: the simulated image, with eight bright point-like scatterers at the base corners and mid-edges of the pyramid (where real monuments have trihedral corners, temple walls and entrances). Right: the total power of the depth volume above each pixel, in the jet colormap of the published slides. Each bright point owns a dark square exactly one patch wide (8 m): a dominant scatterer pins the patch's shift near zero. The two red bands run along the upper edges of the laid-over near face, where its bright course masonry and the laid-over side faces share the same pixels and interfere strongly. The dashed line marks the slice below.</figcaption></figure>
+<figure class="wide"><div class="frame"><img src="figs/t07_wells/t07_slices.jpg" alt="" loading="lazy"></div><figcaption><b>The columns in section, rendered the published way.</b> Paper-variant magnitude tomograms, smoothed and drawn in jet as in the Khafre slides, with the depth axis stretched to 630 m by declaring λs = 2.2 m instead of the paper's 0.48 m (right-hand axes). Top: crossing the two bright bands, each hangs a bright, rung-banded column from the surface to the bottom of the axis (dotted). Middle: through the left band. Bottom: through an isolated bright point, which hangs a dark column instead, next to the bright column of the band that ends at that corner. Nothing under the surface differs between these places; the columns end where the axis ends, so every column reaches the same floor.</figcaption></figure>
+<figure class="wide"><div class="frame"><img src="figs/t07_wells/t07_isosurface.jpg" alt="" loading="lazy"></div><figcaption><b>The same volume in three dimensions.</b> Depth downward, the pyramid footprint and the eight bright points drawn at the surface. The volume is smoothed along depth so that the columns read as columns. Blue: the lowest-power voxels, vertical wells under the bright points and under the laid-over interior of the near face. Orange: the highest-power voxels, walls under the two bright bands. Both kinds stop together at the bottom of the axis. The published CAD drawing turned columns like these into smooth cylinders with spiral ramps; the data contain rung-banded columns, square because the patch is, and no spirals.</figcaption></figure>
+<figure class="wide"><div class="frame"><img src="figs/t07_wells/t07_rungs.png" alt="" loading="lazy"></div><figcaption><b>Where the rungs sit.</b> Mean depth spectra of the pixels under the arrises, under the bright points and on open desert, with dotted lines every 7.1 model-metres, the projected course spacing. A harmonic-comb fit gives the spacings in the legend: they differ from region to region and none follows the course spacing cleanly. The rungs are the discrete azimuth separations of whatever scatterers dominate each patch, so every place has its own ladder.</figcaption></figure>
+
+  <details><summary class="kicker" style="cursor:pointer">Numbers behind this test</summary><table><tr><th>metric</th><th>value</th></tr><tr><td>n_bright</td><td class='num'>8</td></tr><tr><td>bright_amplitude</td><td class='num'>8</td></tr><tr><td>grid_pixels</td><td class='num'>36288</td></tr><tr><td>depth_axis_max_m_slides</td><td class='num'>630.394</td></tr><tr><td>depth_axis_max_m_paper</td><td class='num'>137.541</td></tr><tr><td>power_ratio_point_wells_vs_desert</td><td class='num'>0.201</td></tr><tr><td>power_ratio_bright_bands_vs_desert</td><td class='num'>4.842</td></tr><tr><td>rungs</td><td><table><tr><th>region</th><th>pixels</th><th>comb_spacing_m</th><th>comb_score</th></tr><tr><td class='num'>bright bands (walls)</td><td class='num'>1068</td><td class='num'>8.17</td><td class='num'>1.075</td></tr><tr><td class='num'>wells under bright points (dark)</td><td class='num'>210</td><td class='num'>6.887</td><td class='num'>1.15</td></tr><tr><td class='num'>open desert</td><td class='num'>4104</td><td class='num'>7.729</td><td class='num'>1.059</td></tr></table></td></tr><tr><td>predicted_course_spacing_depth_m</td><td class='num'>7.07</td></tr><tr><td>runtime_s</td><td class='num'>1.811</td></tr></table></details>
+  <div class="limits" style="margin-top:22px"><div class="label">Limitations</div><div>The bright points are placed by hand at plausible positions; on the real plateau their locations would be set by real corners, temples and modern objects. Whether a real feature reads as a bright or a dark column depends on how strongly it dominates its patch, so the published columns cannot be attributed to a specific surface object without the data.</div></div>
+</div></section>
 <section class="part" id="roadmap"><div class="wrap">
   <div class="part-head"><div class="n">Roadmap</div><h2>What comes next</h2></div>
   <div class="prose">
     <p>The simulation phase settles what the method is. The real-data phase asks whether the published Giza results behave like the simulation, using an ICEYE X33 Dwell Fine scene acquired on 27 August 2025 (25 s illumination, 600 MHz bandwidth, SLC of 9.8 GB, with ICEYE's own colour sub-aperture and SAR-video products as a zero-code check of how strongly the pyramid's scattering changes with look angle).</p>
     <ul>
-      <li>Same pipeline, same statistics, on Khafre, empty plateau, Sphinx and Cairo housing (T7).</li>
-      <li>Positive control against the surveyed chambers of Khufu (T8).</li>
-      <li>Two headings, one ground: do the features move as T3 predicts (T9)?</li>
-      <li>A discriminator trained to tell real from simulated tomograms (T10).</li>
+      <li>Same pipeline, same statistics, on Khafre, empty plateau, Sphinx and Cairo housing (T8).</li>
+      <li>Positive control against the surveyed chambers of Khufu (T9).</li>
+      <li>Two headings, one ground: do the features move as T3 predicts (T10)?</li>
+      <li>A discriminator trained to tell real from simulated tomograms (T11).</li>
     </ul>
     <p>Anyone can rerun everything: <code>pip install -r requirements.txt</code>, then <code>python experiments/t01_static_pyramid.py</code> and so on, then <code>python build_site.py</code>.</p>
   </div>
