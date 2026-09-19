@@ -1,6 +1,6 @@
 # sar — testing single-image "SAR Doppler tomography"
 
-Simulation and analysis code behind **[Pillars from Nothing](https://ejhong.github.io/sar/)**: a reproducible
+Simulation and analysis code behind **[Doppler Tomography, Tested](https://ejhong.github.io/sar/)**: a reproducible
 test of the single-SLC "Doppler tomography" method used by Biondi & Malanga (2022, retracted 2026) and by the
 2025 Khafre "underground city" announcement.
 

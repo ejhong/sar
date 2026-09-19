@@ -7,7 +7,7 @@ DOCS = os.path.join(ROOT, "docs")
 SITE_URL = "https://ejhong.github.io/sar/"
 REPO_URL = "https://github.com/ejhong/sar"
 
-TITLE = "Pillars from Nothing"
+TITLE = "Doppler Tomography, Tested"
 DECK = ("A reproducible test of the single-image “SAR Doppler tomography” behind the Khafre underground-city claims. "
         "A simulated pyramid that never moves, on ground that contains nothing, produces the same kind of structures at depth. "
         "Every figure here comes from code in the repository and reruns in minutes on a laptop.")
@@ -28,6 +28,8 @@ SOURCES = [
     ("Guizar-Sicairos, Thurman & Fienup 2008, <i>Efficient subpixel image registration algorithms</i>, Optics Letters 33, 156 (the upsampled-DFT registration used for the patch shifts)", "https://doi.org/10.1364/OL.33.000156"),
     ("Peterson 1993, <i>Observations and modeling of seismic background noise</i>, USGS Open-File Report 93-322 (ambient ground-motion levels)", "https://pubs.usgs.gov/publication/ofr93322"),
     ("ICEYE Dwell imaging modes (25 s spotlight collection; CSI and SAR video products)", "https://www.iceye.com/sar-data/imaging-modes/dwell"),
+    ("Khafre Research Project images (March 2025) as reproduced by readmultiplex.com, <i>Below the Giza pyramid plateau</i>, 21 March 2025; shown in T7 at reduced size for comparison and critique", "https://readmultiplex.com/2025/03/21/below-the-giza-pyramid-plateau-new-radar-discoveries-will-shock-the-world/"),
+    ("Khafre Research Project composite slide as reproduced by Türkiye Today, March 2025", "https://www.turkiyetoday.com/culture/innovative-radar-technology-unveils-hidden-chambers-below-gizas-great-pyramids-136092/"),
 ]
 
 

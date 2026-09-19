@@ -99,6 +99,29 @@ def main():
     fig.tight_layout()
     figs.append({"file": viz.finish(fig, f"{fd}/t07_slices.png"), "caption":
                  "<b>The columns in section, rendered the published way.</b> Paper-variant magnitude tomograms, smoothed and drawn in jet as in the Khafre slides, with the depth axis stretched to 630 m by declaring λs = 2.2 m instead of the paper's 0.48 m (right-hand axes). Top: crossing the two bright bands, each hangs a bright, rung-banded column from the surface to the bottom of the axis (dotted). Middle: through the left band. Bottom: through an isolated bright point, which hangs a dark column instead, next to the bright column of the band that ends at that corner. Nothing under the surface differs between these places; the columns end where the axis ends, so every column reaches the same floor."})
+    # ---------- figure 2b: side by side with the published slide
+    PUB = os.path.join(RESULTS, TEST, "published")
+    import matplotlib.image as mpimg
+    pub = mpimg.imread(os.path.join(PUB, "khafre_columns_slide.jpg"))
+    fig, axs = plt.subplots(1, 2, figsize=(13, 4.6), gridspec_kw={"width_ratios": [pub.shape[1] / pub.shape[0], 1.75]})
+    axs[0].imshow(pub); axs[0].set_axis_off()
+    axs[0].set_title("published: Khafre Project tomogram slide, March 2025", loc="left")
+    j1 = int(np.argmin(np.abs(xs - band_x[1])))
+    sl = V[j1, :, :]
+    axs[1].imshow(sl.T, origin="upper", aspect="auto", extent=[rs[0], rs[-1], zs[-1], zs[0]], cmap="jet", interpolation="bicubic",
+                  vmin=np.percentile(V, 3), vmax=np.percentile(V, 99.5))
+    axs[1].set_title(f"simulation: range slice at azimuth {xs[j1]:.0f} m through the right band, static pyramid", loc="left")
+    axs[1].set_xlabel("slant range (m)"); axs[1].set_ylabel("depth as the slides label it (m)")
+    fig.tight_layout()
+    figs.append({"file": viz.finish(fig, f"{fd}/t07_compare.png"), "caption":
+                 "<b>Side by side.</b> Left: one of the tomogram slides released by the Khafre Research Project in March 2025, reproduced at reduced size for comparison (copyright its authors). Right: a slice of the simulated volume through the right-hand bright band, same colormap, same smoothing, same kind of axis. Neither scene needs anything under the ground to look like this."})
+    # ---------- published images: what was shown, and what was drawn from it
+    figs.append({"file": os.path.join(PUB, "khafre_composite_slide.jpg"), "caption":
+                 "<b>Published composite slide.</b> Plan view of the pyramid footprint with circled 'wells', vertical sections with columns, and hand annotations placing Khafre's known chambers (Belzoni's chamber, the lower chamber) on blobs. Reproduced at reduced size for critique; copyright the Khafre Research Project."})
+    figs.append({"file": os.path.join(PUB, "khafre_cad_ramps.jpg"), "caption":
+                 "<b>Published CAD illustration.</b> The eight cylinders with spiral ramps, numbered, under a wireframe pyramid with five stepped structures. This is an interpretation drawn from slides like the ones above, not a data image: the columns' horizontal rungs became coils. Reproduced at reduced size for critique; copyright the Khafre Research Project."})
+    figs.append({"file": os.path.join(PUB, "khafre_cad_coils.jpg"), "caption":
+                 "<b>Published CAD illustration.</b> The same wells drawn as cylinders wrapped in coils, standing on two cubes said to lie at 648 m. The cubes are where the columns end, which in this method is the bottom of the depth axis. Reproduced at reduced size for critique; copyright the Khafre Research Project."})
     # ---------- figure 3: 3-D isosurfaces, bright walls and dark wells
     from skimage import measure
     dx_ = xs[1] - xs[0]; dr_ = rs[1] - rs[0]; dz_ = zs[1] - zs[0]
