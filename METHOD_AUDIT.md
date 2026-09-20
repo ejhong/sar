@@ -106,7 +106,14 @@ such forcing occurs at Khafre or that broadband, constrained inference is imposs
 bounded native-image crops. It supplies no default simulation geometry and makes
 no depth inference. HDF5 I/Q and memory-mappable complex TIFF are supported;
 SICD/NITF uses optional sarpy. Compressed TIFFs require a separate windowed reader.
-No real acquisition has yet been processed in the published results.
+Published depth results remain synthetic. Real Giza and Sacsayhuaman acquisitions
+have passed preliminary metadata and small-sample read checks. The separate
+`scripts/audit_iceye_geometry.py` evaluates native RPC geolocation metadata,
+reports height sensitivity and metadata-coordinate residuals, and checks the
+companion SICD dimensions when supplied. It reads no SAR pixels and establishes
+neither independent landmark registration nor depth accuracy. Historical
+[Giza survey candidates](research/giza_known_voids.md) have been identified;
+qualified field labels and evaluated chamber detections remain pending.
 
 Before field interpretation: verify product metadata and physical aperture
 support, freeze regions and processing, include known motion and static controls,

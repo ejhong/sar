@@ -177,6 +177,15 @@ def build():
             shutil.copyfile(path, DOCS / "data" / ("validation_" + path.name))
     for name in ("method_audit.json", "real_data_plan.json"):
         shutil.copyfile(ROOT / "site" / name, DOCS / "data" / name)
+    geometry_audits = {}
+    for location in ('giza', 'sacsayhuaman'):
+        name = f'{location}_geometry_audit.json'
+        audit = json_report(ROOT / 'research' / name)
+        for source, digest in audit['source_sha256'].items():
+            if hashlib.sha256((ROOT / source).read_bytes()).hexdigest() != digest:
+                raise ValueError(f'Geolocation audit source changed: {source}; rerun scripts/audit_iceye_geometry.py')
+        geometry_audits[location] = audit
+        copy_data(name, audit)
     copy_data("feasibility.json", controls)
     for report in illustrations:
         copy_data(report['id'] + '.json', report)
@@ -187,7 +196,11 @@ def build():
     template = Template((ROOT / "site" / "page.html").read_text())
     page = template.substitute(updated=updated, hero_src=hero_src, count=len(tests),
                                experiments=sections, robustness=robustness_section(robustness),
-                               downloads=downloads, versions=versions, **content)
+                               downloads=downloads, versions=versions,
+                               stylesheet_version=hashlib.sha256((DOCS / 'style.css').read_bytes()).hexdigest()[:12],
+                               giza_height_shift_px=f"{abs(geometry_audits['giza']['center_height_sensitivity'][-1]['sample_shift_px']):.0f}",
+                               giza_height_shift_m=f"{abs(geometry_audits['giza']['center_height_sensitivity'][-1]['approximate_flat_ground_range_shift_m']):.0f}",
+                               **content)
     (DOCS / "index.html").write_text(page)
     print(f"Built docs/index.html: coupled physical benchmarks, method audit, {len(tests)} supporting experiments")
 

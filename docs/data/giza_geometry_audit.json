@@ -1,0 +1,332 @@
+{
+  "schema_version": 1,
+  "filename": "ICEYE_X33_SLC_SLEDF_951562307_20250827T202654.h5",
+  "file_bytes": 10516302418,
+  "raster_samples_read": 0,
+  "native_registration_validated": false,
+  "depth_analysis_ready": false,
+  "source_metadata": {
+    "rpc": {
+      "LINE_OFF": 56316.19245818558,
+      "LINE_SCALE": 67749.05455152079,
+      "SAMP_OFF": 5806.684888824926,
+      "SAMP_SCALE": 18964.80297095438,
+      "LAT_OFF": 29.970170489139296,
+      "LAT_SCALE": 0.031541317264142776,
+      "LONG_OFF": 31.125698615297388,
+      "LONG_SCALE": 0.0362329739987608,
+      "HEIGHT_OFF": 56.50292205810547,
+      "HEIGHT_SCALE": 1985.3182373046875,
+      "LINE_NUM_COEFF": [
+        -0.002227737921190496,
+        -11.203887003017517,
+        56.930234147480434,
+        0.04871946472637202,
+        1.2486568665294415,
+        0.40625828745984105,
+        -2.0599852958269635,
+        -0.2096905478291918,
+        -0.6809541686423652,
+        -0.00177566519493438,
+        -8.772109278321526e-06,
+        0.00018551852786541324,
+        0.00015947676406274453,
+        -3.402104408527886e-07,
+        -0.0001238895056104581,
+        -0.00014445304870563784,
+        -2.741069615679058e-06,
+        -0.000340994675289685,
+        -0.00017705895566948873,
+        5.645086883714665e-07
+      ],
+      "LINE_DEN_COEFF": [
+        49.44332044489059,
+        0.9649657674078237,
+        -0.5914999432969223,
+        -1.804026667853004,
+        0.00014791255348304975,
+        -0.00022753067425360785,
+        3.480593033223601e-05,
+        -4.280652235776322e-05,
+        -0.00012181166094862972,
+        0.0005614814024345763,
+        -7.551301568208061e-10,
+        2.8709984663262577e-08,
+        6.753084144639615e-08,
+        7.169777451584615e-08,
+        -3.365741200319046e-08,
+        -2.931154850002178e-08,
+        -1.2047399140591108e-08,
+        -4.808553635763415e-08,
+        -5.1452243814140134e-08,
+        -1.7576813651831188e-07
+      ],
+      "SAMP_NUM_COEFF": [
+        -0.0007244854371386682,
+        0.3216438597369403,
+        0.06327475044965701,
+        -0.489852714720861,
+        0.0005939817664608795,
+        -0.0016896687117120715,
+        0.0002229713664664549,
+        0.002948380777687534,
+        0.00026988104645689446,
+        0.0032454819912629052,
+        -3.831390771882843e-06,
+        1.411390782792652e-06,
+        -1.4864088323035568e-06,
+        4.6303895048923945e-07,
+        -4.377249294220467e-06,
+        -4.1091828535748713e-07,
+        -6.15575709760881e-07,
+        -1.2839049996525022e-05,
+        -1.9489283164958653e-06,
+        -4.943960878825118e-06
+      ],
+      "SAMP_DEN_COEFF": [
+        0.7689780855251527,
+        0.001118664482240371,
+        -0.0006587115392338394,
+        -0.004925307703898117,
+        7.028523214199744e-07,
+        -1.7948323708242717e-06,
+        5.838414244955113e-07,
+        6.310075494634547e-06,
+        -6.8881136104365e-08,
+        7.193167930451891e-06,
+        -9.381079513340844e-09,
+        -8.825590187619332e-09,
+        -3.004190500656687e-09,
+        -2.32255902489039e-09,
+        -9.799405435568307e-09,
+        1.5711041045835924e-10,
+        -8.205087063489274e-10,
+        -1.1563555317786511e-08,
+        1.6489748924543555e-09,
+        -2.0428979922582418e-10
+      ]
+    },
+    "control_points": {
+      "coord_center": [
+        5782.0,
+        56847.0,
+        29.97042000000154,
+        31.125890000000005
+      ],
+      "coord_first_near": [
+        1.0,
+        1.0,
+        29.94393631197936,
+        31.105481043143524
+      ],
+      "coord_first_far": [
+        11562.0,
+        1.0,
+        29.952641643819955,
+        31.156296094954023
+      ],
+      "coord_last_near": [
+        1.0,
+        113692.0,
+        29.988190143983473,
+        31.095468769951292
+      ],
+      "coord_last_far": [
+        11562.0,
+        113692.0,
+        29.996899276122623,
+        31.1463054745626
+      ]
+    },
+    "shape": [
+      113692,
+      11562
+    ],
+    "avg_scene_height_m": 71.6567153930664,
+    "incidence_center_deg": 20.805111922042048,
+    "slant_range_spacing_m": 0.15360120656245096,
+    "data_orientation": "native",
+    "geo_ref_system": "WGS84"
+  },
+  "signed_image_scales": {},
+  "source_metadata_sha256": "2def90b1fedf700a1c165526f4b064aa05a0ae709f951857051298075131e586",
+  "hash_scope": "Selected metadata only; not a checksum of the full raster.",
+  "coordinate_convention": "Unadjusted RPC pixel-centre coordinates; coord_* indices converted from one based for residuals.",
+  "height_assumption": "Average scene ellipsoidal height at every metadata point; per-point terrain height is unverified.",
+  "control_point_checks": [
+    {
+      "name": "coord_center",
+      "latitude": 29.97042000000154,
+      "longitude": 31.125890000000005,
+      "metadata_row_col_one_based": [
+        56847.0,
+        5782.0
+      ],
+      "rpc_line_sample": [
+        56849.65001931217,
+        5750.852707690971
+      ],
+      "residual_to_zero_based_metadata_px": [
+        3.650019312168297,
+        -30.14729230902867
+      ],
+      "height_plus_10m_shift_px": [
+        0.33653788865194656,
+        -60.85067411575801
+      ]
+    },
+    {
+      "name": "coord_first_near",
+      "latitude": 29.94393631197936,
+      "longitude": 31.105481043143524,
+      "metadata_row_col_one_based": [
+        1.0,
+        1.0
+      ],
+      "rpc_line_sample": [
+        3.625753236730816,
+        5.822286544840608
+      ],
+      "residual_to_zero_based_metadata_px": [
+        3.625753236730816,
+        5.822286544840608
+      ],
+      "height_plus_10m_shift_px": [
+        0.24696013412903994,
+        -60.94784088989036
+      ]
+    },
+    {
+      "name": "coord_first_far",
+      "latitude": 29.952641643819955,
+      "longitude": 31.156296094954023,
+      "metadata_row_col_one_based": [
+        1.0,
+        11562.0
+      ],
+      "rpc_line_sample": [
+        3.6257862817219575,
+        11565.315344390074
+      ],
+      "residual_to_zero_based_metadata_px": [
+        3.6257862817219575,
+        4.315344390073733
+      ],
+      "height_plus_10m_shift_px": [
+        0.24714608180511277,
+        -60.75193365117593
+      ]
+    },
+    {
+      "name": "coord_last_near",
+      "latitude": 29.988190143983473,
+      "longitude": 31.095468769951292,
+      "metadata_row_col_one_based": [
+        113692.0,
+        1.0
+      ],
+      "rpc_line_sample": [
+        113694.608255636,
+        5.809831007797584
+      ],
+      "residual_to_zero_based_metadata_px": [
+        3.6082556360051967,
+        5.809831007797584
+      ],
+      "height_plus_10m_shift_px": [
+        0.4259274771757191,
+        -60.948617479797576
+      ]
+    },
+    {
+      "name": "coord_last_far",
+      "latitude": 29.996899276122623,
+      "longitude": 31.1463054745626,
+      "metadata_row_col_one_based": [
+        113692.0,
+        11562.0
+      ],
+      "rpc_line_sample": [
+        113694.60816606155,
+        11565.325721256542
+      ],
+      "residual_to_zero_based_metadata_px": [
+        3.6081660615454894,
+        4.325721256542238
+      ],
+      "height_plus_10m_shift_px": [
+        0.42611334487446584,
+        -60.75270763091066
+      ]
+    }
+  ],
+  "center_height_sensitivity": [
+    {
+      "height_change_m": -10,
+      "line_shift_px": -0.3365379575188854,
+      "sample_shift_px": 60.85080924318754,
+      "approximate_flat_ground_range_shift_m": 26.31478388552627
+    },
+    {
+      "height_change_m": -5,
+      "line_shift_px": -0.1682689701556228,
+      "sample_shift_px": 30.425387731054798,
+      "approximate_flat_ground_range_shift_m": 13.157384638490797
+    },
+    {
+      "height_change_m": -1,
+      "line_shift_px": -0.03365379265596857,
+      "sample_shift_px": 6.085074843687835,
+      "approximate_flat_ground_range_shift_m": 2.6314757589986324
+    },
+    {
+      "height_change_m": 0,
+      "line_shift_px": 0.0,
+      "sample_shift_px": 0.0,
+      "approximate_flat_ground_range_shift_m": 0.0
+    },
+    {
+      "height_change_m": 1,
+      "line_shift_px": 0.0336537919647526,
+      "sample_shift_px": -6.085073492412448,
+      "approximate_flat_ground_range_shift_m": -2.6314751746428904
+    },
+    {
+      "height_change_m": 5,
+      "line_shift_px": 0.16826895293343114,
+      "sample_shift_px": -30.425353949197415,
+      "approximate_flat_ground_range_shift_m": -13.157370029609051
+    },
+    {
+      "height_change_m": 10,
+      "line_shift_px": 0.33653788865194656,
+      "sample_shift_px": -60.85067411575801,
+      "approximate_flat_ground_range_shift_m": -26.31472544999929
+    }
+  ],
+  "interpretation": "Metadata consistency and projection sensitivity only. No landmark registration, motion measurement or subsurface detection.",
+  "next_requirements": [
+    "Verify independent surface landmarks and their WGS84 ellipsoidal heights.",
+    "Resolve residual offsets, terrain assumptions and pixel conventions without fitting to buried targets.",
+    "Register survey plans and their depth datums, with uncertainty and acquisition-date cavity state.",
+    "Validate aperture timing and support separately before any motion-to-depth calculation."
+  ],
+  "references": [
+    "https://sar.iceye.com/6.0.0/productFormats/metadata/",
+    "https://gdal.org/en/stable/development/rfc/rfc22_rpc.html"
+  ],
+  "companion_sicd": {
+    "filename": "ICEYE_X33_SICD_SLEDF_951562307_20250827T202654.xml",
+    "shape": [
+      11558,
+      113620
+    ],
+    "sha256": "47e5c76b3ed8d177b9b7477f0418e779199a30b1718c570ccfbcd257a82cd660",
+    "transposed_shape_matches_native": false,
+    "interpretation": "Dimension check only; even equal dimensions would not establish a coordinate transform."
+  },
+  "source_sha256": {
+    "sarsim/geolocation.py": "8996079183e8c8c977ac6c5d3044ab804f9bdd0f51e294dc7807a48f32261824",
+    "scripts/audit_iceye_geometry.py": "5aa7f5e5720d65c3f73d40cf9e08782fcc8aa67bac861f6d82e1e62693f6e6a4"
+  }
+}

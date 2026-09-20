@@ -8,8 +8,9 @@ The new physical suite connects a buried cavity to a wavefield, complex radar
 measurement and depth estimator. It finds conditional recovery under favorable
 assumptions, poor recovery at lower SNR, and false alarms under model mismatch.
 It also evaluates the reconstructed patch-shift method and surface artifacts.
-**No real pyramid acquisition or independently surveyed column geometry has yet
-been processed.** See [METHOD_AUDIT.md](METHOD_AUDIT.md) for the distinction
+**Published depth results are still simulations.** Real Giza and Sacsayhuaman
+files have passed preliminary metadata and small-sample checks; no field depth
+reconstruction has been validated. See [METHOD_AUDIT.md](METHOD_AUDIT.md) for the distinction
 between original publications, the public derivative protocol and this code.
 
 ## Run
@@ -85,6 +86,20 @@ correlation. The physical SH model tests one polarization; gate rejection of
 those signals is not a universal result about all elastic-wave polarizations.
 
 ## Large real SAR files
+
+The current originals are stored at `~/tmp/sar/`, outside the repository and
+verified as excluded from Time Machine. This home-directory folder is distinct
+from the system's temporary `/tmp`. Measured Giza shaft/chamber references and
+the proposed comparison are recorded in
+[Giza surveyed-void candidates](research/giza_known_voids.md).
+
+Native geolocation now has a separate, metadata-only
+[audit command](scripts/audit_iceye_geometry.py) and reproducible reports for
+[Giza](research/giza_geometry_audit.json) and
+[Sacsayhuaman](research/sacsayhuaman_geometry_audit.json). These expose terrain
+height sensitivity and metadata alignment differences; they do not certify
+target placement or compute depth. The next milestone is an independently
+checked survey-to-image overlay, followed by a fixed known-void comparison.
 
 Keep files where they are. Metadata inspection does not load the raster:
 

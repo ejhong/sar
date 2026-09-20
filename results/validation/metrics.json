@@ -2310,11 +2310,12 @@
     ],
     "method": "Independent band-limited speckle, with/without ideal static points; 7 target patches per image. Separate 10-sample flanks 48 px from the target strip, per-side geometric median, W25 per-window gating. No permutation of correlated looks. The scene is the independent unit; gate acceptance is not a validated cavity detector."
   },
-  "elapsed_seconds": 13.50607162504457,
+  "elapsed_seconds": 10.32413495797664,
   "source_sha256": {
     "experiments/validation.py": "8952b811ff4b21344a029a5a0e66faf3ff257a97208469183d279b981a464a4c",
     "sarsim/__init__.py": "ea5d8f4fb6ecc1134a5d2dff69b9e5d2a23022c451a4fbaaf7f904db8f3535c5",
     "sarsim/gates.py": "d8addb7712726406eb4a9992541197bf1875f07a818afb81f5abd31e6bf27140",
+    "sarsim/geolocation.py": "8996079183e8c8c977ac6c5d3044ab804f9bdd0f51e294dc7807a48f32261824",
     "sarsim/geometry.py": "9e571084415f68b9b777ed31bba192e32d7cfe9ab3e25782b8c848f7fbfb478d",
     "sarsim/iceye.py": "8c0623ab222442e1b1183eafac9a62c0fc9f59113b9044b3e760026a0616c0a5",
     "sarsim/measurement.py": "daaf198cfaae7800c22c4414dbf4e0e2358747fe08b8e7725ef813e45c069ab1",

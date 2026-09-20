@@ -47,6 +47,7 @@ const screenshot = async name => {
 };
 try {
   await send('Page.enable'); await send('Runtime.enable'); await send('Network.enable');
+  await send('Network.setCacheDisabled', {cacheDisabled:true});
   await send('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});
   await send('Page.navigate',{url});
   await until("document.readyState === 'complete'");
@@ -111,6 +112,10 @@ try {
     await screenshot(`scenarios-${width}`);
     await evaluate("document.querySelector('#t07_surface_controls').open=true; document.querySelector('#t07_surface_controls').scrollIntoView({behavior:'instant',block:'start'})");
     await screenshot(`t7-${width}`);
+    await evaluate("document.querySelector('#field').scrollIntoView({behavior:'instant',block:'start'})");
+    await screenshot(`field-${width}`);
+    await evaluate("document.querySelector('.survey-candidates').scrollIntoView({behavior:'instant',block:'center'})");
+    await screenshot(`survey-candidates-${width}`);
   }
   assert.deepEqual(errors,[]);
   console.log(JSON.stringify({passed:true,widths:[1440,768,390,320],checks:['saved SNR scenarios and false alarms','slider input and keyboard','reset','deep link','figure dialog and Escape','expand/collapse','seven supporting experiments','legacy T7 opens archive note without renderings','JSON and CSV downloads','all images decode','no overflow with all details open','no browser or HTTP errors'],screenshots:screenshotDir},null,2));
