@@ -1,0 +1,137 @@
+{
+  "version": 1,
+  "source": "http://www.dashfoundation.org/downloads/archaeology/survey/GDFS-2012-for-GE-21vii18.kmz",
+  "source_sha256": "b34c0775674d8a1669373de1ecc37fbe97b30fe08aea43d9edff40a85d4d44da",
+  "reference": "http://www.dashfoundation.org/Surveys-at-Giza.htm",
+  "geoid": {
+    "model": "NGA EGM96, 15 arc-minute grid; PROJ conversion",
+    "source": "https://cdn.proj.org/us_nga_egm96_15.tif",
+    "source_sha256": "db493027562c9b004d7220fa881f5603adada4e1c5029b933fa7de4547b0e78d",
+    "west_deg": 31.0,
+    "north_deg": 30.0,
+    "spacing_deg": 0.25,
+    "values_m": [
+      [
+        15.500015258789062,
+        15.427773475646973
+      ],
+      [
+        15.383954048156738,
+        15.459442138671875
+      ]
+    ],
+    "convention": "Grid nodes are pixel points. Ellipsoidal h = published MSL H + geoid N. This does not establish the GPMP vertical datum tie to EGM96.",
+    "references": [
+      "https://raw.githubusercontent.com/OSGeo/PROJ-data/master/us_nga/us_nga_README.txt",
+      "https://geographiclib.sourceforge.io/C++/doc/geoid.html"
+    ]
+  },
+  "selection": "13 nearby surface points with elevations: mastaba ground lines, subsidiary pyramid casing and temple corners. Original descriptions, including Maybe, retained. They are candidate landmarks, not accepted radar correspondences.",
+  "registration_validated": false,
+  "points": [
+    {
+      "id": "31825",
+      "description": "Southeast corner of G7540_Down line",
+      "latitude": 29.97744423,
+      "longitude": 31.13784735,
+      "orthometric_height_m": 48.441,
+      "observed_native_row_col": null
+    },
+    {
+      "id": "31827",
+      "description": "Southwest corner G7540_Down line",
+      "latitude": 29.97744179,
+      "longitude": 31.13763253,
+      "orthometric_height_m": 49.41,
+      "observed_native_row_col": null
+    },
+    {
+      "id": "31828",
+      "description": "South of northwest corner G7530_down line",
+      "latitude": 29.97788653,
+      "longitude": 31.13763133,
+      "orthometric_height_m": 51.917,
+      "observed_native_row_col": null
+    },
+    {
+      "id": "31831",
+      "description": "Northeast corner of G7530_Down line",
+      "latitude": 29.97789373,
+      "longitude": 31.13782961,
+      "orthometric_height_m": 51.079,
+      "observed_native_row_col": null
+    },
+    {
+      "id": "31832",
+      "description": "Northeast corner of G7530_Down line",
+      "latitude": 29.97789468,
+      "longitude": 31.13783123,
+      "orthometric_height_m": 50.576,
+      "observed_native_row_col": null
+    },
+    {
+      "id": "35802",
+      "description": "Maybe NE corner of GI-b casing",
+      "latitude": 29.97856478,
+      "longitude": 31.13645979,
+      "orthometric_height_m": 57.741,
+      "observed_native_row_col": null
+    },
+    {
+      "id": "35810",
+      "description": "Maybe SE corner of GI-b casing",
+      "latitude": 29.97812017,
+      "longitude": 31.13646936,
+      "orthometric_height_m": 56.77,
+      "observed_native_row_col": null
+    },
+    {
+      "id": "35822",
+      "description": "Line of casing east side of GI-a",
+      "latitude": 29.97876208,
+      "longitude": 31.13645693000001,
+      "orthometric_height_m": 57.993,
+      "observed_native_row_col": null
+    },
+    {
+      "id": "35826",
+      "description": "Line of casing east side of GI-a",
+      "latitude": 29.97892651,
+      "longitude": 31.13645366,
+      "orthometric_height_m": 58.288,
+      "observed_native_row_col": null
+    },
+    {
+      "id": "35827",
+      "description": "Maybe NW corner of GI-a temple",
+      "latitude": 29.97894486,
+      "longitude": 31.13645519,
+      "orthometric_height_m": 58.408,
+      "observed_native_row_col": null
+    },
+    {
+      "id": "35828",
+      "description": "Maybe NE corner of GI-a temple",
+      "latitude": 29.97894282,
+      "longitude": 31.13651894,
+      "orthometric_height_m": 58.291,
+      "observed_native_row_col": null
+    },
+    {
+      "id": "35829",
+      "description": "Maybe SE corner of GI-a temple",
+      "latitude": 29.97879703,
+      "longitude": 31.13652412,
+      "orthometric_height_m": 58.147,
+      "observed_native_row_col": null
+    },
+    {
+      "id": "35830",
+      "description": "Maybe SW corner of GI-a temple",
+      "latitude": 29.97879805,
+      "longitude": 31.13645992,
+      "orthometric_height_m": 58.169,
+      "observed_native_row_col": null
+    }
+  ]
+}

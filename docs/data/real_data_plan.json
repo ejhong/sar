@@ -1,23 +1,123 @@
 {
-  "version": 2,
-  "status": "Giza and Sacsayhuaman complex files inspected; native registration and field depth evaluation pending",
+  "version": 3,
+  "status": "Full native I/Q arrays checked; real-image translation and full-row spectral diagnostics published; independent target registration and field depth evaluation pending",
   "inspection_date": "2026-09-20",
   "field_depth_results": 0,
   "acquisitions": [
-    {"site": "Giza", "filename": "ICEYE_X33_SLC_SLEDF_951562307_20250827T202654.h5", "acquisition_date": "2025-08-27", "native_iq_shape": [113692, 11562], "geometry_audit": "giza_geometry_audit.json", "native_registration_validated": false},
-    {"site": "Sacsayhuaman", "filename": "ICEYE_X35_SLC_SLEDF_5907293_20250822T152433.h5", "acquisition_date": "2025-08-22", "native_iq_shape": [114606, 11482], "geometry_audit": "sacsayhuaman_geometry_audit.json", "native_registration_validated": false}
+    {
+      "site": "Giza",
+      "filename": "ICEYE_X33_SLC_SLEDF_951562307_20250827T202654.h5",
+      "acquisition_date": "2025-08-27",
+      "native_iq_shape": [
+        113692,
+        11562
+      ],
+      "geometry_audit": "giza_geometry_audit.json",
+      "native_registration_validated": false,
+      "field_report": "field/giza/report.json",
+      "full_array_finiteness_checked": true,
+      "aperture_time_validated": false
+    },
+    {
+      "site": "Sacsayhuaman",
+      "filename": "ICEYE_X35_SLC_SLEDF_5907293_20250822T152433.h5",
+      "acquisition_date": "2025-08-22",
+      "native_iq_shape": [
+        114606,
+        11482
+      ],
+      "geometry_audit": "sacsayhuaman_geometry_audit.json",
+      "native_registration_validated": false,
+      "field_report": "field/sacsayhuaman/report.json",
+      "full_array_finiteness_checked": true,
+      "aperture_time_validated": false
+    }
   ],
   "known_void_candidates": [
-    {"site": "Osiris Shaft", "survey": "https://giza.fas.harvard.edu/pubdocs/476/full/", "label_status": "historical geometry; registration, depth datum and acquisition-date water/fill need qualification", "native_target_mask": null},
-    {"site": "Hetepheres I, G 7000 X", "survey": "https://giza.fas.harvard.edu/pubdocs/131/full/", "label_status": "historical geometry; registration, roof depth and present cover/fill need qualification", "native_target_mask": null},
-    {"site": "Idu, G 7102 C", "survey": "https://giza.fas.harvard.edu/pubdocs/141/full/", "label_status": "historical geometry; distinguish burial chamber from open courts and surface architecture", "native_target_mask": null}
+    {
+      "site": "Osiris Shaft",
+      "survey": "https://giza.fas.harvard.edu/pubdocs/476/full/",
+      "label_status": "historical geometry; registration, depth datum and acquisition-date water/fill need qualification",
+      "native_target_mask": null
+    },
+    {
+      "site": "Hetepheres I, G 7000 X",
+      "survey": "https://giza.fas.harvard.edu/pubdocs/131/full/",
+      "label_status": "historical geometry; registration, roof depth and present cover/fill need qualification",
+      "native_target_mask": null
+    },
+    {
+      "site": "Idu, G 7102 C",
+      "survey": "https://giza.fas.harvard.edu/pubdocs/141/full/",
+      "label_status": "historical geometry; distinguish burial chamber from open courts and surface architecture",
+      "native_target_mask": null
+    }
   ],
-  "next_deliverable": "survey-to-native-image overlay with independent surface-landmark residuals and placement uncertainty",
-  "candidate_sites": ["Giza pyramids", "Sacsayhuaman", "independently surveyed comparison sites"],
-  "required_inputs": ["original complex SLC or phase-history product", "all acquisition metadata and sidecars", "native-image target coordinates or geographic target region", "processing history and calibration", "independent survey labels where available"],
-  "inspection": {"command": "python scripts/inspect_sar.py PATH", "metadata_only_by_default": true, "explicit_crop_required": true, "default_crop_working_memory_limit_bytes": 67108864, "private_outputs": "data/inspection, excluded from version control"},
-  "before_depth_outputs": ["verify phase-bearing product", "verify axes and state-vector geometry", "register independent surface landmarks with WGS84 ellipsoidal heights", "qualify survey datum, roof/floor depths and acquisition-date cavity state", "establish Doppler support and timing", "check adequate spatial and aperture support", "freeze target and independent flank coordinates with placement uncertainty", "freeze wavelength and physical assumptions", "run injected-translation and motion controls"],
-  "comparisons": ["branch A versus correctly gated branch B", "raw versus two-arc corrected histories", "multiple independent surface controls", "surface-only scattering predictions", "independent look geometries in ground coordinates", "known surveyed cavities and matched intact regions", "saved predictions scored against true and displaced survey maps"],
-  "evaluation": ["miss rate", "false alarms per independent scene and area", "depth error and uncertainty", "localization across acquisitions", "shape accuracy separately from detection", "calibration sites excluded from validation"],
-  "interpretation_rules": ["unknown underground conditions are not confirmed negatives", "repeatability alone does not exclude stable artifacts", "a plausible rendering is not a measured geometry", "no depth claim from a metadata/preview-only crop", "no field result inferred from synthetic receiver SNR", "candidate surveys already examined during design make the first comparison exploratory, not blinded", "no target-specific depth scaling or registration fitted to make a chamber match", "shallow chamber success does not validate much deeper columns"]
+  "next_deliverable": "Accepted independent surface correspondences with held-out placement residuals, qualified survey datums and a validated dwell-product frequency-to-time adapter",
+  "candidate_sites": [
+    "Giza pyramids",
+    "Sacsayhuaman",
+    "independently surveyed comparison sites"
+  ],
+  "required_inputs": [
+    "original complex SLC or phase-history product",
+    "all acquisition metadata and sidecars",
+    "native-image target coordinates or geographic target region",
+    "processing history and calibration",
+    "independent survey labels where available"
+  ],
+  "inspection": {
+    "command": "python scripts/inspect_sar.py PATH",
+    "metadata_only_by_default": true,
+    "explicit_crop_required": true,
+    "default_crop_working_memory_limit_bytes": 67108864,
+    "private_outputs": "data/inspection, excluded from version control"
+  },
+  "before_depth_outputs": [
+    "verify phase-bearing product",
+    "verify axes and state-vector geometry",
+    "register independent surface landmarks with WGS84 ellipsoidal heights",
+    "qualify survey datum, roof/floor depths and acquisition-date cavity state",
+    "establish Doppler support and timing",
+    "check adequate spatial and aperture support",
+    "freeze target and independent flank coordinates with placement uncertainty",
+    "freeze wavelength and physical assumptions",
+    "run injected-translation and motion controls"
+  ],
+  "comparisons": [
+    "branch A versus correctly gated branch B",
+    "raw versus two-arc corrected histories",
+    "multiple independent surface controls",
+    "surface-only scattering predictions",
+    "independent look geometries in ground coordinates",
+    "known surveyed cavities and matched intact regions",
+    "saved predictions scored against true and displaced survey maps"
+  ],
+  "evaluation": [
+    "miss rate",
+    "false alarms per independent scene and area",
+    "depth error and uncertainty",
+    "localization across acquisitions",
+    "shape accuracy separately from detection",
+    "calibration sites excluded from validation"
+  ],
+  "interpretation_rules": [
+    "unknown underground conditions are not confirmed negatives",
+    "repeatability alone does not exclude stable artifacts",
+    "a plausible rendering is not a measured geometry",
+    "no depth claim from a metadata/preview-only crop",
+    "no field result inferred from synthetic receiver SNR",
+    "candidate surveys already examined during design make the first comparison exploratory, not blinded",
+    "no target-specific depth scaling or registration fitted to make a chamber match",
+    "shallow chamber success does not validate much deeper columns"
+  ],
+  "field_atlas": "field.html",
+  "completed_checks": [
+    "All I/Q samples read in bounded chunks; finite values and full-array sample hashes recorded",
+    "Actual intensity previews for both acquisitions; display averaging kept separate from phase analysis",
+    "Full-row Fourier power measured in three strips per acquisition",
+    "Known translations on real complex texture: all 200 patch trials per acquisition retained; two of eight input groups exceed the 0.02 px tolerance",
+    "Giza surface survey points projected with provisional MSL-to-ellipsoid conversion; no fitted correction or accepted radar correspondences",
+    "Dimensioned historical Idu and Hetepheres models exported separately from radar results"
+  ]
 }

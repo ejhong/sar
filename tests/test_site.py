@@ -73,6 +73,24 @@ def test_site_fonts_are_packaged_with_their_licenses():
         assert "SIL OPEN FONT LICENSE" in (build_site.DOCS / "fonts" / license).read_text()
 
 
+def test_field_atlas_has_intact_links_and_portable_source_assets():
+    page=Page((build_site.DOCS/'field.html').read_text())
+    assert len(page.ids)==len(set(page.ids))
+    assert {'scene','survey','checks','registration-check','aperture-check','translation-check'} <= set(page.ids)
+    for reference in page.references:
+        parsed=urlsplit(reference)
+        if parsed.scheme or parsed.netloc:
+            continue
+        if parsed.path:
+            assert (build_site.DOCS/unquote(parsed.path)).is_file(),reference
+        elif parsed.fragment:
+            assert parsed.fragment in page.ids,reference
+    for source,destination in [('main.css','style.css'),('main.js','site.js'),('field.css','field.css'),('model-viewer.js','model-viewer.js')]:
+        assert (build_site.ROOT/'site/assets'/source).read_bytes()==(build_site.DOCS/destination).read_bytes()
+    for path in (build_site.DOCS/'data/field').rglob('*.json'):
+        assert '/Users/' not in path.read_text(),path
+
+
 def test_constructed_illustration_is_separate_from_numbered_experiments():
     page = Page((build_site.DOCS / "index.html").read_text())
     assert set(page.experiments) == set(build_site.EXPERIMENTS)

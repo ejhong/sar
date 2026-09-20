@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "sites": [
+    {
+      "id": "giza",
+      "name": "Giza",
+      "country": "Egypt",
+      "description": "Surveyed shafts beside the pyramids offer an exploratory test of depth recovery.",
+      "acquisitions": [
+        {
+          "id": "ICEYE_X33_SLC_SLEDF_951562307_20250827T202654",
+          "filename": "ICEYE_X33_SLC_SLEDF_951562307_20250827T202654.h5",
+          "date": "2025-08-27",
+          "platform": "ICEYE X33",
+          "product": "Spotlight Dwell Fine · complex SLC",
+          "geometry_audit": "giza_geometry_audit.json",
+          "design": "giza/design.json",
+          "report": "giza/report.json"
+        }
+      ],
+      "surveys": "giza/surveys.json"
+    },
+    {
+      "id": "sacsayhuaman",
+      "name": "Sacsayhuamán",
+      "country": "Peru",
+      "description": "A second landscape for testing image measurements and, later, independent surveyed targets.",
+      "acquisitions": [
+        {
+          "id": "ICEYE_X35_SLC_SLEDF_5907293_20250822T152433",
+          "filename": "ICEYE_X35_SLC_SLEDF_5907293_20250822T152433.h5",
+          "date": "2025-08-22",
+          "platform": "ICEYE X35",
+          "product": "Spotlight Dwell Fine · complex SLC",
+          "geometry_audit": "sacsayhuaman_geometry_audit.json",
+          "design": "sacsayhuaman/design.json",
+          "report": "sacsayhuaman/report.json"
+        }
+      ],
+      "surveys": "sacsayhuaman/surveys.json"
+    }
+  ]
+}

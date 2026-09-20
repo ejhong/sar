@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Field Atlas · SAR Depth, Tested</title>
+  <meta name="description" content="Explore real satellite radar acquisitions, surveyed Giza chambers in 3D, and reproducible measurement checks. Survey geometry and radar evidence remain distinct.">
+  <link rel="canonical" href="https://ejhong.github.io/sar/field.html">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css?v=db8043ecd95e">
+  <link rel="stylesheet" href="field.css?v=851d85d90e38">
+  <script type="module" src="field.js?v=5d3a68c1da3e"></script>
+</head>
+<body class="atlas">
+<a class="skip-link" href="#atlas-main">Skip to field atlas</a>
+<header class="site-header"><div class="wrap">
+  <a class="wordmark" href="index.html" aria-label="SAR field notes, home"><span class="radar-mark" aria-hidden="true">◒</span> SAR <span>/ FIELD NOTES</span></a>
+  <nav class="atlas-header-nav" aria-label="Research pages"><a href="index.html">The evidence</a><a href="field.html" aria-current="page">Field atlas</a><a href="https://github.com/ejhong/sar">Source ↗</a></nav>
+</div></header>
+<main id="atlas-main">
+  <section class="atlas-intro wrap">
+    <div><p class="eyebrow">Real acquisitions / independent references</p><h1>Read the scan.<br><em>Test what lies below.</em></h1></div>
+    <p class="atlas-deck">Explore the surface image, inspect the known spaces below it, and follow the checks that must connect the two.</p>
+  </section>
+  <div class="wrap"><div id="site-tabs" class="site-tabs" role="group" aria-label="Choose a research site"></div>
+    <p id="load-status" class="load-status" role="status">Loading the saved acquisition reports…</p>
+    <noscript><p>This interactive atlas needs JavaScript. Read the <a href="data/field/giza/report.json">Giza measurement report</a>, <a href="data/field/giza/surveys.json">dimensioned survey models</a>, or <a href="index.html#field">field summary</a>.</p></noscript>
+  </div>
+  <div id="site-content" hidden>
+    <nav class="atlas-toc" aria-label="Field atlas sections"><div class="wrap"><a href="#scene">Radar image</a><a href="#survey">Survey models</a><a href="#checks">Field checks</a><a href="#next-test">Next test</a><a href="#atlas-data">Data</a></div></nav>
+    <section class="wrap acquisition-section" id="scene" aria-labelledby="site-name">
+      <div class="acquisition-heading"><div><span id="site-country" class="eyebrow"></span><h2 id="site-name"></h2><p id="site-description"></p></div><label class="acquisition-select">Acquisition<select id="acquisition-select"></select></label></div>
+      <dl id="acquisition-facts" class="acquisition-facts"></dl>
+      <div class="scene-grid">
+        <div class="scene-panel">
+          <div class="panel-toolbar"><div id="view-tabs" class="segmented" role="group" aria-label="Image region"></div><span class="data-kind">Measured intensity</span></div>
+          <div id="radar-stage" class="radar-stage">
+            <canvas id="radar-canvas" tabindex="0" role="img" aria-label="Real satellite SAR intensity image. Drag to pan; plus and minus to zoom; Home to reset."></canvas>
+            <div class="image-tools" role="group" aria-label="Image zoom"><button type="button" id="image-zoom-in" aria-label="Zoom into radar image">+</button><button type="button" id="image-zoom-out" aria-label="Zoom out of radar image">−</button><button type="button" id="image-reset">Fit</button></div>
+            <span id="radar-scale" class="radar-scale"></span>
+          </div>
+          <div class="scene-caption"><p id="image-caption"></p><a id="image-download" download>Display image ↓</a></div>
+        </div>
+        <aside class="reading-panel" aria-label="How to read the radar image">
+          <span class="eyebrow">01 / Read the surface first</span><h3>Brightness is a radar return.</h3><p>Walls, slopes, rough ground and shadows shape this image. Brightness alone does not locate an underground void.</p>
+          <div id="landmark-controls" hidden><label class="check-control"><input id="show-landmarks" type="checkbox"> Project surveyed surface points</label><p class="small">Amber crosses use published coordinates and elevations. Their positions have not been fitted to the radar.</p><label for="height-shift">Assumed height adjustment <output id="height-shift-value">0 m</output></label><input id="height-shift" type="range" min="-5" max="5" step="0.5" value="0"><p class="small">±5 m is a sensitivity scenario, not an error bound. No chamber footprint is overlaid.</p><a href="#registration-check">Inspect the placement check ↓</a></div>
+          <dl class="reading-key"><div><dt>Image</dt><dd>Incoherently averaged I² + Q²</dd></div><div><dt>Contrast</dt><dd>3rd–99.5th percentile, logarithmic</dd></div><div><dt>Geometry</dt><dd>Native SAR; approximate flat-ground aspect</dd></div><div><dt>Phase</dt><dd>Preserved in the original SLC; not displayed here</dd></div></dl>
+        </aside>
+      </div>
+    </section>
+    <section class="atlas-section survey-section" id="survey"><div class="wrap">
+      <div class="atlas-section-heading"><div><span class="eyebrow">02 / What is independently known?</span><h2>Put the survey<br>in three dimensions.</h2></div><p>These models describe excavated spaces using published measurements. They give a future radar prediction something specific to get right—or miss.</p></div>
+      <div id="survey-empty" class="empty-reference" hidden></div>
+      <div id="survey-workspace" class="survey-grid">
+        <div class="model-panel"><div class="panel-toolbar"><label class="sr-only" for="model-select">Survey reference</label><select id="model-select"></select><span class="data-kind reference-kind">Survey reference</span></div>
+          <div class="model-stage"><canvas id="model-canvas" tabindex="0" role="img" aria-label="Interactive 3D survey model, not a radar reconstruction. Arrow keys rotate; plus and minus zoom; Home resets."></canvas><span class="model-watermark">PUBLISHED GEOMETRY · NO SAR RECONSTRUCTION</span><div class="model-orientation" aria-hidden="true">Metres · true proportions</div></div>
+          <div class="model-tools"><div class="segmented" role="group" aria-label="Model view"><button type="button" data-model-view="orbit" aria-pressed="true">3D</button><button type="button" data-model-view="plan" aria-pressed="false">Plan</button><button type="button" data-model-view="section" aria-pressed="false">Section</button><button type="button" data-model-view="chamber" aria-pressed="false">Chamber</button></div><div class="model-zoom" role="group" aria-label="Model zoom"><button type="button" id="model-zoom-in" aria-label="Zoom into survey model">+</button><button type="button" id="model-zoom-out" aria-label="Zoom out of survey model">−</button></div></div>
+          <div class="depth-guide"><label for="depth-guide">Depth guide <output id="guide-value">0.00 m</output></label><input id="depth-guide" type="range" min="0" max="8.05" step="0.01" value="0"><span>Drag to orbit · scroll to zoom · keyboard controls available</span></div>
+        </div>
+        <div class="survey-copy"><span id="model-designation" class="eyebrow"></span><h3 id="model-name"></h3><dl id="model-metrics" class="model-metrics"></dl><p id="model-datum" class="datum-note"></p><p id="model-state" class="small"></p><details class="model-assumptions"><summary>Exactly what this model simplifies <span aria-hidden="true">+</span></summary><ul id="model-assumptions"></ul></details><p class="model-source"><a id="model-source"></a></p><div class="download-links"><a id="model-json" download>Survey data ↓</a><a id="model-obj" download>3D mesh (.obj) ↓</a></div><p class="small">The mesh uses local metres and simplified connected volumes. It is not a georeferenced or watertight engineering model.</p></div>
+      </div>
+      <div id="additional-surveys" class="additional-surveys"></div>
+    </div></section>
+    <section class="atlas-section wrap" id="checks">
+      <div class="atlas-section-heading"><div><span class="eyebrow">03 / Checks on the actual files</span><h2>Measure before<br>interpreting.</h2></div><p>These results use the supplied complex data. They test input integrity, geometry and image measurements. None is a field depth detection.</p></div>
+      <div id="check-summary" class="check-summary"></div>
+      <article class="field-check" id="registration-check"><div class="check-heading"><span class="check-number">F01</span><div><span class="eyebrow">Survey placement</span><h3 id="registration-title"></h3></div><span class="check-state pending">Not yet validated</span></div><div id="registration-body" class="check-body"></div></article>
+      <article class="field-check" id="aperture-check"><div class="check-heading"><span class="check-number">F02</span><div><span class="eyebrow">Timing &amp; image spectrum</span><h3>Two clocks. Different meanings.</h3></div><span class="check-state partial">Diagnostic only</span></div><div class="check-body"><div id="timing-comparison" class="timing-comparison"></div><p id="timing-explanation"></p><figure class="spectrum-wrap"><a id="spectrum-link" target="_blank" rel="noopener" aria-label="Open the native-row Fourier spectrum at full size"><picture><source id="spectrum-mobile" media="(max-width: 600px)"><img id="spectrum-image" width="900" height="280" alt="Full native-row image Fourier power from three range strips; zero-centred metadata bandwidth shaded. This is not a vibration spectrum."></picture></a><figcaption><a id="spectrum-download" download>Export chart (.svg) ↓</a></figcaption></figure><p class="small">Three 24-column strips retain every native azimuth row. Curves average Fourier power across columns, normalized separately for display. The horizontal axis is image frequency scaled by the processing PRF; it is <strong>not ground-vibration frequency</strong>.</p><details><summary>Numbers, conventions and limits <span aria-hidden="true">+</span></summary><div id="spectrum-details"></div></details></div></article>
+      <article class="field-check" id="translation-check"><div class="check-heading"><span class="check-number">F03</span><div><span class="eyebrow">Measurement calibration</span><h3>Can the tracker recover a known shift?</h3></div><span id="translation-state" class="check-state"></span></div><div class="check-body"><p>Known translations are applied to a 512 × 512 crop of the real complex image. The same patch tracker used in the mechanism studies measures 25 fixed, interior patches for each input. Both signs, both axes and a zero input are retained.</p><p id="translation-finding" class="measurement-finding"></p><div class="table-scroll" tabindex="0" role="region" aria-label="All known-translation results"><table class="field-table"><thead><tr><th scope="col">Injected (row, col) px</th><th scope="col">Median measured px</th><th scope="col">95th percentile error px</th><th scope="col">≤ 0.02 px?</th></tr></thead><tbody id="translation-rows"></tbody></table></div><p class="small">These translations are controlled software inputs, not measured ground vibration. Patches from one crop are dependent. Passing a 0.02 px calibration tolerance does not demonstrate sensitivity to the 0.005 px motion gate or resolve subsurface depth.</p><a id="translation-download" download>Every patch measurement (.csv) ↓</a></div></article>
+    </section>
+    <section class="atlas-section next-stage" id="next-test"><div class="wrap"><div class="atlas-section-heading"><div><span class="eyebrow">04 / The next defensible test</span><h2>A prediction must earn<br>its place in the model.</h2></div><p>There are currently <strong>zero validated field depth results</strong>. A chamber-shaped rendering would add no evidence until the measurement, geometry and competing explanations survive these checks.</p></div><ol class="field-next"><li><span>01</span><h3>Lock the coordinates.</h3><p>Identify unambiguous surface correspondences, quantify error on unused landmarks, qualify the vertical datum and confirm the cavity’s present state.</p></li><li><span>02</span><h3>Validate the aperture.</h3><p>Tie image-frequency support to collection time for this dwell product. Test controlled phase motion and surface-only inputs through that same adapter.</p></li><li><span>03</span><h3>Save, then score.</h3><p>Freeze targets, flanks and processing. Score location, roof depth and extent against surveys and displaced maps. Keep misses, rejected outputs and false alarms.</p></li></ol><p class="next-stage-note">The first Giza comparison will be exploratory: the surveys informed the design. Later sites and independent acquisitions can provide tests withheld from tuning. A shallow-chamber success would not, by itself, validate deep columns beneath Khafre.</p></div></section>
+    <section class="wrap atlas-downloads" id="atlas-data" aria-label="Data and reproducibility"><div><span class="eyebrow">Open, inspectable, repeatable</span><h3>Follow every figure back to its input.</h3><p>Small derived images, sample hashes, settings and every calibration trial travel with this page. Full private rasters stay outside the repository.</p></div><div class="download-links"><a id="report-download" download>Acquisition report ↓</a><a id="design-download" download>Check design ↓</a><a id="audit-download" download>Geometry audit ↓</a><a href="https://github.com/ejhong/sar/blob/main/fieldwork/README.md">Reproduction &amp; adding a site ↗</a></div></section>
+  </div>
+</main>
+<footer><div class="wrap"><span>SAR / Field notes · Evidence before interpretation</span><a href="index.html">Return to the physical benchmarks ↗</a></div></footer>
+</body>
+</html>

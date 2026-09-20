@@ -117,8 +117,66 @@ try {
     await evaluate("document.querySelector('.survey-candidates').scrollIntoView({behavior:'instant',block:'center'})");
     await screenshot(`survey-candidates-${width}`);
   }
+  // Field atlas: actual-file controls and external survey geometry are distinct.
+  await send('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});
+  await send('Page.navigate',{url:new URL('field.html?site=giza',url).href});
+  await until("document.body.dataset.site === 'giza'");
+  await evaluate('document.fonts.ready.then(()=>true)');
+  await evaluate("Promise.all([...document.querySelectorAll('#site-content img[src]')].map(i=>i.decode())).then(()=>true)");
+  assert.equal(await evaluate('document.title'),'Field Atlas · SAR Depth, Tested');
+  assert.equal(await evaluate("document.querySelectorAll('#translation-rows tr').length"),8);
+  assert.equal(await evaluate("document.querySelectorAll('#translation-rows .check-fail').length"),2);
+  await evaluate("document.querySelector('[data-image-view=cemetery]').click()");
+  await until("document.querySelector('#radar-canvas').dataset.view === 'cemetery'");
+  await evaluate("document.querySelector('#show-landmarks').click(); document.querySelector('#height-shift').value=3; document.querySelector('#height-shift').dispatchEvent(new Event('input'))");
+  assert.equal(await evaluate("document.querySelector('#height-shift-value').textContent"),'+3 m');
+  assert.equal(await evaluate("document.querySelector('#radar-canvas').dataset.landmarks"),'true');
+  await evaluate("document.querySelector('#image-zoom-in').click()");
+  assert(Number(await evaluate("document.querySelector('#radar-canvas').dataset.zoom"))>1);
+  await evaluate("document.querySelector('#image-reset').click()");
+  assert.equal(await evaluate("document.querySelector('#radar-canvas').dataset.zoom"),'1.000');
+  await screenshot('atlas-giza');
+  await evaluate("document.querySelector('#survey').scrollIntoView({behavior:'instant',block:'start'})");
+  await screenshot('atlas-idu-model');
+  await evaluate("document.querySelector('#model-select').value='hetepheres'; document.querySelector('#model-select').dispatchEvent(new Event('change'))");
+  assert.equal(await evaluate("document.querySelector('#model-canvas').dataset.model"),'hetepheres');
+  assert.equal(await evaluate("document.querySelector('#depth-guide').max"),'27.45');
+  await evaluate("document.querySelector('[data-model-view=section]').click(); document.querySelector('#depth-guide').value=25.5; document.querySelector('#depth-guide').dispatchEvent(new Event('input'))");
+  assert.equal(await evaluate("document.querySelector('#model-canvas').dataset.view"),'section');
+  assert.equal(await evaluate("document.querySelector('#guide-value').textContent"),'25.50 m');
+  await screenshot('atlas-hetepheres-section');
+  await evaluate("document.querySelector('#model-canvas').focus()");
+  await send('Input.dispatchKeyEvent',{type:'keyDown',key:'+',code:'Equal',windowsVirtualKeyCode:187});
+  assert(Number(await evaluate("document.querySelector('#model-canvas').dataset.zoom"))>1);
+  await send('Input.dispatchKeyEvent',{type:'keyDown',key:'Home',code:'Home',windowsVirtualKeyCode:36});
+  assert.equal(await evaluate("document.querySelector('#model-canvas').dataset.view"),'orbit');
+  assert.equal(await evaluate("document.querySelector('[data-model-view=orbit]').getAttribute('aria-pressed')"),'true');
+  const fieldDownloads=await evaluate("Promise.all([...document.querySelectorAll('#site-content a[download]')].map(async a=>{const r=await fetch(a.href);if(!r.ok)return false;if(a.pathname.endsWith('.json'))await r.json();else if(a.pathname.endsWith('.obj'))return (await r.text()).includes('NOT a SAR reconstruction');else if(a.pathname.endsWith('.csv'))return (await r.text()).split('\\n').length>200;return true}))");
+  assert(fieldDownloads.length>=7&&fieldDownloads.every(Boolean));
+  await evaluate("document.querySelector('[data-site=sacsayhuaman]').click()");
+  await until("document.body.dataset.site === 'sacsayhuaman'");
+  assert.equal(await evaluate("document.querySelector('#survey-workspace').hidden"),true);
+  assert.equal(await evaluate("document.querySelector('#survey-empty').hidden"),false);
+  assert.equal(await evaluate("document.querySelector('#landmark-controls').hidden"),true);
+  assert.equal(await evaluate("document.querySelectorAll('#translation-rows .check-fail').length"),2);
+  await evaluate("scrollTo({top:0,behavior:'instant'})");
+  await screenshot('atlas-sacsayhuaman');
+  await evaluate("document.querySelector('[data-site=giza]').click()");
+  await until("document.body.dataset.site === 'giza'");
+  for(const width of [1440,768,390,320]){
+    await send('Emulation.setDeviceMetricsOverride',{width,height:width<600?844:1000,deviceScaleFactor:1,mobile:width<600});
+    await evaluate("document.querySelectorAll('details').forEach(d=>d.open=true)");
+    const dimensions=await evaluate('({viewport:innerWidth,document:document.documentElement.scrollWidth})');
+    assert(dimensions.document<=dimensions.viewport,`Field atlas overflow at ${width}: ${JSON.stringify(dimensions)}`);
+    await evaluate("document.querySelectorAll('details').forEach(d=>d.open=false); scrollTo({top:0,behavior:'instant'})");
+    await screenshot(`atlas-overview-${width}`);
+    for(const section of ['survey','registration-check','aperture-check','translation-check']){
+      await evaluate(`document.querySelector('#${section}').scrollIntoView({behavior:'instant',block:'start'})`);
+      await screenshot(`atlas-${section}-${width}`);
+    }
+  }
   assert.deepEqual(errors,[]);
-  console.log(JSON.stringify({passed:true,widths:[1440,768,390,320],checks:['saved SNR scenarios and false alarms','slider input and keyboard','reset','deep link','figure dialog and Escape','expand/collapse','seven supporting experiments','legacy T7 opens archive note without renderings','JSON and CSV downloads','all images decode','no overflow with all details open','no browser or HTTP errors'],screenshots:screenshotDir},null,2));
+  console.log(JSON.stringify({passed:true,widths:[1440,768,390,320],checks:['saved SNR scenarios and false alarms','slider input and keyboard','reset','deep link','figure dialog and Escape','expand/collapse','seven supporting experiments','legacy T7 opens archive note without renderings','JSON and CSV downloads','all images decode','site and acquisition atlas','native image zoom, reset and survey-height scenario','both metric survey models, section, depth guide and keyboard','survey JSON and OBJ exports','all real-texture input groups including failures','responsive scientific charts','no overflow with all details open','no browser or HTTP errors'],screenshots:screenshotDir},null,2));
 } finally {
   await send('Page.close'); ws.close();
 }

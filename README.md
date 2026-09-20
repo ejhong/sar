@@ -8,9 +8,12 @@ The new physical suite connects a buried cavity to a wavefield, complex radar
 measurement and depth estimator. It finds conditional recovery under favorable
 assumptions, poor recovery at lower SNR, and false alarms under model mismatch.
 It also evaluates the reconstructed patch-shift method and surface artifacts.
-**Published depth results are still simulations.** Real Giza and Sacsayhuaman
-files have passed preliminary metadata and small-sample checks; no field depth
-reconstruction has been validated. See [METHOD_AUDIT.md](METHOD_AUDIT.md) for the distinction
+**Published depth results are still simulations.** The new
+[field atlas](https://ejhong.github.io/sar/field.html) contains actual Giza and
+Sacsayhuaman radar imagery, dimensioned historical chamber models, full-array
+finiteness checks, survey-height sensitivity, full-row image spectra and known
+translation controls on real complex texture. All calibration failures are
+retained. No field depth reconstruction has been validated. See [METHOD_AUDIT.md](METHOD_AUDIT.md) for the distinction
 between original publications, the public derivative protocol and this code.
 
 ## Run
@@ -23,8 +26,10 @@ python3.11 -m venv .venv
 python3 -m http.server 4175 --directory docs
 ```
 
-Committed reports and figures rebuild the site without private inputs or cached
-arrays. Fonts and their licenses are served locally.
+Committed reports and figures rebuild both pages without private inputs or cached
+arrays. Fonts and their licenses are served locally. The 3D viewer has no external
+JavaScript dependency. Frontend source lives in `site/assets/`; `build_site.py`
+copies it into `docs/`. Edit the source, not generated publishing output.
 
 ```bash
 # Physical benchmarks: a few minutes on the development machine.
@@ -98,8 +103,10 @@ Native geolocation now has a separate, metadata-only
 [Giza](research/giza_geometry_audit.json) and
 [Sacsayhuaman](research/sacsayhuaman_geometry_audit.json). These expose terrain
 height sensitivity and metadata alignment differences; they do not certify
-target placement or compute depth. The next milestone is an independently
-checked survey-to-image overlay, followed by a fixed known-void comparison.
+target placement or compute depth. The [field workflow](fieldwork/README.md) now records actual image checks and
+unfitted survey projections. The next milestone is accepted independent surface
+correspondences with held-out error, a qualified survey datum and a validated
+aperture-time adapter, followed by a fixed known-void comparison.
 
 Keep files where they are. Metadata inspection does not load the raster:
 
@@ -134,8 +141,13 @@ used as a validated real-acquisition geometry adapter.
   statistic checks, distinct from physical depth validation.
 - `experiments/t07_wells.py`: archived staged-column illustration. Removed from
   the page's visual argument and the active all-studies runner.
-- `site/page.html`, `site_content.py`, `build_site.py`: template, conclusions
-  derived from saved metrics, and portable renderer.
+- `catalog/`: site/acquisition registry, explicit field-check designs and source-linked
+  survey geometry; structured for additional sites and acquisitions.
+- `fieldwork/`: bounded field measurements, exportable charts, model validation and
+  publishing. See its README for reproducibility and current scientific limits.
+- `results/field/`: small real-image products, provenance and every translation trial.
+- `site/page.html`, `site/field.html`, `site/assets/`, `site_content.py`,
+  `build_site.py`: canonical templates/assets, data-derived conclusions and renderer.
 - `docs/`: generated GitHub Pages site, figures and downloadable data. Private
   local-file inspection output is never automatically published.
 - `tests/`: numerical invariants, meaningful gate regressions, sparse huge-file
@@ -144,6 +156,8 @@ used as a validated real-acquisition geometry adapter.
 Run `node tests/browser_smoke.mjs` with the local page served and headless Chrome
 on debugging port 9231. It checks the data-driven scenario explorer, keyboard
 controls, deep links, figure dialogs, downloads and layouts from 320 to 1440 px.
+It also checks site switching, image zoom, surface-point overlays, both survey
+models, section/depth controls, OBJ exports and all field-calibration results.
 
 Research and simulations by ejhong. Original simulation work was developed with
 Claude Fable 5.1; subsequent review, coupled physical benchmarks and page revisions

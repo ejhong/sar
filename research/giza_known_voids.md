@@ -1,5 +1,9 @@
 # Giza: surveyed-void candidates
 
+The subsequent real-image checks and survey-model qualifications are in
+[field checks, 20 September 2026](giza_field_checks.md) and the
+[field workflow](../fieldwork/README.md).
+
 Reviewed 20 September 2026. This is a reference inventory and proposed field
 comparison, **not a SAR detection result**. Historical excavation measurements
 must be checked against the site's condition at the acquisition date.

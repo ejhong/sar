@@ -11,6 +11,7 @@ from string import Template
 from PIL import Image
 from experiments.reporting import refine_summary
 from site_content import validation_content
+from fieldwork.publishing import build_field_site
 
 ROOT = Path(__file__).resolve().parent
 RESULTS = ROOT / "results"
@@ -156,6 +157,7 @@ def robustness_section(data):
 
 def build():
     DOCS.mkdir(exist_ok=True)
+    field_portal = build_field_site(DOCS)
     reports = [refine_summary(json_report(path)) for path in RESULTS.glob("t*/summary.json")]
     tests = sorted([report for report in reports if report.get("role") != "illustration"], key=lambda x: x["order"])
     illustrations = [report for report in reports if report.get("role") == "illustration"]
@@ -195,6 +197,7 @@ def build():
     downloads = "".join(f"<a href='data/{t['id']}.json' download>T{t['order']} results ↓</a>" for t in tests)
     template = Template((ROOT / "site" / "page.html").read_text())
     page = template.substitute(updated=updated, hero_src=hero_src, count=len(tests),
+                               field_portal=field_portal,
                                experiments=sections, robustness=robustness_section(robustness),
                                downloads=downloads, versions=versions,
                                stylesheet_version=hashlib.sha256((DOCS / 'style.css').read_bytes()).hexdigest()[:12],

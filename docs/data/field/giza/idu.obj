@@ -1,0 +1,39 @@
+# Historical survey reference, NOT a SAR reconstruction
+# Units: metres; axes x=east y=north z=up; separate simplified volumes
+# Not georeferenced, not a watertight engineering model
+# https://giza.fas.harvard.edu/pubdocs/141/full/
+# 0 m = historical shaft mouth. Rock begins 2.34 m below the mouth; the modern ground datum is not established.
+# Simplification: The shaft is represented by its published average square width. Uneven walls are simplified.
+# Simplification: The chamber opens south and extends west. The trapezoid uses the reported east/west lengths; its exact angles and junction are simplified from Fig. 13.
+# Simplification: The model places the chamber floor at the shaft bottom. Its 5.89 m roof depth is derived from that alignment and the reported 2.16 m height, not independently surveyed here.
+# Simplification: Sarcophagus, rubble, wall texture and minor irregularities are omitted. This is an envelope of the excavated spaces, not a watertight engineering survey.
+o idu_0_shaft
+v 0.000000 0.000000 0.000000
+v 1.720000 0.000000 0.000000
+v 1.720000 1.720000 0.000000
+v 0.000000 1.720000 0.000000
+v 0.000000 0.000000 -8.050000
+v 1.720000 0.000000 -8.050000
+v 1.720000 1.720000 -8.050000
+v 0.000000 1.720000 -8.050000
+f 1 2 3 4
+f 8 7 6 5
+f 1 2 6 5
+f 2 3 7 6
+f 3 4 8 7
+f 4 1 5 8
+o idu_1_chamber
+v -1.160000 -3.310000 -5.890000
+v 1.720000 -3.310000 -5.890000
+v 1.720000 0.000000 -5.890000
+v -1.160000 0.420000 -5.890000
+v -1.160000 -3.310000 -8.050000
+v 1.720000 -3.310000 -8.050000
+v 1.720000 0.000000 -8.050000
+v -1.160000 0.420000 -8.050000
+f 9 10 11 12
+f 16 15 14 13
+f 9 10 14 13
+f 10 11 15 14
+f 11 12 16 15
+f 12 9 13 16

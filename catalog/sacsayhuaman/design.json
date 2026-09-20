@@ -1,0 +1,125 @@
+{
+  "version": 1,
+  "role": "exploratory field quality control; no depth reconstruction",
+  "selection_note": "Crops chosen from metadata and surface preview before these measurement controls. Survey publications were already consulted; this is not a blinded trial.",
+  "views": [
+    {
+      "id": "overview",
+      "label": "Full acquisition",
+      "rows": [
+        0,
+        114606
+      ],
+      "cols": [
+        0,
+        11482
+      ],
+      "block": [
+        128,
+        12
+      ],
+      "flip_rows": false,
+      "description": "Incoherent intensity overview of the native complex acquisition. Approximate flat-ground aspect; terrain, layover and shadow are retained. This is not an orthophoto or a subsurface image."
+    },
+    {
+      "id": "centre",
+      "label": "Central scene",
+      "rows": [
+        48000,
+        66000
+      ],
+      "cols": [
+        4300,
+        6800
+      ],
+      "block": [
+        20,
+        2
+      ],
+      "flip_rows": false,
+      "description": "A closer view around the supplied scene centre. Surface architecture and terrain are visible; no underground survey has yet been registered."
+    }
+  ],
+  "spectrum_strips": [
+    {
+      "rows": [
+        0,
+        114606
+      ],
+      "cols": [
+        2870,
+        2894
+      ]
+    },
+    {
+      "rows": [
+        0,
+        114606
+      ],
+      "cols": [
+        5741,
+        5765
+      ]
+    },
+    {
+      "rows": [
+        0,
+        114606
+      ],
+      "cols": [
+        8611,
+        8635
+      ]
+    }
+  ],
+  "translation": {
+    "rows": [
+      56000,
+      56512
+    ],
+    "cols": [
+      5400,
+      5912
+    ],
+    "patch": 32,
+    "upsample": 1000,
+    "shifts_px": [
+      [
+        0,
+        0
+      ],
+      [
+        0.005,
+        0
+      ],
+      [
+        -0.005,
+        0
+      ],
+      [
+        0,
+        0.005
+      ],
+      [
+        0,
+        -0.005
+      ],
+      [
+        0.025,
+        -0.04
+      ],
+      [
+        -0.25,
+        0.4
+      ],
+      [
+        1,
+        -1
+      ]
+    ],
+    "max_p95_error_px": 0.02,
+    "interpretation": "Software calibration using known image translations applied to real texture; these inputs are not ground vibration or evidence of depth."
+  },
+  "depth_output_enabled": false,
+  "native_target_masks": null
+}
