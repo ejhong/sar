@@ -1,0 +1,2331 @@
+{
+  "date": "2026-09-20",
+  "design": {
+    "version": 2,
+    "seed": 20260920,
+    "status": "synthetic controlled benchmark",
+    "dictionary_depths_m": [
+      0,
+      40,
+      60,
+      80,
+      100,
+      120,
+      140,
+      160,
+      180,
+      200,
+      220,
+      240,
+      260
+    ],
+    "evaluation_depths_m": [
+      70,
+      110,
+      150,
+      190,
+      230
+    ],
+    "dictionary_speeds_m_s": [
+      1800,
+      2000,
+      2200
+    ],
+    "dictionary_spacing_m": 5.0,
+    "evaluation_spacing_m": 2.5,
+    "reference_frequency_hz": 25.0,
+    "radius_m": 20.0,
+    "surface_amplitudes_um": [
+      30.0,
+      100.0,
+      1000.0
+    ],
+    "amplitude_definition": "peak cavity-free SH displacement at the sampled receivers; shared force scaling, never target normalization",
+    "receiver_snr_db": 20.0,
+    "calibration_null_trials": 300,
+    "test_null_trials": 100,
+    "trials_per_depth": 20,
+    "nominal_false_alarm_rate": 0.01,
+    "depth_success_tolerance_m": 20.0,
+    "receiver_indices": [
+      0,
+      3,
+      7,
+      10,
+      13,
+      17,
+      20
+    ],
+    "source": {
+      "type": "Ricker body force",
+      "x_m": -150.0,
+      "z_m": 10.0,
+      "start_s": -0.45
+    },
+    "assumptions": [
+      "2D homogeneous SH wave equation; horizontal infinite cylindrical cavity, not vertical columns",
+      "known active source timing and location; no intrinsic attenuation or heterogeneous geology",
+      "seven known, separated coherent point reflectors; noiseless stationary-phase focusing",
+      "independent 20 dB complex noise per reflector and aperture sample; no distributed clutter, atmosphere or autofocus",
+      "phase readout assumes known range supports; it is an optimistic measurement, not the Biondi processor",
+      "physical template inverse shares a wave-equation family with the forward model but uses a different mesh and disjoint depths",
+      "noise trials measure conditional receiver uncertainty; they are not independent sites or geological realizations"
+    ],
+    "stress_cases": [
+      "wrong wave speed",
+      "wrong cavity radius",
+      "wrong source position"
+    ],
+    "frequency_depth_matrix": {
+      "frequencies_hz": [
+        8.0,
+        16.0,
+        25.0
+      ],
+      "depths_m": [
+        50.0,
+        90.0,
+        130.0
+      ],
+      "reason": "all test depths lie inside the fixed steering search interval"
+    },
+    "snr_extension": {
+      "levels_db": [
+        20.0,
+        40.0,
+        60.0
+      ],
+      "reference_amplitude_um": 1000.0,
+      "reason": "Documented follow-up to low recovery in the initial 20 dB run; separate seeds and null calibration at each level. No formally preregistered field experiment is claimed."
+    }
+  },
+  "acquisition": {
+    "geometry": {
+      "carrier_GHz": 9.65,
+      "wavelength_m": 0.03106657595854922,
+      "slant_range_km": 600.0,
+      "incidence_deg": 35.0,
+      "velocity_m_s": 7600.0,
+      "pixel_az_m": 0.25,
+      "pixel_rg_m": 0.25,
+      "doppler_band_kHz": 24.32,
+      "aperture_time_s": 3.9241990684483223,
+      "aspect_span_deg": 2.847973898155937,
+      "resolution_m": 0.276875
+    },
+    "shape": [
+      1024,
+      640
+    ],
+    "ground_to_los_projection": 0.40557978767263886,
+    "aperture_sample_count": 819
+  },
+  "versions": {
+    "python": "3.11.3",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1"
+  },
+  "motion": {
+    "rows": [
+      {
+        "frequency_hz": 1.0,
+        "ground_amplitude_um": 0.0,
+        "los_amplitude_um": 0.0,
+        "trials": 120,
+        "phase_detection_rate": 0.008333333333333333,
+        "phase_ci_low": 0.0014725557333420923,
+        "phase_ci_high": 0.045696291245049675,
+        "intensity_detection_rate": 0.0,
+        "detected_and_frequency_correct_rate": 0.0
+      },
+      {
+        "frequency_hz": 1.0,
+        "ground_amplitude_um": 30.0,
+        "los_amplitude_um": 12.167393630179166,
+        "trials": 120,
+        "phase_detection_rate": 0.0,
+        "phase_ci_low": 0.0,
+        "phase_ci_high": 0.031019166418703486,
+        "intensity_detection_rate": 0.016666666666666666,
+        "detected_and_frequency_correct_rate": 0.0
+      },
+      {
+        "frequency_hz": 1.0,
+        "ground_amplitude_um": 100.0,
+        "los_amplitude_um": 40.55797876726388,
+        "trials": 120,
+        "phase_detection_rate": 0.475,
+        "phase_ci_low": 0.3878209113791835,
+        "phase_ci_high": 0.5637300469417518,
+        "intensity_detection_rate": 0.016666666666666666,
+        "detected_and_frequency_correct_rate": 0.4583333333333333
+      },
+      {
+        "frequency_hz": 1.0,
+        "ground_amplitude_um": 300.0,
+        "los_amplitude_um": 121.67393630179166,
+        "trials": 120,
+        "phase_detection_rate": 1.0,
+        "phase_ci_low": 0.9689808335812966,
+        "phase_ci_high": 1.0,
+        "intensity_detection_rate": 0.008333333333333333,
+        "detected_and_frequency_correct_rate": 1.0
+      },
+      {
+        "frequency_hz": 1.0,
+        "ground_amplitude_um": 1000.0,
+        "los_amplitude_um": 405.5797876726389,
+        "trials": 120,
+        "phase_detection_rate": 1.0,
+        "phase_ci_low": 0.9689808335812966,
+        "phase_ci_high": 1.0,
+        "intensity_detection_rate": 0.008333333333333333,
+        "detected_and_frequency_correct_rate": 1.0
+      },
+      {
+        "frequency_hz": 2.0,
+        "ground_amplitude_um": 0.0,
+        "los_amplitude_um": 0.0,
+        "trials": 120,
+        "phase_detection_rate": 0.008333333333333333,
+        "phase_ci_low": 0.0014725557333420923,
+        "phase_ci_high": 0.045696291245049675,
+        "intensity_detection_rate": 0.008333333333333333,
+        "detected_and_frequency_correct_rate": 0.0
+      },
+      {
+        "frequency_hz": 2.0,
+        "ground_amplitude_um": 30.0,
+        "los_amplitude_um": 12.167393630179166,
+        "trials": 120,
+        "phase_detection_rate": 0.025,
+        "phase_ci_low": 0.008538174769902228,
+        "phase_ci_high": 0.0709300333278661,
+        "intensity_detection_rate": 0.008333333333333333,
+        "detected_and_frequency_correct_rate": 0.0
+      },
+      {
+        "frequency_hz": 2.0,
+        "ground_amplitude_um": 100.0,
+        "los_amplitude_um": 40.55797876726388,
+        "trials": 120,
+        "phase_detection_rate": 0.44166666666666665,
+        "phase_ci_low": 0.3559974669953786,
+        "phase_ci_high": 0.5309547690868035,
+        "intensity_detection_rate": 0.008333333333333333,
+        "detected_and_frequency_correct_rate": 0.425
+      },
+      {
+        "frequency_hz": 2.0,
+        "ground_amplitude_um": 300.0,
+        "los_amplitude_um": 121.67393630179166,
+        "trials": 120,
+        "phase_detection_rate": 1.0,
+        "phase_ci_low": 0.9689808335812966,
+        "phase_ci_high": 1.0,
+        "intensity_detection_rate": 0.0,
+        "detected_and_frequency_correct_rate": 1.0
+      },
+      {
+        "frequency_hz": 2.0,
+        "ground_amplitude_um": 1000.0,
+        "los_amplitude_um": 405.5797876726389,
+        "trials": 120,
+        "phase_detection_rate": 1.0,
+        "phase_ci_low": 0.9689808335812966,
+        "phase_ci_high": 1.0,
+        "intensity_detection_rate": 0.0,
+        "detected_and_frequency_correct_rate": 1.0
+      },
+      {
+        "frequency_hz": 4.0,
+        "ground_amplitude_um": 0.0,
+        "los_amplitude_um": 0.0,
+        "trials": 120,
+        "phase_detection_rate": 0.008333333333333333,
+        "phase_ci_low": 0.0014725557333420923,
+        "phase_ci_high": 0.045696291245049675,
+        "intensity_detection_rate": 0.0,
+        "detected_and_frequency_correct_rate": 0.0
+      },
+      {
+        "frequency_hz": 4.0,
+        "ground_amplitude_um": 30.0,
+        "los_amplitude_um": 12.167393630179166,
+        "trials": 120,
+        "phase_detection_rate": 0.008333333333333333,
+        "phase_ci_low": 0.0014725557333420923,
+        "phase_ci_high": 0.045696291245049675,
+        "intensity_detection_rate": 0.016666666666666666,
+        "detected_and_frequency_correct_rate": 0.0
+      },
+      {
+        "frequency_hz": 4.0,
+        "ground_amplitude_um": 100.0,
+        "los_amplitude_um": 40.55797876726388,
+        "trials": 120,
+        "phase_detection_rate": 0.49166666666666664,
+        "phase_ci_low": 0.4038757172769723,
+        "phase_ci_high": 0.5799746021633394,
+        "intensity_detection_rate": 0.008333333333333333,
+        "detected_and_frequency_correct_rate": 0.48333333333333334
+      },
+      {
+        "frequency_hz": 4.0,
+        "ground_amplitude_um": 300.0,
+        "los_amplitude_um": 121.67393630179166,
+        "trials": 120,
+        "phase_detection_rate": 1.0,
+        "phase_ci_low": 0.9689808335812966,
+        "phase_ci_high": 1.0,
+        "intensity_detection_rate": 0.016666666666666666,
+        "detected_and_frequency_correct_rate": 1.0
+      },
+      {
+        "frequency_hz": 4.0,
+        "ground_amplitude_um": 1000.0,
+        "los_amplitude_um": 405.5797876726389,
+        "trials": 120,
+        "phase_detection_rate": 1.0,
+        "phase_ci_low": 0.9689808335812966,
+        "phase_ci_high": 1.0,
+        "intensity_detection_rate": 0.016666666666666666,
+        "detected_and_frequency_correct_rate": 1.0
+      }
+    ],
+    "roundtrip_max_error_m": 1.5178830414797062e-18,
+    "duration_s": 3.91845072996915,
+    "samples": 819,
+    "projection_factor": 0.40557978767263886,
+    "note": "Noise trials use the algebraically identical separated-channel readout; the focused-SLC round trip is explicitly verified. Favorable known reflectors, not a demonstrated ground-scatterer extraction method."
+  },
+  "depth": {
+    "groups": [
+      {
+        "family": "matched_assumptions",
+        "amplitude_um": 30.0,
+        "estimator": "known_speed",
+        "positive_trials": 100,
+        "null_trials": 100,
+        "detection_rate": 0.02,
+        "detection_ci": [
+          0.00550196755016235,
+          0.07001179072854388
+        ],
+        "false_alarm_rate": 0.01,
+        "false_alarm_ci": [
+          0.0017674320641406505,
+          0.054486196178705315
+        ],
+        "detected_within_20m_rate": 0.0,
+        "median_depth_error_detected_m": 90.0,
+        "median_depth_error_all_m": 90.0
+      },
+      {
+        "family": "matched_assumptions",
+        "amplitude_um": 30.0,
+        "estimator": "speed_search",
+        "positive_trials": 100,
+        "null_trials": 100,
+        "detection_rate": 0.01,
+        "detection_ci": [
+          0.0017674320641406505,
+          0.054486196178705315
+        ],
+        "false_alarm_rate": 0.01,
+        "false_alarm_ci": [
+          0.0017674320641406505,
+          0.054486196178705315
+        ],
+        "detected_within_20m_rate": 0.0,
+        "median_depth_error_detected_m": 70.0,
+        "median_depth_error_all_m": 70.0
+      },
+      {
+        "family": "matched_assumptions",
+        "amplitude_um": 100.0,
+        "estimator": "known_speed",
+        "positive_trials": 100,
+        "null_trials": 100,
+        "detection_rate": 0.0,
+        "detection_ci": [
+          3.469446951953614e-18,
+          0.03699349820698568
+        ],
+        "false_alarm_rate": 0.0,
+        "false_alarm_ci": [
+          3.469446951953614e-18,
+          0.03699349820698568
+        ],
+        "detected_within_20m_rate": 0.0,
+        "median_depth_error_detected_m": null,
+        "median_depth_error_all_m": 70.0
+      },
+      {
+        "family": "matched_assumptions",
+        "amplitude_um": 100.0,
+        "estimator": "speed_search",
+        "positive_trials": 100,
+        "null_trials": 100,
+        "detection_rate": 0.01,
+        "detection_ci": [
+          0.0017674320641406505,
+          0.054486196178705315
+        ],
+        "false_alarm_rate": 0.01,
+        "false_alarm_ci": [
+          0.0017674320641406505,
+          0.054486196178705315
+        ],
+        "detected_within_20m_rate": 0.01,
+        "median_depth_error_detected_m": 10.0,
+        "median_depth_error_all_m": 70.0
+      },
+      {
+        "family": "matched_assumptions",
+        "amplitude_um": 1000.0,
+        "estimator": "known_speed",
+        "positive_trials": 100,
+        "null_trials": 100,
+        "detection_rate": 0.04,
+        "detection_ci": [
+          0.01566330399154762,
+          0.0983707143588792
+        ],
+        "false_alarm_rate": 0.02,
+        "false_alarm_ci": [
+          0.00550196755016235,
+          0.07001179072854388
+        ],
+        "detected_within_20m_rate": 0.03,
+        "median_depth_error_detected_m": 10.0,
+        "median_depth_error_all_m": 50.0
+      },
+      {
+        "family": "matched_assumptions",
+        "amplitude_um": 1000.0,
+        "estimator": "speed_search",
+        "positive_trials": 100,
+        "null_trials": 100,
+        "detection_rate": 0.05,
+        "detection_ci": [
+          0.02154367915436796,
+          0.11175046923191913
+        ],
+        "false_alarm_rate": 0.02,
+        "false_alarm_ci": [
+          0.00550196755016235,
+          0.07001179072854388
+        ],
+        "detected_within_20m_rate": 0.03,
+        "median_depth_error_detected_m": 10.0,
+        "median_depth_error_all_m": 50.0
+      },
+      {
+        "family": "radius_30",
+        "amplitude_um": 1000.0,
+        "estimator": "known_speed",
+        "positive_trials": 100,
+        "null_trials": 100,
+        "detection_rate": 0.02,
+        "detection_ci": [
+          0.00550196755016235,
+          0.07001179072854388
+        ],
+        "false_alarm_rate": 0.01,
+        "false_alarm_ci": [
+          0.0017674320641406505,
+          0.054486196178705315
+        ],
+        "detected_within_20m_rate": 0.02,
+        "median_depth_error_detected_m": 10.0,
+        "median_depth_error_all_m": 40.0
+      },
+      {
+        "family": "radius_30",
+        "amplitude_um": 1000.0,
+        "estimator": "speed_search",
+        "positive_trials": 100,
+        "null_trials": 100,
+        "detection_rate": 0.02,
+        "detection_ci": [
+          0.00550196755016235,
+          0.07001179072854388
+        ],
+        "false_alarm_rate": 0.01,
+        "false_alarm_ci": [
+          0.0017674320641406505,
+          0.054486196178705315
+        ],
+        "detected_within_20m_rate": 0.01,
+        "median_depth_error_detected_m": 70.0,
+        "median_depth_error_all_m": 50.0
+      },
+      {
+        "family": "source_shift_30m",
+        "amplitude_um": 1000.0,
+        "estimator": "known_speed",
+        "positive_trials": 100,
+        "null_trials": 100,
+        "detection_rate": 0.0,
+        "detection_ci": [
+          3.469446951953614e-18,
+          0.03699349820698568
+        ],
+        "false_alarm_rate": 0.0,
+        "false_alarm_ci": [
+          3.469446951953614e-18,
+          0.03699349820698568
+        ],
+        "detected_within_20m_rate": 0.0,
+        "median_depth_error_detected_m": null,
+        "median_depth_error_all_m": 110.0
+      },
+      {
+        "family": "source_shift_30m",
+        "amplitude_um": 1000.0,
+        "estimator": "speed_search",
+        "positive_trials": 100,
+        "null_trials": 100,
+        "detection_rate": 0.0,
+        "detection_ci": [
+          3.469446951953614e-18,
+          0.03699349820698568
+        ],
+        "false_alarm_rate": 0.0,
+        "false_alarm_ci": [
+          3.469446951953614e-18,
+          0.03699349820698568
+        ],
+        "detected_within_20m_rate": 0.0,
+        "median_depth_error_detected_m": null,
+        "median_depth_error_all_m": 80.0
+      },
+      {
+        "family": "speed_1800",
+        "amplitude_um": 1000.0,
+        "estimator": "known_speed",
+        "positive_trials": 100,
+        "null_trials": 100,
+        "detection_rate": 0.06,
+        "detection_ci": [
+          0.027786123963188192,
+          0.1247681544589592
+        ],
+        "false_alarm_rate": 0.08,
+        "false_alarm_ci": [
+          0.041093461484380624,
+          0.14998107700948735
+        ],
+        "detected_within_20m_rate": 0.0,
+        "median_depth_error_detected_m": 110.0,
+        "median_depth_error_all_m": 70.0
+      },
+      {
+        "family": "speed_1800",
+        "amplitude_um": 1000.0,
+        "estimator": "speed_search",
+        "positive_trials": 100,
+        "null_trials": 100,
+        "detection_rate": 0.01,
+        "detection_ci": [
+          0.0017674320641406505,
+          0.054486196178705315
+        ],
+        "false_alarm_rate": 0.02,
+        "false_alarm_ci": [
+          0.00550196755016235,
+          0.07001179072854388
+        ],
+        "detected_within_20m_rate": 0.0,
+        "median_depth_error_detected_m": 150.0,
+        "median_depth_error_all_m": 70.0
+      },
+      {
+        "family": "speed_2200",
+        "amplitude_um": 1000.0,
+        "estimator": "known_speed",
+        "positive_trials": 100,
+        "null_trials": 100,
+        "detection_rate": 0.02,
+        "detection_ci": [
+          0.00550196755016235,
+          0.07001179072854388
+        ],
+        "false_alarm_rate": 0.01,
+        "false_alarm_ci": [
+          0.0017674320641406505,
+          0.054486196178705315
+        ],
+        "detected_within_20m_rate": 0.0,
+        "median_depth_error_detected_m": 90.0,
+        "median_depth_error_all_m": 50.0
+      },
+      {
+        "family": "speed_2200",
+        "amplitude_um": 1000.0,
+        "estimator": "speed_search",
+        "positive_trials": 100,
+        "null_trials": 100,
+        "detection_rate": 0.01,
+        "detection_ci": [
+          0.0017674320641406505,
+          0.054486196178705315
+        ],
+        "false_alarm_rate": 0.01,
+        "false_alarm_ci": [
+          0.0017674320641406505,
+          0.054486196178705315
+        ],
+        "detected_within_20m_rate": 0.01,
+        "median_depth_error_detected_m": 10.0,
+        "median_depth_error_all_m": 50.0
+      }
+    ],
+    "convergence": {
+      "total_waveform_correlation": 0.9978485287656144,
+      "cavity_perturbation_correlation": 0.9643980375991469,
+      "relative_perturbation_norm_coarse": 0.19242433221719665,
+      "relative_perturbation_norm_fine": 0.18346430557813145
+    },
+    "oracle_and_roundtrip": {
+      "0": {
+        "oracle_estimate_m": 0.0,
+        "phase_estimates_m": [
+          180.0,
+          240.0,
+          40.0,
+          240.0,
+          200.0,
+          60.0,
+          140.0,
+          260.0,
+          60.0,
+          80.0,
+          240.0,
+          220.0,
+          200.0,
+          180.0,
+          260.0,
+          100.0,
+          100.0,
+          140.0,
+          140.0,
+          40.0,
+          200.0,
+          60.0,
+          100.0,
+          260.0,
+          160.0,
+          220.0,
+          220.0,
+          240.0,
+          100.0,
+          100.0,
+          220.0,
+          120.0,
+          260.0,
+          60.0,
+          160.0,
+          260.0,
+          180.0,
+          60.0,
+          180.0,
+          140.0,
+          80.0,
+          100.0,
+          80.0,
+          220.0,
+          200.0,
+          80.0,
+          180.0,
+          120.0,
+          60.0,
+          120.0,
+          120.0,
+          120.0,
+          240.0,
+          140.0,
+          40.0,
+          100.0,
+          180.0,
+          200.0,
+          240.0,
+          120.0,
+          200.0,
+          180.0,
+          120.0,
+          60.0,
+          160.0,
+          160.0,
+          60.0,
+          140.0,
+          200.0,
+          160.0,
+          100.0,
+          100.0,
+          240.0,
+          180.0,
+          80.0,
+          260.0,
+          220.0,
+          180.0,
+          240.0,
+          180.0,
+          100.0,
+          180.0,
+          180.0,
+          40.0,
+          200.0,
+          120.0,
+          40.0,
+          160.0,
+          200.0,
+          140.0,
+          60.0,
+          60.0,
+          200.0,
+          60.0,
+          180.0,
+          240.0,
+          180.0,
+          100.0,
+          80.0,
+          80.0
+        ]
+      },
+      "70": {
+        "oracle_estimate_m": 60.0,
+        "phase_estimates_m": [
+          60.0,
+          60.0,
+          80.0,
+          200.0,
+          200.0,
+          240.0,
+          80.0,
+          60.0,
+          60.0,
+          80.0,
+          140.0,
+          60.0,
+          80.0,
+          80.0,
+          60.0,
+          60.0,
+          200.0,
+          60.0,
+          260.0,
+          140.0
+        ]
+      },
+      "110": {
+        "oracle_estimate_m": 100.0,
+        "phase_estimates_m": [
+          100.0,
+          120.0,
+          100.0,
+          100.0,
+          100.0,
+          100.0,
+          200.0,
+          200.0,
+          200.0,
+          100.0,
+          100.0,
+          120.0,
+          40.0,
+          160.0,
+          40.0,
+          100.0,
+          100.0,
+          240.0,
+          100.0,
+          240.0
+        ]
+      },
+      "150": {
+        "oracle_estimate_m": 140.0,
+        "phase_estimates_m": [
+          40.0,
+          140.0,
+          140.0,
+          140.0,
+          100.0,
+          200.0,
+          140.0,
+          220.0,
+          160.0,
+          40.0,
+          140.0,
+          60.0,
+          240.0,
+          140.0,
+          240.0,
+          60.0,
+          100.0,
+          60.0,
+          80.0,
+          240.0
+        ]
+      },
+      "focused_slc_roundtrip_error_m": 1.6083461602464655e-17,
+      "190": {
+        "oracle_estimate_m": 180.0,
+        "phase_estimates_m": [
+          80.0,
+          260.0,
+          180.0,
+          140.0,
+          200.0,
+          180.0,
+          0.0,
+          100.0,
+          60.0,
+          180.0,
+          100.0,
+          140.0,
+          80.0,
+          160.0,
+          240.0,
+          40.0,
+          80.0,
+          180.0,
+          140.0,
+          60.0
+        ]
+      },
+      "230": {
+        "oracle_estimate_m": 220.0,
+        "phase_estimates_m": [
+          120.0,
+          140.0,
+          160.0,
+          160.0,
+          80.0,
+          60.0,
+          260.0,
+          100.0,
+          220.0,
+          180.0,
+          160.0,
+          240.0,
+          240.0,
+          220.0,
+          220.0,
+          240.0,
+          220.0,
+          240.0,
+          120.0,
+          120.0
+        ]
+      }
+    },
+    "reference_peak_arbitrary_units": 9.002301820011143e-08,
+    "threshold_note": "Thresholds use coarse-mesh cavity-free calibration only; evaluation nulls use the fine mesh. A failed held-out false-alarm check is reported, not retuned away."
+  },
+  "noise_sweep": {
+    "rows": [
+      {
+        "family": "matched_assumptions",
+        "snr_db": 20.0,
+        "estimator": "known_speed",
+        "positive_trials": 100,
+        "null_trials": 100,
+        "detection_rate": 0.02,
+        "false_alarm_rate": 0.01,
+        "detection_ci": [
+          0.00550196755016235,
+          0.07001179072854388
+        ],
+        "false_alarm_ci": [
+          0.0017674320641406505,
+          0.054486196178705315
+        ],
+        "detected_within_20m_rate": 0.02,
+        "median_depth_error_all_m": 70.0
+      },
+      {
+        "family": "matched_assumptions",
+        "snr_db": 20.0,
+        "estimator": "speed_search",
+        "positive_trials": 100,
+        "null_trials": 100,
+        "detection_rate": 0.01,
+        "false_alarm_rate": 0.01,
+        "detection_ci": [
+          0.0017674320641406505,
+          0.054486196178705315
+        ],
+        "false_alarm_ci": [
+          0.0017674320641406505,
+          0.054486196178705315
+        ],
+        "detected_within_20m_rate": 0.01,
+        "median_depth_error_all_m": 70.0
+      },
+      {
+        "family": "speed_1800",
+        "snr_db": 20.0,
+        "estimator": "known_speed",
+        "positive_trials": 100,
+        "null_trials": 100,
+        "detection_rate": 0.12,
+        "false_alarm_rate": 0.04,
+        "detection_ci": [
+          0.06999406437019488,
+          0.19812099426711421
+        ],
+        "false_alarm_ci": [
+          0.01566330399154762,
+          0.0983707143588792
+        ],
+        "detected_within_20m_rate": 0.02,
+        "median_depth_error_all_m": 70.0
+      },
+      {
+        "family": "speed_1800",
+        "snr_db": 20.0,
+        "estimator": "speed_search",
+        "positive_trials": 100,
+        "null_trials": 100,
+        "detection_rate": 0.02,
+        "false_alarm_rate": 0.02,
+        "detection_ci": [
+          0.00550196755016235,
+          0.07001179072854388
+        ],
+        "false_alarm_ci": [
+          0.00550196755016235,
+          0.07001179072854388
+        ],
+        "detected_within_20m_rate": 0.01,
+        "median_depth_error_all_m": 50.0
+      },
+      {
+        "family": "source_shift_30m",
+        "snr_db": 20.0,
+        "estimator": "known_speed",
+        "positive_trials": 100,
+        "null_trials": 100,
+        "detection_rate": 0.0,
+        "false_alarm_rate": 0.0,
+        "detection_ci": [
+          3.469446951953614e-18,
+          0.03699349820698568
+        ],
+        "false_alarm_ci": [
+          3.469446951953614e-18,
+          0.03699349820698568
+        ],
+        "detected_within_20m_rate": 0.0,
+        "median_depth_error_all_m": 110.0
+      },
+      {
+        "family": "source_shift_30m",
+        "snr_db": 20.0,
+        "estimator": "speed_search",
+        "positive_trials": 100,
+        "null_trials": 100,
+        "detection_rate": 0.0,
+        "false_alarm_rate": 0.0,
+        "detection_ci": [
+          3.469446951953614e-18,
+          0.03699349820698568
+        ],
+        "false_alarm_ci": [
+          3.469446951953614e-18,
+          0.03699349820698568
+        ],
+        "detected_within_20m_rate": 0.0,
+        "median_depth_error_all_m": 70.0
+      },
+      {
+        "family": "matched_assumptions",
+        "snr_db": 40.0,
+        "estimator": "known_speed",
+        "positive_trials": 100,
+        "null_trials": 100,
+        "detection_rate": 0.59,
+        "false_alarm_rate": 0.0,
+        "detection_ci": [
+          0.4920143005341078,
+          0.6813268697886348
+        ],
+        "false_alarm_ci": [
+          3.469446951953614e-18,
+          0.03699349820698568
+        ],
+        "detected_within_20m_rate": 0.59,
+        "median_depth_error_all_m": 10.0
+      },
+      {
+        "family": "matched_assumptions",
+        "snr_db": 40.0,
+        "estimator": "speed_search",
+        "positive_trials": 100,
+        "null_trials": 100,
+        "detection_rate": 0.59,
+        "false_alarm_rate": 0.0,
+        "detection_ci": [
+          0.4920143005341078,
+          0.6813268697886348
+        ],
+        "false_alarm_ci": [
+          3.469446951953614e-18,
+          0.03699349820698568
+        ],
+        "detected_within_20m_rate": 0.59,
+        "median_depth_error_all_m": 10.0
+      },
+      {
+        "family": "speed_1800",
+        "snr_db": 40.0,
+        "estimator": "known_speed",
+        "positive_trials": 100,
+        "null_trials": 100,
+        "detection_rate": 0.99,
+        "false_alarm_rate": 0.93,
+        "detection_ci": [
+          0.9455138038212946,
+          0.9982325679358593
+        ],
+        "false_alarm_ci": [
+          0.8625048526092651,
+          0.9656807389327273
+        ],
+        "detected_within_20m_rate": 0.06,
+        "median_depth_error_all_m": 30.0
+      },
+      {
+        "family": "speed_1800",
+        "snr_db": 40.0,
+        "estimator": "speed_search",
+        "positive_trials": 100,
+        "null_trials": 100,
+        "detection_rate": 0.45,
+        "false_alarm_rate": 0.0,
+        "detection_ci": [
+          0.3561453797951198,
+          0.5475539700255787
+        ],
+        "false_alarm_ci": [
+          3.469446951953614e-18,
+          0.03699349820698568
+        ],
+        "detected_within_20m_rate": 0.45,
+        "median_depth_error_all_m": 70.0
+      },
+      {
+        "family": "source_shift_30m",
+        "snr_db": 40.0,
+        "estimator": "known_speed",
+        "positive_trials": 100,
+        "null_trials": 100,
+        "detection_rate": 0.0,
+        "false_alarm_rate": 0.0,
+        "detection_ci": [
+          3.469446951953614e-18,
+          0.03699349820698568
+        ],
+        "false_alarm_ci": [
+          3.469446951953614e-18,
+          0.03699349820698568
+        ],
+        "detected_within_20m_rate": 0.0,
+        "median_depth_error_all_m": 150.0
+      },
+      {
+        "family": "source_shift_30m",
+        "snr_db": 40.0,
+        "estimator": "speed_search",
+        "positive_trials": 100,
+        "null_trials": 100,
+        "detection_rate": 0.99,
+        "false_alarm_rate": 0.99,
+        "detection_ci": [
+          0.9455138038212946,
+          0.9982325679358593
+        ],
+        "false_alarm_ci": [
+          0.9455138038212946,
+          0.9982325679358593
+        ],
+        "detected_within_20m_rate": 0.99,
+        "median_depth_error_all_m": 10.0
+      },
+      {
+        "family": "matched_assumptions",
+        "snr_db": 60.0,
+        "estimator": "known_speed",
+        "positive_trials": 100,
+        "null_trials": 100,
+        "detection_rate": 0.99,
+        "false_alarm_rate": 0.0,
+        "detection_ci": [
+          0.9455138038212946,
+          0.9982325679358593
+        ],
+        "false_alarm_ci": [
+          3.469446951953614e-18,
+          0.03699349820698568
+        ],
+        "detected_within_20m_rate": 0.99,
+        "median_depth_error_all_m": 10.0
+      },
+      {
+        "family": "matched_assumptions",
+        "snr_db": 60.0,
+        "estimator": "speed_search",
+        "positive_trials": 100,
+        "null_trials": 100,
+        "detection_rate": 0.99,
+        "false_alarm_rate": 0.0,
+        "detection_ci": [
+          0.9455138038212946,
+          0.9982325679358593
+        ],
+        "false_alarm_ci": [
+          3.469446951953614e-18,
+          0.03699349820698568
+        ],
+        "detected_within_20m_rate": 0.99,
+        "median_depth_error_all_m": 10.0
+      },
+      {
+        "family": "speed_1800",
+        "snr_db": 60.0,
+        "estimator": "known_speed",
+        "positive_trials": 100,
+        "null_trials": 100,
+        "detection_rate": 1.0,
+        "false_alarm_rate": 1.0,
+        "detection_ci": [
+          0.9630065017930143,
+          1.0
+        ],
+        "false_alarm_ci": [
+          0.9630065017930143,
+          1.0
+        ],
+        "detected_within_20m_rate": 0.04,
+        "median_depth_error_all_m": 30.0
+      },
+      {
+        "family": "speed_1800",
+        "snr_db": 60.0,
+        "estimator": "speed_search",
+        "positive_trials": 100,
+        "null_trials": 100,
+        "detection_rate": 0.34,
+        "false_alarm_rate": 0.0,
+        "detection_ci": [
+          0.25461520797348164,
+          0.43722271145275377
+        ],
+        "false_alarm_ci": [
+          3.469446951953614e-18,
+          0.03699349820698568
+        ],
+        "detected_within_20m_rate": 0.34,
+        "median_depth_error_all_m": 110.0
+      },
+      {
+        "family": "source_shift_30m",
+        "snr_db": 60.0,
+        "estimator": "known_speed",
+        "positive_trials": 100,
+        "null_trials": 100,
+        "detection_rate": 0.0,
+        "false_alarm_rate": 0.0,
+        "detection_ci": [
+          3.469446951953614e-18,
+          0.03699349820698568
+        ],
+        "false_alarm_ci": [
+          3.469446951953614e-18,
+          0.03699349820698568
+        ],
+        "detected_within_20m_rate": 0.0,
+        "median_depth_error_all_m": 150.0
+      },
+      {
+        "family": "source_shift_30m",
+        "snr_db": 60.0,
+        "estimator": "speed_search",
+        "positive_trials": 100,
+        "null_trials": 100,
+        "detection_rate": 1.0,
+        "false_alarm_rate": 0.53,
+        "detection_ci": [
+          0.9630065017930143,
+          1.0
+        ],
+        "false_alarm_ci": [
+          0.4328885697009936,
+          0.6248918204065872
+        ],
+        "detected_within_20m_rate": 1.0,
+        "median_depth_error_all_m": 10.0
+      }
+    ],
+    "reference_ground_amplitude_um": 1000.0,
+    "scope": "Follow-up SNR sweep; each noise threshold uses separate null trials before evaluating the finer-grid targets. These SNRs are supplied assumptions, not measured satellite performance."
+  },
+  "frequency_depth": {
+    "trials": 63,
+    "accepted_reflectors": 0,
+    "scene_count": 9,
+    "rows": [
+      {
+        "frequency_hz": 8.0,
+        "true_depth_m": 50.0,
+        "reflector": 0,
+        "ungated_model_peak_m": 15.473315772503076,
+        "ungated_score": 0.39752929538866966,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 8.0,
+        "true_depth_m": 50.0,
+        "reflector": 1,
+        "ungated_model_peak_m": 123.7865261800246,
+        "ungated_score": 0.38481067475710107,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 8.0,
+        "true_depth_m": 50.0,
+        "reflector": 2,
+        "ungated_model_peak_m": 73.92806424640358,
+        "ungated_score": 0.27420116321962384,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 8.0,
+        "true_depth_m": 50.0,
+        "reflector": 3,
+        "ungated_model_peak_m": 6.877029232223589,
+        "ungated_score": 0.29989754982689076,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 8.0,
+        "true_depth_m": 50.0,
+        "reflector": 4,
+        "ungated_model_peak_m": 57.59511981987256,
+        "ungated_score": 0.2799399364571674,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 8.0,
+        "true_depth_m": 50.0,
+        "reflector": 5,
+        "ungated_model_peak_m": 119.48838290988486,
+        "ungated_score": 0.2675685822004733,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 8.0,
+        "true_depth_m": 50.0,
+        "reflector": 6,
+        "ungated_model_peak_m": 66.19140636015204,
+        "ungated_score": 0.3078486095849402,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 8.0,
+        "true_depth_m": 90.0,
+        "reflector": 0,
+        "ungated_model_peak_m": 48.13920462556513,
+        "ungated_score": 0.3640646981237401,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 8.0,
+        "true_depth_m": 90.0,
+        "reflector": 1,
+        "ungated_model_peak_m": 59.31437712792846,
+        "ungated_score": 0.289816442394881,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 8.0,
+        "true_depth_m": 90.0,
+        "reflector": 2,
+        "ungated_model_peak_m": 49.85846193362102,
+        "ungated_score": 0.3093505529078383,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 8.0,
+        "true_depth_m": 90.0,
+        "reflector": 3,
+        "ungated_model_peak_m": 119.48838290988486,
+        "ungated_score": 0.25076638848188804,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 8.0,
+        "true_depth_m": 90.0,
+        "reflector": 4,
+        "ungated_model_peak_m": 61.893263090012304,
+        "ungated_score": 0.3287352843019873,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 8.0,
+        "true_depth_m": 90.0,
+        "reflector": 5,
+        "ungated_model_peak_m": 72.20880693834768,
+        "ungated_score": 0.28439677811025554,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 8.0,
+        "true_depth_m": 90.0,
+        "reflector": 6,
+        "ungated_model_peak_m": 88.5417513648787,
+        "ungated_score": 0.3381206780633389,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 8.0,
+        "true_depth_m": 130.0,
+        "reflector": 0,
+        "ungated_model_peak_m": 87.68212271085076,
+        "ungated_score": 0.41887440102393947,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 8.0,
+        "true_depth_m": 130.0,
+        "reflector": 1,
+        "ungated_model_peak_m": 51.57771924167692,
+        "ungated_score": 0.23451780547121504,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 8.0,
+        "true_depth_m": 130.0,
+        "reflector": 2,
+        "ungated_model_peak_m": 125.5057834880805,
+        "ungated_score": 0.26243893269908247,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 8.0,
+        "true_depth_m": 130.0,
+        "reflector": 3,
+        "ungated_model_peak_m": 114.33061098571716,
+        "ungated_score": 0.30670970559649813,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 8.0,
+        "true_depth_m": 130.0,
+        "reflector": 4,
+        "ungated_model_peak_m": 0.8596286540279486,
+        "ungated_score": 0.28973445359713956,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 8.0,
+        "true_depth_m": 130.0,
+        "reflector": 5,
+        "ungated_model_peak_m": 103.15543848335383,
+        "ungated_score": 0.4283944574549614,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 8.0,
+        "true_depth_m": 130.0,
+        "reflector": 6,
+        "ungated_model_peak_m": 75.64732155445948,
+        "ungated_score": 0.3239737675194897,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 16.0,
+        "true_depth_m": 50.0,
+        "reflector": 0,
+        "ungated_model_peak_m": 53.29697654973282,
+        "ungated_score": 0.366175796385954,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 16.0,
+        "true_depth_m": 50.0,
+        "reflector": 1,
+        "ungated_model_peak_m": 92.83989463501845,
+        "ungated_score": 0.2752984547371159,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 16.0,
+        "true_depth_m": 50.0,
+        "reflector": 2,
+        "ungated_model_peak_m": 43.84106135542538,
+        "ungated_score": 0.4910384482225525,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 16.0,
+        "true_depth_m": 50.0,
+        "reflector": 3,
+        "ungated_model_peak_m": 107.45358175349358,
+        "ungated_score": 0.37680726223966743,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 16.0,
+        "true_depth_m": 50.0,
+        "reflector": 4,
+        "ungated_model_peak_m": 99.71692386724203,
+        "ungated_score": 0.6323037550256582,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 16.0,
+        "true_depth_m": 50.0,
+        "reflector": 5,
+        "ungated_model_peak_m": 129.80392675822023,
+        "ungated_score": 0.3717713248792296,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 16.0,
+        "true_depth_m": 50.0,
+        "reflector": 6,
+        "ungated_model_peak_m": 137.54058464447178,
+        "ungated_score": 0.34852998379662037,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 16.0,
+        "true_depth_m": 90.0,
+        "reflector": 0,
+        "ungated_model_peak_m": 44.70069000945333,
+        "ungated_score": 0.325942847266364,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 16.0,
+        "true_depth_m": 90.0,
+        "reflector": 1,
+        "ungated_model_peak_m": 128.94429810419228,
+        "ungated_score": 0.44986339792351004,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 16.0,
+        "true_depth_m": 90.0,
+        "reflector": 2,
+        "ungated_model_peak_m": 38.68328943125769,
+        "ungated_score": 0.2318837833400914,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 16.0,
+        "true_depth_m": 90.0,
+        "reflector": 3,
+        "ungated_model_peak_m": 109.17283906154947,
+        "ungated_score": 0.5147036510940083,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 16.0,
+        "true_depth_m": 90.0,
+        "reflector": 4,
+        "ungated_model_peak_m": 51.57771924167692,
+        "ungated_score": 0.2742312949016211,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 16.0,
+        "true_depth_m": 90.0,
+        "reflector": 5,
+        "ungated_model_peak_m": 46.41994731750923,
+        "ungated_score": 0.41873417623348375,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 16.0,
+        "true_depth_m": 90.0,
+        "reflector": 6,
+        "ungated_model_peak_m": 44.70069000945333,
+        "ungated_score": 0.37494893608027224,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 16.0,
+        "true_depth_m": 130.0,
+        "reflector": 0,
+        "ungated_model_peak_m": 73.92806424640358,
+        "ungated_score": 0.27519339622721795,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 16.0,
+        "true_depth_m": 130.0,
+        "reflector": 1,
+        "ungated_model_peak_m": 65.33177770612409,
+        "ungated_score": 0.3770957481903656,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 16.0,
+        "true_depth_m": 130.0,
+        "reflector": 2,
+        "ungated_model_peak_m": 71.34917828431973,
+        "ungated_score": 0.30414929041537897,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 16.0,
+        "true_depth_m": 130.0,
+        "reflector": 3,
+        "ungated_model_peak_m": 68.77029232223589,
+        "ungated_score": 0.3085087234031596,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 16.0,
+        "true_depth_m": 130.0,
+        "reflector": 4,
+        "ungated_model_peak_m": 126.36541214210844,
+        "ungated_score": 0.3396791101928601,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 16.0,
+        "true_depth_m": 130.0,
+        "reflector": 5,
+        "ungated_model_peak_m": 94.55915194307434,
+        "ungated_score": 0.3713368951218178,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 16.0,
+        "true_depth_m": 130.0,
+        "reflector": 6,
+        "ungated_model_peak_m": 55.87586251181666,
+        "ungated_score": 0.24214707926668466,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 25.0,
+        "true_depth_m": 50.0,
+        "reflector": 0,
+        "ungated_model_peak_m": 104.87469579140974,
+        "ungated_score": 0.35671308752828734,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 25.0,
+        "true_depth_m": 50.0,
+        "reflector": 1,
+        "ungated_model_peak_m": 36.9640321232018,
+        "ungated_score": 0.5030322611123437,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 25.0,
+        "true_depth_m": 50.0,
+        "reflector": 2,
+        "ungated_model_peak_m": 26.648488274866406,
+        "ungated_score": 0.39822852904338224,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 25.0,
+        "true_depth_m": 50.0,
+        "reflector": 3,
+        "ungated_model_peak_m": 93.6995232890464,
+        "ungated_score": 0.231026621055464,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 25.0,
+        "true_depth_m": 50.0,
+        "reflector": 4,
+        "ungated_model_peak_m": 111.75172502363331,
+        "ungated_score": 0.38190126833510196,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 25.0,
+        "true_depth_m": 50.0,
+        "reflector": 5,
+        "ungated_model_peak_m": 110.89209636960537,
+        "ungated_score": 0.45199302224718574,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 25.0,
+        "true_depth_m": 50.0,
+        "reflector": 6,
+        "ungated_model_peak_m": 72.20880693834768,
+        "ungated_score": 0.3099201897312486,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 25.0,
+        "true_depth_m": 90.0,
+        "reflector": 0,
+        "ungated_model_peak_m": 32.66588885306205,
+        "ungated_score": 0.41519871288353605,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 25.0,
+        "true_depth_m": 90.0,
+        "reflector": 1,
+        "ungated_model_peak_m": 35.244774815145895,
+        "ungated_score": 0.5498150221995804,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 25.0,
+        "true_depth_m": 90.0,
+        "reflector": 2,
+        "ungated_model_peak_m": 104.87469579140974,
+        "ungated_score": 0.3424403883982484,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 25.0,
+        "true_depth_m": 90.0,
+        "reflector": 3,
+        "ungated_model_peak_m": 15.473315772503076,
+        "ungated_score": 0.23743154691233725,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 25.0,
+        "true_depth_m": 90.0,
+        "reflector": 4,
+        "ungated_model_peak_m": 104.87469579140974,
+        "ungated_score": 0.27842480141612014,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 25.0,
+        "true_depth_m": 90.0,
+        "reflector": 5,
+        "ungated_model_peak_m": 92.83989463501845,
+        "ungated_score": 0.356670414225818,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 25.0,
+        "true_depth_m": 90.0,
+        "reflector": 6,
+        "ungated_model_peak_m": 99.71692386724203,
+        "ungated_score": 0.32710773348067623,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 25.0,
+        "true_depth_m": 130.0,
+        "reflector": 0,
+        "ungated_model_peak_m": 32.66588885306205,
+        "ungated_score": 0.4461402922662254,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 25.0,
+        "true_depth_m": 130.0,
+        "reflector": 1,
+        "ungated_model_peak_m": 35.244774815145895,
+        "ungated_score": 0.30133049845378224,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 25.0,
+        "true_depth_m": 130.0,
+        "reflector": 2,
+        "ungated_model_peak_m": 129.80392675822023,
+        "ungated_score": 0.2744015777855425,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 25.0,
+        "true_depth_m": 130.0,
+        "reflector": 3,
+        "ungated_model_peak_m": 40.402546739313586,
+        "ungated_score": 0.36025257109985265,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 25.0,
+        "true_depth_m": 130.0,
+        "reflector": 4,
+        "ungated_model_peak_m": 74.78769290043152,
+        "ungated_score": 0.41381410540031405,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 25.0,
+        "true_depth_m": 130.0,
+        "reflector": 5,
+        "ungated_model_peak_m": 39.54291808528564,
+        "ungated_score": 0.4434902802311561,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      },
+      {
+        "frequency_hz": 25.0,
+        "true_depth_m": 130.0,
+        "reflector": 6,
+        "ungated_model_peak_m": 0.8596286540279486,
+        "ungated_score": 0.24716787554188135,
+        "accepted": false,
+        "accepted_window_count": 0,
+        "gated_model_peak_m": null
+      }
+    ],
+    "wavelength_m": 0.48,
+    "model_depth_max_m": 137.54058464447178,
+    "scope": "Physical cavities feed the same ideal reflector acquisition. Depth-axis outputs use our broad-overlap patch registration with known zero nuisance, not a claim to reproduce the original method. Crosses are rejected diagnostic peaks, not detections."
+  },
+  "ambiguity": {
+    "rows": [
+      {
+        "frequency_hz": 8.0,
+        "source_count": 1,
+        "split": "fitted_receivers",
+        "relative_complex_misfit": 0.17432647621525496,
+        "maximum_source_weight": 0.9818990013846115,
+        "source_weight_l2": 0.9818990013846115,
+        "condition_number": 1.0
+      },
+      {
+        "frequency_hz": 8.0,
+        "source_count": 1,
+        "split": "held_out_receivers",
+        "relative_complex_misfit": 0.214884394599291,
+        "maximum_source_weight": 0.9818990013846115,
+        "source_weight_l2": 0.9818990013846115,
+        "condition_number": 1.0
+      },
+      {
+        "frequency_hz": 8.0,
+        "source_count": 3,
+        "split": "fitted_receivers",
+        "relative_complex_misfit": 0.12672879472795376,
+        "maximum_source_weight": 1.028568484440563,
+        "source_weight_l2": 1.037192754522931,
+        "condition_number": 1.8687180099692127
+      },
+      {
+        "frequency_hz": 8.0,
+        "source_count": 3,
+        "split": "held_out_receivers",
+        "relative_complex_misfit": 0.136524488887261,
+        "maximum_source_weight": 1.028568484440563,
+        "source_weight_l2": 1.037192754522931,
+        "condition_number": 1.8687180099692127
+      },
+      {
+        "frequency_hz": 8.0,
+        "source_count": 7,
+        "split": "fitted_receivers",
+        "relative_complex_misfit": 6.080639640859264e-16,
+        "maximum_source_weight": 0.9981243099172304,
+        "source_weight_l2": 1.0127769929069699,
+        "condition_number": 3.8724797401517916
+      },
+      {
+        "frequency_hz": 8.0,
+        "source_count": 7,
+        "split": "held_out_receivers",
+        "relative_complex_misfit": 0.027249697967190168,
+        "maximum_source_weight": 0.9981243099172304,
+        "source_weight_l2": 1.0127769929069699,
+        "condition_number": 3.8724797401517916
+      },
+      {
+        "frequency_hz": 25.0,
+        "source_count": 1,
+        "split": "fitted_receivers",
+        "relative_complex_misfit": 0.17422328522175806,
+        "maximum_source_weight": 0.9843955715698275,
+        "source_weight_l2": 0.9843955715698275,
+        "condition_number": 1.0
+      },
+      {
+        "frequency_hz": 25.0,
+        "source_count": 1,
+        "split": "held_out_receivers",
+        "relative_complex_misfit": 0.2529567089725436,
+        "maximum_source_weight": 0.9843955715698275,
+        "source_weight_l2": 0.9843955715698275,
+        "condition_number": 1.0
+      },
+      {
+        "frequency_hz": 25.0,
+        "source_count": 3,
+        "split": "fitted_receivers",
+        "relative_complex_misfit": 0.13608420581482433,
+        "maximum_source_weight": 0.9944689221652784,
+        "source_weight_l2": 1.0002223179032008,
+        "condition_number": 1.3482127793728826
+      },
+      {
+        "frequency_hz": 25.0,
+        "source_count": 3,
+        "split": "held_out_receivers",
+        "relative_complex_misfit": 0.29534653830639407,
+        "maximum_source_weight": 0.9944689221652784,
+        "source_weight_l2": 1.0002223179032008,
+        "condition_number": 1.3482127793728826
+      },
+      {
+        "frequency_hz": 25.0,
+        "source_count": 7,
+        "split": "fitted_receivers",
+        "relative_complex_misfit": 7.790272836366079e-16,
+        "maximum_source_weight": 0.8938985985874631,
+        "source_weight_l2": 0.9639914584486777,
+        "condition_number": 6.152640655475787
+      },
+      {
+        "frequency_hz": 25.0,
+        "source_count": 7,
+        "split": "held_out_receivers",
+        "relative_complex_misfit": 0.4030247632541285,
+        "maximum_source_weight": 0.8938985985874631,
+        "source_weight_l2": 0.9639914584486777,
+        "condition_number": 6.152640655475787
+      }
+    ],
+    "cavity_depth_m": 150.0,
+    "fitted_receivers": 7,
+    "held_out_receivers": 14,
+    "scope": "Single-frequency displacement before radar noise. Unrestricted complex source weights, not an ambient-source probability model. Additional receivers, bandwidth and source constraints may distinguish these alternatives."
+  },
+  "independent_controls": {
+    "scene_count": 32,
+    "groups": [
+      {
+        "family": "speckle",
+        "scenes": 16,
+        "scenes_with_any_gate_pass": 0,
+        "scene_pass_rate": 0.0,
+        "scene_pass_ci": [
+          0.0,
+          0.1936076805344365
+        ],
+        "pixel_passes": 0
+      },
+      {
+        "family": "speckle_and_points",
+        "scenes": 16,
+        "scenes_with_any_gate_pass": 0,
+        "scene_pass_rate": 0.0,
+        "scene_pass_ci": [
+          0.0,
+          0.1936076805344365
+        ],
+        "pixel_passes": 0
+      }
+    ],
+    "rows": [
+      {
+        "scene": 0,
+        "seed": 40000,
+        "family": "speckle",
+        "targets": 7,
+        "full_gate_pixels": 0,
+        "shape_gate_pixels": 2,
+        "any_full_gate": false,
+        "mean_ungated_best_score": 0.2777230639655238,
+        "median_arc_disagreement_px": 0.001777720099183911
+      },
+      {
+        "scene": 1,
+        "seed": 40001,
+        "family": "speckle",
+        "targets": 7,
+        "full_gate_pixels": 0,
+        "shape_gate_pixels": 0,
+        "any_full_gate": false,
+        "mean_ungated_best_score": 0.28891391760036367,
+        "median_arc_disagreement_px": 0.001546100048731622
+      },
+      {
+        "scene": 2,
+        "seed": 40002,
+        "family": "speckle",
+        "targets": 7,
+        "full_gate_pixels": 0,
+        "shape_gate_pixels": 1,
+        "any_full_gate": false,
+        "mean_ungated_best_score": 0.3165949264112874,
+        "median_arc_disagreement_px": 0.0017666116737643307
+      },
+      {
+        "scene": 3,
+        "seed": 40003,
+        "family": "speckle",
+        "targets": 7,
+        "full_gate_pixels": 0,
+        "shape_gate_pixels": 2,
+        "any_full_gate": false,
+        "mean_ungated_best_score": 0.2869176942479683,
+        "median_arc_disagreement_px": 0.0017005896563273026
+      },
+      {
+        "scene": 4,
+        "seed": 40004,
+        "family": "speckle",
+        "targets": 7,
+        "full_gate_pixels": 0,
+        "shape_gate_pixels": 1,
+        "any_full_gate": false,
+        "mean_ungated_best_score": 0.3563762016205116,
+        "median_arc_disagreement_px": 0.0016250069185280167
+      },
+      {
+        "scene": 5,
+        "seed": 40005,
+        "family": "speckle",
+        "targets": 7,
+        "full_gate_pixels": 0,
+        "shape_gate_pixels": 1,
+        "any_full_gate": false,
+        "mean_ungated_best_score": 0.29739522388796963,
+        "median_arc_disagreement_px": 0.0016154906105829091
+      },
+      {
+        "scene": 6,
+        "seed": 40006,
+        "family": "speckle",
+        "targets": 7,
+        "full_gate_pixels": 0,
+        "shape_gate_pixels": 2,
+        "any_full_gate": false,
+        "mean_ungated_best_score": 0.29186069606836135,
+        "median_arc_disagreement_px": 0.0013557094549662095
+      },
+      {
+        "scene": 7,
+        "seed": 40007,
+        "family": "speckle",
+        "targets": 7,
+        "full_gate_pixels": 0,
+        "shape_gate_pixels": 0,
+        "any_full_gate": false,
+        "mean_ungated_best_score": 0.3097197621847343,
+        "median_arc_disagreement_px": 0.001748493008016762
+      },
+      {
+        "scene": 8,
+        "seed": 40008,
+        "family": "speckle",
+        "targets": 7,
+        "full_gate_pixels": 0,
+        "shape_gate_pixels": 0,
+        "any_full_gate": false,
+        "mean_ungated_best_score": 0.3332254616480177,
+        "median_arc_disagreement_px": 0.0015925073069691438
+      },
+      {
+        "scene": 9,
+        "seed": 40009,
+        "family": "speckle",
+        "targets": 7,
+        "full_gate_pixels": 0,
+        "shape_gate_pixels": 0,
+        "any_full_gate": false,
+        "mean_ungated_best_score": 0.32014237080702224,
+        "median_arc_disagreement_px": 0.001936974474610845
+      },
+      {
+        "scene": 10,
+        "seed": 40010,
+        "family": "speckle",
+        "targets": 7,
+        "full_gate_pixels": 0,
+        "shape_gate_pixels": 4,
+        "any_full_gate": false,
+        "mean_ungated_best_score": 0.31708011297317995,
+        "median_arc_disagreement_px": 0.0014180384386066431
+      },
+      {
+        "scene": 11,
+        "seed": 40011,
+        "family": "speckle",
+        "targets": 7,
+        "full_gate_pixels": 0,
+        "shape_gate_pixels": 0,
+        "any_full_gate": false,
+        "mean_ungated_best_score": 0.33125608252306,
+        "median_arc_disagreement_px": 0.0013473367762335399
+      },
+      {
+        "scene": 12,
+        "seed": 40012,
+        "family": "speckle",
+        "targets": 7,
+        "full_gate_pixels": 0,
+        "shape_gate_pixels": 2,
+        "any_full_gate": false,
+        "mean_ungated_best_score": 0.3591877210766447,
+        "median_arc_disagreement_px": 0.0016671216086598874
+      },
+      {
+        "scene": 13,
+        "seed": 40013,
+        "family": "speckle",
+        "targets": 7,
+        "full_gate_pixels": 0,
+        "shape_gate_pixels": 2,
+        "any_full_gate": false,
+        "mean_ungated_best_score": 0.31096420091039206,
+        "median_arc_disagreement_px": 0.0015563599992771497
+      },
+      {
+        "scene": 14,
+        "seed": 40014,
+        "family": "speckle",
+        "targets": 7,
+        "full_gate_pixels": 0,
+        "shape_gate_pixels": 0,
+        "any_full_gate": false,
+        "mean_ungated_best_score": 0.2862507975822313,
+        "median_arc_disagreement_px": 0.0011591371062714946
+      },
+      {
+        "scene": 15,
+        "seed": 40015,
+        "family": "speckle",
+        "targets": 7,
+        "full_gate_pixels": 0,
+        "shape_gate_pixels": 0,
+        "any_full_gate": false,
+        "mean_ungated_best_score": 0.3194148502683171,
+        "median_arc_disagreement_px": 0.0016290264670674585
+      },
+      {
+        "scene": 16,
+        "seed": 40016,
+        "family": "speckle_and_points",
+        "targets": 7,
+        "full_gate_pixels": 0,
+        "shape_gate_pixels": 0,
+        "any_full_gate": false,
+        "mean_ungated_best_score": 0.3220150279046598,
+        "median_arc_disagreement_px": 0.0015604526362931427
+      },
+      {
+        "scene": 17,
+        "seed": 40017,
+        "family": "speckle_and_points",
+        "targets": 7,
+        "full_gate_pixels": 0,
+        "shape_gate_pixels": 0,
+        "any_full_gate": false,
+        "mean_ungated_best_score": 0.324157971251213,
+        "median_arc_disagreement_px": 0.0013445944764566666
+      },
+      {
+        "scene": 18,
+        "seed": 40018,
+        "family": "speckle_and_points",
+        "targets": 7,
+        "full_gate_pixels": 0,
+        "shape_gate_pixels": 1,
+        "any_full_gate": false,
+        "mean_ungated_best_score": 0.2985106407233583,
+        "median_arc_disagreement_px": 0.002001060969729211
+      },
+      {
+        "scene": 19,
+        "seed": 40019,
+        "family": "speckle_and_points",
+        "targets": 7,
+        "full_gate_pixels": 0,
+        "shape_gate_pixels": 2,
+        "any_full_gate": false,
+        "mean_ungated_best_score": 0.3833235178701562,
+        "median_arc_disagreement_px": 0.0018579006973468582
+      },
+      {
+        "scene": 20,
+        "seed": 40020,
+        "family": "speckle_and_points",
+        "targets": 7,
+        "full_gate_pixels": 0,
+        "shape_gate_pixels": 0,
+        "any_full_gate": false,
+        "mean_ungated_best_score": 0.2829831718263784,
+        "median_arc_disagreement_px": 0.0016641615540790792
+      },
+      {
+        "scene": 21,
+        "seed": 40021,
+        "family": "speckle_and_points",
+        "targets": 7,
+        "full_gate_pixels": 0,
+        "shape_gate_pixels": 1,
+        "any_full_gate": false,
+        "mean_ungated_best_score": 0.3157616224276829,
+        "median_arc_disagreement_px": 0.001524477866101555
+      },
+      {
+        "scene": 22,
+        "seed": 40022,
+        "family": "speckle_and_points",
+        "targets": 7,
+        "full_gate_pixels": 0,
+        "shape_gate_pixels": 2,
+        "any_full_gate": false,
+        "mean_ungated_best_score": 0.2719601287183537,
+        "median_arc_disagreement_px": 0.0013258994980124865
+      },
+      {
+        "scene": 23,
+        "seed": 40023,
+        "family": "speckle_and_points",
+        "targets": 7,
+        "full_gate_pixels": 0,
+        "shape_gate_pixels": 2,
+        "any_full_gate": false,
+        "mean_ungated_best_score": 0.3215562677934744,
+        "median_arc_disagreement_px": 0.0013386171318129666
+      },
+      {
+        "scene": 24,
+        "seed": 40024,
+        "family": "speckle_and_points",
+        "targets": 7,
+        "full_gate_pixels": 0,
+        "shape_gate_pixels": 1,
+        "any_full_gate": false,
+        "mean_ungated_best_score": 0.32142532410545704,
+        "median_arc_disagreement_px": 0.0016026940963939636
+      },
+      {
+        "scene": 25,
+        "seed": 40025,
+        "family": "speckle_and_points",
+        "targets": 7,
+        "full_gate_pixels": 0,
+        "shape_gate_pixels": 0,
+        "any_full_gate": false,
+        "mean_ungated_best_score": 0.3152449573990045,
+        "median_arc_disagreement_px": 0.001741754968064055
+      },
+      {
+        "scene": 26,
+        "seed": 40026,
+        "family": "speckle_and_points",
+        "targets": 7,
+        "full_gate_pixels": 0,
+        "shape_gate_pixels": 2,
+        "any_full_gate": false,
+        "mean_ungated_best_score": 0.285744326600382,
+        "median_arc_disagreement_px": 0.0017126715836338236
+      },
+      {
+        "scene": 27,
+        "seed": 40027,
+        "family": "speckle_and_points",
+        "targets": 7,
+        "full_gate_pixels": 0,
+        "shape_gate_pixels": 2,
+        "any_full_gate": false,
+        "mean_ungated_best_score": 0.28425643662690736,
+        "median_arc_disagreement_px": 0.001600402903267406
+      },
+      {
+        "scene": 28,
+        "seed": 40028,
+        "family": "speckle_and_points",
+        "targets": 7,
+        "full_gate_pixels": 0,
+        "shape_gate_pixels": 2,
+        "any_full_gate": false,
+        "mean_ungated_best_score": 0.2942432275885549,
+        "median_arc_disagreement_px": 0.001432865041956235
+      },
+      {
+        "scene": 29,
+        "seed": 40029,
+        "family": "speckle_and_points",
+        "targets": 7,
+        "full_gate_pixels": 0,
+        "shape_gate_pixels": 2,
+        "any_full_gate": false,
+        "mean_ungated_best_score": 0.356807386649733,
+        "median_arc_disagreement_px": 0.0015472772797425066
+      },
+      {
+        "scene": 30,
+        "seed": 40030,
+        "family": "speckle_and_points",
+        "targets": 7,
+        "full_gate_pixels": 0,
+        "shape_gate_pixels": 0,
+        "any_full_gate": false,
+        "mean_ungated_best_score": 0.3038847930041886,
+        "median_arc_disagreement_px": 0.0018830590042140166
+      },
+      {
+        "scene": 31,
+        "seed": 40031,
+        "family": "speckle_and_points",
+        "targets": 7,
+        "full_gate_pixels": 0,
+        "shape_gate_pixels": 0,
+        "any_full_gate": false,
+        "mean_ungated_best_score": 0.32001994183059246,
+        "median_arc_disagreement_px": 0.001421569739436762
+      }
+    ],
+    "method": "Independent band-limited speckle, with/without ideal static points; 7 target patches per image. Separate 10-sample flanks 48 px from the target strip, per-side geometric median, W25 per-window gating. No permutation of correlated looks. The scene is the independent unit; gate acceptance is not a validated cavity detector."
+  },
+  "elapsed_seconds": 13.50607162504457,
+  "source_sha256": {
+    "experiments/validation.py": "8952b811ff4b21344a029a5a0e66faf3ff257a97208469183d279b981a464a4c",
+    "sarsim/__init__.py": "ea5d8f4fb6ecc1134a5d2dff69b9e5d2a23022c451a4fbaaf7f904db8f3535c5",
+    "sarsim/gates.py": "d8addb7712726406eb4a9992541197bf1875f07a818afb81f5abd31e6bf27140",
+    "sarsim/geometry.py": "9e571084415f68b9b777ed31bba192e32d7cfe9ab3e25782b8c848f7fbfb478d",
+    "sarsim/iceye.py": "8c0623ab222442e1b1183eafac9a62c0fc9f59113b9044b3e760026a0616c0a5",
+    "sarsim/measurement.py": "daaf198cfaae7800c22c4414dbf4e0e2358747fe08b8e7725ef813e45c069ab1",
+    "sarsim/pipeline.py": "ea12b71c2efd515853b4377bba8ce98aa5fd5107aa0aa36ca57f3428a197c91d",
+    "sarsim/realdata.py": "ccd975a80feae8c6365dc58611cdd334cdf0e846fcc489f70a875e2e0c70380c",
+    "sarsim/scene.py": "29e8bb93653e26223ebe7a9b78c84734c1284e10365187f26b4b231d5f75fdf7",
+    "sarsim/subap.py": "6ad18b5b5314bcbd07c14b2d8ec3757fa39107acf28222e14d85f6f7a207c2b0",
+    "sarsim/synth.py": "9ec7e5a841d6d996f2a7059cfbbd5f33d2215c1f3a9ff1ea0069d870cadefb07",
+    "sarsim/tomo.py": "659bc7e686938b75d609b338c8872e7e450f518f4781b96d674099bfd1773baa",
+    "sarsim/track.py": "9bfa67c46d4622858286f2020824cef0b59257ecc07241f37bb037d332094937",
+    "sarsim/viz.py": "82c33cf3d529d0330bf3c278626ac35f763dc75a5c2c0a41677ba4cac3f1805a",
+    "sarsim/waves.py": "de0f6d28689a8ad7845ebd3e338cab77609b44c9c096249e1081da2bcf1d547c"
+  }
+}

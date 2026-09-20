@@ -3,7 +3,7 @@ import time
 import numpy as np
 from .subap import SubapBank
 from .track import patch_shifts
-from .tomo import kz_for_bank, default_depths, focus_paper, focus_windows
+from .tomo import kz_for_bank, default_depths, focus_paper, focus_windows, focus_branch_b
 
 
 def grid_targets(r0, r1, c0, c1, stride):
@@ -59,4 +59,7 @@ def run_pipeline(slc, geom, rows, cols, bank=None, patch=32, upsample=1000, lam_
         out["tomo_paper"] = focus_paper(q[..., 0] + 1j * q[..., 1], kz, z)
     if "windows" in modes:
         out["score_w"], out["best_w"] = focus_windows(q, kz, z, W=W)
+    if "branch_b" in modes:
+        out["score_b"], out["best_b"], gate = focus_branch_b(q, kz, z, W=W)
+        out["accepted_windows"] = gate.full
     return out

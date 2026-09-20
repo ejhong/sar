@@ -41,7 +41,7 @@ def focus_paper(Yc, kz, z):
     return (np.abs(H) ** 2) / Yc.shape[1] ** 2
 
 
-def focus_windows(q, kz, z, W=25, chunk=4096):
+def focus_windows(q, kz, z, W=25, chunk=4096, accepted=None):
     """Max-over-windows adjusted R^2; q [P, K, 2] real.
 
     Constant trajectories have no defined R^2. Exclude those windows and return
@@ -51,6 +51,10 @@ def focus_windows(q, kz, z, W=25, chunk=4096):
     if not 3 <= W <= K:
         raise ValueError("window length must be between 3 and the trajectory length")
     nW = K - W + 1
+    if accepted is not None:
+        accepted = np.asarray(accepted, bool)
+        if accepted.shape != (P, nW):
+            raise ValueError("accepted must have shape [pixel, contiguous window]")
     Z = z.size
     n, p = 2 * W, 4
     best = np.full((P, Z), -np.inf)
@@ -71,11 +75,25 @@ def focus_windows(q, kz, z, W=25, chunk=4096):
             r2 = 1 - ssres / np.maximum(sstot[:, None], 1e-30)
             adj = 1 - (1 - r2) * (n - 1) / (n - p - 1)
             usable = sstot > np.maximum(1e-30, ssq * 1e-14)
+            if accepted is not None:
+                usable &= accepted[i:i + chunk, w]
             adj = np.where(usable[:, None], adj, -np.inf)
             better = adj > best[i:i + chunk]
             best[i:i + chunk] = np.where(better, adj, best[i:i + chunk])
             best_w[i:i + chunk] = np.where(better, w, best_w[i:i + chunk])
     return np.where(best_w >= 0, best, 0.0), best_w
+
+
+def focus_branch_b(q, kz, z, W=25):
+    """Selective derivative-protocol branch: fit only accepted windows.
+
+    No accepted window means missing output (NaN), never a depth detection.
+    """
+    from .gates import ellipse_windows
+    gates = ellipse_windows(q, W=W)
+    score, window = focus_windows(q, kz, z, W=W, accepted=gates.full)
+    score = np.where(window >= 0, score, np.nan)
+    return score, window, gates
 
 
 def permute(q, rng):

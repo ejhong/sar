@@ -58,10 +58,11 @@ def refine_summary(summary):
         full = m["ellipse_full_gate_pass"]
         summary.update(
             title="The full ellipse gate rejects the sampled static pixels",
-            finding=f"The shape-only gate accepts {shape['pyramid pixels']:.1%} of pyramid and {shape['empty desert']:.1%} of desert pixels. After the 0.005 px minor-axis floor, the full gate accepts {full['pyramid pixels']:.1%} and {full['empty desert']:.1%}. True-order scores show near-nominal permutation rejection rates in these scenes.",
-            limitations="One scene realization per class, 1,500 dependent pixels, and 60 permutations. A near-chance rejection rate is not proof that all ordering is absent. Shape-only acceptance must not be described as a false positive of the full gate.",
+            finding=f"The corrected per-window shape gate accepts {shape['pyramid pixels']:.1%} of pyramid and {shape['empty desert']:.1%} of desert pixels. After the 0.005 px minor-axis floor, the full gate accepts {full['pyramid pixels']:.1%} and {full['empty desert']:.1%}. The earlier shuffle comparison is retained as a diagnostic only.",
+            limitations="One scene per class and 1,500 dependent pixels. Arbitrary look permutations change correlations between overlapping sub-apertures, so the shuffle statistic is not a calibrated physical null test. The new independent-scene controls replace it as the primary null comparison. Shape-only acceptance is not a false positive of the full gate; sensitivity must also be tested on physical positives.",
+            method="For each of 26 contiguous W25 windows, choose the best ellipse mode from 1–6, then apply adjusted R² ≥ 0.25, axis ratio ≥ 0.1 and minor axis ≥ 0.005 px. Pixel acceptance requires at least one fully accepted window. Legacy shuffle results use 60 arbitrary order permutations and are descriptive only.",
         )
-        captions["t06_permutation"] = "<b>Check all parts of a gate.</b> True and shuffled score distributions, permutation rejection rates, and shape-only acceptance. The right panel excludes the amplitude floor. With that floor included, the implemented full gate accepts none of the sampled static pixels."
+        captions["t06_permutation"] = "<b>Check all parts of a gate.</b> The right panel excludes the amplitude floor; including it rejects all sampled static pixels. The two shuffle panels are historical diagnostics: permutations do not preserve overlapping-look covariance, so their nominal 5% reference is not a validated false-alarm rate. Per-window selection has been corrected and the scene results rerun."
     elif t == "t07_wells":
         summary.update(
             role="illustration",

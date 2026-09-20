@@ -1,0 +1,29 @@
+{
+  "date": "2026-09-20",
+  "reference": "Public derivative protocol v1.5",
+  "reference_revision": "81451263db5a5ab4624b74d64ee65cb1b611b453",
+  "reference_url": "https://github.com/BiondiProtocol/Replication-and-Verification-Biondi-Protocol",
+  "original_authors_data_processed": false,
+  "exact_original_replication_claimed": false,
+  "corrected": [
+    "Best harmonic selected within each W25 window; thresholds then applied per window",
+    "Branch B real least-squares focusing restricted to accepted windows",
+    "All-rejected branch B gives NaN scores and -1 window identities",
+    "Two separately supplied flank populations aggregated by geometric median, with diagnostic disagreement"
+  ],
+  "retained_differences": [
+    "Simulated straight-line geometry, not acquisition state vectors",
+    "32-pixel patch registration, not an exact implementation of every derivative context-window refinement",
+    "Global-median correction in legacy T1-T7; two-arc correction only in new independent image controls",
+    "Optimistic zero nuisance in the physical moving-reflector comparison",
+    "Legacy complex-focus power shown only as a diagnostic"
+  ],
+  "physical_benchmark": "Finite-difference SH wavefield -> phase modulation -> simplified focused SLC -> favorable known-support phase readout -> physical template inverse. Different forward/inverse meshes and disjoint depths; common wave-equation family.",
+  "not_validated": [
+    "Distributed-ground vibration extraction",
+    "Ambient-source identifiability",
+    "Real-acquisition geometry and autofocus effects",
+    "Vertical columns, spiral ramps, three-dimensional cavities or kilometre-scale depth",
+    "Field sensitivity, false alarms and localization"
+  ]
+}

@@ -1,68 +1,136 @@
-# Doppler Tomography, Tested
+# SAR Depth, Tested
 
-Source for [the research notebook](https://ejhong.github.io/sar/): a reconstruction of single-image SAR Doppler tomography, tested on known synthetic scenes. The experiments show how stationary surface scattering can produce depth-like patterns. They do not establish the cause of a specific published feature, reproduce the original authors' data, or demonstrate field detection of cavities.
+Source for [the open research notebook](https://ejhong.github.io/sar/). The site
+separates three questions: can SAR measure surface motion, does that motion
+constrain underground depth, and do the Khafre observations establish columns?
+
+The new physical suite connects a buried cavity to a wavefield, complex radar
+measurement and depth estimator. It finds conditional recovery under favorable
+assumptions, poor recovery at lower SNR, and false alarms under model mismatch.
+It also evaluates the reconstructed patch-shift method and surface artifacts.
+**No real pyramid acquisition or independently surveyed column geometry has yet
+been processed.** See [METHOD_AUDIT.md](METHOD_AUDIT.md) for the distinction
+between original publications, the public derivative protocol and this code.
 
 ## Run
 
 ```bash
 python3.11 -m venv .venv
 .venv/bin/pip install -r requirements.txt
-.venv/bin/python -m pytest tests
 .venv/bin/python build_site.py
+.venv/bin/python -m pytest tests -q
 python3 -m http.server 4175 --directory docs
 ```
 
-Committed reports and figures are sufficient to rebuild the page. The page's fonts are served locally; their licenses are in `docs/fonts/`.
-
-Run the small supporting studies independently:
+Committed reports and figures rebuild the site without private inputs or cached
+arrays. Fonts and their licenses are served locally.
 
 ```bash
-.venv/bin/python experiments/feasibility.py
-.venv/bin/python experiments/robustness.py
+# Physical benchmarks: a few minutes on the development machine.
+.venv/bin/python experiments/validation.py
 .venv/bin/python build_site.py
-```
 
-Run the paired T7 surface-target comparison (13 scenes; several minutes):
-
-```bash
+# Corrected legacy gate studies: longer full scene processing.
+.venv/bin/python experiments/t06_ordering.py
 .venv/bin/python experiments/t07_surface_controls.py
-.venv/bin/python build_site.py
-```
 
-Run every scene experiment, supporting control, overview figure, and the site build:
-
-```bash
+# All active studies, supporting models and site build.
 .venv/bin/python experiments/run_all.py
 ```
 
-The two full scene analyses take several minutes each. Other controls are smaller; runtime depends on hardware. Set `MPLCONFIGDIR` to a writable directory if matplotlib cannot write its usual cache.
+Set `MPLCONFIGDIR` to a writable location if needed. Computational results use
+fixed seeds; timing depends on hardware. The source hashes in the physical report
+identify the implementation. Large wave and scene caches remain ignored.
 
-## Contents
+## New physical studies
 
-- `sarsim/`: radar geometry, scenes, focused-image synthesis, sub-apertures, patch registration, and two focusing formulations.
-- `experiments/t01_*` through `t06_*`: stationary pyramid, desert, spacing mechanism, parameter sensitivity, imposed vibration, and selection gates.
-- `experiments/t07_surface_controls.py`: one fixed pyramid with no added points, the original eight-point layout, and three seeded random perimeter layouts. Three prescribed strength settings give 13 scenes. Paired measurements use unsmoothed power at identical pixels, a fixed depth scale, shared display references, and the T6 acceptance gate on every grid trajectory. Per-point design and measurements, scene summaries, and all settings are committed and downloadable.
-- `experiments/t07_wells.py`: the former T7, now an explicitly illustrative appendix. Hand-placed points, depth rescaling, smoothing and chosen isosurfaces produce renderings; these do not explain the Khafre observations. The legacy filename and page anchor remain usable. The all-experiments runner also regenerates this appendix.
-- `experiments/feasibility.py`: ideal pulse receiver, shear-wave cavity model, AI site-confounding controls, and a same-input phase-versus-translation check. Adapted from the supplied `SAR-Voids-Quick-Experiments.zip`; the script is self-contained and does not require private inputs.
-- `experiments/robustness.py`: 40 two-scatterer runs, wavelength rescaling, and positive/null controls for the permutation statistic.
-- `experiments/overview.py`: opening figure from the scene arrays.
-- `experiments/reporting.py`: descriptions that keep the displayed claims consistent with the computed metrics.
-- `results/`: portable reports, figures and per-run CSVs. Large arrays remain in ignored `results/cache/`.
-- `site/page.html`, `build_site.py`, `docs/style.css`, `docs/site.js`: page template, renderer, presentation and progressive enhancement. `docs/index.html` and `docs/data/` are generated and committed for GitHub Pages.
-- `tests/`: numerical regressions and static-site checks.
+`experiments/validation.py` writes `results/validation/design.json` before running.
+It commits aggregate metrics, per-trial CSVs and publication-sized PNGs:
 
-The page offers expandable experiments, full-size figures, downloadable JSON/CSV data, an algebraic depth-scale explorer, a glossary and a roadmap for independent field validation. Native details and image links work without JavaScript.
+- **Motion:** known 1/2/4 Hz displacement, separate null calibration, phase versus
+  intensity, and an explicit focused-SLC round trip.
+- **Depth:** independent wave physics relative to the steering formula; a finer
+  forward mesh and depths excluded from the physical-template library. The
+  inverse shares a wave-equation family with the forward model; this is not
+  field validation or a second independently implemented wave solver.
+- **SNR and mismatch:** detection, localization and false alarms across supplied
+  signal strengths, wave speeds, source positions and cavity radii. The SNR
+  follow-up is disclosed as exploratory; null thresholds remain separate.
+- **Depth versus frequency:** independently varied physical burial depths and
+  excitation frequencies feed the reconstructed patch tracker at a fixed
+  wavelength. Rejected diagnostic peaks are kept separate from detections.
+- **Source ambiguity:** cavity-free alternatives fit free complex source
+  strengths at seven receivers, then face fourteen held-out receivers.
+- **Independent nulls:** 32 stationary image realizations, independent flank
+  samples and per-window full gating, preserving the correlated filter bank.
 
-## Reproducibility and limits
+The model is deliberately limited: 2D homogeneous SH waves, a horizontal
+cylindrical void, known active source, seven resolved coherent reflectors,
+independent receiver noise and ideal focusing. Physical displacement amplitudes
+and SNR are supplied assumptions, not measurements at Giza. These trials do not
+simulate vertical columns, spiral ramps, heterogeneous geology or ambient
+excitation. Noise repeats are not new geological sites.
 
-Scene cache keys include scatterer data, geometry, image content and numerical source files. Zero-energy patches are rejected; constant trajectories have no eligible fit window (score 0, window index -1). Numerical checks include independent steering calibration, an end-to-end two-scatterer example, wavelength invariance, and cache invalidation.
+## Processing audit
 
-The cavity-wave and radar-receiver models are **not coupled**. The wave amplitude is uncalibrated; the receiver imposes its own amplitudes. The AI controls are artificial datasets, not trained satellite classifiers. No real satellite scene or surveyed void labels were processed in these new controls.
+`sarsim/gates.py` selects the best harmonic **within each window**, then applies
+shape and amplitude criteria. This fixes the earlier global-window selection
+error. `focus_branch_b` admits only fully accepted windows to the real
+least-squares depth fit. It returns missing output if none passes.
 
-In T6, the shape-only gate passes some static pixels, while the implemented full gate accepts none at the tested scale. T5's response relative to a known static baseline is not a calibrated detection limit. The page reports these distinctions explicitly.
+New independent scene controls use two-arc geometric-median correction; legacy
+T1–T7 retain their declared global median. Earlier permutation plots are
+historical diagnostics, because arbitrary shuffles change overlapping-look
+correlation. The physical SH model tests one polarization; gate rejection of
+those signals is not a universal result about all elastic-wave polarizations.
 
-T7 is a paired sensitivity study of this reconstruction, not an independent replication of Khafre. Its 13 scenes share one background; strength variants reuse the same points and phases. The three random layouts and their relative amplitudes are chosen by fixed seeds before inspecting outputs. Added points are ideal isotropic targets without terrain shadowing or an object-specific scattering model. The measured power response is separate from acceptance by the implemented gate. No published column count, depth, or shape is predicted by these controls.
+## Large real SAR files
 
-To add an experiment, save `results/<id>/summary.json` with `id`, `order`, `title`, `question`, `finding`, `limitations`, `method`, `figures`, and `metrics`. Figure paths are relative to the repository. Add its short label and leading figures to `EXPERIMENTS` in `build_site.py`. Update report language in `experiments/reporting.py` where needed, then rebuild.
+Keep files where they are. Metadata inspection does not load the raster:
 
-Research and simulations by ejhong. Original simulation work was developed with Claude Fable 5.1; subsequent numerical review, supporting controls and page revisions were developed with Codex. Published comparison images remain copyrighted by their authors; see `results/t07_wells/published/CREDITS.md`.
+```bash
+.venv/bin/python scripts/inspect_sar.py /path/to/scene.h5
+.venv/bin/python scripts/inspect_sar.py /path/to/scene.h5 \
+  --rows 1000 1512 --cols 2000 2512 --out data/inspection
+```
+
+Crops require explicit bounds and have a working-memory limit. Outputs default
+to ignored `data/inspection/`. HDF5 I/Q and uncompressed complex TIFF are
+supported. SICD/NITF uses optional `sarpy`; compressed TIFF needs a windowed
+reader. The inspector reports missing information and supplies no simulated
+geometry. A crop's spectrum is a QC preview, not a validated aperture-time or
+depth axis. Appropriate support is chosen after acquisition inspection.
+
+The machine-readable [field plan](site/real_data_plan.json) requires native
+coordinates, metadata, source/model calibration, known-positive and negative
+controls, and independent acquisitions/surveys. Unknown ground is not a negative
+label. The older `sarsim/iceye.py` is experimental groundwork and should not be
+used as a validated real-acquisition geometry adapter.
+
+## Repository
+
+- `sarsim/`: geometry, scenes, image synthesis, registration, selection, wave
+  physics, controlled measurement and bounded real-product inspection.
+- `experiments/t01_*`–`t07_surface_controls.py`: original artifact, sensitivity
+  and paired surface-control studies; retained as supporting records.
+- `experiments/feasibility.py`: earlier ZIP-inspired, uncoupled wave/receiver
+  demonstrations and artificial AI controls, preserved for provenance.
+- `experiments/robustness.py`: repeated surface-spacing examples and algebraic
+  statistic checks, distinct from physical depth validation.
+- `experiments/t07_wells.py`: archived staged-column illustration. Removed from
+  the page's visual argument and the active all-studies runner.
+- `site/page.html`, `site_content.py`, `build_site.py`: template, conclusions
+  derived from saved metrics, and portable renderer.
+- `docs/`: generated GitHub Pages site, figures and downloadable data. Private
+  local-file inspection output is never automatically published.
+- `tests/`: numerical invariants, meaningful gate regressions, sparse huge-file
+  reads, report integrity, and optional desktop/mobile browser checks.
+
+Run `node tests/browser_smoke.mjs` with the local page served and headless Chrome
+on debugging port 9231. It checks the data-driven scenario explorer, keyboard
+controls, deep links, figure dialogs, downloads and layouts from 320 to 1440 px.
+
+Research and simulations by ejhong. Original simulation work was developed with
+Claude Fable 5.1; subsequent review, coupled physical benchmarks and page revisions
+were developed with Codex. Archived comparison images remain copyrighted by
+their authors; see `results/t07_wells/published/CREDITS.md`.

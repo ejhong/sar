@@ -80,9 +80,9 @@
         "maximum_point_power_ratio": null,
         "median_point_depth_suppression_fraction": null,
         "remote_power_ratio": 1.0,
-        "shape_gate_count": 832,
+        "shape_gate_count": 1242,
         "full_gate_count": 0,
-        "shape_gate_fraction": 0.09171075837742504,
+        "shape_gate_fraction": 0.13690476190476192,
         "full_gate_fraction": 0.0
       },
       {
@@ -95,9 +95,9 @@
         "maximum_point_power_ratio": 0.9952423223489736,
         "median_point_depth_suppression_fraction": 0.6499999999999999,
         "remote_power_ratio": 1.0000704152830708,
-        "shape_gate_count": 840,
+        "shape_gate_count": 1237,
         "full_gate_count": 0,
-        "shape_gate_fraction": 0.09259259259259259,
+        "shape_gate_fraction": 0.1363536155202822,
         "full_gate_fraction": 0.0
       },
       {
@@ -110,9 +110,9 @@
         "maximum_point_power_ratio": 0.7951722827322517,
         "median_point_depth_suppression_fraction": 0.890625,
         "remote_power_ratio": 1.0033380404994199,
-        "shape_gate_count": 838,
+        "shape_gate_count": 1230,
         "full_gate_count": 0,
-        "shape_gate_fraction": 0.09237213403880071,
+        "shape_gate_fraction": 0.13558201058201058,
         "full_gate_fraction": 0.0
       },
       {
@@ -125,9 +125,9 @@
         "maximum_point_power_ratio": 0.5391626191946264,
         "median_point_depth_suppression_fraction": 0.9781249999999999,
         "remote_power_ratio": 1.014850202635391,
-        "shape_gate_count": 836,
+        "shape_gate_count": 1219,
         "full_gate_count": 0,
-        "shape_gate_fraction": 0.09215167548500881,
+        "shape_gate_fraction": 0.1343694885361552,
         "full_gate_fraction": 0.0
       },
       {
@@ -140,9 +140,9 @@
         "maximum_point_power_ratio": 0.9756948658942156,
         "median_point_depth_suppression_fraction": 0.65,
         "remote_power_ratio": 1.0002273957820984,
-        "shape_gate_count": 820,
+        "shape_gate_count": 1222,
         "full_gate_count": 0,
-        "shape_gate_fraction": 0.09038800705467372,
+        "shape_gate_fraction": 0.13470017636684303,
         "full_gate_fraction": 0.0
       },
       {
@@ -155,9 +155,9 @@
         "maximum_point_power_ratio": 0.8345892959904113,
         "median_point_depth_suppression_fraction": 0.84375,
         "remote_power_ratio": 1.0040772621176774,
-        "shape_gate_count": 836,
+        "shape_gate_count": 1242,
         "full_gate_count": 0,
-        "shape_gate_fraction": 0.09215167548500881,
+        "shape_gate_fraction": 0.13690476190476192,
         "full_gate_fraction": 0.0
       },
       {
@@ -170,9 +170,9 @@
         "maximum_point_power_ratio": 0.602775550641615,
         "median_point_depth_suppression_fraction": 0.95,
         "remote_power_ratio": 1.0166237278361858,
-        "shape_gate_count": 824,
+        "shape_gate_count": 1243,
         "full_gate_count": 0,
-        "shape_gate_fraction": 0.09082892416225749,
+        "shape_gate_fraction": 0.13701499118165786,
         "full_gate_fraction": 0.0
       },
       {
@@ -185,9 +185,9 @@
         "maximum_point_power_ratio": 0.9782301218813142,
         "median_point_depth_suppression_fraction": 0.609375,
         "remote_power_ratio": 1.0002816341430596,
-        "shape_gate_count": 846,
+        "shape_gate_count": 1251,
         "full_gate_count": 0,
-        "shape_gate_fraction": 0.09325396825396826,
+        "shape_gate_fraction": 0.1378968253968254,
         "full_gate_fraction": 0.0
       },
       {
@@ -200,9 +200,9 @@
         "maximum_point_power_ratio": 0.8131324502611873,
         "median_point_depth_suppression_fraction": 0.81875,
         "remote_power_ratio": 1.0049433552286382,
-        "shape_gate_count": 865,
+        "shape_gate_count": 1258,
         "full_gate_count": 0,
-        "shape_gate_fraction": 0.09534832451499119,
+        "shape_gate_fraction": 0.13866843033509701,
         "full_gate_fraction": 0.0
       },
       {
@@ -215,9 +215,9 @@
         "maximum_point_power_ratio": 0.545857163514891,
         "median_point_depth_suppression_fraction": 0.9625,
         "remote_power_ratio": 1.0200323985368693,
-        "shape_gate_count": 861,
+        "shape_gate_count": 1259,
         "full_gate_count": 0,
-        "shape_gate_fraction": 0.09490740740740741,
+        "shape_gate_fraction": 0.13877865961199295,
         "full_gate_fraction": 0.0
       },
       {
@@ -230,9 +230,9 @@
         "maximum_point_power_ratio": 0.998026082291142,
         "median_point_depth_suppression_fraction": 0.625,
         "remote_power_ratio": 1.000212491480322,
-        "shape_gate_count": 830,
+        "shape_gate_count": 1240,
         "full_gate_count": 0,
-        "shape_gate_fraction": 0.09149029982363316,
+        "shape_gate_fraction": 0.13668430335097,
         "full_gate_fraction": 0.0
       },
       {
@@ -245,9 +245,9 @@
         "maximum_point_power_ratio": 0.8839014032344097,
         "median_point_depth_suppression_fraction": 0.846875,
         "remote_power_ratio": 1.0027617123853825,
-        "shape_gate_count": 837,
+        "shape_gate_count": 1245,
         "full_gate_count": 0,
-        "shape_gate_fraction": 0.09226190476190477,
+        "shape_gate_fraction": 0.13723544973544974,
         "full_gate_fraction": 0.0
       },
       {
@@ -260,9 +260,9 @@
         "maximum_point_power_ratio": 0.6991317565051115,
         "median_point_depth_suppression_fraction": 0.9468749999999999,
         "remote_power_ratio": 1.0106545787242898,
-        "shape_gate_count": 818,
+        "shape_gate_count": 1236,
         "full_gate_count": 0,
-        "shape_gate_fraction": 0.09016754850088184,
+        "shape_gate_fraction": 0.13624338624338625,
         "full_gate_fraction": 0.0
       }
     ],
@@ -287,7 +287,7 @@
     "total_full_gate_pixel_scene_samples": 0,
     "depth_axis_max_m": 137.5405846444718,
     "background_unchanged": true,
-    "runtime_s": 41.778303146362305
+    "runtime_s": 717.4779100418091
   },
   "downloads": [
     "scene_runs.csv",
@@ -295,7 +295,7 @@
     "point_design.csv",
     "design.json"
   ],
-  "date": "2026-09-19",
+  "date": "2026-09-20",
   "provenance": {
     "python": "3.11.3",
     "numpy": "2.4.6",

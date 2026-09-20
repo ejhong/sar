@@ -3,6 +3,8 @@ from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
 import json
+import csv
+import pytest
 
 import build_site
 
@@ -41,7 +43,10 @@ def test_published_page_has_valid_local_links_and_accessible_figures():
             assert path.is_file(), reference
         elif parsed.fragment:
             assert parsed.fragment in page.ids, reference
-    assert len(page.images) >= 30
+    # Check the important evidence directly rather than requiring more pictures.
+    assert {"signal", "depth", "ambiguity", "field", "scenario-lab"} <= set(page.ids)
+    assert any(image['src'].endswith('noise_transition.png') for image in page.images)
+    assert not any('/t07_wells/' in image['src'] for image in page.images)
     for image in page.images:
         assert image.get("alt"), image
         assert int(image["width"]) > 0 and int(image["height"]) > 0
@@ -77,3 +82,37 @@ def test_constructed_illustration_is_separate_from_numbered_experiments():
     assert "t07_wells" not in page.experiments
     archived = json.loads((build_site.DOCS / "data" / "t07_wells.json").read_text())
     assert archived["role"] == "illustration"
+
+
+def test_interactive_results_are_exactly_the_committed_trials():
+    import re
+    text = (build_site.DOCS / "index.html").read_text()
+    embedded = re.search(r'<script id="scenario-data" type="application/json">(.*?)</script>', text, re.S)
+    metrics = json.loads((build_site.RESULTS / "validation" / "metrics.json").read_text())
+    assert json.loads(embedded.group(1)) == metrics['noise_sweep']['rows']
+    assert json.loads((build_site.DOCS / "data" / "validation_metrics.json").read_text()) == metrics
+    assert metrics['frequency_depth']['accepted_reflectors'] == sum(r['accepted'] for r in metrics['frequency_depth']['rows'])
+    assert set(metrics['design']['evaluation_depths_m']).isdisjoint(metrics['design']['dictionary_depths_m'])
+    assert metrics['depth']['oracle_and_roundtrip']['focused_slc_roundtrip_error_m'] < 1e-12
+
+
+@pytest.mark.parametrize('filename,section,number_key', [
+    ('snr_trials.csv', 'noise_sweep', 'snr_db'),
+    ('depth_trials.csv', 'depth', 'amplitude_um'),
+])
+def test_trial_records_independently_reproduce_displayed_rates(filename, section, number_key):
+    root = build_site.RESULTS / 'validation'
+    metrics = json.loads((root / 'metrics.json').read_text())
+    with (root / filename).open() as stream:
+        rows = list(csv.DictReader(stream))
+    groups = metrics[section]['rows' if section == 'noise_sweep' else 'groups']
+    for group in groups:
+        selected = [r for r in rows if r['family'] == group['family'] and r['estimator'] == group['estimator']
+                    and float(r[number_key]) == group[number_key]]
+        positive = [r for r in selected if float(r['true_depth_m']) > 0]
+        negative = [r for r in selected if float(r['true_depth_m']) == 0]
+        assert len(positive) == group['positive_trials']
+        assert len(negative) == group['null_trials']
+        assert sum(r['accepted'] == 'True' for r in positive)/len(positive) == group['detection_rate']
+        assert sum(r['accepted'] == 'True' for r in negative)/len(negative) == group['false_alarm_rate']
+        assert sum(r['within_20m'] == 'True' for r in positive)/len(positive) == group['detected_within_20m_rate']

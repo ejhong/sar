@@ -51,13 +51,20 @@ try {
   await send('Page.navigate',{url});
   await until("document.readyState === 'complete'");
   await evaluate('document.fonts.ready.then(() => true)');
-  assert.equal(await evaluate('document.title'),'Doppler Tomography, Tested');
+  assert.equal(await evaluate('document.title'),'SAR Depth, Tested');
+  await evaluate("document.querySelector('#snr').value='60'; document.querySelector('#snr').dispatchEvent(new Event('input'))");
+  assert.equal(await evaluate("document.querySelector('#scenario-localized').textContent"),'99%');
+  await evaluate("document.querySelector('#snr').value='40'; document.querySelector('#scenario').value='speed_1800'; document.querySelector('#scenario').dispatchEvent(new Event('input'))");
+  assert.equal(await evaluate("document.querySelector('#scenario-false-alarm').textContent"),'93%');
+  await evaluate("document.querySelector('#estimator').value='speed_search'; document.querySelector('#estimator').dispatchEvent(new Event('input'))");
+  assert.equal(await evaluate("document.querySelector('#scenario-false-alarm').textContent"),'0%');
+  await evaluate("document.querySelector('#snr').value='20'; document.querySelector('#scenario').value='matched_assumptions'; document.querySelector('#estimator').value='known_speed'; document.querySelector('#snr').dispatchEvent(new Event('input'))");
   assert.equal(await evaluate("parseFloat(document.querySelector('#predicted-depth').textContent)"),26.6);
   await evaluate("document.querySelector('#wavelength').value='0.96'; document.querySelector('#wavelength').dispatchEvent(new Event('input',{bubbles:true}))");
   assert.equal(await evaluate("parseFloat(document.querySelector('#predicted-depth').textContent)"),53.2);
   await evaluate("document.querySelector('#reset-scale').click()");
   assert.equal(await evaluate("document.querySelector('#wavelength').value"),'0.48');
-  await evaluate("document.querySelector('#separation').focus()");
+  await evaluate("document.querySelector('#scale-lab').open=true; document.querySelector('#separation').focus()");
   await send('Input.dispatchKeyEvent',{type:'keyDown',key:'ArrowRight',code:'ArrowRight',windowsVirtualKeyCode:39});
   await send('Input.dispatchKeyEvent',{type:'keyUp',key:'ArrowRight',code:'ArrowRight',windowsVirtualKeyCode:39});
   assert.equal(await evaluate("document.querySelector('#separation').value"),'3.1');
@@ -82,9 +89,10 @@ try {
   await evaluate("location.hash='t07_wells'");
   await until("document.querySelector('#t07_wells').open");
   await until("Math.abs(document.querySelector('#t07_wells').getBoundingClientRect().top - 85) < 5");
-  assert.equal(await evaluate("document.querySelector('#t07_wells').closest('section').id"),'appendix');
+  assert.equal(await evaluate("document.querySelector('#t07_wells').closest('section').id"),'reproduce');
   assert.equal(await evaluate("document.querySelector('#t07_wells').classList.contains('experiment')"),false);
-  await screenshot('illustrative-appendix');
+  assert.equal(await evaluate("document.querySelectorAll('#t07_wells img').length"),0);
+  await screenshot('archived-illustration-note');
   const dataStatus = await evaluate("Promise.all([...document.querySelectorAll('a[download]')].map(async a=>{const r=await fetch(a.href); if(a.pathname.endsWith('.json')) await r.json(); else if(!(await r.text()).includes(',')) return false; return r.ok}))");
   assert(dataStatus.length >= 9 && dataStatus.every(Boolean));
   for(const width of [1440,768,390,320]) {
@@ -99,11 +107,13 @@ try {
     await screenshot(`method-${width}`);
     await evaluate("document.querySelector('#phase-control').scrollIntoView({behavior:'instant',block:'start'})");
     await screenshot(`signal-${width}`);
+    await evaluate("document.querySelector('#scenario-lab').scrollIntoView({behavior:'instant',block:'start'})");
+    await screenshot(`scenarios-${width}`);
     await evaluate("document.querySelector('#t07_surface_controls').open=true; document.querySelector('#t07_surface_controls').scrollIntoView({behavior:'instant',block:'start'})");
     await screenshot(`t7-${width}`);
   }
   assert.deepEqual(errors,[]);
-  console.log(JSON.stringify({passed:true,widths:[1440,768,390,320],checks:['slider input and keyboard','reset','deep link','figure dialog and Escape','expand/collapse','seven numbered experiments','legacy T7 opens illustrative appendix','JSON and CSV downloads','all images decode','no overflow with all details open','no browser or HTTP errors'],screenshots:screenshotDir},null,2));
+  console.log(JSON.stringify({passed:true,widths:[1440,768,390,320],checks:['saved SNR scenarios and false alarms','slider input and keyboard','reset','deep link','figure dialog and Escape','expand/collapse','seven supporting experiments','legacy T7 opens archive note without renderings','JSON and CSV downloads','all images decode','no overflow with all details open','no browser or HTTP errors'],screenshots:screenshotDir},null,2));
 } finally {
   await send('Page.close'); ws.close();
 }

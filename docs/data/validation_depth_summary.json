@@ -1,0 +1,282 @@
+[
+  {
+    "family": "matched_assumptions",
+    "amplitude_um": 30.0,
+    "estimator": "known_speed",
+    "positive_trials": 100,
+    "null_trials": 100,
+    "detection_rate": 0.02,
+    "detection_ci": [
+      0.00550196755016235,
+      0.07001179072854388
+    ],
+    "false_alarm_rate": 0.01,
+    "false_alarm_ci": [
+      0.0017674320641406505,
+      0.054486196178705315
+    ],
+    "detected_within_20m_rate": 0.0,
+    "median_depth_error_detected_m": 90.0,
+    "median_depth_error_all_m": 90.0
+  },
+  {
+    "family": "matched_assumptions",
+    "amplitude_um": 30.0,
+    "estimator": "speed_search",
+    "positive_trials": 100,
+    "null_trials": 100,
+    "detection_rate": 0.01,
+    "detection_ci": [
+      0.0017674320641406505,
+      0.054486196178705315
+    ],
+    "false_alarm_rate": 0.01,
+    "false_alarm_ci": [
+      0.0017674320641406505,
+      0.054486196178705315
+    ],
+    "detected_within_20m_rate": 0.0,
+    "median_depth_error_detected_m": 70.0,
+    "median_depth_error_all_m": 70.0
+  },
+  {
+    "family": "matched_assumptions",
+    "amplitude_um": 100.0,
+    "estimator": "known_speed",
+    "positive_trials": 100,
+    "null_trials": 100,
+    "detection_rate": 0.0,
+    "detection_ci": [
+      3.469446951953614e-18,
+      0.03699349820698568
+    ],
+    "false_alarm_rate": 0.0,
+    "false_alarm_ci": [
+      3.469446951953614e-18,
+      0.03699349820698568
+    ],
+    "detected_within_20m_rate": 0.0,
+    "median_depth_error_detected_m": null,
+    "median_depth_error_all_m": 70.0
+  },
+  {
+    "family": "matched_assumptions",
+    "amplitude_um": 100.0,
+    "estimator": "speed_search",
+    "positive_trials": 100,
+    "null_trials": 100,
+    "detection_rate": 0.01,
+    "detection_ci": [
+      0.0017674320641406505,
+      0.054486196178705315
+    ],
+    "false_alarm_rate": 0.01,
+    "false_alarm_ci": [
+      0.0017674320641406505,
+      0.054486196178705315
+    ],
+    "detected_within_20m_rate": 0.01,
+    "median_depth_error_detected_m": 10.0,
+    "median_depth_error_all_m": 70.0
+  },
+  {
+    "family": "matched_assumptions",
+    "amplitude_um": 1000.0,
+    "estimator": "known_speed",
+    "positive_trials": 100,
+    "null_trials": 100,
+    "detection_rate": 0.04,
+    "detection_ci": [
+      0.01566330399154762,
+      0.0983707143588792
+    ],
+    "false_alarm_rate": 0.02,
+    "false_alarm_ci": [
+      0.00550196755016235,
+      0.07001179072854388
+    ],
+    "detected_within_20m_rate": 0.03,
+    "median_depth_error_detected_m": 10.0,
+    "median_depth_error_all_m": 50.0
+  },
+  {
+    "family": "matched_assumptions",
+    "amplitude_um": 1000.0,
+    "estimator": "speed_search",
+    "positive_trials": 100,
+    "null_trials": 100,
+    "detection_rate": 0.05,
+    "detection_ci": [
+      0.02154367915436796,
+      0.11175046923191913
+    ],
+    "false_alarm_rate": 0.02,
+    "false_alarm_ci": [
+      0.00550196755016235,
+      0.07001179072854388
+    ],
+    "detected_within_20m_rate": 0.03,
+    "median_depth_error_detected_m": 10.0,
+    "median_depth_error_all_m": 50.0
+  },
+  {
+    "family": "radius_30",
+    "amplitude_um": 1000.0,
+    "estimator": "known_speed",
+    "positive_trials": 100,
+    "null_trials": 100,
+    "detection_rate": 0.02,
+    "detection_ci": [
+      0.00550196755016235,
+      0.07001179072854388
+    ],
+    "false_alarm_rate": 0.01,
+    "false_alarm_ci": [
+      0.0017674320641406505,
+      0.054486196178705315
+    ],
+    "detected_within_20m_rate": 0.02,
+    "median_depth_error_detected_m": 10.0,
+    "median_depth_error_all_m": 40.0
+  },
+  {
+    "family": "radius_30",
+    "amplitude_um": 1000.0,
+    "estimator": "speed_search",
+    "positive_trials": 100,
+    "null_trials": 100,
+    "detection_rate": 0.02,
+    "detection_ci": [
+      0.00550196755016235,
+      0.07001179072854388
+    ],
+    "false_alarm_rate": 0.01,
+    "false_alarm_ci": [
+      0.0017674320641406505,
+      0.054486196178705315
+    ],
+    "detected_within_20m_rate": 0.01,
+    "median_depth_error_detected_m": 70.0,
+    "median_depth_error_all_m": 50.0
+  },
+  {
+    "family": "source_shift_30m",
+    "amplitude_um": 1000.0,
+    "estimator": "known_speed",
+    "positive_trials": 100,
+    "null_trials": 100,
+    "detection_rate": 0.0,
+    "detection_ci": [
+      3.469446951953614e-18,
+      0.03699349820698568
+    ],
+    "false_alarm_rate": 0.0,
+    "false_alarm_ci": [
+      3.469446951953614e-18,
+      0.03699349820698568
+    ],
+    "detected_within_20m_rate": 0.0,
+    "median_depth_error_detected_m": null,
+    "median_depth_error_all_m": 110.0
+  },
+  {
+    "family": "source_shift_30m",
+    "amplitude_um": 1000.0,
+    "estimator": "speed_search",
+    "positive_trials": 100,
+    "null_trials": 100,
+    "detection_rate": 0.0,
+    "detection_ci": [
+      3.469446951953614e-18,
+      0.03699349820698568
+    ],
+    "false_alarm_rate": 0.0,
+    "false_alarm_ci": [
+      3.469446951953614e-18,
+      0.03699349820698568
+    ],
+    "detected_within_20m_rate": 0.0,
+    "median_depth_error_detected_m": null,
+    "median_depth_error_all_m": 80.0
+  },
+  {
+    "family": "speed_1800",
+    "amplitude_um": 1000.0,
+    "estimator": "known_speed",
+    "positive_trials": 100,
+    "null_trials": 100,
+    "detection_rate": 0.06,
+    "detection_ci": [
+      0.027786123963188192,
+      0.1247681544589592
+    ],
+    "false_alarm_rate": 0.08,
+    "false_alarm_ci": [
+      0.041093461484380624,
+      0.14998107700948735
+    ],
+    "detected_within_20m_rate": 0.0,
+    "median_depth_error_detected_m": 110.0,
+    "median_depth_error_all_m": 70.0
+  },
+  {
+    "family": "speed_1800",
+    "amplitude_um": 1000.0,
+    "estimator": "speed_search",
+    "positive_trials": 100,
+    "null_trials": 100,
+    "detection_rate": 0.01,
+    "detection_ci": [
+      0.0017674320641406505,
+      0.054486196178705315
+    ],
+    "false_alarm_rate": 0.02,
+    "false_alarm_ci": [
+      0.00550196755016235,
+      0.07001179072854388
+    ],
+    "detected_within_20m_rate": 0.0,
+    "median_depth_error_detected_m": 150.0,
+    "median_depth_error_all_m": 70.0
+  },
+  {
+    "family": "speed_2200",
+    "amplitude_um": 1000.0,
+    "estimator": "known_speed",
+    "positive_trials": 100,
+    "null_trials": 100,
+    "detection_rate": 0.02,
+    "detection_ci": [
+      0.00550196755016235,
+      0.07001179072854388
+    ],
+    "false_alarm_rate": 0.01,
+    "false_alarm_ci": [
+      0.0017674320641406505,
+      0.054486196178705315
+    ],
+    "detected_within_20m_rate": 0.0,
+    "median_depth_error_detected_m": 90.0,
+    "median_depth_error_all_m": 50.0
+  },
+  {
+    "family": "speed_2200",
+    "amplitude_um": 1000.0,
+    "estimator": "speed_search",
+    "positive_trials": 100,
+    "null_trials": 100,
+    "detection_rate": 0.01,
+    "detection_ci": [
+      0.0017674320641406505,
+      0.054486196178705315
+    ],
+    "false_alarm_rate": 0.01,
+    "false_alarm_ci": [
+      0.0017674320641406505,
+      0.054486196178705315
+    ],
+    "detected_within_20m_rate": 0.01,
+    "median_depth_error_detected_m": 10.0,
+    "median_depth_error_all_m": 50.0
+  }
+]

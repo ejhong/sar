@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "status": "specified; no real acquisition processed",
+  "candidate_sites": ["Giza pyramids", "Sacsayhuaman", "independently surveyed comparison sites"],
+  "required_inputs": ["original complex SLC or phase-history product", "all acquisition metadata and sidecars", "native-image target coordinates or geographic target region", "processing history and calibration", "independent survey labels where available"],
+  "inspection": {"command": "python scripts/inspect_sar.py PATH", "metadata_only_by_default": true, "explicit_crop_required": true, "default_crop_working_memory_limit_bytes": 67108864, "private_outputs": "data/inspection, excluded from version control"},
+  "before_depth_outputs": ["verify phase-bearing product", "verify axes and state-vector geometry", "establish Doppler support and timing", "check adequate spatial and aperture support", "freeze target and independent flank coordinates", "freeze wavelength and physical assumptions", "run injected-translation and motion controls"],
+  "comparisons": ["branch A versus correctly gated branch B", "raw versus two-arc corrected histories", "multiple independent surface controls", "surface-only scattering predictions", "independent look geometries in ground coordinates", "known surveyed cavities and matched intact regions"],
+  "evaluation": ["miss rate", "false alarms per independent scene and area", "depth error and uncertainty", "localization across acquisitions", "shape accuracy separately from detection", "calibration sites excluded from validation"],
+  "interpretation_rules": ["unknown underground conditions are not confirmed negatives", "repeatability alone does not exclude stable artifacts", "a plausible rendering is not a measured geometry", "no depth claim from a metadata/preview-only crop", "no field result inferred from synthetic receiver SNR"]
+}

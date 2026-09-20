@@ -21,6 +21,30 @@ one('#reset-scale').addEventListener('click', () => {
 });
 updateScale();
 
+const scenarioData = JSON.parse(one('#scenario-data').textContent);
+function updateScenario() {
+  const snr = Number(one('#snr').value);
+  const result = scenarioData.find(row => row.snr_db === snr && row.family === one('#scenario').value && row.estimator === one('#estimator').value);
+  if (!result) return;
+  const percent = value => `${(100 * value).toFixed(0)}%`;
+  one('#snr-value').textContent = `${snr} dB`;
+  one('#snr').setAttribute('aria-valuetext', `${snr} decibels`);
+  one('#scenario-localized').textContent = percent(result.detected_within_20m_rate);
+  one('#scenario-false-alarm').textContent = percent(result.false_alarm_rate);
+  one('#localized-meter').value = result.detected_within_20m_rate;
+  one('#false-alarm-meter').value = result.false_alarm_rate;
+  one('#scenario-interval').textContent = `False-alarm interval: ${(100 * result.false_alarm_ci[0]).toFixed(1)}–${(100 * result.false_alarm_ci[1]).toFixed(1)}% (95% Wilson).`;
+  one('#scenario-interpretation').textContent = result.false_alarm_rate >= .1
+    ? 'Frequent false alarms: a high cavity hit rate cannot establish a useful detector in this condition.'
+    : result.detected_within_20m_rate >= .8
+      ? 'Strong recovery under these supplied assumptions. This is conditional synthetic performance.'
+      : result.detected_within_20m_rate >= .3
+        ? 'Partial recovery. Many cavity trials remain missed or incorrectly localized.'
+        : 'Low noise-calibrated recovery in this tested condition.';
+}
+['#snr', '#scenario', '#estimator'].forEach(selector => one(selector).addEventListener('input', updateScenario));
+updateScenario();
+
 function revealHash(scroll = false) {
   let hash;
   try { hash = decodeURIComponent(location.hash.slice(1)); } catch { return; }

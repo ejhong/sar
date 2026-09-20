@@ -4,14 +4,14 @@
   "tag": "null",
   "eyebrow": "06 \u00b7 Ordering & gates",
   "title": "The full ellipse gate rejects the sampled static pixels",
-  "question": "The replication protocol keeps only pixels whose trajectories trace ordered elliptical loops. Does motionless ground pass, and is there any ordering to find?",
-  "finding": "The shape-only gate accepts 9.9% of pyramid and 9.1% of desert pixels. After the 0.005 px minor-axis floor, the full gate accepts 0.0% and 0.0%. True-order scores show near-nominal permutation rejection rates in these scenes.",
-  "limitations": "One scene realization per class, 1,500 dependent pixels, and 60 permutations. A near-chance rejection rate is not proof that all ordering is absent. Shape-only acceptance must not be described as a false positive of the full gate.",
-  "method": "Per-pixel best score in true order versus 60 random orderings, plus the protocol's branch-B ellipse fit (26 windows \u00d7 modes 1 to 6, adjusted R\u00b2 with 6 parameters, axes from the fitted cos/sin vectors) on 1,500 pixels on the pyramid footprint (T1) and 1,500 on the empty desert (T2).",
+  "question": "Does motionless ground pass the complete per-window ellipse filter, including its amplitude floor?",
+  "finding": "The corrected per-window shape gate accepts 14.3% of pyramid and 12.9% of desert pixels. After the 0.005 px minor-axis floor, the full gate accepts 0.0% and 0.0%. The earlier shuffle comparison is retained as a diagnostic only.",
+  "limitations": "One scene per class and 1,500 dependent pixels. Arbitrary look permutations change correlations between overlapping sub-apertures, so the shuffle statistic is not a calibrated physical null test. The new independent-scene controls replace it as the primary null comparison. Shape-only acceptance is not a false positive of the full gate; sensitivity must also be tested on physical positives.",
+  "method": "For each of 26 contiguous W25 windows, choose the best ellipse mode from 1\u20136, then apply adjusted R\u00b2 \u2265 0.25, axis ratio \u2265 0.1 and minor axis \u2265 0.005 px. Pixel acceptance requires at least one fully accepted window. Legacy shuffle results use 60 arbitrary order permutations and are descriptive only.",
   "figures": [
     {
       "file": "results/t06_ordering/figs/t06_permutation.png",
-      "caption": "<b>Check all parts of a gate.</b> True and shuffled score distributions, permutation rejection rates, and shape-only acceptance. The right panel excludes the amplitude floor. With that floor included, the implemented full gate accepts none of the sampled static pixels."
+      "caption": "<b>Check all parts of a gate.</b> The right panel excludes the amplitude floor; including it rejects all sampled static pixels. The two shuffle panels are historical diagnostics: permutations do not preserve overlapping-look covariance, so their nominal 5% reference is not a validated false-alarm rate. Per-window selection has been corrected and the scene results rerun."
     }
   ],
   "metrics": {
@@ -20,12 +20,12 @@
       "empty desert": 0.052
     },
     "ellipse_shape_gate_pass": {
-      "pyramid pixels": 0.09866666666666667,
-      "empty desert": 0.09066666666666667
+      "pyramid pixels": 0.14333333333333334,
+      "empty desert": 0.12933333333333333
     },
     "ellipse_shape_gate_pass_shuffled": {
-      "pyramid pixels": 0.09133333333333334,
-      "empty desert": 0.08466666666666667
+      "pyramid pixels": 0.12133333333333333,
+      "empty desert": 0.12333333333333334
     },
     "ellipse_full_gate_pass": {
       "pyramid pixels": 0.0,
@@ -41,12 +41,12 @@
     },
     "n_pixels": 1500,
     "n_permutations": 60,
-    "runtime_s": 30.607271909713745
+    "runtime_s": 310.1640989780426
   },
-  "date": "2026-09-19",
+  "date": "2026-09-20",
   "provenance": {
     "python": "3.11.3",
     "numpy": "2.4.6",
-    "source_sha256": "b736c5f20a77701d3b745977a14036f7999b12bcc449d14d41671f8135e77969"
+    "source_sha256": "fa82266809b4aa73e698f2f8ecb4315477aab0ff7205fcaa217616d791d717ff"
   }
 }
