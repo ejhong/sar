@@ -136,3 +136,24 @@ def real_section(figure, height_shift_px='', height_shift_m='', field_portal='')
   surface elevation by ten metres moves the metadata projection by about <strong>{height_shift_px} range
   pixels</strong>, roughly {height_shift_m} m on flat ground, which is larger than the chambers themselves.</p></div>
 """
+
+
+def hero_result(default):
+    """Lead the page with a measurement once the real chapter exists."""
+    reports = load_reports()
+    r01 = reports.get("r01_giza_controls")
+    r07 = reports.get("r07_injected_motion")
+    r02 = reports.get("r02_depth_axis")
+    if not r01:
+        return default
+    mon = r01["metrics"]["monument_mean"]
+    ctl = r01["metrics"]["control_mean"]
+    parts = [f"Run on the real Giza dwell, the method scores {mon:.2f} on the monuments and "
+             f"{ctl:.2f} on open desert."]
+    if r02:
+        depth = r02["metrics"]["nyquist_full_aperture"][1]["nyquist_full_aperture_m"]
+        parts.append(f"Its depth axis repeats every {depth:.1f} m.")
+    if r07:
+        floor = r07["metrics"]["static_floor_um_s"]
+        parts.append(f"The motion it would need sits below the {floor:,.0f} µm/s floor we measured.")
+    return " ".join(parts)

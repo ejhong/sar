@@ -5,8 +5,8 @@
   "eyebrow": "02 \u00b7 Depth axis",
   "title": "The reachable depth is set by the sub-aperture bank, not by the ground",
   "question": "With real orbit geometry, how deep can this method see before its depth axis repeats?",
-  "finding": "A few metres. During the 24.5 s aperture the platform moves 168 km, so a bank that uses the whole aperture spaces its steering wavenumbers very widely and the depth axis repeats every 6.8 m at K = 50. Depths of hundreds of metres are only reachable by sweeping about one percent of the aperture, or by enlarging the declared sound wavelength, which no measurement constrains.",
-  "limitations": "This is a statement about the ambiguity period of the steering basis under the published geometry, computed from real state vectors. It does not by itself show what a given published figure did, because the bank parameters used there were never disclosed.",
+  "finding": "A few metres. During the 24.5 s aperture the platform moves 168 km, so a bank that uses the whole aperture spaces its steering wavenumbers very widely and the depth axis repeats every 6.8 m at K = 50. Depths of hundreds of metres are only reachable by sweeping about one percent of the aperture, or by enlarging the declared sound wavelength, which no measurement constrains. The same calculation applies to the public derivative protocol: its shipped example assumes a one-kilometre aperture span, where the real span for that bank design is 5,006 m, so its unambiguous depth is 79 m rather than 393 m, and its shipped depth grid runs past that limit.",
+  "limitations": "This is a statement about the ambiguity period of the steering basis under the published geometry, computed from real state vectors. It does not by itself show what a given published figure did, because the bank parameters used there were never disclosed. The comparison with the derivative protocol uses the placeholder geometry in its shipped example configuration, which its documentation asks the user to replace with real values; the point is what happens when they are replaced.",
   "method": "Real ICEYE X33 state vectors, Khafre RPC position and WGS84 target, aperture-centre reference. Baselines are the along-track platform offsets projected perpendicular to the line of sight, exactly as the published steering formula requires. Nyquist depth is pi divided by the median spacing of the resulting steering wavenumbers.",
   "figures": [
     {
@@ -81,8 +81,16 @@
         "nyquist_depth_m": 98.47274502255193
       }
     ],
+    "derivative_protocol_v17": {
+      "assumed_baseline_span_m": 1000.0,
+      "assumed_unambiguous_depth_m": 393.2546469252882,
+      "real_baseline_span_m": 5005.518508555851,
+      "real_unambiguous_depth_m": 78.56421792329897,
+      "shipped_depth_grid_max_m": 100.0,
+      "baseline_underestimate_factor": 5.005518508555851
+    },
     "percent_of_aperture_for_648m_K50": 1.045496205345032,
-    "runtime_s": 0.978316068649292
+    "runtime_s": 0.900322675704956
   },
   "date": "2026-09-23"
 }

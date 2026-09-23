@@ -14,6 +14,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from real_common import PRODUCTS, BANKS, RESULTS, GIZA_PATCHES
+
+# Only the three published-style designs belong in this comparison; the split-dwell banks
+# defined alongside them are a cross-geometry tool, not a depth-axis proposal.
+COMPARED = ('reference', 'paper', 'v17')
 from sarsim import viz
 from sarsim.dwell import DwellProduct
 from sarsim.orbit import lla_to_ecef, perpendicular_baselines, steering_wavenumbers
@@ -75,7 +79,8 @@ def main():
 
     # ---- (b) the three bank designs on the real geometry
     rows_b = []
-    for name, bank in BANKS.items():
+    for name in COMPARED:
+        bank = BANKS[name]
         plan = bank.plan(acq, 4096, rate)
         zn, r, inc, span = nyquist_for(eph, t_zd, target, max(plan['span_s'], 1e-3), bank.K, lam_s)
         rows_b.append({'bank': name, 'K': bank.K, 'width_frac': bank.width_frac,
@@ -85,10 +90,26 @@ def main():
                        'overlap_within_pair': plan['overlap_within_pair'],
                        'baseline_span_m': span, 'nyquist_depth_m': float(zn)})
 
+    # ---- (b2) the derivative protocol's shipped geometry against the real one
+    V17 = {'K': 20, 'baseline_span_m': 1000.0, 'slant_range_m': 600000.0,
+           'incidence_deg': 35.0, 'lam_s_m': 0.2405679137, 'z_max_m': 100.0}
+    assumed = np.linspace(-V17['baseline_span_m'] / 2, V17['baseline_span_m'] / 2, V17['K'])
+    kz_assumed = np.sort(steering_wavenumbers(assumed, V17['slant_range_m'], V17['incidence_deg'], V17['lam_s_m']))
+    real_span = [r for r in rows_b if r['bank'] == 'v17'][0]['baseline_span_m']
+    real_b = np.linspace(-real_span / 2, real_span / 2, V17['K'])
+    kz_real = np.sort(steering_wavenumbers(real_b, V17['slant_range_m'], V17['incidence_deg'], V17['lam_s_m']))
+    protocol = {'assumed_baseline_span_m': V17['baseline_span_m'],
+                'assumed_unambiguous_depth_m': float(nyquist_depth(kz_assumed)),
+                'real_baseline_span_m': float(real_span),
+                'real_unambiguous_depth_m': float(nyquist_depth(kz_real)),
+                'shipped_depth_grid_max_m': V17['z_max_m'],
+                'baseline_underestimate_factor': float(real_span / V17['baseline_span_m'])}
+
     # ---- (c) lambda_s freedom
     lam_grid = np.geomspace(0.05, 20.0, 200)
     fig, ax = plt.subplots(figsize=(9.6, 4.6))
-    for i, (name, bank) in enumerate(BANKS.items()):
+    for i, name in enumerate(COMPARED):
+        bank = BANKS[name]
         plan = bank.plan(acq, 4096, rate)
         base = nyquist_for(eph, t_zd, target, max(plan['span_s'], 1e-3), bank.K, 1.0)[0]
         ax.plot(lam_grid, base * lam_grid, color=viz.SERIES[i], lw=2,
@@ -108,7 +129,7 @@ def main():
                  '<b>Nothing in the data sets the scale.</b> The depth axis is proportional to the declared sound wavelength, which no measurement in the method constrains. For each of the three bank designs the reachable depth is drawn against that constant. Any published depth can be produced by choosing it, and the 2022 paper and the 2026 derivative protocol use values that differ by a factor of two.'})
 
     m = {'aperture_s': aperture, 'row': row, 'col': col, 'lam_s_m': lam_s,
-         'nyquist_full_aperture': rows_a, 'banks': rows_b,
+         'nyquist_full_aperture': rows_a, 'banks': rows_b, 'derivative_protocol_v17': protocol,
          'percent_of_aperture_for_648m_K50': float(100 * 3.386 * 49 / 648 / aperture),
          'runtime_s': time.time() - t0}
     summary = {
@@ -119,10 +140,18 @@ def main():
                     f"whole aperture spaces its steering wavenumbers very widely and the depth axis repeats every "
                     f"{rows_a[1]['nyquist_full_aperture_m']:.1f} m at K = 50. Depths of hundreds of metres are only "
                     f"reachable by sweeping about one percent of the aperture, or by enlarging the declared sound "
-                    f"wavelength, which no measurement constrains."),
+                    f"wavelength, which no measurement constrains. The same calculation applies to the public "
+                    f"derivative protocol: its shipped example assumes a one-kilometre aperture span, where the real "
+                    f"span for that bank design is {protocol['real_baseline_span_m']:,.0f} m, so its unambiguous "
+                    f"depth is {protocol['real_unambiguous_depth_m']:.0f} m rather than "
+                    f"{protocol['assumed_unambiguous_depth_m']:.0f} m, and its shipped depth grid runs past that "
+                    f"limit."),
         'limitations': ('This is a statement about the ambiguity period of the steering basis under the published '
                         'geometry, computed from real state vectors. It does not by itself show what a given '
-                        'published figure did, because the bank parameters used there were never disclosed.'),
+                        'published figure did, because the bank parameters used there were never disclosed. The '
+                        'comparison with the derivative protocol uses the placeholder geometry in its shipped '
+                        'example configuration, which its documentation asks the user to replace with real values; '
+                        'the point is what happens when they are replaced.'),
         'method': ('Real ICEYE X33 state vectors, Khafre RPC position and WGS84 target, aperture-centre reference. '
                    'Baselines are the along-track platform offsets projected perpendicular to the line of sight, '
                    'exactly as the published steering formula requires. Nyquist depth is pi divided by the median '

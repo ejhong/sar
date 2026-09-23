@@ -11,7 +11,7 @@ from string import Template
 from PIL import Image
 from experiments.reporting import refine_summary
 from site_content import validation_content
-from real_content import real_section
+from real_content import real_section, hero_result
 from fieldwork.publishing import build_field_site
 
 ROOT = Path(__file__).resolve().parent
@@ -207,7 +207,7 @@ def build():
                                stylesheet_version=hashlib.sha256((DOCS / 'style.css').read_bytes()).hexdigest()[:12],
                                giza_height_shift_px=f"{abs(geometry_audits['giza']['center_height_sensitivity'][-1]['sample_shift_px']):.0f}",
                                giza_height_shift_m=f"{abs(geometry_audits['giza']['center_height_sensitivity'][-1]['approximate_flat_ground_range_shift_m']):.0f}",
-                               **content)
+                               **{**content, 'hero_result': hero_result(content['hero_result'])})
     (DOCS / "index.html").write_text(page)
     print(f"Built docs/index.html: coupled physical benchmarks, method audit, {len(tests)} supporting experiments")
 
