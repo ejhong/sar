@@ -1,0 +1,71 @@
+{
+  "id": "r10_scatterer_coherence",
+  "order": 20,
+  "tag": "mechanism",
+  "eyebrow": "10 \u00b7 Bright targets",
+  "title": "The brightest scatterers in the scene decorrelate as fast as the desert",
+  "question": "Would a strong, stable point target hold coherence long enough to rescue the method?",
+  "finding": "Not in this acquisition. Graded from the darkest half to the brightest thousandth of pixels, coherence with the band-centre look behaves the same way in every grade. The best grade, brightest 0.1%, still retains only 0.51 at one second of separation and 0.05 at three. The objection that R9's patch average is dominated by clutter, and that bright targets would do better, is not supported.",
+  "limitations": "Giza has no deployed corner reflectors. A purpose-built trihedral, or a large stable metal structure, would almost certainly hold coherence far longer than anything in this scene, and this result does not speak to that case. Coherence is estimated in a 17 by 17 pixel window, so a genuinely isolated single-pixel target is partly averaged with its surroundings.",
+  "method": "41 sub-apertures of 8% bandwidth from one real Khafre crop. Pixels graded by full-resolution amplitude percentile; up to 400 sampled per grade; complex coherence against the band-centre look accumulated over a 17 by 17 pixel window around each.",
+  "figures": [
+    {
+      "file": "/Users/eugene/prj/sar/results/r10_scatterer_coherence/figs/r10_grades.png",
+      "caption": "<b>Brightness does not buy record length.</b> Pixels of the real Khafre crop graded by amplitude, from the darkest half to the brightest thousandth, with coherence measured against the band-centre look inside a small window around each. The brightest targets in this scene decorrelate on the same timescale as the ground around them. The objection that a strong stable scatterer would hold coherence long enough to sense slow motion is not supported by this acquisition."
+    }
+  ],
+  "metrics": {
+    "grades": [
+      {
+        "grade": "darkest half",
+        "pixels": 389,
+        "median_amplitude": 43.45735168457031,
+        "median_peakiness": 0.0038437549956142902,
+        "half_coherence_s": 1.007690043168993,
+        "coherence_at_1s": 0.5038205706882366,
+        "coherence_at_3s": 0.042989859134633074
+      },
+      {
+        "grade": "upper middle",
+        "pixels": 391,
+        "median_amplitude": 105.13023376464844,
+        "median_peakiness": 0.013195601291954517,
+        "half_coherence_s": 1.0003923616221566,
+        "coherence_at_1s": 0.5001924748880248,
+        "coherence_at_3s": 0.043429079097165514
+      },
+      {
+        "grade": "brightest tenth",
+        "pixels": 395,
+        "median_amplitude": 217.18055725097656,
+        "median_peakiness": 0.02476712316274643,
+        "half_coherence_s": 1.0069681043816052,
+        "coherence_at_1s": 0.503406319368338,
+        "coherence_at_3s": 0.041320564627385224
+      },
+      {
+        "grade": "brightest 1%",
+        "pixels": 398,
+        "median_amplitude": 372.5377197265625,
+        "median_peakiness": 0.04412280395627022,
+        "half_coherence_s": 1.001445364000001,
+        "coherence_at_1s": 0.5007284517175069,
+        "coherence_at_3s": 0.04158814865069674
+      },
+      {
+        "grade": "brightest 0.1%",
+        "pixels": 399,
+        "median_amplitude": 549.6893310546875,
+        "median_peakiness": 0.06394286453723907,
+        "half_coherence_s": 1.0282893641283242,
+        "coherence_at_1s": 0.5139295919587328,
+        "coherence_at_3s": 0.04639428481456283
+      }
+    ],
+    "looks": 41,
+    "width_frac": 0.08,
+    "window_px": 17,
+    "runtime_s": 3.534022808074951
+  },
+  "date": "2026-09-23"
+}

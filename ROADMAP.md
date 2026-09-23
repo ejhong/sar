@@ -37,19 +37,37 @@ Plus a Copernicus 30 m DEM tile for Giza (free, `copernicus-dem-30m.s3.amazonaws
 
 ## Settled
 
-- The method does not distinguish monuments from open desert, at Giza or Sacsayhuamán.
-- The depths do not survive a change of look angle within one acquisition.
-- A classifier finds nothing in the depth profiles beyond surface brightness.
-- Rendered like the published slides, real data reproduces their appearance everywhere.
+Each of these is measured on the real acquisitions, not argued.
+
+- **The budget (R14).** Four independent requirements, each missed: radar reach by 1,277x,
+  record length by 81x, motion sensitivity by 8x, lateral resolution by 97x. Repairing any one
+  changes none of the others.
+- **Positive control (R13).** Hundreds of surveyed burial shafts in the Eastern and Western
+  Cemeteries, 5 to 30 m deep, produce no signal at their own depths against bare plateau,
+  before or after matching on surface brightness.
+- **Within-image controls (R1, R6).** Monuments and open ground score the same, at Giza and at
+  Sacsayhuamán, on two satellites and two continents.
+- **The obstruction (R9, R10).** Slow time and look angle are the same axis in a dwell.
+  Coherence halves at 0.98 s. The brightest thousandth of pixels behave exactly like the
+  darkest half, so "a bright stable scatterer would do better" is not supported here.
+- **The array idea (R11).** Treating the image as a dense seismic array and cross-correlating
+  pixel pairs finds nothing: a peak correlation of 0.003 against 0.45 for an injected wavefield
+  put through the identical stack, which the stack recovers on every informative bin.
+- **Independent code (R12).** The derivative protocol v1.7 was installed unchanged and run on a
+  real Khafre crop. Its registration returns only the integer correlation peak, so it produces
+  one distinct vector value across the whole target track, and its shipped depth grid runs to
+  100 m where its real ambiguity limit for that geometry is 50 m.
+- The depths do not survive a change of look angle within one acquisition (R3).
+- A classifier finds nothing in the depth profiles beyond surface brightness (R5).
+- Rendered like the published slides, real data reproduces their appearance everywhere (R8).
 
 ## Open, in priority order
 
-1. **Positive control against surveyed chambers.** The decisive remaining test. Blocked on
-   placement: a 10 m height error moves the projection further than a chamber is wide, and a
-   30 m DEM cannot resolve a pyramid. Path: fit a two-parameter offset on monument base corners
-   surveyed by the Glen Dash Foundation, validate on held-out corners, then project the King's
-   and Queen's Chambers, the Grand Gallery, the Osiris Shaft, Hetepheres G 7000 X and Idu
-   G 7102 C and score against chance.
+1. **Single-chamber positive control.** R13 answers the question at cemetery scale, which needs
+   placement only to about 50 m. A single named chamber still needs metre-level registration:
+   fit a two-parameter offset on monument base corners surveyed by the Glen Dash Foundation,
+   validate on held-out corners, then project the King's and Queen's Chambers, the Grand
+   Gallery, the Osiris Shaft, Hetepheres G 7000 X and Idu G 7102 C.
 2. **Known voids in the viewer.** Once placement is solved, add the surveyed chamber meshes as a
    comparison layer beside the computed voxels. `catalog/giza/surveys.json` already holds
    dimensioned models; they carry no georeferenced position yet.

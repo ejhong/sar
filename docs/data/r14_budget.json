@@ -1,0 +1,74 @@
+{
+  "id": "r14_budget",
+  "order": 22,
+  "tag": "artifact",
+  "eyebrow": "14 \u00b7 The budget",
+  "title": "Four independent requirements, each missed by a wide margin",
+  "question": "What would have to be true for the published claim to hold, and by how much is each missed?",
+  "finding": "X-band penetrates 11 to 51 cm of dry limestone, so nothing below the surface is illuminated and every claim must rest on surface motion. Resolving the microseism band needs a record of order 150 s; the coherent window allows 1.86 s. Ambient ground motion is 0.1 to 10 \u00b5m/s; the measured floor is 77 \u00b5m/s. Surface waves long enough to sample 648 m cannot resolve better than about 972 m laterally, against wells said to be 10 m across. Each leg fails alone, and they are independent.",
+  "limitations": "Dielectric constants for dry carbonate rock span a range and the penetration figure moves with them, but not by the three orders of magnitude the claim would need. The resolution leg assumes surface-wave sensing; a body-wave method at the frequencies needed to resolve ten metres cannot reach the depth at all, so that route is worse rather than better. The record and sensitivity legs are measured on one sensor and one scene type.",
+  "method": "Penetration from the low-loss attenuation constant at 9.6 GHz for dry limestone. Record length and motion sensitivity measured in R9 and R4 on the real acquisition. Lateral resolution from the standard surface-wave depth-sensitivity and half-wavelength resolution relations.",
+  "figures": [
+    {
+      "file": "/Users/eugene/prj/sar/results/r14_budget/figs/r14_budget.png",
+      "caption": "<b>Every leg fails on its own.</b> For the published claim to hold, four separate things must be true at once. The radar would have to reach hundreds of metres into rock, where X-band reaches centimetres. The record would have to be long enough to resolve the microseism band, where one dwell gives under two seconds. The measurement would have to reach ambient ground motion, where the measured floor is nearly ten times above the top of that range. And surface waves able to sample 648 m would have to resolve a ten-metre well, where the best they can do is hundreds of metres. These are independent: repairing any one changes none of the others."
+    }
+  ],
+  "metrics": {
+    "legs": [
+      {
+        "name": "Radar reach",
+        "need": "see 648 m of rock",
+        "need_v": 648.0,
+        "have": "X-band penetrates dry limestone",
+        "have_v": 0.5072639334561224,
+        "unit": "m",
+        "bigger_is_better": true,
+        "note": "Amplitude 1/e depth is 11 to 51 cm at 9.6 GHz. Nothing below the surface is illuminated, so every claim must come from surface motion. Dry sand reaches 3.1 m, which is where longer-wavelength penetration stories come from.",
+        "shortfall": 1277.441499901256
+      },
+      {
+        "name": "Record length",
+        "need": "resolve the microseism band",
+        "need_v": 150.0,
+        "have": "one dwell, inside the coherent window",
+        "have_v": 1.856836416980384,
+        "unit": "s",
+        "bigger_is_better": true,
+        "note": "A five-second period needs tens of cycles. Coherence halves at 0.98 s, which caps the usable record at 1.86 s.",
+        "shortfall": 80.78256039588685
+      },
+      {
+        "name": "Motion sensitivity",
+        "need": "ambient ground motion",
+        "need_v": 10.0,
+        "have": "measured floor on the brightest targets",
+        "have_v": 77.39318538333778,
+        "unit": "\u00b5m/s",
+        "bigger_is_better": false,
+        "note": "Ambient motion in the microseism band is 0.1 to 10 \u00b5m/s. The measured floor is 77 \u00b5m/s, and it is the same on monuments as on desert.",
+        "shortfall": 7.739318538333778
+      },
+      {
+        "name": "Lateral resolution",
+        "need": "resolve a 10 m well",
+        "need_v": 10.0,
+        "have": "best possible from waves that reach 648 m",
+        "have_v": 972.0,
+        "unit": "m",
+        "bigger_is_better": false,
+        "note": "Surface waves sample to about a third of a wavelength and resolve about half of one. Reaching 648 m needs kilometre wavelengths. This holds for a perfect dense array with unlimited record and has nothing to do with radar.",
+        "shortfall": 97.2
+      }
+    ],
+    "penetration_limestone_cm": [
+      11.044780461196627,
+      50.726393345612244
+    ],
+    "penetration_dry_sand_m": 3.1433996262515667,
+    "carrier_ghz": 9.6,
+    "rayleigh_m_s": 1800.0,
+    "runtime_s": 0.22769999504089355
+  },
+  "date": "2026-09-23"
+}

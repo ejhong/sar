@@ -1,0 +1,104 @@
+{
+  "id": "r11_array",
+  "order": 21,
+  "tag": "null",
+  "eyebrow": "11 \u00b7 The array",
+  "title": "Used as a dense seismic array, the image contains no propagating wave to find",
+  "question": "A SAR image gives a measurement at every pixel. Can it be processed as an array and inverted like ambient-noise seismology?",
+  "finding": "The first step already fails. Velocity series from 759 elements spread over 1.8 km were cross-correlated between pairs and stacked by separation. Injecting a 1800 m/s band-limited wavefield of 400 \u00b5m/s into the same series is recovered on 5 of 5 informative separation bins, with a median peak correlation of 0.49. The real data gives 0.004, lower by a factor of 120, and its peaks fall at unrelated lags. Bins closer than about 350 m are excluded because neighbouring pixels share speckle and correlate at zero lag whatever the ground is doing. The array processing works; there is no wavefield in the data for it to find, because the record is 2.1 s where the microseism band needs hundreds.",
+  "limitations": "One strip, one acquisition, one injected speed and band. The control is a single plane wavefield, which is easier to recover than a real diffuse ambient field, so this bounds the method from the favourable side. A longer record, from many tasked dwells stacked, would raise sensitivity at frequencies above about half a hertz; it cannot extend the record below that.",
+  "method": "A 40,960 by 512 sample strip read from the native product, 24 common-reference sub-apertures of 8% bandwidth confined to the coherent window, azimuth shifts converted to line-of-sight velocity, pairs drawn at random within each separation bin and cross-correlated with each pair's zero-Doppler time offset removed before stacking.",
+  "figures": [
+    {
+      "file": "/Users/eugene/prj/sar/results/r11_array/figs/r11_moveout.png",
+      "caption": "<b>No wave arrives.</b> Velocity series recovered from a 1.8 km strip of the real Giza acquisition, cross-correlated between pixel pairs and stacked by separation, with each pair's own Doppler-to-time offset removed. Left: the real data, where a propagating surface wave would appear as a peak tracking the dashed moveout line. Right: the identical processing after injecting a plane wave of known speed and amplitude, which the same stack recovers cleanly. The method works; there is nothing in the data for it to find."
+    }
+  ],
+  "metrics": {
+    "strip_m": 1801.358055096225,
+    "elements": 759,
+    "looks": 24,
+    "record_s": 2.0720918979118146,
+    "sampling_hz": 11.099893794854676,
+    "injected_amplitude_um_s": 400.0,
+    "rayleigh_m_s": 1800.0,
+    "injected_band_hz": [
+      0.9,
+      3.5
+    ],
+    "bins": [
+      {
+        "separation_m": 50.0,
+        "pairs": 8571,
+        "predicted_lag_s": 0.027777777777777776,
+        "real_peak_lag_s": 0.0,
+        "real_peak_value": 0.027191169000132336,
+        "control_peak_lag_s": 0.0,
+        "control_peak_value": 0.7779168758852336
+      },
+      {
+        "separation_m": 175.0,
+        "pairs": 8571,
+        "predicted_lag_s": 0.09722222222222222,
+        "real_peak_lag_s": 0.0,
+        "real_peak_value": 0.007394726276000579,
+        "control_peak_lag_s": 0.09009095208312168,
+        "control_peak_value": 0.665209411272862
+      },
+      {
+        "separation_m": 350.0,
+        "pairs": 8571,
+        "predicted_lag_s": 0.19444444444444445,
+        "real_peak_lag_s": 0.27027285624936503,
+        "real_peak_value": 0.002175350992802528,
+        "control_peak_lag_s": 0.18018190416624336,
+        "control_peak_value": 0.5612754601147287
+      },
+      {
+        "separation_m": 575.0,
+        "pairs": 8571,
+        "predicted_lag_s": 0.3194444444444444,
+        "real_peak_lag_s": -1.2612733291637035,
+        "real_peak_value": 0.0026357507561562514,
+        "control_peak_lag_s": 0.3603638083324867,
+        "control_peak_value": 0.5078086447122323
+      },
+      {
+        "separation_m": 850.0,
+        "pairs": 8571,
+        "predicted_lag_s": 0.4722222222222222,
+        "real_peak_lag_s": -0.4504547604156084,
+        "real_peak_value": 0.006302213245893581,
+        "control_peak_lag_s": 0.4504547604156084,
+        "control_peak_value": 0.48833852009516815
+      },
+      {
+        "separation_m": 1200.0,
+        "pairs": 8571,
+        "predicted_lag_s": 0.6666666666666666,
+        "real_peak_lag_s": 1.5315461854130685,
+        "real_peak_value": 0.004073060851447049,
+        "control_peak_lag_s": 0.6306366645818517,
+        "control_peak_value": 0.4322024854606515
+      },
+      {
+        "separation_m": 1650.0,
+        "pairs": 8571,
+        "predicted_lag_s": 0.9166666666666666,
+        "real_peak_lag_s": -0.3603638083324867,
+        "real_peak_value": 0.008260542363795895,
+        "control_peak_lag_s": 0.8108185687480951,
+        "control_peak_value": 0.44727988195096163
+      }
+    ],
+    "informative_bins": 5,
+    "control_bins_on_moveout": 5,
+    "real_bins_on_moveout": 1,
+    "median_peak_correlation_real": 0.004073060851447049,
+    "median_peak_correlation_control": 0.48833852009516815,
+    "control_over_real": 119.89472730849936,
+    "sample_interval_s": 0.09009095208312237,
+    "runtime_s": 7.185715913772583
+  },
+  "date": "2026-09-23"
+}

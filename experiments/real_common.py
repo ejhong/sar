@@ -39,6 +39,11 @@ GIZA_PATCHES = [
     ('sphinx',        'Sphinx and temples',  29.97528, 31.13750,  35 + 15.5, 'monument'),
     ('desert_west',   'Open plateau, west',  29.97600, 31.11800,  80 + 15.5, 'control'),
     ('desert_south',  'Open plateau, south', 29.96700, 31.12600,  75 + 15.5, 'control'),
+    # Dense shaft-tomb fields: hundreds of excavated and surveyed shafts 5-30 m deep, against
+    # bare plateau. This is the positive control, and it needs placement only to about 50 m.
+    ('cemetery_east', 'Eastern Cemetery',    29.97870, 31.13640,  80 + 15.5, 'tombs'),
+    ('cemetery_west', 'Western Cemetery',    29.97900, 31.12950,  82 + 15.5, 'tombs'),
+    ('plateau_nw',    'Open plateau, north-west', 29.98200, 31.12200, 78 + 15.5, 'control'),
 ]
 
 # Sacsayhuaman sits on steep Andean terrain at about 3.6 km, where a single assumed height

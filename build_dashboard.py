@@ -21,14 +21,25 @@ DOCS = ROOT / "docs"
 REPO = "https://github.com/ejhong/sar"
 
 ACQ = "r00_acquisitions"
-REAL = ["r01_giza_controls", "r02_depth_axis", "r09_coherence", "r03_split_dwell",
-        "r08_sections", "r04_velocity_floor", "r07_injected_motion", "r05_learned_null",
-        "r06_second_site"]
+# Ordered as an argument, not by number: the summary, then the positive control, then what the
+# method does and does not distinguish, then why, then whether our own code is to blame.
+REAL = ["r14_budget", "r13_known_voids", "r01_giza_controls", "r06_second_site", "r08_sections",
+        "r02_depth_axis", "r09_coherence", "r10_scatterer_coherence", "r11_array",
+        "r03_split_dwell", "r04_velocity_floor", "r07_injected_motion", "r05_learned_null",
+        "r12_independent_implementation"]
 SIM = ["t01_static_pyramid", "t02_desert_null", "t03_mechanism", "t04_parameters",
        "t05_motion", "t06_ordering", "t07_surface_controls", "t07_wells"]
 
 # Which numbers each card puts on its footer strip. One place to maintain.
 HEADLINE = {
+    "r14_budget": [],
+    "r13_known_voids": [("tombs", "tomb_band_share_mean", "{:.4f}"),
+                        ("plateau", "control_band_share_mean", "{:.4f}"),
+                        ("matched effect", "standardised_difference_brightness_matched", "{:+.3f}")],
+    "r10_scatterer_coherence": [],
+    "r11_array": [("real", "median_peak_correlation_real", "{:.3f}"),
+                  ("injected wave", "median_peak_correlation_control", "{:.2f}")],
+    "r12_independent_implementation": [],
     "r01_giza_controls": [("monuments", "monument_mean", "{:.4f}"), ("open desert", "control_mean", "{:.4f}"),
                           ("standardised gap", "cohens_d", "{:+.3f}")],
     "r02_depth_axis": [("folds back at", None, None), ("aperture for 648 m", "percent_of_aperture_for_648m_K50", "{:.1f}%")],
@@ -95,6 +106,18 @@ def numbers(rep):
     for label, key, fmt in spec:
         if key and key in m and m[key] is not None:
             out.append((label, fmt.format(m[key])))
+    if rep["id"] == "r14_budget":
+        out = [(l["name"].lower(), f"{l['shortfall']:,.0f}×") for l in m["legs"]]
+    if rep["id"] == "r10_scatterer_coherence":
+        g = m["grades"][-1]
+        out = [("brightest 0.1%", f"{g['half_coherence_s']:.2f} s"),
+               ("darkest half", f"{m['grades'][0]['half_coherence_s']:.2f} s")]
+    if rep["id"] == "r12_independent_implementation":
+        ok = [r for r in m["runs"] if r.get("returncode") == 0]
+        if ok:
+            out = [("distinct vector values", str(ok[0]["vector_values_unique"])),
+                   ("its depth grid", "100 m"),
+                   ("its real limit", f"{ok[-1]['recurrence_depth_m']:.0f} m")]
     if rep["id"] == "r02_depth_axis":
         out.insert(0, ("folds back at", f"{m['nyquist_full_aperture'][1]['nyquist_full_aperture_m']:.1f} m"))
     if rep["id"] == "r09_coherence":
@@ -161,7 +184,22 @@ def stat(label, value, note, href):
 def stats(reps):
     m = {k: v["metrics"] for k, v in reps.items()}
     out = []
-    if "r02_depth_axis" in m:
+    if "r14_budget" in m:
+        for leg in m["r14_budget"]["legs"]:
+            out.append(stat(leg["name"], f"{leg['shortfall']:,.0f}<small>×</small>",
+                            f"Short of what the claim needs. Required {leg['need_v']:,.1f} {leg['unit']}, "
+                            f"available {leg['have_v']:,.2f}.", "#r14_budget"))
+    if "r13_known_voids" in m:
+        d = m["r13_known_voids"]["standardised_difference_brightness_matched"]
+        out.append(stat("Known voids", f"{d:+.3f}",
+                        "Standardised difference between hundreds of surveyed burial shafts and bare plateau, "
+                        "at the shafts' own depths.", "#r13_known_voids"))
+    if "r11_array" in m:
+        a = m["r11_array"]
+        out.append(stat("Array test", f"{a['median_peak_correlation_real']:.3f}",
+                        f"Peak cross-correlation between array elements on real data. An injected wavefield "
+                        f"gives {a['median_peak_correlation_control']:.2f}.", "#r11_array"))
+    if "r02_depth_axis" in m and False:
         d = m["r02_depth_axis"]["nyquist_full_aperture"][1]["nyquist_full_aperture_m"]
         out.append(stat("Depth axis", f"{d:.1f}<small> m</small>",
                         "Where the steering basis folds back on the full aperture. It repeats exactly at twice that.",
@@ -375,7 +413,7 @@ def build():
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SAR Depth, Tested</title>
-<meta name="description" content="Single-image SAR depth tomography tested on two real ICEYE dwell acquisitions of Giza and Sacsayhuamán. Nine measurements, seven simulations, and a three-dimensional viewer for the depth volumes.">
+<meta name="description" content="Single-image SAR depth tomography tested on two real ICEYE dwell acquisitions of Giza and Sacsayhuamán: fourteen measurements including a positive control against hundreds of surveyed burial shafts, with a three-dimensional viewer for the depth volumes.">
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="dashboard.css">
 <link rel="icon" href="favicon.svg">
@@ -393,15 +431,19 @@ def build():
 </div></header>
 
 <section class="db-title"><div class="wrap">
-  <h1>A pyramid and open desert give this method the same answer</h1>
+  <h1>One radar image cannot map what is under the ground</h1>
   <p>Single-image SAR Doppler tomography, as published for the Great Pyramid in 2022 and announced for Khafre in
-  2025, reimplemented and run on two real ICEYE Spotlight Dwell Fine acquisitions. Nine tests on measured data,
-  seven on simulation.</p>
-  <div class="db-verdict"><b>Result.</b> The method does not separate the pyramids from open desert in the very
-  acquisition that would have produced the claim, at Giza or at Sacsayhuamán. Its depth axis folds back within
-  metres and repeats exactly. Its depths do not survive a change of look angle inside one acquisition. The ground
-  motion it invokes sits below what the acquisition can measure, and no sub-aperture design escapes that, because
-  in a dwell product time diversity and coherence are the same axis.</div>
+  2025, reimplemented and run on two real ICEYE Spotlight Dwell Fine acquisitions of Giza and Sacsayhuamán.
+  Fourteen measurements, eight simulations, three supporting benchmarks. Every figure is generated by code in the
+  repository.</p>
+  <div class="db-verdict"><b>The claim needs four things at once, and each fails on its own.</b> X-band reaches
+  about half a metre into dry limestone, so nothing below the surface is illuminated. Resolving the ground motion
+  the method invokes needs a record of order 150 seconds; one acquisition gives under two before the looks stop
+  resembling each other. That motion is 0.1 to 10 µm/s and the measured floor is 77. And surface waves long enough
+  to sample 648 m cannot resolve better than about a kilometre laterally, against wells said to be ten metres
+  across. Independently: the method finds no signal at the known depths of hundreds of surveyed burial shafts, it
+  does not separate a pyramid from open desert in the same acquisition, and its depth axis is periodic by
+  construction with a freely chosen scale.</div>
 </div></section>
 
 <section class="db-stats"><div class="wrap" style="display:contents">{stats(reps)}</div></section>
@@ -420,7 +462,8 @@ def build():
 
 <section class="db-sec" id="real"><div class="wrap">
   <div class="db-head"><div><span class="db-kicker">Measurement · {len(real)} tests</span><h2>What the real acquisitions show</h2></div>
-  <p>Every card is one experiment on the ICEYE products. Figures enlarge; method and limits are collapsed.</p></div>
+  <p>The budget first, then the positive control, then what the method distinguishes, then why, then whether our
+  own code is to blame. Figures enlarge; method and limits are collapsed.</p></div>
   <div class="db-grid">{''.join(card(r) for r in real)}</div>
 </div></section>
 
