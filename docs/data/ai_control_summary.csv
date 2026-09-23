@@ -1,7 +1,0 @@
-experiment,split,signal_shift_sd,mean_auc,sd_across_10_seeds,min_auc,max_auc
-matched_sites_planted_signal,held_out_sites,0.0,0.494852578125,0.005626493310050623,0.4876625,0.5049222656249999
-matched_sites_planted_signal,held_out_sites,0.3,0.5799004296875,0.007656707434893771,0.5686648437499999,0.589791015625
-matched_sites_planted_signal,held_out_sites,1.0,0.7568618359375,0.005430919649520042,0.747294140625,0.7631921875000001
-matched_sites_planted_signal,held_out_sites,2.0,0.9190103125,0.002770654365744796,0.9137761718749999,0.9230734375
-site_identity_only,held_out_sites,0.0,0.51003125,0.06724641312460465,0.39375,0.58875
-site_identity_only,random_patches,0.0,1.0,0.0,1.0,1.0

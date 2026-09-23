@@ -60,7 +60,12 @@ LAM_S = 0.48
 PATCH_PX = 32
 
 BANKS = {
+    # Swept across the whole band: this is what a naive reading of "use the aperture" gives, and
+    # R9 shows the looks at its extremes share no coherence at all.
     'reference': DopplerBank(K=50, width_frac=0.10, shift_hz=None),
+    # Confined to the span over which looks stay correlated, measured in R9. Every pair in this
+    # bank is coherent, so its registration shifts are a measurement rather than a random peak.
+    'coherent': DopplerBank(K=16, width_frac=0.08, shift_hz=None, sweep_frac=0.08),
     'paper': DopplerBank(K=50, width_frac=0.50, shift_hz=88.0),
     'v17': DopplerBank(K=20, width_frac=0.50, shift_hz=404.0, span_frac=0.062),
     # Two disjoint halves of the same dwell, given identical sweeps so their depth axes match.

@@ -1,8 +1,0 @@
-amplitude_um,phase_detection_rate,intensity_detection_rate,phase_detection_and_correct_frequency_rate
-0.0,0.01125,0.0125,0.0
-1.0,0.0125,0.00875,0.0
-3.0,0.01,0.015,0.0
-10.0,0.05125,0.01375,0.0375
-30.0,0.99875,0.0175,0.99875
-100.0,1.0,0.0125,1.0
-300.0,1.0,0.00875,1.0

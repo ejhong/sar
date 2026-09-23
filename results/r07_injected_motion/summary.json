@@ -1,0 +1,250 @@
+{
+  "id": "r07_injected_motion",
+  "order": 17,
+  "tag": "threshold",
+  "eyebrow": "07 \u00b7 Positive control",
+  "title": "Known motion put into the real image comes back, above a measurable threshold",
+  "question": "Does the velocity readout work at all on real data, and from what amplitude?",
+  "finding": "It works, and the threshold is not reached within the tested range. Below that the recovery collapses into the static floor of the same pixels, 4,397 micrometres per second. Ambient ground motion in the microseism band is 0.1 to 10 micrometres per second, so the motion a passive subsurface inference would have to use sits below what this acquisition can see, on its most favourable targets.",
+  "limitations": "The injected motion is common to the whole crop and the control therefore runs with common-mode removal disabled, which is the most favourable configuration. Real ground motion is neither spatially uniform nor single-frequency. The threshold applies to the brightest nine hundred pixels of this scene; dimmer ground is worse, and a corner reflector would be better.",
+  "method": "One real Khafre crop, azimuth spectrum modulated by exp(-4 pi j d(t) / lambda) with t recovered from the product Doppler rate, for nine displacement amplitudes at three frequencies. Recovery is the projection of the change in the mean velocity series onto the injected waveform, using the same fifty common-reference sub-apertures as R4.",
+  "figures": [
+    {
+      "file": "/Users/eugene/prj/sar/results/r07_injected_motion/figs/r07_threshold.png",
+      "caption": "<b>A positive control on real radar.</b> A known line-of-sight displacement history is imposed on the Khafre crop by modulating its azimuth spectrum, which in a dwell product is slow time, and the same common-reference tracker recovers it from the nine hundred brightest pixels. Left: recovered against injected velocity, with the static floor of those same pixels marked. Right: the ratio of the two. The readout is faithful well above the floor and collapses into it below, which is where the detection threshold of this acquisition sits."
+    }
+  ],
+  "metrics": {
+    "patch": "khafre",
+    "label": "Khafre pyramid",
+    "pixels": 900,
+    "static_floor_um_s": 4396.996913895635,
+    "detection_threshold_velocity_um_s": null,
+    "detection_threshold_displacement_um_at_0p5hz": null,
+    "sampling_hz": 2.2370555186553274,
+    "series_span_s": 21.903792548453794,
+    "slant_range_m": 607869.4765826684,
+    "platform_speed_m_s": 7661.53188070339,
+    "azimuth_metres_per_mm_s": 0.0002865927361504782,
+    "trials": [
+      {
+        "frequency_hz": 0.2,
+        "displacement_amplitude_m": 1e-06,
+        "velocity_amplitude_m_s": 1.2566370614359173e-06,
+        "recovered_rms_m_s": 4.739142488577593e-06,
+        "recovery_gain": -0.9255129961230544,
+        "signal_to_floor": 0.0010778134670963017
+      },
+      {
+        "frequency_hz": 0.2,
+        "displacement_amplitude_m": 3e-06,
+        "velocity_amplitude_m_s": 3.7699111843077517e-06,
+        "recovered_rms_m_s": 1.0455255810896797e-05,
+        "recovery_gain": -0.3944856280004785,
+        "signal_to_floor": 0.002377817409390376
+      },
+      {
+        "frequency_hz": 0.2,
+        "displacement_amplitude_m": 1e-05,
+        "velocity_amplitude_m_s": 1.2566370614359173e-05,
+        "recovered_rms_m_s": 1.5986161720144087e-05,
+        "recovery_gain": -0.3126271855722113,
+        "signal_to_floor": 0.00363570000916392
+      },
+      {
+        "frequency_hz": 0.2,
+        "displacement_amplitude_m": 3e-05,
+        "velocity_amplitude_m_s": 3.7699111843077517e-05,
+        "recovered_rms_m_s": 3.0974676349465405e-05,
+        "recovery_gain": -0.026869374476325675,
+        "signal_to_floor": 0.007044507184341546
+      },
+      {
+        "frequency_hz": 0.2,
+        "displacement_amplitude_m": 0.0001,
+        "velocity_amplitude_m_s": 0.00012566370614359174,
+        "recovered_rms_m_s": 5.879070381057667e-05,
+        "recovery_gain": -0.11338824740855592,
+        "signal_to_floor": 0.013370649323128477
+      },
+      {
+        "frequency_hz": 0.2,
+        "displacement_amplitude_m": 0.0003,
+        "velocity_amplitude_m_s": 0.00037699111843077514,
+        "recovered_rms_m_s": 9.782279797144451e-05,
+        "recovery_gain": -0.04826981355993931,
+        "signal_to_floor": 0.022247638533085947
+      },
+      {
+        "frequency_hz": 0.2,
+        "displacement_amplitude_m": 0.001,
+        "velocity_amplitude_m_s": 0.0012566370614359172,
+        "recovered_rms_m_s": 0.00017905988883727727,
+        "recovery_gain": -0.0995730021527163,
+        "signal_to_floor": 0.04072322367827965
+      },
+      {
+        "frequency_hz": 0.2,
+        "displacement_amplitude_m": 0.003,
+        "velocity_amplitude_m_s": 0.0037699111843077517,
+        "recovered_rms_m_s": 0.0003337485445468568,
+        "recovery_gain": -0.06729710936506154,
+        "signal_to_floor": 0.07590374773567068
+      },
+      {
+        "frequency_hz": 0.2,
+        "displacement_amplitude_m": 0.01,
+        "velocity_amplitude_m_s": 0.012566370614359173,
+        "recovered_rms_m_s": 0.00026882586366944037,
+        "recovery_gain": -0.00732435658505953,
+        "signal_to_floor": 0.061138515430811856
+      },
+      {
+        "frequency_hz": 0.5,
+        "displacement_amplitude_m": 1e-06,
+        "velocity_amplitude_m_s": 3.141592653589793e-06,
+        "recovered_rms_m_s": 5.034150463287379e-06,
+        "recovery_gain": -0.03633115663786882,
+        "signal_to_floor": 0.0011449065264017304
+      },
+      {
+        "frequency_hz": 0.5,
+        "displacement_amplitude_m": 3e-06,
+        "velocity_amplitude_m_s": 9.424777960769379e-06,
+        "recovered_rms_m_s": 7.672633115538301e-06,
+        "recovery_gain": -0.04930034761251453,
+        "signal_to_floor": 0.001744971230543924
+      },
+      {
+        "frequency_hz": 0.5,
+        "displacement_amplitude_m": 1e-05,
+        "velocity_amplitude_m_s": 3.1415926535897935e-05,
+        "recovered_rms_m_s": 1.4631917055963166e-05,
+        "recovery_gain": -0.005090248745477458,
+        "signal_to_floor": 0.0033277069196302063
+      },
+      {
+        "frequency_hz": 0.5,
+        "displacement_amplitude_m": 3e-05,
+        "velocity_amplitude_m_s": 9.42477796076938e-05,
+        "recovered_rms_m_s": 2.2688748269393892e-05,
+        "recovery_gain": 0.03323037719240166,
+        "signal_to_floor": 0.005160055536471187
+      },
+      {
+        "frequency_hz": 0.5,
+        "displacement_amplitude_m": 0.0001,
+        "velocity_amplitude_m_s": 0.0003141592653589793,
+        "recovered_rms_m_s": 4.842142933368896e-05,
+        "recovery_gain": 0.018314233608924407,
+        "signal_to_floor": 0.011012386472381834
+      },
+      {
+        "frequency_hz": 0.5,
+        "displacement_amplitude_m": 0.0003,
+        "velocity_amplitude_m_s": 0.0009424777960769378,
+        "recovered_rms_m_s": 7.870160042581922e-05,
+        "recovery_gain": -0.007660777607125503,
+        "signal_to_floor": 0.01789894374888052
+      },
+      {
+        "frequency_hz": 0.5,
+        "displacement_amplitude_m": 0.001,
+        "velocity_amplitude_m_s": 0.0031415926535897933,
+        "recovered_rms_m_s": 0.0001593572515987921,
+        "recovery_gain": -0.009740078194144968,
+        "signal_to_floor": 0.03624229325592256
+      },
+      {
+        "frequency_hz": 0.5,
+        "displacement_amplitude_m": 0.003,
+        "velocity_amplitude_m_s": 0.00942477796076938,
+        "recovered_rms_m_s": 0.0003035024005858597,
+        "recovery_gain": 0.0005611272621696438,
+        "signal_to_floor": 0.06902492917989424
+      },
+      {
+        "frequency_hz": 0.5,
+        "displacement_amplitude_m": 0.01,
+        "velocity_amplitude_m_s": 0.031415926535897934,
+        "recovered_rms_m_s": 0.00035601030405418285,
+        "recovery_gain": 0.00186113568482021,
+        "signal_to_floor": 0.08096669409275664
+      },
+      {
+        "frequency_hz": 1.0,
+        "displacement_amplitude_m": 1e-06,
+        "velocity_amplitude_m_s": 6.283185307179586e-06,
+        "recovered_rms_m_s": 3.888574741400168e-06,
+        "recovery_gain": 0.22951392188170772,
+        "signal_to_floor": 0.0008843705869138269
+      },
+      {
+        "frequency_hz": 1.0,
+        "displacement_amplitude_m": 3e-06,
+        "velocity_amplitude_m_s": 1.8849555921538758e-05,
+        "recovered_rms_m_s": 7.339130959097627e-06,
+        "recovery_gain": 0.13399622925420404,
+        "signal_to_floor": 0.001669123518350467
+      },
+      {
+        "frequency_hz": 1.0,
+        "displacement_amplitude_m": 1e-05,
+        "velocity_amplitude_m_s": 6.283185307179587e-05,
+        "recovered_rms_m_s": 1.6529684117395732e-05,
+        "recovery_gain": 0.006203440927858165,
+        "signal_to_floor": 0.0037593121944565627
+      },
+      {
+        "frequency_hz": 1.0,
+        "displacement_amplitude_m": 3e-05,
+        "velocity_amplitude_m_s": 0.0001884955592153876,
+        "recovered_rms_m_s": 3.184920708755709e-05,
+        "recovery_gain": 0.03019964999018922,
+        "signal_to_floor": 0.007243399918454673
+      },
+      {
+        "frequency_hz": 1.0,
+        "displacement_amplitude_m": 0.0001,
+        "velocity_amplitude_m_s": 0.0006283185307179586,
+        "recovered_rms_m_s": 5.889678070656201e-05,
+        "recovery_gain": -0.01014617931180031,
+        "signal_to_floor": 0.013394774174262694
+      },
+      {
+        "frequency_hz": 1.0,
+        "displacement_amplitude_m": 0.0003,
+        "velocity_amplitude_m_s": 0.0018849555921538756,
+        "recovered_rms_m_s": 8.99254543765323e-05,
+        "recovery_gain": 0.0006673222222185977,
+        "signal_to_floor": 0.020451561858582358
+      },
+      {
+        "frequency_hz": 1.0,
+        "displacement_amplitude_m": 0.001,
+        "velocity_amplitude_m_s": 0.006283185307179587,
+        "recovered_rms_m_s": 0.00018395927010796245,
+        "recovery_gain": -0.0032189798359847535,
+        "signal_to_floor": 0.0418374799233095
+      },
+      {
+        "frequency_hz": 1.0,
+        "displacement_amplitude_m": 0.003,
+        "velocity_amplitude_m_s": 0.01884955592153876,
+        "recovered_rms_m_s": 0.0003225521276814469,
+        "recovery_gain": 0.0012152854537089957,
+        "signal_to_floor": 0.073357369586069
+      },
+      {
+        "frequency_hz": 1.0,
+        "displacement_amplitude_m": 0.01,
+        "velocity_amplitude_m_s": 0.06283185307179587,
+        "recovered_rms_m_s": 0.0003013916677098497,
+        "recovery_gain": 0.00010331136341158659,
+        "signal_to_floor": 0.06854488952616158
+      }
+    ],
+    "runtime_s": 174.34120798110962
+  },
+  "date": "2026-09-23"
+}

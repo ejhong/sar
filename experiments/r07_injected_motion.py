@@ -24,8 +24,8 @@ from sarsim.orbit import lla_to_ecef, perpendicular_baselines
 from sarsim.track import patch_shifts
 
 TEST = 'r07_injected_motion'
-AMPLITUDES = np.array([1e-6, 3e-6, 1e-5, 3e-5, 1e-4, 3e-4, 1e-3, 3e-3, 1e-2])
-FREQUENCIES = [0.2, 0.5, 1.0]
+AMPLITUDES = np.array([1e-7, 3e-7, 1e-6, 3e-6, 1e-5, 3e-5, 1e-4, 3e-4, 1e-3])
+FREQUENCIES = [1.0, 2.0, 3.0]   # inside what a two-second series resolves
 N_PIXELS = 900
 
 
@@ -41,7 +41,7 @@ def main():
     crop, (r0, c0) = product.crop(row, col, N_AZ, N_RG)
     rate = float(product.doppler_rate_hz_s(c0 + N_RG / 2))
     band = occupied_band(crop, acq.prf_hz)
-    bank = BANKS['reference']
+    bank = BANKS['coherent']
     plan = bank.plan(acq, N_AZ, rate, centroid_hz=band['centroid_hz'])
     freqs = np.fft.fftshift(np.fft.fftfreq(N_AZ, d=1.0 / acq.prf_hz))
     ref_mask, _ = bank.masks(plan, freqs)
@@ -152,14 +152,17 @@ def main():
                     f"inference would have to use sits below what this acquisition can see, on its most favourable "
                     f"targets."),
         'limitations': ('The injected motion is common to the whole crop and the control therefore runs with '
-                        'common-mode removal disabled, which is the most favourable configuration. Real ground '
+                        'common-mode removal disabled, which is the most favourable configuration. The looks are '
+                        'confined to the coherent window of R9, so the series spans about two seconds and cannot '
+                        'reach the microseism band at all; the threshold below is for frequencies it can resolve. '
+                        'Real ground '
                         'motion is neither spatially uniform nor single-frequency. The threshold applies to the '
                         'brightest nine hundred pixels of this scene; dimmer ground is worse, and a corner '
                         'reflector would be better.'),
         'method': ('One real Khafre crop, azimuth spectrum modulated by exp(-4 pi j d(t) / lambda) with t recovered '
-                   'from the product Doppler rate, for nine displacement amplitudes at three frequencies. Recovery '
-                   'is the projection of the change in the mean velocity series onto the injected waveform, using '
-                   'the same fifty common-reference sub-apertures as R4.'),
+                   'from the product Doppler rate, for nine displacement amplitudes at three frequencies inside '
+                   'what a two-second series can resolve. Recovery is the projection of the change in the mean '
+                   'velocity series onto the injected waveform, using the same coherent sixteen-look bank as R4.'),
         'figures': figs, 'metrics': m, 'date': time.strftime('%Y-%m-%d'),
     }
     d = os.path.join(RESULTS, TEST)

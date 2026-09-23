@@ -5,9 +5,9 @@
   "eyebrow": "04 \u00b7 The instrument",
   "title": "What one dwell really measures: a velocity series, and its noise floor",
   "question": "Set the depth claim aside. What surface motion can this acquisition actually detect?",
-  "finding": "A line-of-sight velocity series for every pixel, sampled at about 2.2 Hz across 22 seconds. On the brightest targets in the Giza image the measured noise floor is 4,097 micrometres per second. Ambient ground motion in the microseism band is of order 0.1 to 10 micrometres per second, so this acquisition sits well above the motion that any passive subsurface inference would have to rest on. The recovered spectra are flat and the monuments do not differ from open desert.",
-  "limitations": "The scene-wide median series is removed, so any motion common to the whole patch is removed with it; this bounds differential motion, not absolute platform-referenced motion. The floor mixes true measurement noise with real clutter decorrelation, so it is an upper bound on achievable precision rather than a fundamental limit. Corner reflectors or other strong coherent targets would do better than natural desert scattering.",
-  "method": "Common-reference sub-aperture tracking: 50 sub-apertures of 10 percent bandwidth registered against the band-centre sub-aperture, azimuth shift converted to velocity by v = dx V / R with the real slant range and platform speed. Spectra use a Hann window and are averaged over the brightest tenth of each patch.",
+  "finding": "A line-of-sight velocity series for every pixel, sampled at about 2.2 Hz across 22 seconds. On the brightest targets in the Giza image the measured noise floor is 77 micrometres per second, and it is the same on the monuments as on open desert. These looks are all kept inside the coherent window R9 measures, so the number is a measurement precision and not a decorrelation artefact. The price is the span: the whole series lasts about two seconds, so the lowest frequency it can resolve is around half a hertz, above the microseism band that any passive subsurface inference would have to use. Ambient ground motion in the microseism band is of order 0.1 to 10 micrometres per second, so this acquisition sits well above the motion that any passive subsurface inference would have to rest on. The recovered spectra are flat and the monuments do not differ from open desert.",
+  "limitations": "The scene-wide median series is removed, so any motion common to the whole patch is removed with it; this bounds differential motion, not absolute platform-referenced motion. Sweeping the whole aperture instead, as an earlier version of this experiment did, produces looks that share no coherence at all and a floor that measures the search window rather than any precision; R9 gives the coherent span this bank is confined to. The floor mixes true measurement noise with real clutter decorrelation, so it is an upper bound on achievable precision rather than a fundamental limit. Corner reflectors or other strong coherent targets would do better than natural desert scattering.",
+  "method": "Common-reference sub-aperture tracking: 16 sub-apertures of 8 percent bandwidth registered against the band-centre sub-aperture, all pairs kept inside the coherent window measured in R9, azimuth shift converted to velocity by v = dx V / R with the real slant range and platform speed. Spectra use a Hann window and are averaged over the brightest tenth of each patch.",
   "figures": [
     {
       "file": "/Users/eugene/prj/sar/results/r04_velocity_floor/figs/r04_floor.png",
@@ -26,11 +26,11 @@
         "kind": "monument",
         "pixels": 47880,
         "median_amplitude_db": 36.605927286562164,
-        "velocity_floor_all_um_s": 4045.3441488575713,
-        "velocity_floor_brightest_decile_um_s": 4097.352733506785,
-        "sampling_hz": 2.2370555186553274,
-        "series_span_s": 21.903792548453794,
-        "sub_aperture_s": 2.4482732016482105
+        "velocity_floor_all_um_s": 152.6841357373552,
+        "velocity_floor_brightest_decile_um_s": 188.09030183969855,
+        "sampling_hz": 8.078256039588684,
+        "series_span_s": 1.856836416980384,
+        "sub_aperture_s": 1.959993995701517
       },
       {
         "patch": "khufu",
@@ -38,11 +38,11 @@
         "kind": "monument",
         "pixels": 47880,
         "median_amplitude_db": 36.905435865775864,
-        "velocity_floor_all_um_s": 4058.339652926796,
-        "velocity_floor_brightest_decile_um_s": 4122.6452949206105,
-        "sampling_hz": 2.2365050743407364,
-        "series_span_s": 21.909183467622547,
-        "sub_aperture_s": 2.4488757659257856
+        "velocity_floor_all_um_s": 187.78329776409456,
+        "velocity_floor_brightest_decile_um_s": 195.51972734305411,
+        "sampling_hz": 8.076268324008215,
+        "series_span_s": 1.8572934179774219,
+        "sub_aperture_s": 1.960476385642834
       },
       {
         "patch": "menkaure",
@@ -50,11 +50,11 @@
         "kind": "monument",
         "pixels": 47880,
         "median_amplitude_db": 37.87474934629007,
-        "velocity_floor_all_um_s": 4084.0008503439776,
-        "velocity_floor_brightest_decile_um_s": 4147.964179920166,
-        "sampling_hz": 2.23734497792385,
-        "series_span_s": 21.900958718252593,
-        "sub_aperture_s": 2.4479564532803524
+        "velocity_floor_all_um_s": 101.65780584246046,
+        "velocity_floor_brightest_decile_um_s": 112.90823645429884,
+        "sampling_hz": 8.079301309169459,
+        "series_span_s": 1.856596186476672,
+        "sub_aperture_s": 1.959740419058709
       },
       {
         "patch": "sphinx",
@@ -62,11 +62,11 @@
         "kind": "monument",
         "pixels": 47880,
         "median_amplitude_db": 36.49638573212248,
-        "velocity_floor_all_um_s": 4056.014003758066,
-        "velocity_floor_brightest_decile_um_s": 4178.254384528594,
-        "sampling_hz": 2.235819376040098,
-        "series_span_s": 21.91590274469525,
-        "sub_aperture_s": 2.4496268060004738
+        "velocity_floor_all_um_s": 170.2803455428457,
+        "velocity_floor_brightest_decile_um_s": 203.49630599787872,
+        "sampling_hz": 8.073792191255905,
+        "series_span_s": 1.857863027022832,
+        "sub_aperture_s": 1.9610776396352105
       },
       {
         "patch": "desert_west",
@@ -74,11 +74,11 @@
         "kind": "control",
         "pixels": 47880,
         "median_amplitude_db": 39.8123331638643,
-        "velocity_floor_all_um_s": 4088.5957078071624,
-        "velocity_floor_brightest_decile_um_s": 4150.966252687465,
-        "sampling_hz": 2.238370560246626,
-        "series_span_s": 21.890924081221442,
-        "sub_aperture_s": 2.4468348423594453
+        "velocity_floor_all_um_s": 111.59988461544265,
+        "velocity_floor_brightest_decile_um_s": 111.54288752113091,
+        "sampling_hz": 8.083004800890599,
+        "series_span_s": 1.8557455265085672,
+        "sub_aperture_s": 1.9588425002034884
       },
       {
         "patch": "desert_south",
@@ -86,19 +86,19 @@
         "kind": "control",
         "pixels": 47880,
         "median_amplitude_db": 36.6505948559534,
-        "velocity_floor_all_um_s": 4063.7341583108932,
-        "velocity_floor_brightest_decile_um_s": 4125.503542454226,
-        "sampling_hz": 2.2376152829077305,
-        "series_span_s": 21.898313072087,
-        "sub_aperture_s": 2.4476607389836644
+        "velocity_floor_all_um_s": 74.97947437283875,
+        "velocity_floor_brightest_decile_um_s": 77.39318538333778,
+        "sampling_hz": 8.080277410500136,
+        "series_span_s": 1.856371908779746,
+        "sub_aperture_s": 1.9595036814897313
       }
     ],
     "ambient_band_um_s": [
       0.09999999999999999,
       10.0
     ],
-    "best_floor_um_s": 4097.352733506785,
-    "runtime_s": 1.7710018157958984
+    "best_floor_um_s": 77.39318538333778,
+    "runtime_s": 396.2373380661011
   },
   "date": "2026-09-23"
 }

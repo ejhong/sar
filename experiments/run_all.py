@@ -38,7 +38,7 @@ def main(argv):
         scripts += real()
     for script in scripts:
         run(script)
-    subprocess.run([sys.executable, str(ROOT / "build_site.py")], cwd=ROOT, check=True)
+    subprocess.run([sys.executable, str(ROOT / "build_dashboard.py")], cwd=ROOT, check=True)
 
 
 if __name__ == "__main__":

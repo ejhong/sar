@@ -43,7 +43,7 @@ def main():
     os.makedirs(fd, exist_ok=True)
     runs, rows = {}, []
     for key, label, *_ , kind in [(p[0], p[1], p[2], p[3], p[4], p[5]) for p in GIZA_PATCHES]:
-        runs[key] = run_patch('giza', key, 'reference')
+        runs[key] = run_patch('giza', key, 'coherent')
     figs = []
 
     # ---- (a) velocity noise against target brightness
@@ -121,22 +121,24 @@ def main():
         'finding': (f"A line-of-sight velocity series for every pixel, sampled at about 2.2 Hz across 22 seconds. "
                     f"On the brightest targets in the Giza image the measured noise floor is "
                     f"{best:,.0f} micrometres per second, and it is the same on the monuments as on open desert. "
-                    f"The floor is set by look-angle decorrelation rather than by receiver noise, which is the "
-                    f"design's central tension: sub-apertures far enough apart in time to sense slow ground motion "
-                    f"are also far enough apart in angle that the same patch of ground no longer looks the same. Ambient ground motion in the microseism band is of order "
+                    f"These looks are all kept inside the coherent window R9 measures, so the number is a "
+                    f"measurement precision and not a decorrelation artefact. The price is the span: the whole "
+                    f"series lasts about two seconds, so the lowest frequency it can resolve is around half a "
+                    f"hertz, above the microseism band that any passive subsurface inference would have to use. Ambient ground motion in the microseism band is of order "
                     f"0.1 to 10 micrometres per second, so this acquisition sits well above the motion that any "
                     f"passive subsurface inference would have to rest on. The recovered spectra are flat and the "
                     f"monuments do not differ from open desert."),
         'limitations': ('The scene-wide median series is removed, so any motion common to the whole patch is '
                         'removed with it; this bounds differential motion, not absolute platform-referenced motion. '
-                        'A bank with closely spaced sub-apertures decorrelates far less and reaches a much lower '
-                        'floor, but it then measures a short-lag difference and is correspondingly blind to slow '
-                        'motion; the published reference/offset design sits at that end. '
+                        'Sweeping the whole aperture instead, as an earlier version of this experiment did, '
+                        'produces looks that share no coherence at all and a floor that measures the search '
+                        'window rather than any precision; R9 gives the coherent span this bank is confined to. '
                         'The floor mixes true measurement noise with real clutter decorrelation, so it is an upper '
                         'bound on achievable precision rather than a fundamental limit. Corner reflectors or other '
                         'strong coherent targets would do better than natural desert scattering.'),
-        'method': ('Common-reference sub-aperture tracking: 50 sub-apertures of 10 percent bandwidth registered '
-                   'against the band-centre sub-aperture, azimuth shift converted to velocity by v = dx V / R with '
+        'method': ('Common-reference sub-aperture tracking: 16 sub-apertures of 8 percent bandwidth registered '
+                   'against the band-centre sub-aperture, all pairs kept inside the coherent window measured in '
+                   'R9, azimuth shift converted to velocity by v = dx V / R with '
                    'the real slant range and platform speed. Spectra use a Hann window and are averaged over the '
                    'brightest tenth of each patch.'),
         'figures': figs, 'metrics': m, 'date': time.strftime('%Y-%m-%d'),
