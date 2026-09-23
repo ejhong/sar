@@ -134,6 +134,7 @@ def build_field_site(docs):
     template=Template((ROOT/'site/field.html').read_text())
     (docs/'field.html').write_text(template.substitute(
         stylesheet_version=sha(docs/'style.css')[:12],
+        dashboard_stylesheet_version=sha(docs/'dashboard.css')[:12],
         field_stylesheet_version=sha(docs/'field.css')[:12],
         field_script_version=sha(docs/'field.js')[:12]))
     return '<div class="field-atlas-cards">'+''.join(cards)+'</div>'

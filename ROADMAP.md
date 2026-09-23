@@ -61,6 +61,16 @@ Each of these is measured on the real acquisitions, not argued.
 - A classifier finds nothing in the depth profiles beyond surface brightness (R5).
 - Rendered like the published slides, real data reproduces their appearance everywhere (R8).
 
+## Settled since: the modal branch
+
+The elliptical modal branch, the part usually called the spring model, was examined directly in
+R15 using the protocol's own code. It gates which windows reach the depth stage and cannot
+change the depth axis, which repeats by an algebraic identity in the steering model rather than
+by anything in the data. The gate itself does not distinguish Khafre from open plateau, AUC
+0.504, and admits a structureless random walk 74 per cent of the time. A true mechanical
+resonance is a separate proposal and is out of band by a factor of about 36 for a 30 m chamber.
+See METHOD_AUDIT.md for the derivation and the caveats.
+
 ## Open, in priority order
 
 1. **Single-chamber positive control.** R13 answers the question at cemetery scale, which needs

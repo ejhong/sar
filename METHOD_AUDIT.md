@@ -188,3 +188,48 @@ The registration peak between them is a random position inside the patch, and th
 floor" of about 4,400 µm/s those runs reported was the width of that search, not a measurement
 precision. Both experiments now use a bank confined to the coherent window, which gives a floor
 near 77 µm/s over a series lasting about two seconds. The earlier number should not be cited.
+
+### The modal branch, examined directly, 23 September 2026
+
+The derivative protocol has a second branch, described in its own documents as the selective
+modal or ellipse-gated branch, and often referred to informally as a spring model. R15 runs its
+published `modal.py` and `focus.py` unmodified, with their sha256 checked before import, on real
+sub-pixel registration vectors from the Giza acquisition. Three findings, in order of weight.
+
+**The depth recurrence is a property of the model, not of our implementation and not of the
+data.** The depth stage fits each vector sequence to the two columns `cos(Kz_k z)` and
+`sin(Kz_k z)`. When the steering wavenumbers lie on a lattice `Kz_k = K0 + k dKz`, substituting
+`z + 2 pi / dKz` adds `2 pi k` to each argument, a whole number of turns, plus one constant
+offset common to every k. The two columns are therefore the same pair of columns rotated by a
+fixed angle, which spans the same plane, so every least-squares residual is unchanged. For this
+geometry the ladder is even to about 0.04 per cent and the measured score correlation one repeat
+apart is 0.99947. The protocol states the same result in its section 11.4, gives the unsigned
+interval as `pi / |dKz|` by way of its signed-depth equivalence in section 11.3, and carries a
+ghost rule warning that repeated peaks are not independent structures. None of this was hidden;
+the issue is the size of that interval, 13.7 m here, against the depths being reported.
+
+**The modal gate cannot break the ambiguity, by construction.** It runs before the depth stage
+and only decides which windows are admitted to it. The recurrence identity above holds for every
+input sequence without exception, so a subset of admitted windows inherits it: gated windows
+repeat at 0.99946 against 0.99947 ungated.
+
+**The gate is not selective.** At the frozen Branch B settings it admits nothing on this
+acquisition, because its absolute minor-axis threshold of 0.005 px is about 25 times the
+displacements actually present. With that size threshold removed so the shape rule can act, it
+admits 1.9 per cent on Khafre against 1.2 per cent on open plateau, and the modal score
+separates the two at AUC 0.504. A random walk with no structure at all passes 73.9 per cent of
+the time, because the fit rewards smoothness along the sweep rather than anything underground.
+
+The harmonic index m is indexed by sub-aperture position, not by time. The protocol's own symbol
+table says it "is a harmonic index, not automatically a physical cavity eigenmode". A genuine
+mechanical resonance is a different proposal and fails for a different reason: at a shear speed
+of 2,200 m/s a chamber 30 m down rings near 18 Hz, while a dwell whose coherence halves in about
+a second can carry only 0.08 to 0.51 Hz, short by a factor of 36.
+
+### Retired: the old browser smoke test, 23 September 2026
+
+`tests/browser_smoke.mjs` still drove the controls of the retired essay-style site (`#snr`,
+`#scenario`, `#predicted-depth`) and could not have passed since the dashboard replaced it. It
+has been rewritten against the current pages and now also checks the field atlas. It skips the
+volume-rendering assertions when the browser has no WebGL2, so it needs Chrome started with
+`--use-angle=swiftshader` to exercise the viewer.

@@ -1,182 +1,136 @@
-// Optional live check. Requires Node 22+, a served docs/ directory, and headless
-// Chrome started with --remote-debugging-port=9231. No npm dependencies.
+// Optional live check of the built dashboard and field atlas. Requires Node 22+, a served
+// docs/ directory, and headless Chrome on --remote-debugging-port=9231. No npm dependencies.
+//   cd docs && python3 -m http.server 4175 &
+//   chrome --headless=new --remote-debugging-port=9231 &
+//   node tests/browser_smoke.mjs
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 
 const endpoint = process.env.SAR_BROWSER_ENDPOINT || 'http://127.0.0.1:9231';
-const url = process.env.SAR_SITE_URL || 'http://127.0.0.1:4175/';
+const base = process.env.SAR_SITE_URL || 'http://127.0.0.1:4175/';
 const screenshotDir = process.env.SAR_SCREENSHOTS || '/private/tmp/sar-final-screenshots';
-await fs.mkdir(screenshotDir, {recursive:true});
-const tab = await (await fetch(`${endpoint}/json/new?about:blank`, {method:'PUT'})).json();
+await fs.mkdir(screenshotDir, {recursive: true});
+const tab = await (await fetch(`${endpoint}/json/new?about:blank`, {method: 'PUT'})).json();
 const ws = new WebSocket(tab.webSocketDebuggerUrl);
 await new Promise((resolve, reject) => { ws.onopen = resolve; ws.onerror = reject; });
 let id = 0;
 const pending = new Map();
-const errors = [];
+let errors = [];
 ws.onmessage = event => {
   const message = JSON.parse(event.data);
   if (message.method === 'Runtime.exceptionThrown') errors.push(message.params.exceptionDetails.text);
   if (message.method === 'Network.responseReceived' && message.params.response.status >= 400) {
     errors.push(`${message.params.response.status} ${message.params.response.url}`);
   }
-  if (!message.id || !pending.has(message.id)) return;
-  const task = pending.get(message.id); pending.delete(message.id); clearTimeout(task.timeout);
-  if (message.error) task.reject(message.error); else task.resolve(message.result);
+  if (message.id && pending.has(message.id)) { pending.get(message.id)(message); pending.delete(message.id); }
 };
-const send = (method, params={}) => new Promise((resolve, reject) => {
-  const key = ++id;
-  const timeout = setTimeout(() => { pending.delete(key); reject(new Error(`Timed out: ${method}`)); }, 15000);
-  pending.set(key, {resolve, reject, timeout}); ws.send(JSON.stringify({id:key,method,params}));
+const send = (method, params = {}) => new Promise(resolve => {
+  const message = {id: ++id, method, params};
+  pending.set(message.id, resolve);
+  ws.send(JSON.stringify(message));
 });
 const evaluate = async expression => {
-  const result = await send('Runtime.evaluate', {expression,returnByValue:true,awaitPromise:true});
-  if (result.exceptionDetails) throw new Error(result.exceptionDetails.text);
-  return result.result.value;
+  const {result: r} = await send('Runtime.evaluate', {expression, returnByValue: true, awaitPromise: true});
+  if (r.exceptionDetails) throw new Error(r.exceptionDetails.text);
+  return r.result.value;
 };
-const until = async expression => {
-  for(let attempt=0; attempt<50; attempt++) {
-    if(await evaluate(expression)) return;
-    await new Promise(resolve => setTimeout(resolve,100));
+const until = async (expression, timeout = 15000) => {
+  const deadline = Date.now() + timeout;
+  while (Date.now() < deadline) {
+    if (await evaluate(expression)) return true;
+    await new Promise(r => setTimeout(r, 120));
   }
   throw new Error(`Condition did not become true: ${expression}`);
 };
 const screenshot = async name => {
-  await evaluate('new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve(true))))');
-  const result = await send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});
-  await fs.writeFile(`${screenshotDir}/${name}.png`,Buffer.from(result.data,'base64'));
+  await evaluate('new Promise(r => requestAnimationFrame(() => requestAnimationFrame(() => r(true))))');
+  const shot = await send('Page.captureScreenshot', {format: 'png', captureBeyondViewport: false});
+  await fs.writeFile(`${screenshotDir}/${name}.png`, Buffer.from(shot.result.data, 'base64'));
 };
+
 try {
   await send('Page.enable'); await send('Runtime.enable'); await send('Network.enable');
-  await send('Network.setCacheDisabled', {cacheDisabled:true});
-  await send('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});
-  await send('Page.navigate',{url});
+  await send('Network.setCacheDisabled', {cacheDisabled: true});
+  await send('Emulation.setDeviceMetricsOverride', {width: 1440, height: 1000, deviceScaleFactor: 1, mobile: false});
+
+  // ---------------- the dashboard ----------------
+  await send('Page.navigate', {url: base});
   await until("document.readyState === 'complete'");
   await evaluate('document.fonts.ready.then(() => true)');
-  assert.equal(await evaluate('document.title'),'SAR Depth, Tested');
-  await evaluate("document.querySelector('#snr').value='60'; document.querySelector('#snr').dispatchEvent(new Event('input'))");
-  assert.equal(await evaluate("document.querySelector('#scenario-localized').textContent"),'99%');
-  await evaluate("document.querySelector('#snr').value='40'; document.querySelector('#scenario').value='speed_1800'; document.querySelector('#scenario').dispatchEvent(new Event('input'))");
-  assert.equal(await evaluate("document.querySelector('#scenario-false-alarm').textContent"),'93%');
-  await evaluate("document.querySelector('#estimator').value='speed_search'; document.querySelector('#estimator').dispatchEvent(new Event('input'))");
-  assert.equal(await evaluate("document.querySelector('#scenario-false-alarm').textContent"),'0%');
-  await evaluate("document.querySelector('#snr').value='20'; document.querySelector('#scenario').value='matched_assumptions'; document.querySelector('#estimator').value='known_speed'; document.querySelector('#snr').dispatchEvent(new Event('input'))");
-  assert.equal(await evaluate("parseFloat(document.querySelector('#predicted-depth').textContent)"),26.6);
-  await evaluate("document.querySelector('#wavelength').value='0.96'; document.querySelector('#wavelength').dispatchEvent(new Event('input',{bubbles:true}))");
-  assert.equal(await evaluate("parseFloat(document.querySelector('#predicted-depth').textContent)"),53.2);
-  await evaluate("document.querySelector('#reset-scale').click()");
-  assert.equal(await evaluate("document.querySelector('#wavelength').value"),'0.48');
-  await evaluate("document.querySelector('#scale-lab').open=true; document.querySelector('#separation').focus()");
-  await send('Input.dispatchKeyEvent',{type:'keyDown',key:'ArrowRight',code:'ArrowRight',windowsVirtualKeyCode:39});
-  await send('Input.dispatchKeyEvent',{type:'keyUp',key:'ArrowRight',code:'ArrowRight',windowsVirtualKeyCode:39});
-  assert.equal(await evaluate("document.querySelector('#separation').value"),'3.1');
-  await evaluate("document.querySelector('#reset-scale').click(); document.activeElement.blur(); scrollTo({top:0,behavior:'instant'})");
-  await screenshot('desktop-overview');
-  await evaluate("location.hash='t03_mechanism'");
-  await until("document.querySelector('#t03_mechanism').open");
-  await evaluate("document.querySelector('#t03_mechanism [data-zoom]').click()");
-  assert.equal(await evaluate("document.querySelector('#figure-dialog').open"),true);
-  await send('Input.dispatchKeyEvent',{type:'keyDown',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});
-  await send('Input.dispatchKeyEvent',{type:'keyUp',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});
-  await until("!document.querySelector('#figure-dialog').open");
-  await evaluate("document.querySelector('#expand-experiments').click()");
-  assert.equal(await evaluate("[...document.querySelectorAll('.experiment')].every(d=>d.open)"),true);
-  await evaluate("document.querySelector('#expand-experiments').click()");
-  assert.equal(await evaluate("[...document.querySelectorAll('.experiment')].every(d=>!d.open)"),true);
-  assert.equal(await evaluate("document.querySelectorAll('.experiment').length"),7);
-  await evaluate("location.hash='t07_surface_controls'");
-  await until("document.querySelector('#t07_surface_controls').open");
-  await until("Math.abs(document.querySelector('#t07_surface_controls').getBoundingClientRect().top - 80) < 5");
-  await screenshot('t7-controls');
-  await evaluate("location.hash='t07_wells'");
-  await until("document.querySelector('#t07_wells').open");
-  await until("Math.abs(document.querySelector('#t07_wells').getBoundingClientRect().top - 85) < 5");
-  assert.equal(await evaluate("document.querySelector('#t07_wells').closest('section').id"),'reproduce');
-  assert.equal(await evaluate("document.querySelector('#t07_wells').classList.contains('experiment')"),false);
-  assert.equal(await evaluate("document.querySelectorAll('#t07_wells img').length"),0);
-  await screenshot('archived-illustration-note');
-  const dataStatus = await evaluate("Promise.all([...document.querySelectorAll('a[download]')].map(async a=>{const r=await fetch(a.href); if(a.pathname.endsWith('.json')) await r.json(); else if(!(await r.text()).includes(',')) return false; return r.ok}))");
-  assert(dataStatus.length >= 9 && dataStatus.every(Boolean));
-  for(const width of [1440,768,390,320]) {
-    await send('Emulation.setDeviceMetricsOverride',{width,height:width<600?844:1000,deviceScaleFactor:1,mobile:width<600});
-    await evaluate("document.querySelectorAll('details').forEach(d=>d.open=true); document.querySelectorAll('img[src]').forEach(i=>i.loading='eager')");
-    await evaluate("Promise.all([...document.querySelectorAll('img[src]')].map(i=>i.decode())).then(()=>true)");
-    const dimensions=await evaluate('({viewport:innerWidth,document:document.documentElement.scrollWidth})');
-    assert(dimensions.document <= dimensions.viewport, `Overflow at ${width}: ${JSON.stringify(dimensions)}`);
-    await evaluate("document.querySelectorAll('details').forEach(d=>d.open=false); scrollTo({top:0,behavior:'instant'})");
-    await screenshot(`overview-${width}`);
-    await evaluate("document.querySelector('#method').scrollIntoView({behavior:'instant',block:'start'})");
-    await screenshot(`method-${width}`);
-    await evaluate("document.querySelector('#phase-control').scrollIntoView({behavior:'instant',block:'start'})");
-    await screenshot(`signal-${width}`);
-    await evaluate("document.querySelector('#scenario-lab').scrollIntoView({behavior:'instant',block:'start'})");
-    await screenshot(`scenarios-${width}`);
-    await evaluate("document.querySelector('#t07_surface_controls').open=true; document.querySelector('#t07_surface_controls').scrollIntoView({behavior:'instant',block:'start'})");
-    await screenshot(`t7-${width}`);
-    await evaluate("document.querySelector('#field').scrollIntoView({behavior:'instant',block:'start'})");
-    await screenshot(`field-${width}`);
-    await evaluate("document.querySelector('.survey-candidates').scrollIntoView({behavior:'instant',block:'center'})");
-    await screenshot(`survey-candidates-${width}`);
+  assert.equal(await evaluate('document.title'), 'SAR Depth, Tested');
+
+  const counts = await evaluate(`JSON.stringify({
+    stats: document.querySelectorAll('.db-stat').length,
+    steps: document.querySelectorAll('.db-step').length,
+    cards: document.querySelectorAll('.db-card').length,
+    figures: document.querySelectorAll('.db-card img').length})`);
+  const n = JSON.parse(counts);
+  assert.ok(n.stats >= 4, `expected stat tiles, saw ${n.stats}`);
+  assert.ok(n.steps >= 6, `expected argument steps, saw ${n.steps}`);
+  assert.ok(n.cards >= 24, `expected result cards, saw ${n.cards}`);
+  assert.ok(n.figures >= 20, `expected figures, saw ${n.figures}`);
+
+  // every result section the builder emitted is actually on the page
+  for (const t of ['r01_giza_controls', 'r09_coherence', 'r11_array', 'r13_known_voids',
+                   'r14_budget', 'r15_modal_gate', 't01_static_pyramid']) {
+    assert.equal(await evaluate(`!!document.getElementById('${t}')`), true, `missing ${t}`);
   }
-  // Field atlas: actual-file controls and external survey geometry are distinct.
-  await send('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});
-  await send('Page.navigate',{url:new URL('field.html?site=giza',url).href});
-  await until("document.body.dataset.site === 'giza'");
-  await evaluate('document.fonts.ready.then(()=>true)');
-  await evaluate("Promise.all([...document.querySelectorAll('#site-content img[src]')].map(i=>i.decode())).then(()=>true)");
-  assert.equal(await evaluate('document.title'),'Field Atlas · SAR Depth, Tested');
-  assert.equal(await evaluate("document.querySelectorAll('#translation-rows tr').length"),8);
-  assert.equal(await evaluate("document.querySelectorAll('#translation-rows .check-fail').length"),2);
-  await evaluate("document.querySelector('[data-image-view=cemetery]').click()");
-  await until("document.querySelector('#radar-canvas').dataset.view === 'cemetery'");
-  await evaluate("document.querySelector('#show-landmarks').click(); document.querySelector('#height-shift').value=3; document.querySelector('#height-shift').dispatchEvent(new Event('input'))");
-  assert.equal(await evaluate("document.querySelector('#height-shift-value').textContent"),'+3 m');
-  assert.equal(await evaluate("document.querySelector('#radar-canvas').dataset.landmarks"),'true');
-  await evaluate("document.querySelector('#image-zoom-in').click()");
-  assert(Number(await evaluate("document.querySelector('#radar-canvas').dataset.zoom"))>1);
-  await evaluate("document.querySelector('#image-reset').click()");
-  assert.equal(await evaluate("document.querySelector('#radar-canvas').dataset.zoom"),'1.000');
-  await screenshot('atlas-giza');
-  await evaluate("document.querySelector('#survey').scrollIntoView({behavior:'instant',block:'start'})");
-  await screenshot('atlas-idu-model');
-  await evaluate("document.querySelector('#model-select').value='hetepheres'; document.querySelector('#model-select').dispatchEvent(new Event('change'))");
-  assert.equal(await evaluate("document.querySelector('#model-canvas').dataset.model"),'hetepheres');
-  assert.equal(await evaluate("document.querySelector('#depth-guide').max"),'27.45');
-  await evaluate("document.querySelector('[data-model-view=section]').click(); document.querySelector('#depth-guide').value=25.5; document.querySelector('#depth-guide').dispatchEvent(new Event('input'))");
-  assert.equal(await evaluate("document.querySelector('#model-canvas').dataset.view"),'section');
-  assert.equal(await evaluate("document.querySelector('#guide-value').textContent"),'25.50 m');
-  await screenshot('atlas-hetepheres-section');
-  await evaluate("document.querySelector('#model-canvas').focus()");
-  await send('Input.dispatchKeyEvent',{type:'keyDown',key:'+',code:'Equal',windowsVirtualKeyCode:187});
-  assert(Number(await evaluate("document.querySelector('#model-canvas').dataset.zoom"))>1);
-  await send('Input.dispatchKeyEvent',{type:'keyDown',key:'Home',code:'Home',windowsVirtualKeyCode:36});
-  assert.equal(await evaluate("document.querySelector('#model-canvas').dataset.view"),'orbit');
-  assert.equal(await evaluate("document.querySelector('[data-model-view=orbit]').getAttribute('aria-pressed')"),'true');
-  const fieldDownloads=await evaluate("Promise.all([...document.querySelectorAll('#site-content a[download]')].map(async a=>{const r=await fetch(a.href);if(!r.ok)return false;if(a.pathname.endsWith('.json'))await r.json();else if(a.pathname.endsWith('.obj'))return (await r.text()).includes('NOT a SAR reconstruction');else if(a.pathname.endsWith('.csv'))return (await r.text()).split('\\n').length>200;return true}))");
-  assert(fieldDownloads.length>=7&&fieldDownloads.every(Boolean));
-  await evaluate("document.querySelector('[data-site=sacsayhuaman]').click()");
-  await until("document.body.dataset.site === 'sacsayhuaman'");
-  assert.equal(await evaluate("document.querySelector('#survey-workspace').hidden"),true);
-  assert.equal(await evaluate("document.querySelector('#survey-empty').hidden"),false);
-  assert.equal(await evaluate("document.querySelector('#landmark-controls').hidden"),true);
-  assert.equal(await evaluate("document.querySelectorAll('#translation-rows .check-fail').length"),2);
-  await evaluate("scrollTo({top:0,behavior:'instant'})");
-  await screenshot('atlas-sacsayhuaman');
-  await evaluate("document.querySelector('[data-site=giza]').click()");
-  await until("document.body.dataset.site === 'giza'");
-  for(const width of [1440,768,390,320]){
-    await send('Emulation.setDeviceMetricsOverride',{width,height:width<600?844:1000,deviceScaleFactor:1,mobile:width<600});
-    await evaluate("document.querySelectorAll('details').forEach(d=>d.open=true)");
-    const dimensions=await evaluate('({viewport:innerWidth,document:document.documentElement.scrollWidth})');
-    assert(dimensions.document<=dimensions.viewport,`Field atlas overflow at ${width}: ${JSON.stringify(dimensions)}`);
-    await evaluate("document.querySelectorAll('details').forEach(d=>d.open=false); scrollTo({top:0,behavior:'instant'})");
-    await screenshot(`atlas-overview-${width}`);
-    for(const section of ['survey','registration-check','aperture-check','translation-check']){
-      await evaluate(`document.querySelector('#${section}').scrollIntoView({behavior:'instant',block:'start'})`);
-      await screenshot(`atlas-${section}-${width}`);
+
+  // the viewer sits above the argument, and WebGL actually paints
+  assert.equal(await evaluate(
+    "document.getElementById('viewer').getBoundingClientRect().top < " +
+    "document.getElementById('argument').getBoundingClientRect().top"), true, 'viewer must lead the page');
+  // the volume renders wherever WebGL2 exists; skip those checks on a software-less browser
+  const webgl2 = await evaluate("!!document.createElement('canvas').getContext('webgl2')");
+  if (webgl2) {
+    await until("(() => {const c = document.getElementById('db-canvas'); return c && c.width > 300;})()");
+    await until("document.getElementById('db-readout').textContent.trim().length > 0");
+    const readout = await evaluate("document.getElementById('db-readout').textContent");
+    for (const want of ['ICEYE', 'Voxels', 'Repeats every']) {
+      assert.ok(readout.includes(want), `readout should mention ${want}: ${readout}`);
     }
+    // the volume controls are live
+    await evaluate("const s = document.getElementById('db-threshold');" +
+                   "s.value = String(Math.min(Number(s.max), Number(s.value) + Number(s.step || 1) * 3));" +
+                   "s.dispatchEvent(new Event('input', {bubbles: true}))");
+    assert.notEqual(await evaluate("document.getElementById('db-threshold-v').textContent.trim()"), '',
+                    'threshold readout should show a value');
+  } else {
+    console.log('note: WebGL2 unavailable, viewer rendering not checked');
   }
-  assert.deepEqual(errors,[]);
-  console.log(JSON.stringify({passed:true,widths:[1440,768,390,320],checks:['saved SNR scenarios and false alarms','slider input and keyboard','reset','deep link','figure dialog and Escape','expand/collapse','seven supporting experiments','legacy T7 opens archive note without renderings','JSON and CSV downloads','all images decode','site and acquisition atlas','native image zoom, reset and survey-height scenario','both metric survey models, section, depth guide and keyboard','survey JSON and OBJ exports','all real-texture input groups including failures','responsive scientific charts','no overflow with all details open','no browser or HTTP errors'],screenshots:screenshotDir},null,2));
+
+  await evaluate("scrollTo({top: 0, behavior: 'instant'})");
+  await screenshot('dashboard-top');
+
+  // a result card carries its figures and its per-test disclosure opens
+  assert.ok(await evaluate("document.querySelectorAll('#r15_modal_gate img').length") >= 1,
+            'the modal-gate card should carry figures');
+  await evaluate("document.getElementById('r15_modal_gate').scrollIntoView({behavior:'instant'})");
+  await evaluate("const d = document.querySelector('#r15_modal_gate details'); if (d) d.open = true;");
+  assert.ok((await evaluate("document.getElementById('r15_modal_gate').textContent")).includes('repeat'),
+            'the modal-gate card should discuss the repeat');
+  await screenshot('dashboard-modal-gate');
+
+  // ---------------- the field atlas ----------------
+  errors = errors.filter(e => !e.includes('favicon'));
+  const dashboardErrors = errors.slice();
+  errors = [];
+  await send('Page.navigate', {url: new URL('field.html', base).href});
+  await until("document.readyState === 'complete'");
+  await until("!document.getElementById('site-content').hidden", 20000);
+  assert.equal(await evaluate("!!document.querySelector('.db-mark')"), true,
+               'the atlas should wear the dashboard header');
+  assert.equal(await evaluate("!!document.getElementById('next-test')"), false,
+               'the superseded roadmap section should be gone');
+  await until("(() => {const c = document.getElementById('radar-canvas'); return c && c.width > 4;})()");
+  assert.ok(await evaluate("document.querySelectorAll('.atlas-toc a').length") >= 3,
+            'the atlas should keep its section index');
+  await screenshot('field-atlas');
+
+  const all = dashboardErrors.concat(errors.filter(e => !e.includes('favicon')));
+  assert.deepEqual(all, [], `page errors: ${all.join(' | ')}`);
+  console.log(`OK  stats ${n.stats}  steps ${n.steps}  cards ${n.cards}  figures ${n.figures}`);
+  console.log(`screenshots in ${screenshotDir}`);
 } finally {
-  await send('Page.close'); ws.close();
+  ws.close();
 }
