@@ -6,18 +6,18 @@
   "shape": [
     158,
     76,
-    64
+    192
   ],
   "axis_order": "binary is [depth][across_range][along_azimuth], uint8",
   "spacing_m": {
     "along_azimuth": 1.0554832354079442,
     "across_slant_range": 2.4576193049992154,
-    "depth": 0.8615863731794047
+    "depth": 1.1449576097389664
   },
   "extent_m": {
     "along_azimuth": 166.76635119445518,
     "across_slant_range": 186.77906717994037,
-    "depth": 54.707342624556844
+    "depth": 218.82937049822738
   },
   "centre_lonlat": [
     31.13078,
@@ -31,9 +31,86 @@
     "real_fit_ambiguity_limit_m": 13.676835656139211,
     "note": "Depth is the oscillation rate of the registration trajectory relabelled through a declared sound wavelength. The volume repeats exactly every repeat_period_m."
   },
+  "known_voids": null,
+  "survey": {
+    "monument": "Khafre",
+    "reference": "depth measured below the apex; horizontal placement by the product RPC, not fitted to the radar",
+    "features": [
+      {
+        "name": "Belzoni's Chamber",
+        "kind": "chamber",
+        "source": "Maragioglio & Rinaldi V",
+        "note": "Burial chamber cut partly into bedrock at base level, granite sarcophagus in the floor.",
+        "centre_m": [
+          -0.7445641653491583,
+          81.04631048146257
+        ],
+        "depth_below_apex_m": 135.9,
+        "size_m": [
+          14.15,
+          5.0,
+          6.83
+        ]
+      },
+      {
+        "name": "Lower Chamber",
+        "kind": "chamber",
+        "source": "Maragioglio & Rinaldi V",
+        "note": "Subsidiary chamber on the lower descending passage.",
+        "centre_m": [
+          28.601084548462094,
+          92.91572235247152
+        ],
+        "depth_below_apex_m": 146.4,
+        "size_m": [
+          10.4,
+          3.1,
+          2.6
+        ]
+      },
+      {
+        "name": "Upper Descending Passage",
+        "kind": "passage",
+        "source": "Maragioglio & Rinaldi V",
+        "note": "",
+        "centre_m": [
+          18.841901986042416,
+          75.41162346275341
+        ],
+        "depth_below_apex_m": 128.4,
+        "size_m": [
+          1.1,
+          50.0,
+          1.2
+        ]
+      },
+      {
+        "name": "Lower Descending Passage",
+        "kind": "passage",
+        "source": "Maragioglio & Rinaldi V",
+        "note": "Begins outside the pyramid on the north side and descends into the bedrock.",
+        "centre_m": [
+          43.288382946328035,
+          90.20803855982665
+        ],
+        "depth_below_apex_m": 142.4,
+        "size_m": [
+          1.1,
+          40.0,
+          1.2
+        ]
+      }
+    ],
+    "references": [
+      "Petrie, The Pyramids and Temples of Gizeh (1883)",
+      "Maragioglio & Rinaldi, L'Architettura delle Piramidi Menfite IV-V",
+      "Morishima et al., Discovery of a big void in Khufu's Pyramid, Nature 552, 386 (2017)",
+      "Procureur et al., Precise characterization of a corridor-shaped structure in Khufu's Pyramid, Nature Communications 14, 1144 (2023)"
+    ]
+  },
   "value_range_log10": [
-    -3.9877840010962826,
-    -3.0105980027791945
+    -3.980902893804993,
+    -3.0126695637827923
   ],
   "surface_db_range": [
     22.038154525568658,
@@ -47,5 +124,5 @@
     "incidence_center_deg": 20.805111922042048,
     "polarization": "VV"
   },
-  "bytes": 768512
+  "bytes": 2305536
 }

@@ -31,6 +31,8 @@
     "real_fit_ambiguity_limit_m": 13.601398807287854,
     "note": "Depth is the oscillation rate of the registration trajectory relabelled through a declared sound wavelength. The volume repeats exactly every repeat_period_m."
   },
+  "known_voids": null,
+  "survey": null,
   "value_range_log10": [
     -3.98617493300522,
     -3.0861837783186843

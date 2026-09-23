@@ -1,0 +1,36 @@
+{
+  "id": "r13_known_voids",
+  "order": 24,
+  "tag": "null",
+  "eyebrow": "13 \u00b7 Positive control",
+  "title": "Hundreds of surveyed burial shafts produce no signal at their known depths",
+  "question": "Can the method find voids that are certainly there, at depths that are certainly known?",
+  "finding": "No. Across 95,760 pixels over the Eastern and Western Cemeteries and 95,760 pixels of bare plateau, the share of each pixel's depth profile falling in the surveyed shaft band of 5 to 30 m is 0.6183 over the tombs against 0.5967 over the plateau, a standardised difference of +0.194. The cemeteries are far brighter at the surface, with median amplitude 67 against 77, so the comparison was repeated on brightness-matched pixels, where the difference is +0.181. This is the easiest target the site offers: shallow, numerous, excavated and surveyed.",
+  "limitations": "Shaft depths vary between tombs and many shafts are filled or collapsed, so the band is a range rather than a target depth. Placement is verified by recognising the mastaba rows in the image, not by surveyed control points, which is enough at this scale but would not be for a single chamber. A null here bounds sensitivity to shallow voids under these conditions; it does not prove no void anywhere could ever be detected.",
+  "method": "Identical pipeline, bank and grid to the within-image controls, applied to two cemetery patches and two plateau patches of the same acquisition. The statistic is the fraction of each pixel's normalised depth profile lying in the 5 to 30 m band, compared directly and again after matching the two populations on surface amplitude in 24 bins.",
+  "figures": [
+    {
+      "file": "/Users/eugene/prj/sar/results/r13_known_voids/figs/r13_cemeteries.png",
+      "caption": "<b>Hundreds of real voids, and nothing to see.</b> The Eastern and Western Cemeteries are dense fields of excavated burial shafts 5 to 30 m deep; the two control patches are bare plateau a few hundred metres away. Left: mean depth profiles, with the surveyed shaft band shaded. Middle: the share of each pixel's profile falling in that band. Right: the standardised difference between tombs and plateau, before and after matching on surface brightness. If the method could see shallow voids, this is where it would show."
+    }
+  ],
+  "metrics": {
+    "shaft_band_m": [
+      5.0,
+      30.0
+    ],
+    "tomb_pixels": 95760,
+    "control_pixels": 95760,
+    "tomb_band_share_mean": 0.6182667901849603,
+    "control_band_share_mean": 0.5966879925199616,
+    "standardised_difference": 0.19420539115890914,
+    "standardised_difference_brightness_matched": 0.18084214944459798,
+    "matched_pixels": 84416,
+    "ks_statistic": 0.06029657477025899,
+    "ks_pvalue": 9.144972792141503e-152,
+    "tomb_median_amplitude": 66.82164764404297,
+    "control_median_amplitude": 76.96282196044922,
+    "runtime_s": 594.2030727863312
+  },
+  "date": "2026-09-23"
+}

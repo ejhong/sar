@@ -6,18 +6,18 @@
   "shape": [
     158,
     76,
-    64
+    192
   ],
   "axis_order": "binary is [depth][across_range][along_azimuth], uint8",
   "spacing_m": {
     "along_azimuth": 1.0554832354079442,
     "across_slant_range": 2.4576193049992154,
-    "depth": 0.8630594968326332
+    "depth": 1.1469152360308335
   },
   "extent_m": {
     "along_azimuth": 166.76635119445518,
     "across_slant_range": 186.77906717994037,
-    "depth": 54.800880176837424
+    "depth": 219.2035207073497
   },
   "centre_lonlat": [
     31.13417,
@@ -31,9 +31,150 @@
     "real_fit_ambiguity_limit_m": 13.700220044209356,
     "note": "Depth is the oscillation rate of the registration trajectory relabelled through a declared sound wavelength. The volume repeats exactly every repeat_period_m."
   },
+  "known_voids": null,
+  "survey": {
+    "monument": "Khufu",
+    "reference": "depth measured below the apex; horizontal placement by the product RPC, not fitted to the radar",
+    "features": [
+      {
+        "name": "King's Chamber",
+        "kind": "chamber",
+        "source": "Petrie 1883; Maragioglio & Rinaldi",
+        "note": "Granite chamber on the pyramid axis, floor about 43 m above the base.",
+        "centre_m": [
+          0.4684799091735333,
+          40.35270795541951
+        ],
+        "depth_below_apex_m": 103.6,
+        "size_m": [
+          10.47,
+          5.23,
+          5.97
+        ]
+      },
+      {
+        "name": "Queen's Chamber",
+        "kind": "chamber",
+        "source": "Petrie 1883",
+        "note": "On the pyramid axis, corbelled roof.",
+        "centre_m": [
+          0.9228456191719014,
+          60.75013966891943
+        ],
+        "depth_below_apex_m": 125.39999999999999,
+        "size_m": [
+          5.76,
+          5.23,
+          6.26
+        ]
+      },
+      {
+        "name": "Grand Gallery",
+        "kind": "passage",
+        "source": "Petrie 1883",
+        "note": "Corbelled ascending gallery, 46.7 m along its slope.",
+        "centre_m": [
+          -10.807965247483175,
+          51.70481207485717
+        ],
+        "depth_below_apex_m": 116.6,
+        "size_m": [
+          2.1,
+          41.8,
+          8.6
+        ]
+      },
+      {
+        "name": "Ascending Passage",
+        "kind": "passage",
+        "source": "Petrie 1883",
+        "note": "",
+        "centre_m": [
+          -26.493513172216236,
+          65.54979475043385
+        ],
+        "depth_below_apex_m": 132.6,
+        "size_m": [
+          1.2,
+          34.0,
+          1.2
+        ]
+      },
+      {
+        "name": "Descending Passage",
+        "kind": "passage",
+        "source": "Petrie 1883",
+        "note": "Runs from the north entrance down into the bedrock.",
+        "centre_m": [
+          -16.742957094156584,
+          87.72168412144939
+        ],
+        "depth_below_apex_m": 155.6,
+        "size_m": [
+          1.2,
+          90.0,
+          1.2
+        ]
+      },
+      {
+        "name": "Subterranean Chamber",
+        "kind": "chamber",
+        "source": "Petrie 1883",
+        "note": "Unfinished, cut into bedrock roughly 30 m below the base platform.",
+        "centre_m": [
+          5.73430503382606,
+          108.91953154261884
+        ],
+        "depth_below_apex_m": 176.6,
+        "size_m": [
+          14.0,
+          8.3,
+          5.0
+        ]
+      },
+      {
+        "name": "ScanPyramids Big Void",
+        "kind": "void",
+        "source": "Morishima et al., Nature 552, 386 (2017)",
+        "note": "Detected by muon tomography above the Grand Gallery. Length at least 30 m; cross-section and exact position are not tightly constrained.",
+        "centre_m": [
+          -8.8344315840605,
+          42.50152293765295
+        ],
+        "depth_below_apex_m": 106.6,
+        "size_m": [
+          3.0,
+          30.0,
+          6.0
+        ]
+      },
+      {
+        "name": "North Face Corridor",
+        "kind": "void",
+        "source": "Procureur et al., Nature Communications 14, 1144 (2023)",
+        "note": "Corridor behind the chevrons on the north face, confirmed by muon imaging and endoscopy.",
+        "centre_m": [
+          -106.74564568860977,
+          57.10862571360911
+        ],
+        "depth_below_apex_m": 129.6,
+        "size_m": [
+          2.1,
+          9.0,
+          2.3
+        ]
+      }
+    ],
+    "references": [
+      "Petrie, The Pyramids and Temples of Gizeh (1883)",
+      "Maragioglio & Rinaldi, L'Architettura delle Piramidi Menfite IV-V",
+      "Morishima et al., Discovery of a big void in Khufu's Pyramid, Nature 552, 386 (2017)",
+      "Procureur et al., Precise characterization of a corridor-shaped structure in Khufu's Pyramid, Nature Communications 14, 1144 (2023)"
+    ]
+  },
   "value_range_log10": [
-    -3.9938175840866563,
-    -2.9886625078112026
+    -3.986720234829399,
+    -2.997326340339725
   ],
   "surface_db_range": [
     22.2285335332233,
@@ -47,5 +188,5 @@
     "incidence_center_deg": 20.805111922042048,
     "polarization": "VV"
   },
-  "bytes": 768512
+  "bytes": 2305536
 }

@@ -85,6 +85,7 @@
       <div class="uw-control"><label for="uw-surface"><span>Surface image</span><span id="uw-surface-v">0.85</span></label>
         <input type="range" id="uw-surface" min="0" max="1" step="0.05" value="0.85"></div>
       <label class="uw-check"><input type="checkbox" id="uw-repeat" checked> Mark where the volume repeats</label>
+      <label class="uw-check"><input type="checkbox" id="uw-voids" checked> Mark surveyed void depths</label>
       <div class="uw-legend"><span>low</span><i></i><span>high</span></div>
 
       <h2>This acquisition</h2>
@@ -133,6 +134,7 @@
   bind('uw-exag', 'exaggeration', (v) => v.toFixed(1) + '×');
   bind('uw-surface', 'surfaceMix');
   bind('uw-repeat', 'showRepeat');
+  bind('uw-voids', 'showVoids');
 
   fetch('data/voxels/index.json').then((r) => r.json()).then(async (index) => {
     const holder = document.getElementById('uw-patches');
@@ -164,6 +166,9 @@
         ['Declared λs', fmt(dz.lambda_s_m, 2) + ' m'],
         ['Repeats every', fmt(dz.repeat_period_m, 1) + ' m'],
         ['Terrain (Copernicus)', header.terrain_height_m === null ? '—' : fmt(header.terrain_height_m, 0) + ' m'],
+        ['Surveyed voids', header.known_voids
+          ? fmt(header.known_voids.depth_min_m, 0) + '–' + fmt(header.known_voids.depth_max_m, 0) + ' m'
+          : 'none catalogued here'],
       ].map(([k, v]) => '<div><span>' + k + '</span><span>' + v + '</span></div>').join('');
       document.getElementById('uw-note').textContent = dz.note;
     };

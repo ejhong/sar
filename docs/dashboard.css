@@ -112,3 +112,26 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:400;color:var(--ink);margin:0}
 .db-band-facts span{display:block;font-size:9px;letter-spacing:.11em;text-transform:uppercase;color:var(--cool)}
 @media(max-width:860px){.db-band-facts{grid-template-columns:1fr}}
 .db-site{grid-column:1/-1;font:8.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin:9px 0 0}
+.db-check{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--body);margin:7px 0}
+.db-check input{accent-color:var(--cool)}
+.db-falsify td:first-child{width:30%;min-width:210px}
+.db-falsify b{color:var(--ink);font-weight:600}
+.db-note{border:1px solid var(--line);border-radius:3px;background:var(--tile);padding:16px 18px}
+.db-note h3{font-size:16px;margin:0 0 8px;line-height:1.3}
+.db-note p{margin:0;font-size:12.5px;line-height:1.7;color:var(--body)}
+.db-repro{margin-top:20px;border-left:3px solid var(--cool);background:var(--soft);padding:16px 20px;max-width:1000px}
+.db-repro h3{font-size:15px;margin:0 0 10px}
+.db-repro pre{background:var(--white);border:1px solid var(--line);border-radius:3px;padding:12px 14px;font:11px/1.75 var(--mono);overflow-x:auto;margin:0 0 10px}
+.db-repro p{font-size:12px;line-height:1.7;margin:0;color:var(--dim)}
+.db-argument{display:grid;grid-template-columns:repeat(5,1fr);gap:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.db-step{display:block;padding:18px 20px 20px;border-right:1px solid var(--line);text-decoration:none;color:inherit;transition:background .15s}
+.db-step:last-child{border-right:0}
+.db-step:hover{background:var(--soft);color:inherit}
+.db-step>span{display:block;font:9px var(--mono);letter-spacing:.12em;color:var(--cool);margin-bottom:9px}
+.db-step>b{display:block;font-family:var(--serif);font-size:17px;font-weight:400;line-height:1.25;color:var(--ink);margin-bottom:8px}
+.db-step>p{margin:0;font-size:12px;line-height:1.65;color:var(--dim)}
+.db-step:hover>b{color:var(--hot)}
+@media(max-width:1180px){.db-argument{grid-template-columns:repeat(2,1fr)}.db-step{border-bottom:1px solid var(--line)}.db-step:nth-child(2n){border-right:0}}
+@media(max-width:680px){.db-argument{grid-template-columns:1fr}.db-step{border-right:0}}
+.db-survey-key{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center;font:9px var(--mono);letter-spacing:.06em;color:var(--dim);margin:6px 0 0}
+.db-survey-key i{display:inline-block;width:11px;height:3px;border-radius:2px;margin-right:4px;vertical-align:middle}

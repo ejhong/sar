@@ -319,6 +319,10 @@ VIEWER = """<div class="db-viewer">
       <input type="range" id="db-clip" min="0.05" max="1" step="0.01" value="1"></div>
     <div class="db-slider"><label for="db-surface"><span>Radar surface</span><span id="db-surface-v">0.85</span></label>
       <input type="range" id="db-surface" min="0" max="1" step="0.05" value="0.85"></div>
+    <label class="db-check"><input type="checkbox" id="db-repeat" checked> Mark where the volume repeats</label>
+    <label class="db-check"><input type="checkbox" id="db-voids" checked> Mark surveyed void depths</label>
+    <label class="db-check"><input type="checkbox" id="db-survey" checked> Show surveyed chambers</label>
+    <p class="db-survey-key"><i style="background:#4ce09e"></i>chamber <i style="background:#6bb8fa"></i>passage <i style="background:#ffb340"></i>muon-detected void</p>
     <div class="db-legend"><span>low</span><i></i><span>high</span></div>
     <h4>This volume</h4><div class="db-readout" id="db-readout"></div>
   </div>
@@ -327,7 +331,11 @@ VIEWER = """<div class="db-viewer">
 patch, at 27 cm sampling. Everything below it is what the published method outputs as depth, rendered as a volume.
 The red plane marks where that output starts repeating exactly, because the steering basis has come back to itself.
 Switch between a monument and open ground, or between Giza and Sacsayhuamán: if the method were responding
-to buried structure, these would not look alike. <a href="underworld.html">Open the full viewer ↗</a></p>"""
+to buried structure, these would not look alike. On Khufu and Khafre the wireframes are the real chambers, passages
+and muon-detected voids, placed from excavation surveys and published muon imaging rather than from the radar; the
+volume simply repeats past them. On the cemetery patches a green band marks the depth range of hundreds of excavated
+burial shafts.
+<a href="underworld.html">Open the full viewer ↗</a></p>"""
 
 
 def acquisitions_band():
@@ -349,6 +357,97 @@ def acquisitions_band():
             f'ICEYE dwell acquisitions" loading="lazy"></a>'
             f'<figcaption>{item.get("caption", "")}</figcaption>'
             f'<div class="db-band-facts">{cells}</div></figure>')
+
+
+ARGUMENT = [
+    ("Radar does not go through rock",
+     "At this wavelength the signal dies about half a metre into dry limestone. Nothing underground is lit up, so "
+     "any claim about what is down there has to be read off how the surface moves.",
+     "r14_budget"),
+    ("The surface movement in question is very slow",
+     "Ground shaken by distant oceans and cities moves with periods of several seconds. To measure that you have "
+     "to watch the same ground for minutes. One radar pass gives under two seconds before the ground stops "
+     "looking like itself from a changed angle.",
+     "r09_coherence"),
+    ("So the movement is too small and too brief to see",
+     "We measured what one pass can actually detect on the brightest real targets. It is about eight times larger "
+     "than the strongest ground motion it would need to sense, and the recording is eighty times too short.",
+     "r04_velocity_floor"),
+    ("Where voids are certainly known, nothing appears",
+     "Giza's cemeteries hold hundreds of excavated burial shafts five to thirty metres deep, beside bare plateau "
+     "with none. At the shafts' own depths, the two are the same.",
+     "r13_known_voids"),
+    ("And the depth numbers are manufactured",
+     "The depth scale is set by a constant nobody measures, and the picture repeats exactly every few metres. Two "
+     "halves of the same pass put the same ground at different depths.",
+     "r02_depth_axis"),
+]
+
+
+def argument_block():
+    items = "".join(
+        f'<a class="db-step" href="#{esc(k)}"><span>{i + 1:02d}</span><b>{esc(t)}</b><p>{esc(b)}</p></a>'
+        for i, (t, b, k) in enumerate(ARGUMENT))
+    return f'<div class="db-argument">{items}</div>'
+
+
+FALSIFIERS = [
+    ("A positive control succeeding",
+     "Locate a surveyed void at its known position with the processing settings frozen beforehand, and score the "
+     "result against chance. R13 does this at cemetery scale and finds nothing; a single named chamber needs "
+     "metre-level registration, which is the next task on the roadmap."),
+    ("Depths that reproduce across look angle",
+     "Split one acquisition into two disjoint halves, give each an identical sweep, and show that the same ground "
+     "is placed at the same depth by both. R3 measures a correlation of 0.067 between halves against 0.074 for "
+     "unrelated pixels."),
+    ("Depths that survive their own free parameters",
+     "Show a feature whose depth does not move when the declared sound wavelength or the sub-aperture width "
+     "changes. At present the depth axis scales linearly with a constant no measurement constrains."),
+    ("Coherence on a target class we have not measured",
+     "A deployed corner reflector, or any target holding complex coherence beyond a few seconds of look "
+     "separation, would lengthen the usable record and weaken R9 and R11. Nothing in either scene does."),
+    ("Agreement between two acquisitions of the same ground",
+     "Two dwells of the same plateau on different dates should place the same structure at the same depth. We hold "
+     "one acquisition per site and cannot run this; it is the cleanest test we are missing."),
+]
+
+NOTES = [
+    ("Measuring vibration from radar is real",
+     "Estimating micro-motion from SAR sub-apertures is established and works: on ships, bridges and other "
+     "strong, stable structures vibrating fast enough that very short lags suffice. Independent work in 2026 "
+     "recovered 1 to 4 Hz motion on controlled reflectors. Nothing here questions that. The subsurface claim is a "
+     "different regime in every variable that matters: a distributed natural target, a frequency band a hundred "
+     "times lower, and an inference about depth rather than about motion."),
+    ("No published figure is reproduced here",
+     "The sub-aperture parameters, patch positions, nuisance geometry and wavelength model behind the Khafre "
+     "images were never released, so no result on this page reproduces a specific published image. Everything "
+     "reproduces the method as described, with settings chosen and published here. If the disagreement lies in "
+     "those settings, releasing the originals would resolve it quickly."),
+    ("The public derivative protocol, run unmodified",
+     "Version 1.7 of the openly published derivative protocol was installed without changes, its own tests passed, "
+     "and it was given a real Khafre crop. Its registration returns only the integer peak of the cross-correlation "
+     "and produced one distinct displacement value across an entire target track, where real inter-look "
+     "displacements are thousandths of a pixel. Its example geometry also assumes a one-kilometre aperture span "
+     "where real state vectors give about ten, moving its ambiguity limit from 494 m to 50 m, below the 100 m grid "
+     "it searches. Both are fixable."),
+    ("Everything is open and rebuilds from source",
+     "The two radar products are commercial acquisitions and are not redistributed, but every script, "
+     "configuration, intermediate result and figure is in the repository, and this page is generated from the "
+     "saved reports. Corrections to earlier versions of this work, including two of our own mistakes, are kept in "
+     "the method audit. Disagreement is best expressed as a rerun."),
+]
+
+
+def falsifier_block():
+    items = "".join(
+        f"<tr><td><b>{esc(t)}</b></td><td>{esc(b)}</td></tr>" for t, b in FALSIFIERS)
+    return f'<table class="db-table db-falsify"><tbody>{items}</tbody></table>'
+
+
+def author_block():
+    items = "".join(
+        f'<article class="db-note"><h3>{esc(t)}</h3><p>{esc(b)}</p></article>' for t, b in NOTES)
+    return f'<div class="db-grid two">{items}</div>'
 
 
 def method_figure():
@@ -425,8 +524,8 @@ def build():
 <header class="db-top"><div class="wrap">
   <a class="db-mark" href="./"><span aria-hidden="true">◒</span> SAR / DEPTH, TESTED</a>
   <nav class="db-nav">
-    <a href="#scans">Scans</a><a href="#viewer">Viewer</a><a href="#real">Real data</a><a href="#sim">Simulation</a><a href="#support">Steelman</a>
-    <a href="#method">Method</a><a href="field.html">Field atlas</a><a href="{REPO}">Code ↗</a>
+    <a href="#argument">Argument</a><a href="#viewer">Viewer</a><a href="#scans">Scans</a><a href="#real">Real data</a><a href="#sim">Simulation</a><a href="#support">Steelman</a>
+    <a href="#falsify">Falsification</a><a href="#scope">Scope</a><a href="#method">Method</a><a href="field.html">Field atlas</a><a href="{REPO}">Code ↗</a>
   </nav>
 </div></header>
 
@@ -448,16 +547,22 @@ def build():
 
 <section class="db-stats"><div class="wrap" style="display:contents">{stats(reps)}</div></section>
 
-<section class="db-sec" id="scans"><div class="wrap">
-  <div class="db-head"><div><span class="db-kicker">The data</span><h2>What the radar recorded</h2></div>
-  <p>Ten patches, two acquisitions, no processing. Every later result is a statement about these pixels.</p></div>
-  {acquisitions_band()}
+<section class="db-sec" id="argument"><div class="wrap">
+  <div class="db-head"><div><span class="db-kicker">The argument</span><h2>Five steps, each one measured</h2></div>
+  <p>Every step links to the experiment that establishes it. Each is enough on its own.</p></div>
+  {argument_block()}
 </div></section>
 
 <section class="db-sec" id="viewer"><div class="wrap">
   <div class="db-head"><div><span class="db-kicker">Interactive · WebGL</span><h2>The depth volumes, in three dimensions</h2></div>
   <p>Real output from the Giza acquisition. Compare a pyramid with empty plateau directly.</p></div>
   {VIEWER}
+</div></section>
+
+<section class="db-sec" id="scans"><div class="wrap">
+  <div class="db-head"><div><span class="db-kicker">The data</span><h2>What the radar recorded</h2></div>
+  <p>Ten patches, two acquisitions, no processing. Every later result is a statement about these pixels.</p></div>
+  {acquisitions_band()}
 </div></section>
 
 <section class="db-sec" id="real"><div class="wrap">
@@ -477,6 +582,31 @@ def build():
   <div class="db-head"><div><span class="db-kicker">Supporting · 3 results</span><h2>Where the method is given every advantage</h2></div>
   <p>A coupled physical benchmark, the measurement chain it rests on, and the stress tests behind the simulated examples.</p></div>
   <div class="db-grid">{supporting_cards()}</div>
+</div></section>
+
+<section class="db-sec" id="falsify"><div class="wrap">
+  <div class="db-head"><div><span class="db-kicker">Falsification</span><h2>What would change this conclusion</h2></div>
+  <p>Stated in advance and in testable form. Any one of these, demonstrated, would reopen the question.</p></div>
+  {falsifier_block()}
+</div></section>
+
+<section class="db-sec" id="scope"><div class="wrap">
+  <div class="db-head"><div><span class="db-kicker">Scope</span><h2>What this does and does not claim</h2></div>
+  <p>Worth reading before drawing a conclusion from anything above.</p></div>
+  {author_block()}
+  <div class="db-repro">
+    <h3>Reproduce any number on this page</h3>
+    <pre><code>git clone https://github.com/ejhong/sar &amp;&amp; cd sar
+python3.11 -m venv .venv &amp;&amp; .venv/bin/pip install -r requirements.txt
+.venv/bin/python -m pytest tests                      # 80 tests
+
+cd experiments &amp;&amp; ../.venv/bin/python run_all.py      # simulation chapter, self-contained
+../.venv/bin/python r13_known_voids.py                # needs the ICEYE products
+cd .. &amp;&amp; .venv/bin/python build_dashboard.py         # rebuilds this page</code></pre>
+    <p>Product paths are in <code>experiments/real_common.py</code>. Nothing reads a full raster; every step works
+    on a bounded, geolocated crop and records its origin. What is and is not established, including corrections to
+    our own earlier results, is kept in <a href="{REPO}/blob/main/METHOD_AUDIT.md">METHOD_AUDIT.md</a>.</p>
+  </div>
 </div></section>
 
 <section class="db-sec" id="method"><div class="wrap">
@@ -513,6 +643,11 @@ def build():
   }};
   bind('db-threshold', 'threshold'); bind('db-density', 'density');
   bind('db-clip', 'depthClip', v => Math.round(v * 100) + '%'); bind('db-surface', 'surfaceMix');
+  const keyOf = {{'db-repeat': 'showRepeat', 'db-voids': 'showVoids', 'db-survey': 'showSurvey'}};
+  ['db-repeat', 'db-voids', 'db-survey'].forEach(id => {{
+    const el = document.getElementById(id), key = keyOf[id];
+    el.addEventListener('change', () => {{ view.settings[key] = el.checked; view.draw(); }});
+  }});
   const fmt = (v, n) => (v === null || v === undefined ? '—' : Number(v).toFixed(n));
   fetch('data/voxels/index.json').then(r => r.json()).then(index => {{
     const holder = document.getElementById('db-chips'), buttons = [];
@@ -527,6 +662,8 @@ def build():
         ['Voxels', h.shape.join(' × ')],
         ['Voxel size', fmt(h.spacing_m.along_azimuth, 2) + ' × ' + fmt(h.spacing_m.across_slant_range, 2) + ' × ' + fmt(h.spacing_m.depth, 2) + ' m'],
         ['Declared λs', fmt(dz.lambda_s_m, 2) + ' m'], ['Repeats every', fmt(dz.repeat_period_m, 1) + ' m'],
+        ['Surveyed voids', h.known_voids ? fmt(h.known_voids.depth_min_m, 0) + '–' + fmt(h.known_voids.depth_max_m, 0) + ' m' : 'none here'],
+        ['Surveyed chambers', h.survey && h.survey.features ? h.survey.features.length + ' drawn' : 'none here'],
         ['Terrain', h.terrain_height_m === null ? '—' : fmt(h.terrain_height_m, 0) + ' m'],
       ].map(([k, v]) => '<div><span>' + k + '</span><span>' + v + '</span></div>').join('');
     }};

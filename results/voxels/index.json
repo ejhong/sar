@@ -8,15 +8,17 @@
       "shape": [
         158,
         76,
-        64
+        192
       ],
       "extent_m": {
         "along_azimuth": 166.76635119445518,
         "across_slant_range": 186.77906717994037,
-        "depth": 54.707342624556844
+        "depth": 218.82937049822738
       },
-      "bytes": 768512,
-      "short_label": "Khafre"
+      "bytes": 2305536,
+      "short_label": "Khafre",
+      "known_voids": false,
+      "survey_features": 4
     },
     {
       "site": "giza",
@@ -26,15 +28,17 @@
       "shape": [
         158,
         76,
-        64
+        192
       ],
       "extent_m": {
         "along_azimuth": 166.76635119445518,
         "across_slant_range": 186.77906717994037,
-        "depth": 54.800880176837424
+        "depth": 219.2035207073497
       },
-      "bytes": 768512,
-      "short_label": "Khufu"
+      "bytes": 2305536,
+      "short_label": "Khufu",
+      "known_voids": false,
+      "survey_features": 8
     },
     {
       "site": "giza",
@@ -52,7 +56,9 @@
         "depth": 54.629655301674404
       },
       "bytes": 768512,
-      "short_label": "Menkaure"
+      "short_label": "Menkaure",
+      "known_voids": false,
+      "survey_features": 0
     },
     {
       "site": "giza",
@@ -70,7 +76,9 @@
         "depth": 54.84796329146639
       },
       "bytes": 768512,
-      "short_label": "Sphinx"
+      "short_label": "Sphinx",
+      "known_voids": false,
+      "survey_features": 0
     },
     {
       "site": "giza",
@@ -88,7 +96,9 @@
         "depth": 54.405595229151416
       },
       "bytes": 768512,
-      "short_label": "Plateau west"
+      "short_label": "Plateau west",
+      "known_voids": false,
+      "survey_features": 0
     },
     {
       "site": "giza",
@@ -106,7 +116,69 @@
         "depth": 54.54292810604742
       },
       "bytes": 768512,
-      "short_label": "Plateau south"
+      "short_label": "Plateau south",
+      "known_voids": false,
+      "survey_features": 0
+    },
+    {
+      "site": "giza",
+      "patch": "cemetery_east",
+      "label": "Eastern Cemetery",
+      "kind": "tombs",
+      "shape": [
+        158,
+        76,
+        64
+      ],
+      "extent_m": {
+        "along_azimuth": 166.76635119445518,
+        "across_slant_range": 186.77906717994037,
+        "depth": 54.84424695503652
+      },
+      "bytes": 768512,
+      "short_label": "Eastern Cemetery",
+      "known_voids": true,
+      "survey_features": 0
+    },
+    {
+      "site": "giza",
+      "patch": "cemetery_west",
+      "label": "Western Cemetery",
+      "kind": "tombs",
+      "shape": [
+        158,
+        76,
+        64
+      ],
+      "extent_m": {
+        "along_azimuth": 166.76635119445518,
+        "across_slant_range": 186.77906717994037,
+        "depth": 54.68693683153343
+      },
+      "bytes": 768512,
+      "short_label": "Western Cemetery",
+      "known_voids": true,
+      "survey_features": 0
+    },
+    {
+      "site": "giza",
+      "patch": "plateau_nw",
+      "label": "Open plateau, north-west",
+      "kind": "control",
+      "shape": [
+        158,
+        76,
+        64
+      ],
+      "extent_m": {
+        "along_azimuth": 166.76635119445518,
+        "across_slant_range": 186.77906717994037,
+        "depth": 54.52916357925804
+      },
+      "bytes": 768512,
+      "short_label": "Plateau north-west",
+      "known_voids": false,
+      "survey_features": 0
     },
     {
       "site": "sacsayhuaman",
@@ -124,7 +196,9 @@
         "depth": 53.0792503347519
       },
       "bytes": 768512,
-      "short_label": "Sacsayhuaman terrace walls"
+      "short_label": "Sacsayhuaman terrace walls",
+      "known_voids": false,
+      "survey_features": 0
     },
     {
       "site": "sacsayhuaman",
@@ -142,7 +216,9 @@
         "depth": 52.992914356239794
       },
       "bytes": 768512,
-      "short_label": "Rodadero outcrop"
+      "short_label": "Rodadero outcrop",
+      "known_voids": false,
+      "survey_features": 0
     },
     {
       "site": "sacsayhuaman",
@@ -160,7 +236,9 @@
         "depth": 53.204248240237305
       },
       "bytes": 768512,
-      "short_label": "Cusco street grid"
+      "short_label": "Cusco street grid",
+      "known_voids": false,
+      "survey_features": 0
     },
     {
       "site": "sacsayhuaman",
@@ -178,7 +256,9 @@
         "depth": 53.047565772196435
       },
       "bytes": 768512,
-      "short_label": "Hillside north"
+      "short_label": "Hillside north",
+      "known_voids": false,
+      "survey_features": 0
     }
   ],
   "sites": {

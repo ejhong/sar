@@ -1,8 +1,8 @@
 {
   "site": "giza",
-  "patch": "menkaure",
-  "label": "Menkaure pyramid",
-  "kind": "monument",
+  "patch": "cemetery_west",
+  "label": "Western Cemetery",
+  "kind": "tombs",
   "shape": [
     158,
     76,
@@ -12,34 +12,39 @@
   "spacing_m": {
     "along_azimuth": 1.0554832354079442,
     "across_slant_range": 2.4576193049992154,
-    "depth": 0.8603628749147632
+    "depth": 0.8612650021831282
   },
   "extent_m": {
     "along_azimuth": 166.76635119445518,
     "across_slant_range": 186.77906717994037,
-    "depth": 54.629655301674404
+    "depth": 54.68693683153343
   },
   "centre_lonlat": [
-    31.12833,
-    29.9725
+    31.1295,
+    29.979
   ],
-  "assumed_height_m": 140.5,
-  "terrain_height_m": 88.66176596065323,
+  "assumed_height_m": 97.5,
+  "terrain_height_m": 78.28682617187788,
   "depth_axis": {
     "lambda_s_m": 0.48,
-    "repeat_period_m": 27.314827650837202,
-    "real_fit_ambiguity_limit_m": 13.657413825418601,
+    "repeat_period_m": 27.343468415766715,
+    "real_fit_ambiguity_limit_m": 13.671734207883357,
     "note": "Depth is the oscillation rate of the registration trajectory relabelled through a declared sound wavelength. The volume repeats exactly every repeat_period_m."
   },
-  "known_voids": null,
+  "known_voids": {
+    "label": "Surveyed burial shafts, Western Cemetery",
+    "depth_min_m": 5.0,
+    "depth_max_m": 30.0,
+    "source": "Reisner Western Cemetery surveys; hundreds of excavated shafts"
+  },
   "survey": null,
   "value_range_log10": [
-    -3.991288920769005,
-    -3.0036598526553764
+    -3.968610291397295,
+    -3.084537933861309
   ],
   "surface_db_range": [
-    23.832839152660263,
-    50.95749149372825
+    23.52105233484529,
+    49.72309228591874
   ],
   "acquisition": {
     "satellite": "ICEYE-X33",

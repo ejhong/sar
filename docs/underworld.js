@@ -29,6 +29,8 @@ uniform float depthClip;      // 0..1 of the box depth that is drawn
 uniform float surfaceMix;
 uniform float repeatFrac;     // where the volume repeats, as a fraction of box depth
 uniform int   showRepeat;
+uniform vec2  voidBand;       // known-void depth range as fractions of box depth; (0,0) = none
+uniform int   showVoids;
 uniform int   steps;
 
 vec3 ramp(float t) {
@@ -98,6 +100,11 @@ void main() {
     float a = smoothstep(threshold, 1.0, v) * density;
     if (a <= 0.0) continue;
     vec3 c = ramp(v);
+    if (showVoids == 1 && voidBand.y > voidBand.x &&
+        depthFrac >= voidBand.x && depthFrac <= voidBand.y) {
+      c = mix(c, vec3(0.30, 0.86, 0.62), 0.55);      // where the surveyed shafts actually are
+      a = max(a, 0.05);
+    }
     if (showRepeat == 1 && abs(depthFrac - repeatFrac) < 0.004) {
       c = vec3(1.0, 0.35, 0.25); a = max(a, 0.5);
     }
@@ -189,16 +196,16 @@ class Underworld {
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(program));
     this.program = program;
     gl.useProgram(program);
-    const buffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    // Attribute state is global without vertex array objects, and the survey overlay binds its
+    // own attributes, so the quad is rebound at the start of every frame rather than once.
+    this.quad = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.quad);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
-    const loc = gl.getAttribLocation(program, 'position');
-    gl.enableVertexAttribArray(loc);
-    gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+    this.quadLoc = gl.getAttribLocation(program, 'position');
     this.u = {};
     for (const name of ['volume', 'surface', 'invViewProj', 'cameraPos', 'boxMin', 'boxMax',
                         'threshold', 'density', 'depthClip', 'surfaceMix', 'repeatFrac',
-                        'showRepeat', 'steps']) {
+                        'showRepeat', 'steps', 'voidBand', 'showVoids']) {
       this.u[name] = gl.getUniformLocation(program, name);
     }
     this.volumeTex = gl.createTexture();
@@ -207,7 +214,8 @@ class Underworld {
     gl.uniform1i(this.u.surface, 1);
 
     this.settings = { threshold: 0.42, density: 0.30, depthClip: 1.0, surfaceMix: 0.85,
-                      exaggeration: 1.4, showRepeat: true, steps: 256 };
+                      exaggeration: 1.4, showRepeat: true, showVoids: true, showSurvey: true,
+                      steps: 256 };
     this.camera = { azimuth: -0.65, elevation: 0.42, distance: 1.85 };
     this.header = null;
     this.attachControls();
@@ -286,20 +294,53 @@ class Underworld {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
     this.header = header;
+    this.setSurvey(this.surveyBoxes(header));
     this.status.textContent = '';
     this.draw();
     return header;
   }
 
+  /* Map surveyed features from metres into the box frame used by the renderer. */
+  surveyBoxes(header) {
+    const survey = header.survey;
+    if (!survey || !survey.features || !survey.features.length) return [];
+    const ex = header.extent_m;
+    const wide = Math.max(ex.along_azimuth, ex.across_slant_range);
+    const fit = Math.min(1, wide / Math.max(ex.depth, 1e-6) * 1.6);
+    const sy = (ex.depth / wide) * this.settings.exaggeration * fit;
+    return survey.features.map((f) => ({
+      kind: f.kind,
+      name: f.name,
+      centre: [f.centre_m[0] / wide,
+               -(f.depth_below_apex_m / ex.depth) * sy,
+               f.centre_m[1] / wide],
+      size: [f.size_m[0] / wide,
+             (f.size_m[2] / ex.depth) * sy,
+             f.size_m[1] / wide],
+    })).filter((b) => Math.abs(b.centre[1]) <= sy * 1.02);
+  }
+
+  bindQuad() {
+    const gl = this.gl;
+    gl.useProgram(this.program);
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.quad);
+    gl.enableVertexAttribArray(this.quadLoc);
+    gl.vertexAttribPointer(this.quadLoc, 2, gl.FLOAT, false, 0, 0);
+  }
+
   draw() {
     const gl = this.gl, h = this.header;
+    this.bindQuad();
     gl.clearColor(0.043, 0.047, 0.055, 1);
     gl.clear(gl.COLOR_BUFFER_BIT);
     if (!h) return;
     const ex = h.extent_m;
     const wide = Math.max(ex.along_azimuth, ex.across_slant_range);
     const sx = ex.along_azimuth / wide, sz = ex.across_slant_range / wide;
-    const sy = (ex.depth / wide) * this.settings.exaggeration;
+    // A deep box (the monument bundles reach past 200 m) would otherwise fill the view; damp
+    // the exaggeration rather than making the user find the slider.
+    const fit = Math.min(1, wide / Math.max(ex.depth, 1e-6) * 1.6);
+    const sy = (ex.depth / wide) * this.settings.exaggeration * fit;
     const boxMin = [-sx / 2, -sy, -sz / 2], boxMax = [sx / 2, 0, sz / 2];
     const { azimuth, elevation, distance } = this.camera;
     const eye = [distance * Math.cos(elevation) * Math.sin(azimuth),
@@ -317,11 +358,114 @@ class Underworld {
     gl.uniform1f(this.u.surfaceMix, this.settings.surfaceMix);
     gl.uniform1f(this.u.repeatFrac, h.depth_axis.repeat_period_m / ex.depth);
     gl.uniform1i(this.u.showRepeat, this.settings.showRepeat ? 1 : 0);
+    const kv = h.known_voids;
+    gl.uniform2f(this.u.voidBand, kv ? kv.depth_min_m / ex.depth : 0, kv ? kv.depth_max_m / ex.depth : 0);
+    gl.uniform1i(this.u.showVoids, this.settings.showVoids && kv ? 1 : 0);
     gl.uniform1i(this.u.steps, this.settings.steps);
     gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_3D, this.volumeTex);
     gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, this.surfaceTex);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
+    this.setSurvey(this.surveyBoxes(h));                      // exaggeration may have changed
+    this.drawSurvey(mat4Multiply(proj, view), sy, boxMin, boxMax);
   }
 }
 
 window.Underworld = Underworld;
+
+/* ---------------------------------------------------------------- survey overlay
+ * Independently known subsurface geometry, drawn as wireframe boxes over the volume. These
+ * come from excavation surveys and muon imaging, never from the radar, and the wireframe is
+ * deliberate: it is a model, not a measurement.
+ */
+const LINE_VERT = `#version 300 es
+in vec3 position;
+in vec3 colour;
+uniform mat4 viewProj;
+out vec3 vColour;
+void main() { vColour = colour; gl_Position = viewProj * vec4(position, 1.0); }`;
+
+const LINE_FRAG = `#version 300 es
+precision highp float;
+in vec3 vColour;
+out vec4 frag;
+uniform float alpha;
+void main() { frag = vec4(vColour, alpha); }`;
+
+const KIND_COLOUR = {
+  chamber: [0.30, 0.88, 0.62],
+  passage: [0.42, 0.72, 0.98],
+  void: [1.00, 0.70, 0.25],
+};
+
+function boxEdges(centre, size, colour, out) {
+  const [cx, cy, cz] = centre, [sx, sy, sz] = size;
+  const hx = sx / 2, hy = sy / 2, hz = sz / 2;
+  const corner = (i, j, k) => [cx + (i ? hx : -hx), cy + (j ? hy : -hy), cz + (k ? hz : -hz)];
+  const pairs = [
+    [[0,0,0],[1,0,0]], [[1,0,0],[1,1,0]], [[1,1,0],[0,1,0]], [[0,1,0],[0,0,0]],
+    [[0,0,1],[1,0,1]], [[1,0,1],[1,1,1]], [[1,1,1],[0,1,1]], [[0,1,1],[0,0,1]],
+    [[0,0,0],[0,0,1]], [[1,0,0],[1,0,1]], [[1,1,0],[1,1,1]], [[0,1,0],[0,1,1]],
+  ];
+  for (const [a, b] of pairs) {
+    for (const p of [corner(...a), corner(...b)]) {
+      out.position.push(p[0], p[1], p[2]);
+      out.colour.push(colour[0], colour[1], colour[2]);
+    }
+  }
+}
+
+Underworld.prototype.initSurvey = function () {
+  const gl = this.gl;
+  const program = gl.createProgram();
+  gl.attachShader(program, compile(gl, gl.VERTEX_SHADER, LINE_VERT));
+  gl.attachShader(program, compile(gl, gl.FRAGMENT_SHADER, LINE_FRAG));
+  gl.linkProgram(program);
+  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(program));
+  this.lineProgram = program;
+  this.lineBuffers = { position: gl.createBuffer(), colour: gl.createBuffer() };
+  this.lineCount = 0;
+  this.lineUniforms = { viewProj: gl.getUniformLocation(program, 'viewProj'),
+                        alpha: gl.getUniformLocation(program, 'alpha') };
+};
+
+/* `features` are in metres relative to the patch centre: x along azimuth, y across range,
+ * z positive downward from the surface, matching the volume box. */
+Underworld.prototype.setSurvey = function (features) {
+  const gl = this.gl;
+  if (!this.lineProgram) this.initSurvey();
+  const out = { position: [], colour: [] };
+  for (const f of features || []) {
+    boxEdges(f.centre, f.size, KIND_COLOUR[f.kind] || [1, 1, 1], out);
+  }
+  this.lineCount = out.position.length / 3;
+  this.surveyFeatures = features || [];
+  gl.bindBuffer(gl.ARRAY_BUFFER, this.lineBuffers.position);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(out.position), gl.STATIC_DRAW);
+  gl.bindBuffer(gl.ARRAY_BUFFER, this.lineBuffers.colour);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(out.colour), gl.STATIC_DRAW);
+};
+
+Underworld.prototype.drawSurvey = function (viewProj, scale, boxMin, boxMax) {
+  const gl = this.gl;
+  if (!this.lineCount || !this.settings.showSurvey) return;
+  gl.useProgram(this.lineProgram);
+  const bind = (name, buffer) => {
+    const loc = gl.getAttribLocation(this.lineProgram, name);
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.enableVertexAttribArray(loc);
+    gl.vertexAttribPointer(loc, 3, gl.FLOAT, false, 0, 0);
+  };
+  bind('position', this.lineBuffers.position);
+  bind('colour', this.lineBuffers.colour);
+  gl.lineWidth(1);
+  gl.uniformMatrix4fv(this.lineUniforms.viewProj, false, viewProj);
+  gl.uniform1f(this.lineUniforms.alpha, 0.95);
+  gl.enable(gl.BLEND);
+  gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+  gl.drawArrays(gl.LINES, 0, this.lineCount);
+  gl.disable(gl.BLEND);
+  for (const name of ['position', 'colour']) {
+    gl.disableVertexAttribArray(gl.getAttribLocation(this.lineProgram, name));
+  }
+  this.bindQuad();
+};

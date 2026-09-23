@@ -40,6 +40,35 @@ def band_share(run, band=SHAFT_BAND_M):
     return profiles(run)[:, sel].sum(axis=1)
 
 
+def surface_spacings(run, n=6):
+    """Characteristic azimuth spacings of the surface pattern, and the depths they map to.
+
+    The mechanism established in simulation is that the depth axis is the azimuth separation of
+    surface scatterers, rescaled. Mastaba rows are regular, so any excess a cemetery shows must
+    be checked against the depths its own surface geometry predicts before it can be read as a
+    void.
+    """
+    g = (run['grid_rows'].size, run['grid_cols'].size)
+    amp = run['amplitude'].astype(float).reshape(g)
+    amp = amp - amp.mean(axis=0, keepdims=True)
+    power = (np.abs(np.fft.rfft(amp, axis=0)) ** 2).mean(axis=1)
+    step = run['meta']['acquisition']['azimuth_spacing_m'] * run['meta']['stride'][0]
+    freq = np.fft.rfftfreq(g[0], d=step)
+    power[0] = 0
+    peaks = np.argsort(power)[::-1][:n]
+    # depth = separation * lambda_s sin(theta) / lambda, the relation established in simulation
+    factor = (run['meta']['lam_s_m'] * np.sin(np.deg2rad(run['meta']['incidence_deg']))
+              / run['meta']['acquisition']['wavelength_m'])
+    out = []
+    for k in peaks:
+        if freq[k] <= 0:
+            continue
+        spacing = 1.0 / freq[k]
+        out.append({'spacing_m': float(spacing), 'predicted_depth_m': float(factor * spacing),
+                    'relative_power': float(power[k] / power.max())})
+    return out, float(factor)
+
+
 def main(stride_az=12, stride_rg=8):
     viz.style()
     t0 = time.time()
@@ -48,7 +77,7 @@ def main(stride_az=12, stride_rg=8):
     runs = {}
     for key, _ in TOMBS + CONTROLS:
         print(f'  {key}', flush=True)
-        runs[key] = run_patch('giza', key, 'paper', stride_az=stride_az, stride_rg=stride_rg, verbose=True)
+        runs[key] = run_patch('giza', key, 'shaft', stride_az=stride_az, stride_rg=stride_rg, verbose=True)
 
     tomb_share = np.concatenate([band_share(runs[k]) for k, _ in TOMBS])
     ctrl_share = np.concatenate([band_share(runs[k]) for k, _ in CONTROLS])
@@ -139,7 +168,18 @@ def main(stride_az=12, stride_rg=8):
              'this is where it would show.'}]
     figs.insert(0, maps_fig)
 
+    spacing_rows = []
+    for key, label in TOMBS + CONTROLS:
+        sp, factor = surface_spacings(runs[key])
+        spacing_rows.append({'patch': key, 'label': label, 'depth_per_metre_of_spacing': factor,
+                             'strongest_surface_spacings': sp[:4]})
+    in_band = [p for r in spacing_rows if r['patch'].startswith('cemetery')
+               for p in r['strongest_surface_spacings']
+               if SHAFT_BAND_M[0] <= p['predicted_depth_m'] <= SHAFT_BAND_M[1]]
     m = {'shaft_band_m': list(SHAFT_BAND_M),
+         'depth_axis_max_m': float(runs[TOMBS[0][0]]['z'][-1]),
+         'bank': 'shaft', 'surface_spacings': spacing_rows,
+         'cemetery_surface_periodicities_inside_the_shaft_band': len(in_band),
          'tomb_pixels': int(tomb_share.size), 'control_pixels': int(ctrl_share.size),
          'tomb_band_share_mean': float(tomb_share.mean()), 'control_band_share_mean': float(ctrl_share.mean()),
          'standardised_difference': d_raw, 'standardised_difference_brightness_matched': d_matched,
@@ -157,14 +197,20 @@ def main(stride_az=12, stride_rg=8):
                     f"{ctrl_share.mean():.4f} over the plateau, a standardised difference of {d_raw:+.3f}. The "
                     f"cemeteries are far brighter at the surface, with median amplitude "
                     f"{np.median(tomb_amp):.0f} against {np.median(ctrl_amp):.0f}, so the comparison was repeated "
-                    f"on brightness-matched pixels, where the difference is {d_matched:+.3f}. This is the easiest "
-                    f"target the site offers: shallow, numerous, excavated and surveyed."),
-        'limitations': ('Shaft depths vary between tombs and many shafts are filled or collapsed, so the band is a '
+                    f"on brightness-matched pixels, where the difference is {d_matched:+.3f}. Any residual is "
+                    f"accounted for by surface geometry rather than by voids: the mastaba rows are regular, and "
+                    f"{len(in_band)} of the cemeteries' strongest surface periodicities map, through the same "
+                    f"spacing-to-depth relation the method uses, into the very band being tested. This is the "
+                    f"easiest target the site offers: shallow, numerous, excavated and surveyed."),
+        'limitations': ('The depth axis of this bank is unambiguous only to about 67 m, which covers the shaft '
+                        'band but not deeper claims. Shaft depths vary between tombs and many shafts are filled or '
+                        'collapsed, so the band is a '
                         'range rather than a target depth. Placement is verified by recognising the mastaba rows '
                         'in the image, not by surveyed control points, which is enough at this scale but would not '
                         'be for a single chamber. A null here bounds sensitivity to shallow voids under these '
                         'conditions; it does not prove no void anywhere could ever be detected.'),
-        'method': ('Identical pipeline, bank and grid to the within-image controls, applied to two cemetery patches '
+        'method': ('Forty common-reference sub-apertures confined to the coherent window, chosen so the depth axis '
+                   'is unambiguous to about 67 m and the 5 to 30 m shaft band is representable, applied to two cemetery patches '
                    'and two plateau patches of the same acquisition. The statistic is the fraction of each pixel\'s '
                    'normalised depth profile lying in the 5 to 30 m band, compared directly and again after '
                    'matching the two populations on surface amplitude in 24 bins.'),

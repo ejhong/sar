@@ -1,0 +1,82 @@
+{
+  "version": 1,
+  "role": "Independently known subsurface geometry at Giza, for comparison with radar-derived volumes",
+  "coordinate_convention": "Local metres relative to each monument's base centre: x east, y north, z up from the base platform. Not derived from radar.",
+  "caution": "Simplified rectilinear models built from published survey dimensions. They are reference geometry, accurate to roughly a metre in size and placement, not engineering drawings or georeferenced masks.",
+  "monuments": [
+    {
+      "id": "khufu",
+      "name": "Khufu",
+      "base_side_m": 230.33,
+      "height_m": 146.6,
+      "base_elevation_m": 60.0,
+      "latitude": 29.979175,
+      "longitude": 31.134154,
+      "features": [
+        {"name": "King's Chamber", "kind": "chamber",
+         "centre": [0.0, -0.5, 43.0], "size": [10.47, 5.23, 5.97],
+         "source": "Petrie 1883; Maragioglio & Rinaldi",
+         "note": "Granite chamber on the pyramid axis, floor about 43 m above the base."},
+        {"name": "Queen's Chamber", "kind": "chamber",
+         "centre": [0.0, 0.0, 21.2], "size": [5.76, 5.23, 6.26],
+         "source": "Petrie 1883",
+         "note": "On the pyramid axis, corbelled roof."},
+        {"name": "Grand Gallery", "kind": "passage",
+         "centre": [0.0, -12.0, 30.0], "size": [2.1, 41.8, 8.6], "incline_deg": 26.5,
+         "source": "Petrie 1883",
+         "note": "Corbelled ascending gallery, 46.7 m along its slope."},
+        {"name": "Ascending Passage", "kind": "passage",
+         "centre": [0.0, -28.0, 14.0], "size": [1.2, 34.0, 1.2], "incline_deg": 26.5,
+         "source": "Petrie 1883"},
+        {"name": "Descending Passage", "kind": "passage",
+         "centre": [0.0, -18.0, -9.0], "size": [1.2, 90.0, 1.2], "incline_deg": -26.5,
+         "source": "Petrie 1883",
+         "note": "Runs from the north entrance down into the bedrock."},
+        {"name": "Subterranean Chamber", "kind": "chamber",
+         "centre": [0.0, 5.0, -30.0], "size": [14.0, 8.3, 5.0],
+         "source": "Petrie 1883",
+         "note": "Unfinished, cut into bedrock roughly 30 m below the base platform."},
+        {"name": "ScanPyramids Big Void", "kind": "void",
+         "centre": [0.0, -10.0, 40.0], "size": [3.0, 30.0, 6.0],
+         "source": "Morishima et al., Nature 552, 386 (2017)",
+         "note": "Detected by muon tomography above the Grand Gallery. Length at least 30 m; cross-section and exact position are not tightly constrained."},
+        {"name": "North Face Corridor", "kind": "void",
+         "centre": [0.0, -110.0, 17.0], "size": [2.1, 9.0, 2.3],
+         "source": "Procureur et al., Nature Communications 14, 1144 (2023)",
+         "note": "Corridor behind the chevrons on the north face, confirmed by muon imaging and endoscopy."}
+      ]
+    },
+    {
+      "id": "khafre",
+      "name": "Khafre",
+      "base_side_m": 215.25,
+      "height_m": 136.4,
+      "base_elevation_m": 72.0,
+      "latitude": 29.976025,
+      "longitude": 31.130794,
+      "features": [
+        {"name": "Belzoni's Chamber", "kind": "chamber",
+         "centre": [0.0, 0.0, 0.5], "size": [14.15, 5.0, 6.83],
+         "source": "Maragioglio & Rinaldi V",
+         "note": "Burial chamber cut partly into bedrock at base level, granite sarcophagus in the floor."},
+        {"name": "Lower Chamber", "kind": "chamber",
+         "centre": [0.0, 30.0, -10.0], "size": [10.4, 3.1, 2.6],
+         "source": "Maragioglio & Rinaldi V",
+         "note": "Subsidiary chamber on the lower descending passage."},
+        {"name": "Upper Descending Passage", "kind": "passage",
+         "centre": [0.0, 20.0, 8.0], "size": [1.1, 50.0, 1.2], "incline_deg": -25.0,
+         "source": "Maragioglio & Rinaldi V"},
+        {"name": "Lower Descending Passage", "kind": "passage",
+         "centre": [0.0, 45.0, -6.0], "size": [1.1, 40.0, 1.2], "incline_deg": -22.0,
+         "source": "Maragioglio & Rinaldi V",
+         "note": "Begins outside the pyramid on the north side and descends into the bedrock."}
+      ]
+    }
+  ],
+  "references": [
+    "Petrie, The Pyramids and Temples of Gizeh (1883)",
+    "Maragioglio & Rinaldi, L'Architettura delle Piramidi Menfite IV-V",
+    "Morishima et al., Discovery of a big void in Khufu's Pyramid, Nature 552, 386 (2017)",
+    "Procureur et al., Precise characterization of a corridor-shaped structure in Khufu's Pyramid, Nature Communications 14, 1144 (2023)"
+  ]
+}
