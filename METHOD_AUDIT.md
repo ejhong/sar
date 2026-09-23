@@ -178,3 +178,13 @@ sight. Substituting one for the other is the step that converts an oscillation r
 angle into a depth. R2 measures the consequence with real state vectors: the along-track
 baseline spans about 168 km, so the depth axis repeats every few metres unless most of the
 aperture is discarded.
+
+### Correction, 23 September 2026: the velocity floor
+
+An earlier version of R4 and R7 swept sub-apertures across the whole processed band. R9 then
+measured what that costs: coherence with the band-centre look halves at 0.98 s of separation
+and is a tenth by 1.76 s, so the extreme looks of a full-band sweep share no coherence at all.
+The registration peak between them is a random position inside the patch, and the "velocity
+floor" of about 4,400 µm/s those runs reported was the width of that search, not a measurement
+precision. Both experiments now use a bank confined to the coherent window, which gives a floor
+near 77 µm/s over a series lasting about two seconds. The earlier number should not be cited.

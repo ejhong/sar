@@ -1,6 +1,10 @@
 # sar — testing single-image "SAR Doppler tomography"
 
-Code and data behind **[Can radar reveal what lies below?](https://ejhong.github.io/sar/)**
+Code and data behind **[SAR Depth, Tested](https://ejhong.github.io/sar/)**, including an
+interactive [three-dimensional viewer](https://ejhong.github.io/sar/underworld.html) for the
+depth volumes.
+
+Read `STYLE.md` before touching `docs/`, and `ROADMAP.md` before picking the work up cold.
 
 The question is whether one radar image can map structure under the ground. The claim under
 test is the single-SLC "Doppler tomography" of Biondi & Malanga (2022, retracted 2026) and the
@@ -33,6 +37,7 @@ sarsim/           the toolkit
   waves.py        2-D SH cavity forward model for the coupled benchmark
   measurement.py  reflector acquisition model and the physical-template inverse
   dwell.py        REAL DATA: ICEYE dwell product adapter and Doppler bank in hertz
+  terrain.py      REAL DATA: Copernicus DEM heights
   orbit.py        REAL DATA: WGS84, state-vector ephemeris, virtual baselines, steering Kz
   geolocation.py  strict RPC projection and geometry audit
   realdata.py     bounded, read-only product inspection
@@ -43,13 +48,16 @@ experiments/
   feasibility.py  phase readout, motion detection, AI controls
   robustness.py   stress tests of the simulation examples
   real_common.py  REAL DATA: patch orchestration and caching
-  r01..r05        REAL DATA: within-image controls, depth axis, split dwell,
-                  velocity floor, learned null
+  r01..r09        REAL DATA: within-image controls, depth axis, split dwell, velocity floor,
+                  learned null, second site, injected motion, sections, coherence
+  export_voxels.py  volume bundles for the three-dimensional viewer
 fieldwork/        real-image checks: spectra, timing audit, planted translations, previews
 catalog/          site definitions and survey references
 research/         known-void inventory, geometry audits
 scripts/          product inspection and audit entry points
-site/, docs/      page template and the built GitHub Pages site
+build_dashboard.py  builds docs/index.html from results/*/summary.json
+docs/             the published GitHub Pages site: dashboard, viewer, field atlas
+site/             the field atlas template and its assets
 tests/            pytest suites for every module above
 ```
 
@@ -69,7 +77,7 @@ cd experiments && ../.venv/bin/python r01_giza_controls.py
 ../.venv/bin/python r04_velocity_floor.py
 ../.venv/bin/python r05_learned_null.py
 
-cd .. && .venv/bin/python build_site.py
+cd .. && .venv/bin/python build_dashboard.py
 ```
 
 The 10 GB products stay outside the repository. Nothing reads a full raster; every real-data
@@ -81,9 +89,12 @@ method, figures, metrics`, then rebuild the site.
 
 ## Status
 
-Simulation chapter complete. Real chapter: Giza processed at four monuments and two controls,
-with the depth-axis, split-dwell, velocity-floor and learned-null tests reported. Open: the
-positive control against surveyed chambers, and Sacsayhuamán as a second site.
+Simulation chapter complete. Real chapter complete for both acquisitions: Giza at four
+monuments and two controls, Sacsayhuamán at four patches, plus the depth-axis, coherence,
+split-dwell, velocity-floor, injected-motion, section and learned-null tests.
+
+Open work is listed in `ROADMAP.md`; the next task is the positive control against surveyed
+chambers, which is blocked on placing them in the radar image to better than a chamber's width.
 
 `METHOD_AUDIT.md` is the running ledger of what is and is not established, including
 corrections to earlier versions of this work.
