@@ -1,0 +1,118 @@
+{
+  "bundles": [
+    {
+      "site": "giza",
+      "patch": "khafre",
+      "label": "Khafre pyramid",
+      "kind": "monument",
+      "shape": [
+        158,
+        152,
+        96
+      ],
+      "extent_m": {
+        "along_azimuth": 166.76635119445518,
+        "across_slant_range": 186.77906717994037,
+        "depth": 54.707342624556844
+      },
+      "bytes": 2305536,
+      "short_label": "Khafre"
+    },
+    {
+      "site": "giza",
+      "patch": "khufu",
+      "label": "Khufu pyramid",
+      "kind": "monument",
+      "shape": [
+        158,
+        152,
+        96
+      ],
+      "extent_m": {
+        "along_azimuth": 166.76635119445518,
+        "across_slant_range": 186.77906717994037,
+        "depth": 54.800880176837424
+      },
+      "bytes": 2305536,
+      "short_label": "Khufu"
+    },
+    {
+      "site": "giza",
+      "patch": "menkaure",
+      "label": "Menkaure pyramid",
+      "kind": "monument",
+      "shape": [
+        158,
+        152,
+        96
+      ],
+      "extent_m": {
+        "along_azimuth": 166.76635119445518,
+        "across_slant_range": 186.77906717994037,
+        "depth": 54.629655301674404
+      },
+      "bytes": 2305536,
+      "short_label": "Menkaure"
+    },
+    {
+      "site": "giza",
+      "patch": "sphinx",
+      "label": "Sphinx and temples",
+      "kind": "monument",
+      "shape": [
+        158,
+        152,
+        96
+      ],
+      "extent_m": {
+        "along_azimuth": 166.76635119445518,
+        "across_slant_range": 186.77906717994037,
+        "depth": 54.84796329146639
+      },
+      "bytes": 2305536,
+      "short_label": "Sphinx"
+    },
+    {
+      "site": "giza",
+      "patch": "desert_west",
+      "label": "Open plateau, west",
+      "kind": "control",
+      "shape": [
+        158,
+        152,
+        96
+      ],
+      "extent_m": {
+        "along_azimuth": 166.76635119445518,
+        "across_slant_range": 186.77906717994037,
+        "depth": 54.405595229151416
+      },
+      "bytes": 2305536,
+      "short_label": "Plateau west"
+    },
+    {
+      "site": "giza",
+      "patch": "desert_south",
+      "label": "Open plateau, south",
+      "kind": "control",
+      "shape": [
+        158,
+        152,
+        96
+      ],
+      "extent_m": {
+        "along_azimuth": 166.76635119445518,
+        "across_slant_range": 186.77906717994037,
+        "depth": 54.54292810604742
+      },
+      "bytes": 2305536,
+      "short_label": "Plateau south"
+    }
+  ],
+  "sites": {
+    "giza": "Giza plateau, Egypt",
+    "sacsayhuaman": "Sacsayhuaman, Peru"
+  },
+  "generated": "2026-09-23",
+  "geoid_undulation_m": 15.46
+}

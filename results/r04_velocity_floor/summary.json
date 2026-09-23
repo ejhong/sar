@@ -1,0 +1,104 @@
+{
+  "id": "r04_velocity_floor",
+  "order": 14,
+  "tag": "threshold",
+  "eyebrow": "04 \u00b7 The instrument",
+  "title": "What one dwell really measures: a velocity series, and its noise floor",
+  "question": "Set the depth claim aside. What surface motion can this acquisition actually detect?",
+  "finding": "A line-of-sight velocity series for every pixel, sampled at about 2.2 Hz across 22 seconds. On the brightest targets in the Giza image the measured noise floor is 4,097 micrometres per second. Ambient ground motion in the microseism band is of order 0.1 to 10 micrometres per second, so this acquisition sits well above the motion that any passive subsurface inference would have to rest on. The recovered spectra are flat and the monuments do not differ from open desert.",
+  "limitations": "The scene-wide median series is removed, so any motion common to the whole patch is removed with it; this bounds differential motion, not absolute platform-referenced motion. The floor mixes true measurement noise with real clutter decorrelation, so it is an upper bound on achievable precision rather than a fundamental limit. Corner reflectors or other strong coherent targets would do better than natural desert scattering.",
+  "method": "Common-reference sub-aperture tracking: 50 sub-apertures of 10 percent bandwidth registered against the band-centre sub-aperture, azimuth shift converted to velocity by v = dx V / R with the real slant range and platform speed. Spectra use a Hann window and are averaged over the brightest tenth of each patch.",
+  "figures": [
+    {
+      "file": "/Users/eugene/prj/sar/results/r04_velocity_floor/figs/r04_floor.png",
+      "caption": "<b>What the instrument can see.</b> Every sub-aperture is registered against a common reference, giving each pixel an azimuth-shift series through the 22 seconds of swept aperture, converted to line-of-sight velocity. The curves show the measured scatter of that series against target brightness, for each patch of the Giza image. The shaded band is the range of real ambient ground motion in the microseism band. Where the curves sit relative to that band is the honest answer to what this acquisition could contribute to any subsurface inference."
+    },
+    {
+      "file": "/Users/eugene/prj/sar/results/r04_velocity_floor/figs/r04_spectrum.png",
+      "caption": "<b>No resonance, on monuments or on sand.</b> Spectral density of the recovered velocity series for the brightest tenth of the pixels in each patch. A real site resonance or a real microseism peak would appear as a bump in the shaded band. The series are close to flat, which is what measurement noise looks like, and the monuments do not differ from open desert."
+    }
+  ],
+  "metrics": {
+    "runs": [
+      {
+        "patch": "khafre",
+        "label": "Khafre pyramid",
+        "kind": "monument",
+        "pixels": 47880,
+        "median_amplitude_db": 36.605927286562164,
+        "velocity_floor_all_um_s": 4045.3441488575713,
+        "velocity_floor_brightest_decile_um_s": 4097.352733506785,
+        "sampling_hz": 2.2370555186553274,
+        "series_span_s": 21.903792548453794,
+        "sub_aperture_s": 2.4482732016482105
+      },
+      {
+        "patch": "khufu",
+        "label": "Khufu pyramid",
+        "kind": "monument",
+        "pixels": 47880,
+        "median_amplitude_db": 36.905435865775864,
+        "velocity_floor_all_um_s": 4058.339652926796,
+        "velocity_floor_brightest_decile_um_s": 4122.6452949206105,
+        "sampling_hz": 2.2365050743407364,
+        "series_span_s": 21.909183467622547,
+        "sub_aperture_s": 2.4488757659257856
+      },
+      {
+        "patch": "menkaure",
+        "label": "Menkaure pyramid",
+        "kind": "monument",
+        "pixels": 47880,
+        "median_amplitude_db": 37.87474934629007,
+        "velocity_floor_all_um_s": 4084.0008503439776,
+        "velocity_floor_brightest_decile_um_s": 4147.964179920166,
+        "sampling_hz": 2.23734497792385,
+        "series_span_s": 21.900958718252593,
+        "sub_aperture_s": 2.4479564532803524
+      },
+      {
+        "patch": "sphinx",
+        "label": "Sphinx and temples",
+        "kind": "monument",
+        "pixels": 47880,
+        "median_amplitude_db": 36.49638573212248,
+        "velocity_floor_all_um_s": 4056.014003758066,
+        "velocity_floor_brightest_decile_um_s": 4178.254384528594,
+        "sampling_hz": 2.235819376040098,
+        "series_span_s": 21.91590274469525,
+        "sub_aperture_s": 2.4496268060004738
+      },
+      {
+        "patch": "desert_west",
+        "label": "Open plateau, west",
+        "kind": "control",
+        "pixels": 47880,
+        "median_amplitude_db": 39.8123331638643,
+        "velocity_floor_all_um_s": 4088.5957078071624,
+        "velocity_floor_brightest_decile_um_s": 4150.966252687465,
+        "sampling_hz": 2.238370560246626,
+        "series_span_s": 21.890924081221442,
+        "sub_aperture_s": 2.4468348423594453
+      },
+      {
+        "patch": "desert_south",
+        "label": "Open plateau, south",
+        "kind": "control",
+        "pixels": 47880,
+        "median_amplitude_db": 36.6505948559534,
+        "velocity_floor_all_um_s": 4063.7341583108932,
+        "velocity_floor_brightest_decile_um_s": 4125.503542454226,
+        "sampling_hz": 2.2376152829077305,
+        "series_span_s": 21.898313072087,
+        "sub_aperture_s": 2.4476607389836644
+      }
+    ],
+    "ambient_band_um_s": [
+      0.09999999999999999,
+      10.0
+    ],
+    "best_floor_um_s": 4097.352733506785,
+    "runtime_s": 1.7710018157958984
+  },
+  "date": "2026-09-23"
+}

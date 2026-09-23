@@ -1,0 +1,61 @@
+{
+  "id": "r03_split_dwell",
+  "order": 13,
+  "tag": "null",
+  "eyebrow": "03 \u00b7 Split dwell",
+  "title": "The first and second halves of one acquisition place the same ground at different depths",
+  "question": "Real structure cannot move during 25 seconds. Do the recovered depths stay put?",
+  "finding": "No. Splitting the Khafre dwell into two disjoint halves and giving each an identical sweep, the two halves agree on the depth of a pixel for 4.3% of pixels, against 1.3% expected by chance, and the median correlation between their depth profiles is 0.067 against 0.074 for unrelated pixels. Open desert behaves the same way.",
+  "limitations": "Each half uses half the look angles, so each is noisier than the full sweep; some disagreement is expected from noise alone. The test shows that the depth assignments are not reproducible across look angle, not that a better estimator could not be built.",
+  "method": "One ICEYE dwell, one patch, two sub-aperture banks with identical width and swept bandwidth placed on disjoint halves of the processed Doppler support. Depth profiles are interpolated onto the shorter of the two unambiguous axes before comparison. The null is the same comparison after randomly pairing pixels.",
+  "figures": [
+    {
+      "file": "/Users/eugene/prj/sar/results/r03_split_dwell/figs/r03_split.png",
+      "caption": "<b>The two halves of one dwell disagree.</b> The aperture is cut into two disjoint stretches of slow time, each given an identical sweep, so each half sees the same ground from its own set of look angles. Top: the depth each half assigns to the same pixel, with the line of agreement dashed. Bottom: the correlation between the two halves' depth profiles, against the correlation between profiles of unrelated pixels. Buried structure cannot move between the first and second half of a 25 second acquisition; these features do."
+    }
+  ],
+  "metrics": {
+    "runs": [
+      {
+        "patch": "khafre",
+        "label": "Khafre pyramid",
+        "pixels": 24072,
+        "half_a_times_s": [
+          11.020771116179215,
+          0.12733080322762894
+        ],
+        "half_b_times_s": [
+          0.00035417087622603385,
+          -10.893086142075362
+        ],
+        "depth_axis_max_m": 7.236323280242847,
+        "depth_agreement_within_one_step": 0.042954469923562645,
+        "depth_agreement_expected_by_chance": 0.01257861635220126,
+        "profile_correlation_median": 0.06719033639825102,
+        "shuffled_correlation_median": 0.07443005425808646,
+        "depth_correlation": -0.015549724905352672
+      },
+      {
+        "patch": "desert_west",
+        "label": "Open plateau, west",
+        "pixels": 24072,
+        "half_a_times_s": [
+          11.014296418627637,
+          0.12725599644403934
+        ],
+        "half_b_times_s": [
+          0.0003539628010141999,
+          -10.886686459382583
+        ],
+        "depth_axis_max_m": 7.196404872602141,
+        "depth_agreement_within_one_step": 0.04224825523429711,
+        "depth_agreement_expected_by_chance": 0.012578616352201259,
+        "profile_correlation_median": 0.06887034859172321,
+        "shuffled_correlation_median": 0.06979613988590652,
+        "depth_correlation": -0.001063080646212319
+      }
+    ],
+    "runtime_s": 232.51910400390625
+  },
+  "date": "2026-09-23"
+}

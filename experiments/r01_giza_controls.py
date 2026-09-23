@@ -111,8 +111,13 @@ def report(bank=BANK):
     khafre = runs['khafre']['score'].max(axis=1)
     ks_k = ks_2samp(khafre, ctl)
     meta = runs['khafre']['meta']
+    pooled_sd = float(np.sqrt((mon.var() * mon.size + ctl.var() * ctl.size) / (mon.size + ctl.size)))
+    cohens_d = float((mon.mean() - ctl.mean()) / pooled_sd)
     m = {'bank': bank, 'patches': stats,
          'monument_mean': float(mon.mean()), 'control_mean': float(ctl.mean()),
+         'pooled_sd': pooled_sd, 'cohens_d': cohens_d,
+         'effect_note': ('With hundreds of thousands of dependent pixels a p-value measures sample size, not '
+                         'importance; the standardised effect is the number to read.'),
          'monument_pixels': int(mon.size), 'control_pixels': int(ctl.size),
          'ks_statistic_monuments_vs_controls': float(ks.statistic), 'ks_pvalue': float(ks.pvalue),
          'ks_statistic_khafre_vs_controls': float(ks_k.statistic), 'ks_pvalue_khafre': float(ks_k.pvalue),
@@ -123,14 +128,17 @@ def report(bank=BANK):
         'id': TEST, 'order': 11, 'tag': 'null', 'eyebrow': '01 · Within-image controls',
         'title': 'Monuments and open desert give the same answer in the same acquisition',
         'question': 'Does the method distinguish the pyramids from empty plateau in the very image that produced the claim?',
-        'finding': (f"Barely. Across {mon.size:,} pixels on four monuments and {ctl.size:,} pixels on two stretches "
-                    f"of open plateau in the same acquisition, the mean structure score is {mon.mean():.3f} against "
-                    f"{ctl.mean():.3f}. Khafre against the controls gives a Kolmogorov-Smirnov distance of "
-                    f"{ks_k.statistic:.3f}. The depth histograms and mean depth profiles are the same shape "
-                    f"everywhere, and the whole depth axis for this bank design spans "
-                    f"{meta['nyquist_depth_m']:.1f} m before it repeats."),
-        'limitations': ('This reproduces the published processing chain as described, on the same class of data, at '
-                        'patches we chose. It does not reproduce a specific published figure, because the bank '
+        'finding': (f"It does not. Across {mon.size:,} pixels on four monuments and {ctl.size:,} pixels on two "
+                    f"stretches of open plateau in the same acquisition, the mean structure score is "
+                    f"{mon.mean():.4f} on the monuments against {ctl.mean():.4f} on the desert, a standardised "
+                    f"difference of {cohens_d:+.3f}, and it runs the wrong way. The Kolmogorov-Smirnov distance "
+                    f"between Khafre and the controls is {ks_k.statistic:.3f}. Such a test returns a small p-value "
+                    f"here only because the pixel count is large; the separation itself is under one percent of the "
+                    f"score range. The depth histograms and mean depth profiles have the same shape everywhere, and "
+                    f"this bank's depth axis folds back at {meta['nyquist_depth_m']:.1f} m."),
+        'limitations': ('Pixels inside a patch are not independent, so no p-value here should be read as a '
+                        'detection rate. This reproduces the published processing chain as described, on the same '
+                        'class of data, at patches we chose. It does not reproduce a specific published figure, because the bank '
                         'parameters behind those figures were never disclosed. A difference in these statistics '
                         'would not have proved a chamber either; it would have started a search for a surface cause.'),
         'method': (f"ICEYE X33 Spotlight Dwell Fine, Giza, 27 August 2025, VV. Six patches of 4096 by 1536 native "

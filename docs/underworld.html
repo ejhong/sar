@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Underworld Viewer · SAR Depth, Tested</title>
+<meta name="description" content="A three-dimensional viewer for the depth volumes this method produces from a real ICEYE dwell acquisition, with the radar surface on top and the honest depth conventions stated.">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="favicon.svg">
+<style>
+.uw-wrap{max-width:1320px;margin:0 auto;padding:0 34px}
+.uw-head{padding:34px 0 22px;border-bottom:1px solid var(--rule)}
+.uw-head h1{font-family:var(--serif);font-size:clamp(34px,5vw,54px);line-height:1.05;color:var(--ink);margin:12px 0 14px;font-weight:400}
+.uw-head p{max-width:760px;font-size:15px;line-height:1.75;margin:0}
+.uw-grid{display:grid;grid-template-columns:1fr 330px;gap:0;border:1px solid var(--rule);border-radius:3px;overflow:hidden;margin:26px 0 12px;background:#0b0c0e}
+.uw-stage{position:relative;min-height:600px}
+#uw-canvas{display:block;width:100%;height:100%;min-height:600px;cursor:grab;touch-action:none;outline:none}
+#uw-canvas:active{cursor:grabbing}
+#uw-canvas:focus-visible{outline:2px solid var(--teal);outline-offset:-2px}
+.uw-status{position:absolute;inset:auto auto 16px 18px;font:11px var(--mono);color:#cfd6cc;letter-spacing:.05em;text-shadow:0 1px 3px #000}
+.uw-overlay{position:absolute;top:16px;left:18px;font:11px var(--mono);color:#e6ebe3;letter-spacing:.04em;text-shadow:0 1px 4px #000;line-height:1.8;pointer-events:none}
+.uw-overlay b{color:#fff;font-weight:600}
+.uw-panel{background:var(--white);border-left:1px solid var(--rule);padding:22px 24px;overflow-y:auto;max-height:760px}
+.uw-panel h2{font:10px/1.4 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--teal);margin:0 0 12px}
+.uw-panel h2:not(:first-child){margin-top:26px;padding-top:20px;border-top:1px solid var(--rule)}
+.uw-patches{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.uw-patches button{font:12px var(--sans);text-align:left;padding:9px 10px;border:1px solid var(--rule);background:var(--paper);color:var(--body);border-radius:2px;cursor:pointer;line-height:1.3}
+.uw-patches button:hover{border-color:var(--teal);color:var(--ink)}
+.uw-patches button[aria-pressed=true]{background:var(--teal);border-color:var(--teal);color:#fff}
+.uw-site{grid-column:1/-1;font:9px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:10px 0 0}
+.uw-patches button small{display:block;font:9px var(--mono);letter-spacing:.06em;text-transform:uppercase;opacity:.72;margin-top:2px}
+.uw-control{margin:14px 0}
+.uw-control label{display:flex;justify-content:space-between;gap:10px;font:11px var(--sans);color:var(--body);margin-bottom:5px}
+.uw-control label span:last-child{font-family:var(--mono);color:var(--ink);font-size:10px}
+.uw-control input[type=range]{width:100%;accent-color:var(--teal)}
+.uw-check{display:flex;align-items:center;gap:8px;font-size:12px;margin:10px 0}
+.uw-facts{font:11px/1.75 var(--mono);color:var(--body);margin:0}
+.uw-facts div{display:flex;justify-content:space-between;gap:12px;padding:3px 0;border-bottom:1px solid var(--soft)}
+.uw-facts span:last-child{color:var(--ink);text-align:right}
+.uw-note{font-size:12px;line-height:1.7;color:var(--muted);margin:14px 0 0}
+.uw-legend{display:flex;align-items:center;gap:10px;margin:12px 0 4px;font:10px var(--mono);color:var(--muted)}
+.uw-legend i{flex:1;height:10px;border-radius:2px;background:linear-gradient(90deg,#0b132e,#175673,#4f9e85,#e0a645,#fff5e6)}
+.uw-caption{max-width:900px;font-size:13px;line-height:1.85;color:var(--muted);margin:0 0 40px}
+.uw-caption strong{color:var(--ink)}
+.uw-fallback{padding:40px;color:#e6ebe3;font-size:14px;line-height:1.8}
+@media(max-width:940px){.uw-grid{grid-template-columns:1fr}.uw-panel{border-left:0;border-top:1px solid var(--rule);max-height:none}.uw-wrap{padding:0 18px}#uw-canvas,.uw-stage{min-height:430px}}
+</style>
+</head>
+<body>
+<header class="site-header"><div class="uw-wrap" style="display:flex;justify-content:space-between;align-items:center;padding-top:14px;padding-bottom:14px">
+  <a class="wordmark" href="index.html" style="text-decoration:none"><span aria-hidden="true">◒</span> <span>SAR / UNDERWORLD VIEWER</span></a>
+  <a href="index.html#field" style="font:10px var(--mono);letter-spacing:.1em;text-transform:uppercase">← The evidence</a>
+</div></header>
+
+<main class="uw-wrap">
+  <div class="uw-head">
+    <p style="font:10px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--teal);margin:0">Real acquisition · volume rendering</p>
+    <h1>What the method puts<br>beneath the ground.</h1>
+    <p>These are the actual depth volumes produced from one ICEYE Spotlight Dwell Fine acquisition of the Giza
+    plateau on 27 August 2025. The radar image forms the surface; everything below it is the method's own output,
+    rendered without smoothing away its structure. Compare a pyramid with open desert and judge for yourself.</p>
+  </div>
+
+  <div class="uw-grid">
+    <div class="uw-stage">
+      <canvas id="uw-canvas" aria-label="Three-dimensional depth volume, drag to rotate"></canvas>
+      <div class="uw-overlay" id="uw-overlay"></div>
+      <div class="uw-status" id="uw-status">Starting…</div>
+      <noscript><div class="uw-fallback">This viewer needs JavaScript and WebGL2. The same volumes are shown as
+        two-dimensional sections in <a href="index.html#r08_sections" style="color:#9ad">the evidence page</a>.</div></noscript>
+    </div>
+    <aside class="uw-panel">
+      <h2>Patch</h2>
+      <div class="uw-patches" id="uw-patches"></div>
+
+      <h2>Rendering</h2>
+      <div class="uw-control"><label for="uw-threshold"><span>Threshold</span><span id="uw-threshold-v">0.42</span></label>
+        <input type="range" id="uw-threshold" min="0" max="0.95" step="0.01" value="0.42"></div>
+      <div class="uw-control"><label for="uw-density"><span>Opacity</span><span id="uw-density-v">0.30</span></label>
+        <input type="range" id="uw-density" min="0.02" max="0.6" step="0.01" value="0.30"></div>
+      <div class="uw-control"><label for="uw-clip"><span>Depth shown</span><span id="uw-clip-v">100%</span></label>
+        <input type="range" id="uw-clip" min="0.05" max="1" step="0.01" value="1"></div>
+      <div class="uw-control"><label for="uw-exag"><span>Vertical exaggeration</span><span id="uw-exag-v">1.4×</span></label>
+        <input type="range" id="uw-exag" min="0.3" max="3" step="0.1" value="1.4"></div>
+      <div class="uw-control"><label for="uw-surface"><span>Surface image</span><span id="uw-surface-v">0.85</span></label>
+        <input type="range" id="uw-surface" min="0" max="1" step="0.05" value="0.85"></div>
+      <label class="uw-check"><input type="checkbox" id="uw-repeat" checked> Mark where the volume repeats</label>
+      <div class="uw-legend"><span>low</span><i></i><span>high</span></div>
+
+      <h2>This acquisition</h2>
+      <div class="uw-facts" id="uw-facts"></div>
+      <p class="uw-note" id="uw-note"></p>
+    </aside>
+  </div>
+
+  <p class="uw-caption"><strong>Read this before reading the picture.</strong> Depth here is not measured. It is the
+  rate at which a pixel's image-registration vector oscillates as the satellite's look angle sweeps through the
+  acquisition, relabelled as a distance through a declared sound wavelength that no measurement in the method
+  constrains. Because the steering wavenumbers are evenly spaced, the volume is exactly periodic: below the marked
+  plane every feature is a copy of one above it. Switch between a pyramid and open plateau and the volumes look
+  alike, which is the finding. The viewer is deliberately generic, so a new site is a new data bundle rather than
+  new code; surveyed chambers will be added as a comparison layer once their placement in the radar image is
+  settled to better than a chamber's width.</p>
+</main>
+
+<script src="underworld.js"></script>
+<script>
+(function () {
+  const statusEl = document.getElementById('uw-status');
+  let view;
+  try {
+    view = new Underworld(document.getElementById('uw-canvas'), statusEl);
+  } catch (err) {
+    statusEl.textContent = '';
+    document.querySelector('.uw-stage').innerHTML =
+      '<div class="uw-fallback">' + err.message +
+      ' The same volumes are shown as two-dimensional sections on <a href="index.html#r08_sections" style="color:#9ad">the evidence page</a>.</div>';
+    return;
+  }
+  const fmt = (v, n) => (v === null || v === undefined || Number.isNaN(v) ? '—' : Number(v).toFixed(n));
+  const bind = (id, key, render) => {
+    const input = document.getElementById(id), out = document.getElementById(id + '-v');
+    input.addEventListener('input', () => {
+      const value = input.type === 'checkbox' ? input.checked : parseFloat(input.value);
+      view.settings[key] = value;
+      if (out) out.textContent = render ? render(value) : value.toFixed(2);
+      view.draw();
+    });
+  };
+  bind('uw-threshold', 'threshold');
+  bind('uw-density', 'density');
+  bind('uw-clip', 'depthClip', (v) => Math.round(v * 100) + '%');
+  bind('uw-exag', 'exaggeration', (v) => v.toFixed(1) + '×');
+  bind('uw-surface', 'surfaceMix');
+  bind('uw-repeat', 'showRepeat');
+
+  fetch('data/voxels/index.json').then((r) => r.json()).then(async (index) => {
+    const holder = document.getElementById('uw-patches');
+    const buttons = [];
+    const show = async (bundle, button) => {
+      buttons.forEach((b) => b.setAttribute('aria-pressed', String(b === button)));
+      let header;
+      try {
+        header = await view.load(bundle);
+      } catch (err) {
+        statusEl.textContent = 'Could not load ' + bundle.patch + ': ' + err.message;
+        return;
+      }
+      const a = header.acquisition, ex = header.extent_m, dz = header.depth_axis;
+      document.getElementById('uw-overlay').innerHTML =
+        '<b>' + header.label + '</b><br>' + Math.round(ex.along_azimuth) + ' × ' +
+        Math.round(ex.across_slant_range) + ' m of slant range<br>' +
+        Math.round(ex.depth) + ' m of model depth';
+      document.getElementById('uw-facts').innerHTML = [
+        ['Satellite', a.satellite],
+        ['Mode', a.product_type],
+        ['Collected', a.collection_start.slice(0, 10)],
+        ['Wavelength', fmt(a.wavelength_m * 100, 2) + ' cm'],
+        ['Incidence', fmt(a.incidence_center_deg, 1) + '°'],
+        ['Voxels', header.shape.join(' × ')],
+        ['Voxel size', fmt(header.spacing_m.along_azimuth, 2) + ' × ' +
+                       fmt(header.spacing_m.across_slant_range, 2) + ' × ' +
+                       fmt(header.spacing_m.depth, 2) + ' m'],
+        ['Declared λs', fmt(dz.lambda_s_m, 2) + ' m'],
+        ['Repeats every', fmt(dz.repeat_period_m, 1) + ' m'],
+        ['Terrain (Copernicus)', header.terrain_height_m === null ? '—' : fmt(header.terrain_height_m, 0) + ' m'],
+      ].map(([k, v]) => '<div><span>' + k + '</span><span>' + v + '</span></div>').join('');
+      document.getElementById('uw-note').textContent = dz.note;
+    };
+    // Grouped by site so that adding an acquisition is a data change, not a code change.
+    const sites = [];
+    index.bundles.forEach((bundle) => {
+      let group = sites.find((g) => g.site === bundle.site);
+      if (!group) { group = { site: bundle.site, items: [] }; sites.push(group); }
+      group.items.push(bundle);
+    });
+    sites.forEach((group, gi) => {
+      if (sites.length > 1) {
+        const heading = document.createElement('p');
+        heading.className = 'uw-site';
+        heading.textContent = (index.sites && index.sites[group.site]) || group.site;
+        holder.appendChild(heading);
+      }
+      group.items.forEach((bundle, i) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.setAttribute('aria-pressed', 'false');
+        b.innerHTML = (bundle.short_label || bundle.label) + '<small>' + bundle.kind + '</small>';
+        b.addEventListener('click', () => show(bundle, b));
+        holder.appendChild(b);
+        buttons.push(b);
+        if (gi === 0 && i === 0) show(bundle, b);
+      });
+    });
+  }).catch((err) => { statusEl.textContent = 'No volume bundles found: ' + err.message; });
+})();
+</script>
+</body>
+</html>

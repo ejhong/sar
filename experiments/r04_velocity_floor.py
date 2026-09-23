@@ -120,12 +120,18 @@ def main():
         'question': 'Set the depth claim aside. What surface motion can this acquisition actually detect?',
         'finding': (f"A line-of-sight velocity series for every pixel, sampled at about 2.2 Hz across 22 seconds. "
                     f"On the brightest targets in the Giza image the measured noise floor is "
-                    f"{best:,.0f} micrometres per second. Ambient ground motion in the microseism band is of order "
+                    f"{best:,.0f} micrometres per second, and it is the same on the monuments as on open desert. "
+                    f"The floor is set by look-angle decorrelation rather than by receiver noise, which is the "
+                    f"design's central tension: sub-apertures far enough apart in time to sense slow ground motion "
+                    f"are also far enough apart in angle that the same patch of ground no longer looks the same. Ambient ground motion in the microseism band is of order "
                     f"0.1 to 10 micrometres per second, so this acquisition sits well above the motion that any "
                     f"passive subsurface inference would have to rest on. The recovered spectra are flat and the "
                     f"monuments do not differ from open desert."),
         'limitations': ('The scene-wide median series is removed, so any motion common to the whole patch is '
                         'removed with it; this bounds differential motion, not absolute platform-referenced motion. '
+                        'A bank with closely spaced sub-apertures decorrelates far less and reaches a much lower '
+                        'floor, but it then measures a short-lag difference and is correspondingly blind to slow '
+                        'motion; the published reference/offset design sits at that end. '
                         'The floor mixes true measurement noise with real clutter decorrelation, so it is an upper '
                         'bound on achievable precision rather than a fundamental limit. Corner reflectors or other '
                         'strong coherent targets would do better than natural desert scattering.'),

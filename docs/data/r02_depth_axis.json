@@ -5,13 +5,13 @@
   "eyebrow": "02 \u00b7 Depth axis",
   "title": "The reachable depth is set by the sub-aperture bank, not by the ground",
   "question": "With real orbit geometry, how deep can this method see before its depth axis repeats?",
-  "finding": "A few metres. During the 24.5 s aperture the platform moves 168 km, so a bank that uses the whole aperture spaces its steering wavenumbers very widely and the depth axis repeats every 6.8 m at K = 50. Depths of hundreds of metres are only reachable by sweeping about one percent of the aperture, or by enlarging the declared sound wavelength, which no measurement constrains.",
-  "limitations": "This is a statement about the ambiguity period of the steering basis under the published geometry, computed from real state vectors. It does not by itself show what a given published figure did, because the bank parameters used there were never disclosed.",
+  "finding": "A few metres. During the 24.5 s aperture the platform moves 168 km, so a bank that uses the whole aperture spaces its steering wavenumbers very widely: at K = 50 the depth axis folds back at 6.8 m and repeats exactly at 13.6 m. Depths of hundreds of metres are only reachable by sweeping about one percent of the aperture, or by enlarging the declared sound wavelength, which no measurement constrains. The same calculation applies to the public derivative protocol: its shipped example assumes a one-kilometre aperture span, where the real span for that bank design is 5,006 m, so its unambiguous depth is 79 m rather than 393 m, and its shipped depth grid runs past that limit.",
+  "limitations": "This is a statement about the ambiguity period of the steering basis under the published geometry, computed from real state vectors. It does not by itself show what a given published figure did, because the bank parameters used there were never disclosed. The comparison with the derivative protocol uses the placeholder geometry in its shipped example configuration, which its documentation asks the user to replace with real values; the point is what happens when they are replaced.",
   "method": "Real ICEYE X33 state vectors, Khafre RPC position and WGS84 target, aperture-centre reference. Baselines are the along-track platform offsets projected perpendicular to the line of sight, exactly as the published steering formula requires. Nyquist depth is pi divided by the median spacing of the resulting steering wavenumbers.",
   "figures": [
     {
       "file": "/Users/eugene/prj/sar/results/r02_depth_axis/figs/r02_nyquist.png",
-      "caption": "<b>The depth ceiling is bought by discarding aperture.</b> Using real ICEYE state vectors at Khafre, the unambiguous depth range of the steering basis is plotted against the fraction of the 24.5 s aperture the sub-aperture bank sweeps. Sweeping the whole aperture gives a few metres, because the platform moves 168 km and the wavenumbers are spaced very widely. Reaching the published depths requires sweeping about one percent of the aperture, which throws away the very time diversity the method is supposed to exploit."
+      "caption": "<b>The depth ceiling is bought by discarding aperture.</b> Using real ICEYE state vectors at Khafre, the unambiguous depth range of the steering basis is plotted against the fraction of the 24.5 s aperture the sub-aperture bank sweeps. The range plotted is the one the derivative protocol's real two-component fit can use; the output repeats exactly at twice that depth. Sweeping the whole aperture gives a few metres, because the platform moves 168 km and the wavenumbers are spaced very widely. Reaching the published depths requires sweeping about one percent of the aperture, which throws away the very time diversity the method is supposed to exploit."
     },
     {
       "file": "/Users/eugene/prj/sar/results/r02_depth_axis/figs/r02_lambda.png",
@@ -23,18 +23,22 @@
     "row": 68656.40397132614,
     "col": 6481.500759290869,
     "lam_s_m": 0.48,
+    "depth_convention": "nyquist_depth is pi/dKz, the range the real two-component fit can use; the complex output repeats exactly at twice that",
     "nyquist_full_aperture": [
       {
         "K": 20,
-        "nyquist_full_aperture_m": 2.6270865804009746
+        "nyquist_full_aperture_m": 2.6270865804009746,
+        "exact_repetition_period_m": 5.254173160801949
       },
       {
         "K": 50,
-        "nyquist_full_aperture_m": 6.775110781793954
+        "nyquist_full_aperture_m": 6.775110781793954,
+        "exact_repetition_period_m": 13.550221563587908
       },
       {
         "K": 100,
-        "nyquist_full_aperture_m": 13.688481527598407
+        "nyquist_full_aperture_m": 13.688481527598407,
+        "exact_repetition_period_m": 27.376963055196814
       }
     ],
     "banks": [
@@ -50,7 +54,8 @@
         "pair_lag_ms": 0.0,
         "overlap_within_pair": 1.0,
         "baseline_span_m": 167812.51504944198,
-        "nyquist_depth_m": 7.574960295916459
+        "nyquist_depth_m": 7.574960295916459,
+        "exact_repetition_period_m": 15.149920591832919
       },
       {
         "bank": "paper",
@@ -64,7 +69,8 @@
         "pair_lag_ms": 13.754345569901815,
         "overlap_within_pair": 0.9988770353733858,
         "baseline_span_m": 92943.88977150095,
-        "nyquist_depth_m": 13.676838137865046
+        "nyquist_depth_m": 13.676838137865046,
+        "exact_repetition_period_m": 27.35367627573009
       },
       {
         "bank": "v17",
@@ -78,11 +84,21 @@
         "pair_lag_ms": 68.77172784950908,
         "overlap_within_pair": 0.9943851768669287,
         "baseline_span_m": 5005.518508555851,
-        "nyquist_depth_m": 98.47274502255193
+        "nyquist_depth_m": 98.47274502255193,
+        "exact_repetition_period_m": 196.94549004510387
       }
     ],
+    "derivative_protocol_v17": {
+      "assumed_baseline_span_m": 1000.0,
+      "assumed_unambiguous_depth_m": 393.2546469252882,
+      "real_baseline_span_m": 5005.518508555851,
+      "real_unambiguous_depth_m": 78.56421792329897,
+      "shipped_depth_grid_max_m": 100.0,
+      "baseline_underestimate_factor": 5.005518508555851,
+      "real_exact_repetition_period_m": 157.12843584659794
+    },
     "percent_of_aperture_for_648m_K50": 1.045496205345032,
-    "runtime_s": 0.978316068649292
+    "runtime_s": 0.9465560913085938
   },
   "date": "2026-09-23"
 }

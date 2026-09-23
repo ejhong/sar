@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parent
 RESULTS = ROOT / "results"
 REPO_URL = "https://github.com/ejhong/sar"
 ORDER = ["r01_giza_controls", "r02_depth_axis", "r03_split_dwell",
-         "r04_velocity_floor", "r05_learned_null", "r06_second_site", "r07_injected_motion"]
+         "r04_velocity_floor", "r05_learned_null", "r06_second_site", "r07_injected_motion", "r08_sections"]
 
 
 def esc(value):
@@ -53,8 +53,9 @@ def strip(reports):
     if r02:
         depth = r02["metrics"]["nyquist_full_aperture"][1]["nyquist_full_aperture_m"]
         items.append(("Depth axis", f"{depth:.1f} m",
-                      "How deep the steering basis reaches before it repeats, using the whole aperture and the "
-                      "product's own state vectors. Published depths are hundreds of times larger."))
+                      "How deep the steering basis reaches before it folds back, using the whole aperture and the "
+                      "product's own state vectors. It repeats exactly at twice that. Published depths are "
+                      "hundreds of times larger."))
     r01 = reports.get("r01_giza_controls")
     if r01:
         ks = r01["metrics"]["ks_statistic_khafre_vs_controls"]
@@ -128,6 +129,16 @@ def real_section(figure, height_shift_px='', height_shift_m='', field_portal='')
   scalar baseline approximation the published protocols use.</p></div>
   {facts}
   {strip(reports)}
+  <div class="field-atlas-cards" style="grid-template-columns:1fr">
+    <a class="field-card" href="underworld.html">
+      <div>
+        <p class="eyebrow" style="margin:0">Interactive · WebGL</p>
+        <h3>The underworld viewer <span>Open ↗</span></h3>
+        <p>Turn the depth volumes in three dimensions, with the radar image as the ground and the plane where the
+        volume starts repeating marked. Switch between a pyramid and open plateau and compare them directly.</p>
+      </div>
+    </a>
+  </div>
   {blocks}
   {field_portal}
   <div class="support-heading"><span class="eyebrow">Still to do</span><h3>Score the method against chambers whose geometry is measured.</h3>

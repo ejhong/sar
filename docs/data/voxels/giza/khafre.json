@@ -1,0 +1,51 @@
+{
+  "site": "giza",
+  "patch": "khafre",
+  "label": "Khafre pyramid",
+  "kind": "monument",
+  "shape": [
+    158,
+    152,
+    96
+  ],
+  "axis_order": "binary is [depth][across_range][along_azimuth], uint8",
+  "spacing_m": {
+    "along_azimuth": 1.0554832354079442,
+    "across_slant_range": 1.2288096524996077,
+    "depth": 0.5728674584040766
+  },
+  "extent_m": {
+    "along_azimuth": 166.76635119445518,
+    "across_slant_range": 186.77906717994037,
+    "depth": 54.707342624556844
+  },
+  "centre_lonlat": [
+    31.13078,
+    29.97603
+  ],
+  "assumed_height_m": 173.5,
+  "terrain_height_m": 94.04722790380855,
+  "depth_axis": {
+    "lambda_s_m": 0.48,
+    "repeat_period_m": 27.353671312278422,
+    "real_fit_ambiguity_limit_m": 13.676835656139211,
+    "note": "Depth is the oscillation rate of the registration trajectory relabelled through a declared sound wavelength. The volume repeats exactly every repeat_period_m."
+  },
+  "value_range_log10": [
+    -3.9827622240344134,
+    -3.0122470823153944
+  ],
+  "surface_db_range": [
+    22.077217435377158,
+    51.182604902514555
+  ],
+  "acquisition": {
+    "satellite": "ICEYE-X33",
+    "product_type": "SpotlightDwellFine",
+    "collection_start": "2025-08-27T20:26:54.327037",
+    "wavelength_m": 0.031228381041666666,
+    "incidence_center_deg": 20.805111922042048,
+    "polarization": "VV"
+  },
+  "bytes": 2305536
+}

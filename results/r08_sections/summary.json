@@ -1,0 +1,63 @@
+{
+  "id": "r08_sections",
+  "order": 18,
+  "tag": "artifact",
+  "eyebrow": "08 \u00b7 The picture",
+  "title": "Rendered like the published slides, the real data shows the same thing everywhere",
+  "question": "What does this actually look like, and can a reader tell whether it is working?",
+  "finding": "It looks like the published slides, under the pyramids and under empty plateau alike. Vertical banded columns of the kind read as wells appear in all three patches of the same acquisition. The steering wavenumbers are uniformly spaced to within a hundred-thousandth, so the section is exactly periodic: at Khafre it repeats every 27.4 m with a correlation of 1.000, meaning every structure drawn below that depth is a copy of one above it. Relabelling the axis by declaring a sound wavelength of 3.8 m instead of 0.48 m puts the bottom of the same unchanged array at 648 m.",
+  "limitations": "These are our bank parameters, not the undisclosed ones behind the published images, so this is a like-for-like rendering of the method rather than a reproduction of a specific figure. The strips are 12 range columns wide and span about 165 m of ground, which is less than the full base of Khafre. Smoothing and colour scaling follow the published presentation, which flatters any such image.",
+  "method": "Cached trajectories from the within-image control runs, refocused on a depth grid extended to three ambiguity periods, averaged over a band of range columns centred on the brightest part of each patch, smoothed and drawn in jet on one shared logarithmic scale.",
+  "figures": [
+    {
+      "file": "/Users/eugene/prj/sar/results/r08_sections/figs/r08_sections.png",
+      "caption": "<b>The view the slides showed, from the real acquisition.</b> Top: the surface radar brightness along each strip, so the monument is visible where it actually is. Bottom: the depth output beneath it, in the same jet colour scheme and smoothing the published figures used, on one shared scale. Vertical banding of the kind read as wells and levels is present under all three patches, including open plateau. The dashed lines mark where the steering basis comes back to itself: below the first one the section is not merely similar but identical, correlating with the band above it at 1.000. The fainter dotted line is the shallower limit at which the derivative protocol's real two-component fit can no longer tell one depth from its negative."
+    },
+    {
+      "file": "/Users/eugene/prj/sar/results/r08_sections/figs/r08_relabel.png",
+      "caption": "<b>Same pixels, same numbers, different axis.</b> The left panel is the Khafre section with the depth axis the 2022 paper implies. The right panel is the identical array, relabelled by declaring a sound wavelength of 3.8 m instead of 0.48 m, which places the bottom of the picture at 648 m. Nothing was reprocessed between the two panels. The depth of a feature in this method is a choice of constant, not a measurement."
+    }
+  ],
+  "metrics": {
+    "panels": [
+      {
+        "patch": "khafre",
+        "label": "Khafre pyramid",
+        "repetition_period_m": 27.353671312278422,
+        "real_fit_ambiguity_limit_m": 13.676835656139211,
+        "repetition_correlation": 0.9999999206623981,
+        "half_period_correlation": 0.17764748594892182,
+        "ground_extent_m": 166.2386095767512,
+        "range_columns_averaged": 12
+      },
+      {
+        "patch": "khufu",
+        "label": "Khufu pyramid",
+        "repetition_period_m": 27.400440088418712,
+        "real_fit_ambiguity_limit_m": 13.700220044209356,
+        "repetition_correlation": 0.9999999310157281,
+        "half_period_correlation": 0.3476688044415817,
+        "ground_extent_m": 166.2386095767512,
+        "range_columns_averaged": 12
+      },
+      {
+        "patch": "desert_west",
+        "label": "Open plateau",
+        "repetition_period_m": 27.202797614575708,
+        "real_fit_ambiguity_limit_m": 13.601398807287854,
+        "repetition_correlation": 0.9999999367519801,
+        "half_period_correlation": 0.38202232769732714,
+        "ground_extent_m": 166.2386095767512,
+        "range_columns_averaged": 12
+      }
+    ],
+    "periods_drawn": 3.0,
+    "lambda_s_for_648m": 3.7903504365595144,
+    "shared_colour_scale": [
+      -3.797361414440892,
+      -2.6881070218579706
+    ],
+    "runtime_s": 1.4492530822753906
+  },
+  "date": "2026-09-23"
+}

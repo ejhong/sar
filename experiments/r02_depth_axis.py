@@ -1,5 +1,11 @@
 """R2: the depth axis is a property of the sub-aperture bank, not of the ground.
 
+Two depth scales appear here and they differ by a factor of two. Because the steering
+wavenumbers are uniformly spaced, |h(z)| is exactly periodic with 2 pi / dKz: past that the
+output is the same output again. The derivative protocol's real two-component fit additionally
+cannot tell z from -z, so its own unambiguous range is half of that. Figures and metrics below
+report the smaller, more generous number, `nyquist_depth`, and name it as such.
+
 With real orbit state vectors the virtual baseline of one ICEYE dwell is enormous: the
 platform moves about 168 km during the 24.5 s aperture. The steering wavenumbers are then
 spaced so widely that the depth axis repeats every few metres. Published depths of hundreds
@@ -70,12 +76,12 @@ def main():
         ax.text(0.22, depth * 1.12, label, color=viz.INK2, fontsize=8.5)
     ax.set_xscale('log'); ax.set_yscale('log')
     ax.set_xlabel('percentage of the 24.5 s aperture actually swept')
-    ax.set_ylabel('unambiguous depth range (m)')
-    ax.set_title('How deep the axis can reach before it repeats', loc='left')
+    ax.set_ylabel('unambiguous depth range of the real fit (m)')
+    ax.set_title('How deep the axis can reach before it folds back', loc='left')
     ax.legend(loc='upper right')
     fig.tight_layout()
     figs.append({'file': viz.finish(fig, f'{fd}/r02_nyquist.png'), 'caption':
-                 '<b>The depth ceiling is bought by discarding aperture.</b> Using real ICEYE state vectors at Khafre, the unambiguous depth range of the steering basis is plotted against the fraction of the 24.5 s aperture the sub-aperture bank sweeps. Sweeping the whole aperture gives a few metres, because the platform moves 168 km and the wavenumbers are spaced very widely. Reaching the published depths requires sweeping about one percent of the aperture, which throws away the very time diversity the method is supposed to exploit.'})
+                 '<b>The depth ceiling is bought by discarding aperture.</b> Using real ICEYE state vectors at Khafre, the unambiguous depth range of the steering basis is plotted against the fraction of the 24.5 s aperture the sub-aperture bank sweeps. The range plotted is the one the derivative protocol\'s real two-component fit can use; the output repeats exactly at twice that depth. Sweeping the whole aperture gives a few metres, because the platform moves 168 km and the wavenumbers are spaced very widely. Reaching the published depths requires sweeping about one percent of the aperture, which throws away the very time diversity the method is supposed to exploit.'})
 
     # ---- (b) the three bank designs on the real geometry
     rows_b = []
@@ -128,7 +134,14 @@ def main():
     figs.append({'file': viz.finish(fig, f'{fd}/r02_lambda.png'), 'caption':
                  '<b>Nothing in the data sets the scale.</b> The depth axis is proportional to the declared sound wavelength, which no measurement in the method constrains. For each of the three bank designs the reachable depth is drawn against that constant. Any published depth can be produced by choosing it, and the 2022 paper and the 2026 derivative protocol use values that differ by a factor of two.'})
 
+    for row_ in rows_a:
+        row_['exact_repetition_period_m'] = 2 * row_['nyquist_full_aperture_m']
+    for row_ in rows_b:
+        row_['exact_repetition_period_m'] = 2 * row_['nyquist_depth_m']
+    protocol['real_exact_repetition_period_m'] = 2 * protocol['real_unambiguous_depth_m']
     m = {'aperture_s': aperture, 'row': row, 'col': col, 'lam_s_m': lam_s,
+         'depth_convention': ('nyquist_depth is pi/dKz, the range the real two-component fit can use; '
+                              'the complex output repeats exactly at twice that'),
          'nyquist_full_aperture': rows_a, 'banks': rows_b, 'derivative_protocol_v17': protocol,
          'percent_of_aperture_for_648m_K50': float(100 * 3.386 * 49 / 648 / aperture),
          'runtime_s': time.time() - t0}
@@ -137,8 +150,9 @@ def main():
         'title': 'The reachable depth is set by the sub-aperture bank, not by the ground',
         'question': 'With real orbit geometry, how deep can this method see before its depth axis repeats?',
         'finding': (f"A few metres. During the 24.5 s aperture the platform moves 168 km, so a bank that uses the "
-                    f"whole aperture spaces its steering wavenumbers very widely and the depth axis repeats every "
-                    f"{rows_a[1]['nyquist_full_aperture_m']:.1f} m at K = 50. Depths of hundreds of metres are only "
+                    f"whole aperture spaces its steering wavenumbers very widely: at K = 50 the depth axis folds "
+                    f"back at {rows_a[1]['nyquist_full_aperture_m']:.1f} m and repeats exactly at "
+                    f"{2 * rows_a[1]['nyquist_full_aperture_m']:.1f} m. Depths of hundreds of metres are only "
                     f"reachable by sweeping about one percent of the aperture, or by enlarging the declared sound "
                     f"wavelength, which no measurement constrains. The same calculation applies to the public "
                     f"derivative protocol: its shipped example assumes a one-kilometre aperture span, where the real "

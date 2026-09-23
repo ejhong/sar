@@ -1,0 +1,51 @@
+{
+  "site": "giza",
+  "patch": "sphinx",
+  "label": "Sphinx and temples",
+  "kind": "monument",
+  "shape": [
+    158,
+    152,
+    96
+  ],
+  "axis_order": "binary is [depth][across_range][along_azimuth], uint8",
+  "spacing_m": {
+    "along_azimuth": 1.0554832354079442,
+    "across_slant_range": 1.2288096524996077,
+    "depth": 0.5743399664841052
+  },
+  "extent_m": {
+    "along_azimuth": 166.76635119445518,
+    "across_slant_range": 186.77906717994037,
+    "depth": 54.84796329146639
+  },
+  "centre_lonlat": [
+    31.1375,
+    29.97528
+  ],
+  "assumed_height_m": 50.5,
+  "terrain_height_m": 22.80165486146022,
+  "depth_axis": {
+    "lambda_s_m": 0.48,
+    "repeat_period_m": 27.423981645733196,
+    "real_fit_ambiguity_limit_m": 13.711990822866598,
+    "note": "Depth is the oscillation rate of the registration trajectory relabelled through a declared sound wavelength. The volume repeats exactly every repeat_period_m."
+  },
+  "value_range_log10": [
+    -3.9782928502926866,
+    -2.9583869256105966
+  ],
+  "surface_db_range": [
+    22.588852162188804,
+    49.751508426125454
+  ],
+  "acquisition": {
+    "satellite": "ICEYE-X33",
+    "product_type": "SpotlightDwellFine",
+    "collection_start": "2025-08-27T20:26:54.327037",
+    "wavelength_m": 0.031228381041666666,
+    "incidence_center_deg": 20.805111922042048,
+    "polarization": "VV"
+  },
+  "bytes": 2305536
+}

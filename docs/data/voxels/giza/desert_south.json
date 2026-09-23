@@ -1,0 +1,51 @@
+{
+  "site": "giza",
+  "patch": "desert_south",
+  "label": "Open plateau, south",
+  "kind": "control",
+  "shape": [
+    158,
+    152,
+    96
+  ],
+  "axis_order": "binary is [depth][across_range][along_azimuth], uint8",
+  "spacing_m": {
+    "along_azimuth": 1.0554832354079442,
+    "across_slant_range": 1.2288096524996077,
+    "depth": 0.5711457932157378
+  },
+  "extent_m": {
+    "along_azimuth": 166.76635119445518,
+    "across_slant_range": 186.77906717994037,
+    "depth": 54.54292810604742
+  },
+  "centre_lonlat": [
+    31.126,
+    29.967
+  ],
+  "assumed_height_m": 90.5,
+  "terrain_height_m": 82.43713592528644,
+  "depth_axis": {
+    "lambda_s_m": 0.48,
+    "repeat_period_m": 27.27146405302371,
+    "real_fit_ambiguity_limit_m": 13.635732026511855,
+    "note": "Depth is the oscillation rate of the registration trajectory relabelled through a declared sound wavelength. The volume repeats exactly every repeat_period_m."
+  },
+  "value_range_log10": [
+    -3.974108417744265,
+    -3.1775797638174867
+  ],
+  "surface_db_range": [
+    23.032791925333424,
+    47.32606340741284
+  ],
+  "acquisition": {
+    "satellite": "ICEYE-X33",
+    "product_type": "SpotlightDwellFine",
+    "collection_start": "2025-08-27T20:26:54.327037",
+    "wavelength_m": 0.031228381041666666,
+    "incidence_center_deg": 20.805111922042048,
+    "polarization": "VV"
+  },
+  "bytes": 2305536
+}
