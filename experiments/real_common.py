@@ -41,6 +41,18 @@ GIZA_PATCHES = [
     ('desert_south',  'Open plateau, south', 29.96700, 31.12600,  75 + 15.5, 'control'),
 ]
 
+# Sacsayhuaman sits on steep Andean terrain at about 3.6 km, where a single assumed height
+# places a patch far less precisely than at flat Giza. Every patch here was checked against the
+# image before use: the zigzag terrace walls, the Rodadero outcrop, the Cusco street grid and an
+# open hillside are all recognisable at their projected positions.
+SACSAYHUAMAN_PATCHES = [
+    ('walls',       'Sacsayhuaman terrace walls', -13.5095, -71.9820, 3660, 'monument'),
+    ('rodadero',    'Rodadero outcrop',           -13.5085, -71.9845, 3640, 'monument'),
+    ('cusco',       'Cusco street grid',          -13.5170, -71.9785, 3360, 'urban'),
+    ('slope_north', 'Open hillside, north',       -13.5040, -71.9820, 3680, 'control'),
+]
+SITES = {'giza': GIZA_PATCHES, 'sacsayhuaman': SACSAYHUAMAN_PATCHES}
+
 N_AZ, N_RG = 4096, 1536
 MARGIN = 160
 STRIDE_AZ, STRIDE_RG = 12, 8
@@ -71,7 +83,9 @@ def target_grid(shape, margin=MARGIN, stride_az=STRIDE_AZ, stride_rg=STRIDE_RG):
 def run_patch(site, key, bank_name='paper', lam_s=LAM_S, n_az=N_AZ, n_rg=N_RG,
               stride_az=STRIDE_AZ, stride_rg=STRIDE_RG, force=False, verbose=True):
     """Process one named patch and cache the trajectories, geometry and depth volume."""
-    entry = next(p for p in GIZA_PATCHES if p[0] == key) if site == 'giza' else None
+    if site not in SITES:
+        raise KeyError(f'unknown site {site}')
+    entry = next((p for p in SITES[site] if p[0] == key), None)
     if entry is None:
         raise KeyError(f'unknown patch {site}/{key}')
     name, label, lat, lon, height, kind = entry

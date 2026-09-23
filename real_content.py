@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parent
 RESULTS = ROOT / "results"
 REPO_URL = "https://github.com/ejhong/sar"
 ORDER = ["r01_giza_controls", "r02_depth_axis", "r03_split_dwell",
-         "r04_velocity_floor", "r05_learned_null"]
+         "r04_velocity_floor", "r05_learned_null", "r06_second_site", "r07_injected_motion"]
 
 
 def esc(value):

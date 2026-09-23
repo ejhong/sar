@@ -287,3 +287,30 @@ def azimuth_shift_to_velocity(shift_px, acq, slant_range_m, platform_speed_m_s):
     if slant_range_m <= 0 or platform_speed_m_s <= 0:
         raise ValueError('slant range and platform speed must be positive')
     return np.asarray(shift_px, float) * acq.azimuth_spacing_m * platform_speed_m_s / slant_range_m
+
+
+def inject_line_of_sight_motion(crop, acq, doppler_rate_hz_s, amplitude_m, frequency_hz,
+                                phase_rad=0.0, centroid_hz=0.0):
+    """Impose a known line-of-sight displacement history on a real complex crop.
+
+    In a dwell product the azimuth Doppler axis is slow time, so a scene that moves coherently
+    along the line of sight multiplies the azimuth spectrum by exp(-4 pi j d(t) / lambda) with
+    t = (f - f_dc) / Ka. Applying that to a real crop gives a positive control: the recovered
+    velocity series can be compared with the one that was put in, on genuine radar texture
+    rather than on synthetic speckle.
+
+    The modulation is common to the whole crop, so any scene-wide common-mode removal will
+    remove it again; the control must be run with common-mode correction disabled.
+    """
+    if amplitude_m < 0 or frequency_hz <= 0:
+        raise ValueError('amplitude must be non-negative and frequency positive')
+    rate = float(doppler_rate_hz_s)
+    if rate >= 0:
+        raise ValueError('Doppler rate must be negative in this convention')
+    n = crop.shape[0]
+    freqs = np.fft.fftshift(np.fft.fftfreq(n, d=1.0 / acq.prf_hz))
+    t = (freqs - centroid_hz) / rate
+    d = amplitude_m * np.sin(2 * np.pi * frequency_hz * t + phase_rad)
+    spectrum = np.fft.fftshift(np.fft.fft(crop, axis=0), axes=0)
+    spectrum *= np.exp(-4j * np.pi * d / acq.wavelength_m)[:, None]
+    return np.fft.ifft(np.fft.ifftshift(spectrum, axes=0), axis=0).astype(np.complex64), t, d

@@ -180,3 +180,20 @@ def test_split_aperture_halves_have_matching_sweeps(product):
 def test_sweep_that_does_not_fit_is_refused(product):
     with pytest.raises(ValueError, match='does not fit'):
         DopplerBank(K=10, width_frac=0.5, start_frac=0.4, sweep_frac=0.9).plan(product.acq, N_AZ, -5662.5)
+
+
+def test_injected_motion_is_recoverable_in_principle(product):
+    """The modulation must be unitary, reversible, and carry the intended phase history."""
+    from sarsim.dwell import inject_line_of_sight_motion
+    rng = np.random.default_rng(3)
+    crop = (rng.normal(size=(N_AZ, 8)) + 1j * rng.normal(size=(N_AZ, 8))).astype(np.complex64)
+    moved, t, d = inject_line_of_sight_motion(crop, product.acq, -5662.5, 2e-3, 0.5)
+    assert moved.shape == crop.shape
+    assert np.isclose(np.abs(moved).sum(), np.abs(crop).sum(), rtol=1e-3)   # energy preserved
+    assert np.max(np.abs(d)) == pytest.approx(2e-3, rel=1e-3)
+    # fftfreq spans prf*(n-1)/n, so the slow-time axis is one bin short of prf/|Ka|
+    assert t.max() - t.min() == pytest.approx(product.acq.prf_hz * (N_AZ - 1) / N_AZ / 5662.5, rel=1e-9)
+    back, _, _ = inject_line_of_sight_motion(moved, product.acq, -5662.5, 2e-3, 0.5, phase_rad=np.pi)
+    assert np.allclose(back, crop, atol=2e-4)                              # inverse modulation
+    with pytest.raises(ValueError):
+        inject_line_of_sight_motion(crop, product.acq, -5662.5, 1e-3, 0.0)
