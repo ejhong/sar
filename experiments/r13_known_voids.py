@@ -51,17 +51,23 @@ def surface_spacings(run, n=6):
     g = (run['grid_rows'].size, run['grid_cols'].size)
     amp = run['amplitude'].astype(float).reshape(g)
     amp = amp - amp.mean(axis=0, keepdims=True)
-    power = (np.abs(np.fft.rfft(amp, axis=0)) ** 2).mean(axis=1)
+    window = np.hanning(g[0])[:, None]
+    power = (np.abs(np.fft.rfft(amp * window, axis=0)) ** 2).mean(axis=1)
     step = run['meta']['acquisition']['azimuth_spacing_m'] * run['meta']['stride'][0]
     freq = np.fft.rfftfreq(g[0], d=step)
-    power[0] = 0
+    # Only spacings whose implied depth lands on this bank's axis can matter. Longer
+    # periodicities, including the patch envelope itself, map far below it.
+    depth_max = float(run['z'][-1])
+    factor0 = (run['meta']['lam_s_m'] * np.sin(np.deg2rad(run['meta']['incidence_deg']))
+               / run['meta']['acquisition']['wavelength_m'])
+    usable = (freq > 0) & (1.0 / np.maximum(freq, 1e-12) * factor0 <= depth_max)
+    power = np.where(usable, power, 0.0)
     peaks = np.argsort(power)[::-1][:n]
     # depth = separation * lambda_s sin(theta) / lambda, the relation established in simulation
-    factor = (run['meta']['lam_s_m'] * np.sin(np.deg2rad(run['meta']['incidence_deg']))
-              / run['meta']['acquisition']['wavelength_m'])
+    factor = factor0
     out = []
     for k in peaks:
-        if freq[k] <= 0:
+        if freq[k] <= 0 or power[k] <= 0:
             continue
         spacing = 1.0 / freq[k]
         out.append({'spacing_m': float(spacing), 'predicted_depth_m': float(factor * spacing),
@@ -198,10 +204,10 @@ def main(stride_az=12, stride_rg=8):
                     f"cemeteries are far brighter at the surface, with median amplitude "
                     f"{np.median(tomb_amp):.0f} against {np.median(ctrl_amp):.0f}, so the comparison was repeated "
                     f"on brightness-matched pixels, where the difference is {d_matched:+.3f}. Any residual is "
-                    f"accounted for by surface geometry rather than by voids: the mastaba rows are regular, and "
-                    f"{len(in_band)} of the cemeteries' strongest surface periodicities map, through the same "
-                    f"spacing-to-depth relation the method uses, into the very band being tested. This is the "
-                    f"easiest target the site offers: shallow, numerous, excavated and surveyed."),
+                    f"accounted for by surface geometry: of the cemeteries' strongest surface periodicities that "
+                    f"can reach this depth axis at all, {len(in_band)} fall inside the band being tested, through "
+                    f"the same spacing-to-depth relation the method uses. This is the easiest target the site "
+                    f"offers: shallow, numerous, excavated and surveyed, under flat ground."),
         'limitations': ('The depth axis of this bank is unambiguous only to about 67 m, which covers the shaft '
                         'band but not deeper claims. Shaft depths vary between tombs and many shafts are filled or '
                         'collapsed, so the band is a '

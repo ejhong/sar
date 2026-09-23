@@ -5,10 +5,14 @@
   "eyebrow": "13 \u00b7 Positive control",
   "title": "Hundreds of surveyed burial shafts produce no signal at their known depths",
   "question": "Can the method find voids that are certainly there, at depths that are certainly known?",
-  "finding": "No. Across 95,760 pixels over the Eastern and Western Cemeteries and 95,760 pixels of bare plateau, the share of each pixel's depth profile falling in the surveyed shaft band of 5 to 30 m is 0.6183 over the tombs against 0.5967 over the plateau, a standardised difference of +0.194. The cemeteries are far brighter at the surface, with median amplitude 67 against 77, so the comparison was repeated on brightness-matched pixels, where the difference is +0.181. This is the easiest target the site offers: shallow, numerous, excavated and surveyed.",
-  "limitations": "Shaft depths vary between tombs and many shafts are filled or collapsed, so the band is a range rather than a target depth. Placement is verified by recognising the mastaba rows in the image, not by surveyed control points, which is enough at this scale but would not be for a single chamber. A null here bounds sensitivity to shallow voids under these conditions; it does not prove no void anywhere could ever be detected.",
-  "method": "Identical pipeline, bank and grid to the within-image controls, applied to two cemetery patches and two plateau patches of the same acquisition. The statistic is the fraction of each pixel's normalised depth profile lying in the 5 to 30 m band, compared directly and again after matching the two populations on surface amplitude in 24 bins.",
+  "finding": "No. Across 95,760 pixels over the Eastern and Western Cemeteries and 95,760 pixels of bare plateau, the share of each pixel's depth profile falling in the surveyed shaft band of 5 to 30 m is 0.3736 over the tombs against 0.3706 over the plateau, a standardised difference of +0.022. The cemeteries are far brighter at the surface, with median amplitude 67 against 77, so the comparison was repeated on brightness-matched pixels, where the difference is +0.031. Any residual is accounted for by surface geometry: of the cemeteries' strongest surface periodicities that can reach this depth axis at all, 0 fall inside the band being tested, through the same spacing-to-depth relation the method uses. This is the easiest target the site offers: shallow, numerous, excavated and surveyed, under flat ground.",
+  "limitations": "The depth axis of this bank is unambiguous only to about 67 m, which covers the shaft band but not deeper claims. Shaft depths vary between tombs and many shafts are filled or collapsed, so the band is a range rather than a target depth. Placement is verified by recognising the mastaba rows in the image, not by surveyed control points, which is enough at this scale but would not be for a single chamber. A null here bounds sensitivity to shallow voids under these conditions; it does not prove no void anywhere could ever be detected.",
+  "method": "Forty common-reference sub-apertures confined to the coherent window, chosen so the depth axis is unambiguous to about 67 m and the 5 to 30 m shaft band is representable, applied to two cemetery patches and two plateau patches of the same acquisition. The statistic is the fraction of each pixel's normalised depth profile lying in the 5 to 30 m band, compared directly and again after matching the two populations on surface amplitude in 24 bins.",
   "figures": [
+    {
+      "file": "/Users/eugene/prj/sar/results/r13_known_voids/figs/r13_maps.png",
+      "caption": "<b>The mastaba rows are obvious; the shafts beneath them are not.</b> Top: surface amplitude of the four patches, where the rectangular mastaba blocks of the Eastern and Western Cemeteries are unmistakable against featureless plateau. Bottom: for the same pixels, how much of each depth profile falls in the 5 to 30 m band where the surveyed burial shafts actually are, on one shared scale. The structures on the surface print clearly. The hundreds of voids beneath them do not."
+    },
     {
       "file": "/Users/eugene/prj/sar/results/r13_known_voids/figs/r13_cemeteries.png",
       "caption": "<b>Hundreds of real voids, and nothing to see.</b> The Eastern and Western Cemeteries are dense fields of excavated burial shafts 5 to 30 m deep; the two control patches are bare plateau a few hundred metres away. Left: mean depth profiles, with the surveyed shaft band shaded. Middle: the share of each pixel's profile falling in that band. Right: the standardised difference between tombs and plateau, before and after matching on surface brightness. If the method could see shallow voids, this is where it would show."
@@ -19,18 +23,131 @@
       5.0,
       30.0
     ],
+    "depth_axis_max_m": 68.40396561454493,
+    "bank": "shaft",
+    "surface_spacings": [
+      {
+        "patch": "cemetery_east",
+        "label": "Eastern Cemetery",
+        "depth_per_metre_of_spacing": 5.480206843215378,
+        "strongest_surface_spacings": [
+          {
+            "spacing_m": 11.874186398339372,
+            "predicted_depth_m": 65.0729975577944,
+            "relative_power": 1.0
+          },
+          {
+            "spacing_m": 11.082573971783415,
+            "predicted_depth_m": 60.73479772060811,
+            "relative_power": 0.86808461248513
+          },
+          {
+            "spacing_m": 10.38991309854695,
+            "predicted_depth_m": 56.93887286307009,
+            "relative_power": 0.847778936214501
+          },
+          {
+            "spacing_m": 9.778741739808895,
+            "predicted_depth_m": 53.58952740053656,
+            "relative_power": 0.7771646158477546
+          }
+        ]
+      },
+      {
+        "patch": "cemetery_west",
+        "label": "Western Cemetery",
+        "depth_per_metre_of_spacing": 5.464484787278471,
+        "strongest_surface_spacings": [
+          {
+            "spacing_m": 11.082573971783415,
+            "predicted_depth_m": 60.56055687269882,
+            "relative_power": 1.0
+          },
+          {
+            "spacing_m": 10.38991309854695,
+            "predicted_depth_m": 56.775522068155134,
+            "relative_power": 0.9843896769049657
+          },
+          {
+            "spacing_m": 11.874186398339372,
+            "predicted_depth_m": 64.88631093503444,
+            "relative_power": 0.9706252660687454
+          },
+          {
+            "spacing_m": 9.235478309819513,
+            "predicted_depth_m": 50.467130727249014,
+            "relative_power": 0.9482211216331186
+          }
+        ]
+      },
+      {
+        "patch": "desert_west",
+        "label": "Open plateau, west",
+        "depth_per_metre_of_spacing": 5.436375058986815,
+        "strongest_surface_spacings": [
+          {
+            "spacing_m": 10.38991309854695,
+            "predicted_depth_m": 56.48346443398106,
+            "relative_power": 1.0
+          },
+          {
+            "spacing_m": 9.778741739808895,
+            "predicted_depth_m": 53.16090770257042,
+            "relative_power": 0.9994152783267909
+          },
+          {
+            "spacing_m": 9.235478309819513,
+            "predicted_depth_m": 50.20752394131651,
+            "relative_power": 0.9891029484598133
+          },
+          {
+            "spacing_m": 7.227765633771791,
+            "predicted_depth_m": 39.292844823639,
+            "relative_power": 0.9713006642586887
+          }
+        ]
+      },
+      {
+        "patch": "plateau_nw",
+        "label": "Open plateau, north-west",
+        "depth_per_metre_of_spacing": 5.448714391587155,
+        "strongest_surface_spacings": [
+          {
+            "spacing_m": 11.874186398339372,
+            "predicted_depth_m": 64.6990503170202,
+            "relative_power": 1.0
+          },
+          {
+            "spacing_m": 11.082573971783415,
+            "predicted_depth_m": 60.38578029588551,
+            "relative_power": 0.8010103252880438
+          },
+          {
+            "spacing_m": 9.235478309819513,
+            "predicted_depth_m": 50.321483579904594,
+            "relative_power": 0.7833172975087412
+          },
+          {
+            "spacing_m": 8.749400504039537,
+            "predicted_depth_m": 47.67298444412014,
+            "relative_power": 0.7632497057876263
+          }
+        ]
+      }
+    ],
+    "cemetery_surface_periodicities_inside_the_shaft_band": 0,
     "tomb_pixels": 95760,
     "control_pixels": 95760,
-    "tomb_band_share_mean": 0.6182667901849603,
-    "control_band_share_mean": 0.5966879925199616,
-    "standardised_difference": 0.19420539115890914,
-    "standardised_difference_brightness_matched": 0.18084214944459798,
+    "tomb_band_share_mean": 0.37357826033993446,
+    "control_band_share_mean": 0.37056583013917277,
+    "standardised_difference": 0.021954774424514625,
+    "standardised_difference_brightness_matched": 0.030751433483490614,
     "matched_pixels": 84416,
-    "ks_statistic": 0.06029657477025899,
-    "ks_pvalue": 9.144972792141503e-152,
+    "ks_statistic": 0.011507936507936467,
+    "ks_pvalue": 6.165227637708863e-06,
     "tomb_median_amplitude": 66.82164764404297,
     "control_median_amplitude": 76.96282196044922,
-    "runtime_s": 594.2030727863312
+    "runtime_s": 1.502960205078125
   },
   "date": "2026-09-23"
 }

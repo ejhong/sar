@@ -68,9 +68,10 @@ Each of these is measured on the real acquisitions, not argued.
    fit a two-parameter offset on monument base corners surveyed by the Glen Dash Foundation,
    validate on held-out corners, then project the King's and Queen's Chambers, the Grand
    Gallery, the Osiris Shaft, Hetepheres G 7000 X and Idu G 7102 C.
-2. **Known voids in the viewer.** Once placement is solved, add the surveyed chamber meshes as a
-   comparison layer beside the computed voxels. `catalog/giza/surveys.json` already holds
-   dimensioned models; they carry no georeferenced position yet.
+2. **Extend the survey layer.** `catalog/giza/underworld.json` now places Khufu's and Khafre's
+   chambers, passages and muon-detected voids in the viewer. Worth adding: the Osiris Shaft,
+   Campbell's Tomb, and individual mastaba shafts in the Eastern Cemetery, which would need
+   metre-level registration rather than the monument-scale tie used so far.
 3. **The honest instrument.** With coherent looks the dwell yields a roughly two-second velocity
    series at about 8 Hz with a floor near 75 µm/s. Characterising that properly, including on
    strong point scatterers, is publishable independently of the pyramid.
