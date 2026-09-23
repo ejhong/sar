@@ -1,0 +1,51 @@
+{
+  "site": "sacsayhuaman",
+  "patch": "walls",
+  "label": "Sacsayhuaman terrace walls",
+  "kind": "monument",
+  "shape": [
+    158,
+    76,
+    64
+  ],
+  "axis_order": "binary is [depth][across_range][along_azimuth], uint8",
+  "spacing_m": {
+    "along_azimuth": 1.0470655986597557,
+    "across_slant_range": 2.437728170661033,
+    "depth": 0.8359455347858993
+  },
+  "extent_m": {
+    "along_azimuth": 165.4363645882414,
+    "across_slant_range": 185.26734097023854,
+    "depth": 53.0792503347519
+  },
+  "centre_lonlat": [
+    -71.982,
+    -13.5095
+  ],
+  "assumed_height_m": 3660,
+  "terrain_height_m": null,
+  "depth_axis": {
+    "lambda_s_m": 0.48,
+    "repeat_period_m": 26.53962516737595,
+    "real_fit_ambiguity_limit_m": 13.269812583687974,
+    "note": "Depth is the oscillation rate of the registration trajectory relabelled through a declared sound wavelength. The volume repeats exactly every repeat_period_m."
+  },
+  "value_range_log10": [
+    -4.08014785661469,
+    -2.196185256302012
+  ],
+  "surface_db_range": [
+    21.416596797615664,
+    53.99706494308064
+  ],
+  "acquisition": {
+    "satellite": "ICEYE-X35",
+    "product_type": "SpotlightDwellFine",
+    "collection_start": "2025-08-22T15:24:33.919422",
+    "wavelength_m": 0.031228381041666666,
+    "incidence_center_deg": 20.479929352448668,
+    "polarization": "VV"
+  },
+  "bytes": 768512
+}

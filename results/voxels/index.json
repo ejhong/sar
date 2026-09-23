@@ -107,6 +107,78 @@
       },
       "bytes": 768512,
       "short_label": "Plateau south"
+    },
+    {
+      "site": "sacsayhuaman",
+      "patch": "walls",
+      "label": "Sacsayhuaman terrace walls",
+      "kind": "monument",
+      "shape": [
+        158,
+        76,
+        64
+      ],
+      "extent_m": {
+        "along_azimuth": 165.4363645882414,
+        "across_slant_range": 185.26734097023854,
+        "depth": 53.0792503347519
+      },
+      "bytes": 768512,
+      "short_label": "Sacsayhuaman terrace walls"
+    },
+    {
+      "site": "sacsayhuaman",
+      "patch": "rodadero",
+      "label": "Rodadero outcrop",
+      "kind": "monument",
+      "shape": [
+        158,
+        76,
+        64
+      ],
+      "extent_m": {
+        "along_azimuth": 165.4363645882414,
+        "across_slant_range": 185.26734097023854,
+        "depth": 52.992914356239794
+      },
+      "bytes": 768512,
+      "short_label": "Rodadero outcrop"
+    },
+    {
+      "site": "sacsayhuaman",
+      "patch": "cusco",
+      "label": "Cusco street grid",
+      "kind": "urban",
+      "shape": [
+        158,
+        76,
+        64
+      ],
+      "extent_m": {
+        "along_azimuth": 165.4363645882414,
+        "across_slant_range": 185.26734097023854,
+        "depth": 53.204248240237305
+      },
+      "bytes": 768512,
+      "short_label": "Cusco street grid"
+    },
+    {
+      "site": "sacsayhuaman",
+      "patch": "slope_north",
+      "label": "Open hillside, north",
+      "kind": "control",
+      "shape": [
+        158,
+        76,
+        64
+      ],
+      "extent_m": {
+        "along_azimuth": 165.4363645882414,
+        "across_slant_range": 185.26734097023854,
+        "depth": 53.047565772196435
+      },
+      "bytes": 768512,
+      "short_label": "Hillside north"
     }
   ],
   "sites": {

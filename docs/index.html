@@ -16,7 +16,7 @@
 <header class="db-top"><div class="wrap">
   <a class="db-mark" href="./"><span aria-hidden="true">◒</span> SAR / DEPTH, TESTED</a>
   <nav class="db-nav">
-    <a href="#viewer">Viewer</a><a href="#real">Real data</a><a href="#sim">Simulation</a><a href="#support">Steelman</a>
+    <a href="#scans">Scans</a><a href="#viewer">Viewer</a><a href="#real">Real data</a><a href="#sim">Simulation</a><a href="#support">Steelman</a>
     <a href="#method">Method</a><a href="field.html">Field atlas</a><a href="https://github.com/ejhong/sar">Code ↗</a>
   </nav>
 </div></header>
@@ -34,6 +34,12 @@
 </div></section>
 
 <section class="db-stats"><div class="wrap" style="display:contents"><a class="db-stat" href="#r02_depth_axis"><span>Depth axis</span><strong>6.8<small> m</small></strong><p>Where the steering basis folds back on the full aperture. It repeats exactly at twice that.</p></a><a class="db-stat" href="#r01_giza_controls"><span>Monument vs desert</span><strong>-0.007</strong><p>Standardised difference in structure score across 287,280 pixels of one acquisition.</p></a><a class="db-stat" href="#r09_coherence"><span>Coherence half-life</span><strong>0.98<small> s</small></strong><p>Look separation at which the ground stops looking like itself. Microseism needs seconds.</p></a><a class="db-stat" href="#r04_velocity_floor"><span>Velocity floor</span><strong>77<small> µm/s</small></strong><p>Measured on coherent looks. Ambient ground motion is 0.1 to 10 µm/s.</p></a><a class="db-stat" href="#r03_split_dwell"><span>Split-dwell agreement</span><strong>0.067</strong><p>Correlation between the two halves of one acquisition. Unrelated pixels give 0.074.</p></a><a class="db-stat" href="#r05_learned_null"><span>Learned null</span><strong>0.51</strong><p>Area under the curve for a classifier given only the depth profiles. Chance is 0.50.</p></a></div></section>
+
+<section class="db-sec" id="scans"><div class="wrap">
+  <div class="db-head"><div><span class="db-kicker">The data</span><h2>What the radar recorded</h2></div>
+  <p>Ten patches, two acquisitions, no processing. Every later result is a statement about these pixels.</p></div>
+  <figure class="db-band" id="r00_acquisitions"><a href="figs/r00_acquisitions/r00_acquisitions.jpg"><img src="figs/r00_acquisitions/r00_acquisitions.jpg" alt="Ten patches of two ICEYE dwell acquisitions" loading="lazy"></a><figcaption><b>What the radar recorded.</b> Amplitude of the native complex images on the analysis grid, geolocated by each product's own rational polynomial model with no fitted offset. Top: four Giza monuments and two stretches of open plateau, all inside one 25 second acquisition. Bottom: the zigzag terrace walls of Sacsayhuamán, the Rodadero outcrop, the street grid of Cusco and an open Andean hillside, in a second acquisition from a different satellite. The surface tells these apart at a glance. Everything that follows asks whether the depth output does.</figcaption><div class="db-band-facts"><div><span>Giza plateau</span>ICEYE-X33 · 2025-08-27 · 113,692 × 11,562 samples · 24.8 s · 20.8° incidence · 6 patches</div><div><span>Sacsayhuamán</span>ICEYE-X35 · 2025-08-22 · 114,606 × 11,482 samples · 20.2 s · 20.5° incidence · 4 patches</div></div></figure>
+</div></section>
 
 <section class="db-sec" id="viewer"><div class="wrap">
   <div class="db-head"><div><span class="db-kicker">Interactive · WebGL</span><h2>The depth volumes, in three dimensions</h2></div>
@@ -62,8 +68,8 @@
 <p class="db-viewer-note"><b>What you are looking at.</b> The grey plane on top is the real radar image of that
 patch, at 27 cm sampling. Everything below it is what the published method outputs as depth, rendered as a volume.
 The red plane marks where that output starts repeating exactly, because the steering basis has come back to itself.
-Switch between Khafre and open plateau: if the method were responding to buried structure, these would not look
-alike. <a href="underworld.html">Open the full viewer ↗</a></p>
+Switch between a monument and open ground, or between Giza and Sacsayhuamán: if the method were responding
+to buried structure, these would not look alike. <a href="underworld.html">Open the full viewer ↗</a></p>
 </div></section>
 
 <section class="db-sec" id="real"><div class="wrap">
@@ -343,12 +349,25 @@ alike. <a href="underworld.html">Open the full viewer ↗</a></p>
         ['Terrain', h.terrain_height_m === null ? '—' : fmt(h.terrain_height_m, 0) + ' m'],
       ].map(([k, v]) => '<div><span>' + k + '</span><span>' + v + '</span></div>').join('');
     };
-    index.bundles.forEach((bundle, i) => {
-      const b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-pressed', 'false');
-      b.innerHTML = (bundle.short_label || bundle.label) + '<small>' + bundle.kind + '</small>';
-      b.addEventListener('click', () => show(bundle, b));
-      holder.appendChild(b); buttons.push(b);
-      if (i === 0) show(bundle, b);
+    const sites = [];
+    index.bundles.forEach(bundle => {
+      let g = sites.find(x => x.site === bundle.site);
+      if (!g) { g = { site: bundle.site, items: [] }; sites.push(g); }
+      g.items.push(bundle);
+    });
+    sites.forEach((group, gi) => {
+      if (sites.length > 1) {
+        const h = document.createElement('p'); h.className = 'db-site';
+        h.textContent = (index.sites && index.sites[group.site]) || group.site;
+        holder.appendChild(h);
+      }
+      group.items.forEach((bundle, i) => {
+        const b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-pressed', 'false');
+        b.innerHTML = (bundle.short_label || bundle.label) + '<small>' + bundle.kind + '</small>';
+        b.addEventListener('click', () => show(bundle, b));
+        holder.appendChild(b); buttons.push(b);
+        if (gi === 0 && i === 0) show(bundle, b);
+      });
     });
   }).catch(() => { hint.textContent = 'No volume bundles found.'; });
 })();

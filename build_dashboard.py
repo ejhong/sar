@@ -20,6 +20,7 @@ RESULTS = ROOT / "results"
 DOCS = ROOT / "docs"
 REPO = "https://github.com/ejhong/sar"
 
+ACQ = "r00_acquisitions"
 REAL = ["r01_giza_controls", "r02_depth_axis", "r09_coherence", "r03_split_dwell",
         "r08_sections", "r04_velocity_floor", "r07_injected_motion", "r05_learned_null",
         "r06_second_site"]
@@ -287,8 +288,29 @@ VIEWER = """<div class="db-viewer">
 <p class="db-viewer-note"><b>What you are looking at.</b> The grey plane on top is the real radar image of that
 patch, at 27 cm sampling. Everything below it is what the published method outputs as depth, rendered as a volume.
 The red plane marks where that output starts repeating exactly, because the steering basis has come back to itself.
-Switch between Khafre and open plateau: if the method were responding to buried structure, these would not look
-alike. <a href="underworld.html">Open the full viewer ↗</a></p>"""
+Switch between a monument and open ground, or between Giza and Sacsayhuamán: if the method were responding
+to buried structure, these would not look alike. <a href="underworld.html">Open the full viewer ↗</a></p>"""
+
+
+def acquisitions_band():
+    rep = report(ACQ)
+    if not rep or not rep.get("figures"):
+        return ""
+    item = rep["figures"][0]
+    src = copy_figure(ACQ, item["file"])
+    facts = rep["metrics"]["acquisitions"]
+    cells = "".join(
+        f'<div><span>{esc(a["label"].split(" · ")[0])}</span>'
+        f'{esc(a["satellite"])} · {esc(a["collected"][:10])} · '
+        f'{a["shape"][0]:,} × {a["shape"][1]:,} samples · {a["collection_duration_s"]:.1f} s · '
+        f'{a["incidence_deg"]:.1f}° incidence · {a["patches"]} patches</div>'
+        for a in facts)
+    (DOCS / "data").mkdir(exist_ok=True)
+    (DOCS / "data" / f"{ACQ}.json").write_text(json.dumps(rep, indent=2, allow_nan=False))
+    return (f'<figure class="db-band" id="{esc(ACQ)}"><a href="{src}"><img src="{src}" alt="Ten patches of two '
+            f'ICEYE dwell acquisitions" loading="lazy"></a>'
+            f'<figcaption>{item.get("caption", "")}</figcaption>'
+            f'<div class="db-band-facts">{cells}</div></figure>')
 
 
 def method_figure():
@@ -365,7 +387,7 @@ def build():
 <header class="db-top"><div class="wrap">
   <a class="db-mark" href="./"><span aria-hidden="true">◒</span> SAR / DEPTH, TESTED</a>
   <nav class="db-nav">
-    <a href="#viewer">Viewer</a><a href="#real">Real data</a><a href="#sim">Simulation</a><a href="#support">Steelman</a>
+    <a href="#scans">Scans</a><a href="#viewer">Viewer</a><a href="#real">Real data</a><a href="#sim">Simulation</a><a href="#support">Steelman</a>
     <a href="#method">Method</a><a href="field.html">Field atlas</a><a href="{REPO}">Code ↗</a>
   </nav>
 </div></header>
@@ -383,6 +405,12 @@ def build():
 </div></section>
 
 <section class="db-stats"><div class="wrap" style="display:contents">{stats(reps)}</div></section>
+
+<section class="db-sec" id="scans"><div class="wrap">
+  <div class="db-head"><div><span class="db-kicker">The data</span><h2>What the radar recorded</h2></div>
+  <p>Ten patches, two acquisitions, no processing. Every later result is a statement about these pixels.</p></div>
+  {acquisitions_band()}
+</div></section>
 
 <section class="db-sec" id="viewer"><div class="wrap">
   <div class="db-head"><div><span class="db-kicker">Interactive · WebGL</span><h2>The depth volumes, in three dimensions</h2></div>
@@ -459,12 +487,25 @@ def build():
         ['Terrain', h.terrain_height_m === null ? '—' : fmt(h.terrain_height_m, 0) + ' m'],
       ].map(([k, v]) => '<div><span>' + k + '</span><span>' + v + '</span></div>').join('');
     }};
-    index.bundles.forEach((bundle, i) => {{
-      const b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-pressed', 'false');
-      b.innerHTML = (bundle.short_label || bundle.label) + '<small>' + bundle.kind + '</small>';
-      b.addEventListener('click', () => show(bundle, b));
-      holder.appendChild(b); buttons.push(b);
-      if (i === 0) show(bundle, b);
+    const sites = [];
+    index.bundles.forEach(bundle => {{
+      let g = sites.find(x => x.site === bundle.site);
+      if (!g) {{ g = {{ site: bundle.site, items: [] }}; sites.push(g); }}
+      g.items.push(bundle);
+    }});
+    sites.forEach((group, gi) => {{
+      if (sites.length > 1) {{
+        const h = document.createElement('p'); h.className = 'db-site';
+        h.textContent = (index.sites && index.sites[group.site]) || group.site;
+        holder.appendChild(h);
+      }}
+      group.items.forEach((bundle, i) => {{
+        const b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-pressed', 'false');
+        b.innerHTML = (bundle.short_label || bundle.label) + '<small>' + bundle.kind + '</small>';
+        b.addEventListener('click', () => show(bundle, b));
+        holder.appendChild(b); buttons.push(b);
+        if (gi === 0 && i === 0) show(bundle, b);
+      }});
     }});
   }}).catch(() => {{ hint.textContent = 'No volume bundles found.'; }});
 }})();

@@ -1,0 +1,51 @@
+{
+  "site": "sacsayhuaman",
+  "patch": "rodadero",
+  "label": "Rodadero outcrop",
+  "kind": "monument",
+  "shape": [
+    158,
+    76,
+    64
+  ],
+  "axis_order": "binary is [depth][across_range][along_azimuth], uint8",
+  "spacing_m": {
+    "along_azimuth": 1.0470655986597557,
+    "across_slant_range": 2.437728170661033,
+    "depth": 0.834585828775106
+  },
+  "extent_m": {
+    "along_azimuth": 165.4363645882414,
+    "across_slant_range": 185.26734097023854,
+    "depth": 52.992914356239794
+  },
+  "centre_lonlat": [
+    -71.9845,
+    -13.5085
+  ],
+  "assumed_height_m": 3640,
+  "terrain_height_m": null,
+  "depth_axis": {
+    "lambda_s_m": 0.48,
+    "repeat_period_m": 26.496457178119897,
+    "real_fit_ambiguity_limit_m": 13.248228589059948,
+    "note": "Depth is the oscillation rate of the registration trajectory relabelled through a declared sound wavelength. The volume repeats exactly every repeat_period_m."
+  },
+  "value_range_log10": [
+    -4.1022249132463715,
+    -2.5722792494481874
+  ],
+  "surface_db_range": [
+    20.908332446973056,
+    53.25396923931538
+  ],
+  "acquisition": {
+    "satellite": "ICEYE-X35",
+    "product_type": "SpotlightDwellFine",
+    "collection_start": "2025-08-22T15:24:33.919422",
+    "wavelength_m": 0.031228381041666666,
+    "incidence_center_deg": 20.479929352448668,
+    "polarization": "VV"
+  },
+  "bytes": 768512
+}

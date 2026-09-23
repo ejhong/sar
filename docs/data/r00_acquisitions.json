@@ -1,0 +1,50 @@
+{
+  "id": "r00_acquisitions",
+  "order": 10,
+  "tag": "mechanism",
+  "eyebrow": "00 \u00b7 The acquisitions",
+  "title": "Two dwell acquisitions, ten patches, one set of pixels behind every result",
+  "question": "What was actually recorded, and are the patches where we say they are?",
+  "finding": "Ten patches across two ICEYE Spotlight Dwell Fine products. At Giza the laid-over faces and radar shadows of Khafre, Khufu and Menkaure appear exactly where the product's own rational polynomial model places them, with no fitted offset. At Sacsayhuam\u00e1n the terrace walls, the Rodadero outcrop, the Cusco street grid and an open hillside are all recognisable. The surface separates these scenes trivially, which is the comparison every later test is against.",
+  "limitations": "Placement is verified against recognisable structures, not against surveyed control points. Heights are published elevations plus a nominal geoid undulation, good enough to land on the right monument but not a surveyed vertical tie. Sacsayhuam\u00e1n sits on steep terrain where a single assumed height places a patch much less precisely than at flat Giza.",
+  "method": "Amplitude of the native complex SLC sampled on the same grid used for every measurement, displayed in decibels relative to each patch's 99.5th percentile.",
+  "figures": [
+    {
+      "file": "/Users/eugene/prj/sar/results/r00_acquisitions/figs/r00_acquisitions.png",
+      "caption": "<b>What the radar recorded.</b> Amplitude of the native complex images on the analysis grid, geolocated by each product's own rational polynomial model with no fitted offset. Top: four Giza monuments and two stretches of open plateau, all inside one 25 second acquisition. Bottom: the zigzag terrace walls of Sacsayhuam\u00e1n, the Rodadero outcrop, the street grid of Cusco and an open Andean hillside, in a second acquisition from a different satellite. The surface tells these apart at a glance. Everything that follows asks whether the depth output does."
+    }
+  ],
+  "metrics": {
+    "acquisitions": [
+      {
+        "site": "giza",
+        "label": "Giza plateau \u00b7 ICEYE X33 \u00b7 27 August 2025",
+        "satellite": "ICEYE-X33",
+        "collected": "2025-08-27 20:26:54",
+        "shape": [
+          113692,
+          11562
+        ],
+        "incidence_deg": 20.805111922042048,
+        "collection_duration_s": 24.762808,
+        "patches": 6
+      },
+      {
+        "site": "sacsayhuaman",
+        "label": "Sacsayhuam\u00e1n \u00b7 ICEYE X35 \u00b7 22 August 2025",
+        "satellite": "ICEYE-X35",
+        "collected": "2025-08-22 15:24:33",
+        "shape": [
+          114606,
+          11482
+        ],
+        "incidence_deg": 20.479929352448668,
+        "collection_duration_s": 20.16999,
+        "patches": 4
+      }
+    ],
+    "patches": 10,
+    "runtime_s": 2.352861166000366
+  },
+  "date": "2026-09-23"
+}
