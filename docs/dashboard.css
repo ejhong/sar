@@ -123,7 +123,7 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:400;color:var(--ink);margin:0}
 .db-repro h3{font-size:15px;margin:0 0 10px}
 .db-repro pre{background:var(--white);border:1px solid var(--line);border-radius:3px;padding:12px 14px;font:11px/1.75 var(--mono);overflow-x:auto;margin:0 0 10px}
 .db-repro p{font-size:12px;line-height:1.7;margin:0;color:var(--dim)}
-.db-argument{display:grid;grid-template-columns:repeat(5,1fr);gap:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.db-argument{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .db-step{display:block;padding:18px 20px 20px;border-right:1px solid var(--line);text-decoration:none;color:inherit;transition:background .15s}
 .db-step:last-child{border-right:0}
 .db-step:hover{background:var(--soft);color:inherit}
