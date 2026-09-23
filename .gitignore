@@ -17,3 +17,6 @@ data/
 *.npy
 *.npz
 .DS_Store
+
+# transient run logs
+results/*.log

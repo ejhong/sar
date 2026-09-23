@@ -1,0 +1,88 @@
+{
+  "id": "r02_depth_axis",
+  "order": 12,
+  "tag": "artifact",
+  "eyebrow": "02 \u00b7 Depth axis",
+  "title": "The reachable depth is set by the sub-aperture bank, not by the ground",
+  "question": "With real orbit geometry, how deep can this method see before its depth axis repeats?",
+  "finding": "A few metres. During the 24.5 s aperture the platform moves 168 km, so a bank that uses the whole aperture spaces its steering wavenumbers very widely and the depth axis repeats every 6.8 m at K = 50. Depths of hundreds of metres are only reachable by sweeping about one percent of the aperture, or by enlarging the declared sound wavelength, which no measurement constrains.",
+  "limitations": "This is a statement about the ambiguity period of the steering basis under the published geometry, computed from real state vectors. It does not by itself show what a given published figure did, because the bank parameters used there were never disclosed.",
+  "method": "Real ICEYE X33 state vectors, Khafre RPC position and WGS84 target, aperture-centre reference. Baselines are the along-track platform offsets projected perpendicular to the line of sight, exactly as the published steering formula requires. Nyquist depth is pi divided by the median spacing of the resulting steering wavenumbers.",
+  "figures": [
+    {
+      "file": "/Users/eugene/prj/sar/results/r02_depth_axis/figs/r02_nyquist.png",
+      "caption": "<b>The depth ceiling is bought by discarding aperture.</b> Using real ICEYE state vectors at Khafre, the unambiguous depth range of the steering basis is plotted against the fraction of the 24.5 s aperture the sub-aperture bank sweeps. Sweeping the whole aperture gives a few metres, because the platform moves 168 km and the wavenumbers are spaced very widely. Reaching the published depths requires sweeping about one percent of the aperture, which throws away the very time diversity the method is supposed to exploit."
+    },
+    {
+      "file": "/Users/eugene/prj/sar/results/r02_depth_axis/figs/r02_lambda.png",
+      "caption": "<b>Nothing in the data sets the scale.</b> The depth axis is proportional to the declared sound wavelength, which no measurement in the method constrains. For each of the three bank designs the reachable depth is drawn against that constant. Any published depth can be produced by choosing it, and the 2022 paper and the 2026 derivative protocol use values that differ by a factor of two."
+    }
+  ],
+  "metrics": {
+    "aperture_s": 24.489818532846076,
+    "row": 68656.40397132614,
+    "col": 6481.500759290869,
+    "lam_s_m": 0.48,
+    "nyquist_full_aperture": [
+      {
+        "K": 20,
+        "nyquist_full_aperture_m": 2.6270865804009746
+      },
+      {
+        "K": 50,
+        "nyquist_full_aperture_m": 6.775110781793954
+      },
+      {
+        "K": 100,
+        "nyquist_full_aperture_m": 13.688481527598407
+      }
+    ],
+    "banks": [
+      {
+        "bank": "reference",
+        "K": 50,
+        "width_frac": 0.1,
+        "shift_hz": null,
+        "sub_aperture_s": 2.4482735114425234,
+        "swept_s": 21.903795320068642,
+        "swept_percent": 89.44041496547219,
+        "sampling_hz": 2.237055235587658,
+        "pair_lag_ms": 0.0,
+        "overlap_within_pair": 1.0,
+        "baseline_span_m": 167812.51504944198,
+        "nyquist_depth_m": 7.574960295916459
+      },
+      {
+        "bank": "paper",
+        "K": 50,
+        "width_frac": 0.5,
+        "shift_hz": 88.0,
+        "sub_aperture_s": 12.248244729997568,
+        "swept_s": 12.131332792653401,
+        "swept_percent": 49.53622982703075,
+        "sampling_hz": 4.039127508699939,
+        "pair_lag_ms": 13.754345569901815,
+        "overlap_within_pair": 0.9988770353733858,
+        "baseline_span_m": 92943.88977150095,
+        "nyquist_depth_m": 13.676838137865046
+      },
+      {
+        "bank": "v17",
+        "K": 20,
+        "width_frac": 0.5,
+        "shift_hz": 404.0,
+        "sub_aperture_s": 12.248244729997568,
+        "swept_s": 0.6533314145703351,
+        "swept_percent": 2.667767479346889,
+        "sampling_hz": 29.08171806263961,
+        "pair_lag_ms": 68.77172784950908,
+        "overlap_within_pair": 0.9943851768669287,
+        "baseline_span_m": 5005.518508555851,
+        "nyquist_depth_m": 98.47274502255193
+      }
+    ],
+    "percent_of_aperture_for_648m_K50": 1.045496205345032,
+    "runtime_s": 0.978316068649292
+  },
+  "date": "2026-09-23"
+}

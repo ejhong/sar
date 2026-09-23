@@ -11,6 +11,7 @@ from string import Template
 from PIL import Image
 from experiments.reporting import refine_summary
 from site_content import validation_content
+from real_content import real_section
 from fieldwork.publishing import build_field_site
 
 ROOT = Path(__file__).resolve().parent
@@ -196,8 +197,11 @@ def build():
     versions = " · ".join(f"{esc(k)} {esc(v)}" for k, v in validation.get("versions", {}).items())
     downloads = "".join(f"<a href='data/{t['id']}.json' download>T{t['order']} results ↓</a>" for t in tests)
     template = Template((ROOT / "site" / "page.html").read_text())
+    height_px = f"{abs(geometry_audits['giza']['center_height_sensitivity'][-1]['sample_shift_px']):.0f}"
+    height_m = f"{abs(geometry_audits['giza']['center_height_sensitivity'][-1]['approximate_flat_ground_range_shift_m']):.0f}"
     page = template.substitute(updated=updated, hero_src=hero_src, count=len(tests),
                                field_portal=field_portal,
+                               real_section=real_section(figure, height_px, height_m, field_portal),
                                experiments=sections, robustness=robustness_section(robustness),
                                downloads=downloads, versions=versions,
                                stylesheet_version=hashlib.sha256((DOCS / 'style.css').read_bytes()).hexdigest()[:12],

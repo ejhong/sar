@@ -121,3 +121,60 @@ compare independent acquisitions, and evaluate surveyed cavities plus matched
 intact ground at sites excluded from calibration. Unknown subsurface labels
 cannot serve as confirmed negatives. Repeated features alone do not exclude
 stable surface artifacts.
+
+## Real acquisitions — 23 September 2026
+
+The real chapter processes two ICEYE Spotlight Dwell Fine products. What follows records what
+that processing does and does not establish.
+
+### What is validated
+
+The dwell adapter reproduces each product's own declared centre-of-aperture state exactly: the
+cubic state-vector interpolation evaluated at the midpoint of the collection returns `coa_pos`
+and `coa_vel` to within a millimetre. The RPC projection places Khafre, Khufu, Menkaure and the
+Sphinx inside the Giza frame with no fitted offset, and the Khafre crop shows the laid-over
+near face and the shadow where the geometry requires them. The registration estimator was
+already checked on this actual radar texture with planted translations down to 0.005 px, with a
+worst-case error of 0.12 px.
+
+The steering geometry now uses the product's real orbit state vectors. Both the 2022 paper and
+the derivative protocol v1.7 substitute a scalar aperture-span approximation; v1.7's own README
+records that as an outstanding deficiency.
+
+### What is a consistency check, not a validation
+
+Slow time is recovered from Doppler frequency through the product's own Doppler-rate
+polynomial, evaluated in the convention used by NGA's sarpy ICEYE reader. The aperture duration
+this implies, 24.49 s, agrees with the declared collection duration of 24.76 s to about one
+percent. That agreement is a local consistency check on the adapter. A vendor-confirmed
+frequency-to-time model for dwell products has not been obtained, and the sign and zero point of
+the Doppler centroid are taken from the measured spectrum of each crop rather than from the
+`dc_estimate_coeffs` polynomial.
+
+### What is not established
+
+No published figure has been reproduced. The bank parameters, patch positions, nuisance
+geometry and wavelength model behind the Khafre images were never disclosed, so the runs here
+reproduce the method as described rather than a specific result. Patch centres and heights are
+our choices; heights use published elevations plus a nominal geoid undulation, which is good
+enough to land on the right structure but not a surveyed tie.
+
+A scene-median common mode is removed from every patch, so any motion common to a whole patch
+is removed with it. The velocity floor in R4 is therefore a bound on differential motion, and
+it mixes measurement noise with real clutter decorrelation; it is an upper bound on achievable
+precision, not a fundamental limit. Natural desert scattering is the worst case; corner
+reflectors would do better.
+
+Negative results on our six patches do not establish the absence of anything underground. They
+establish that this processing chain does not distinguish those patches from one another.
+
+### The core geometric objection, stated precisely
+
+The published steering wavenumber is `Kz = 4 pi B_perp / (lambda_s r sin theta)`, the standard
+multi-baseline tomographic form. In multi-baseline tomography `B_perp` is a cross-track
+separation between passes, which is what resolves height. Here it is the platform's own
+along-track displacement inside a single aperture, projected perpendicular to the line of
+sight. Substituting one for the other is the step that converts an oscillation rate across look
+angle into a depth. R2 measures the consequence with real state vectors: the along-track
+baseline spans about 168 km, so the depth axis repeats every few metres unless most of the
+aperture is discarded.
