@@ -5,14 +5,14 @@
   "kind": "control",
   "shape": [
     158,
-    152,
-    96
+    76,
+    64
   ],
   "axis_order": "binary is [depth][across_range][along_azimuth], uint8",
   "spacing_m": {
     "along_azimuth": 1.0554832354079442,
-    "across_slant_range": 1.2288096524996077,
-    "depth": 0.5711457932157378
+    "across_slant_range": 2.4576193049992154,
+    "depth": 0.8589970076225226
   },
   "extent_m": {
     "along_azimuth": 166.76635119445518,
@@ -32,12 +32,12 @@
     "note": "Depth is the oscillation rate of the registration trajectory relabelled through a declared sound wavelength. The volume repeats exactly every repeat_period_m."
   },
   "value_range_log10": [
-    -3.974108417744265,
-    -3.1775797638174867
+    -3.9782045525150083,
+    -3.166743490607774
   ],
   "surface_db_range": [
-    23.032791925333424,
-    47.32606340741284
+    23.200711531604796,
+    47.24151047629886
   ],
   "acquisition": {
     "satellite": "ICEYE-X33",
@@ -47,5 +47,5 @@
     "incidence_center_deg": 20.805111922042048,
     "polarization": "VV"
   },
-  "bytes": 2305536
+  "bytes": 768512
 }

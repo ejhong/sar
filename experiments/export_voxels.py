@@ -23,7 +23,7 @@ from sarsim.terrain import DemTile
 OUT = os.path.join(RESULTS, 'voxels')
 DEM_PATH = os.environ.get('GIZA_DEM', '')
 GEOID_M = 15.46          # EGM96 at Giza, from catalog/giza/landmarks.json
-DOWN_AZ, DOWN_RG, N_DEPTH = 2, 1, 96
+DOWN_AZ, DOWN_RG, N_DEPTH = 2, 2, 64
 PERIODS = 2.0
 
 

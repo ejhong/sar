@@ -5,14 +5,14 @@
   "kind": "monument",
   "shape": [
     158,
-    152,
-    96
+    76,
+    64
   ],
   "axis_order": "binary is [depth][across_range][along_azimuth], uint8",
   "spacing_m": {
     "along_azimuth": 1.0554832354079442,
-    "across_slant_range": 1.2288096524996077,
-    "depth": 0.5743399664841052
+    "across_slant_range": 2.4576193049992154,
+    "depth": 0.8638010091786001
   },
   "extent_m": {
     "along_azimuth": 166.76635119445518,
@@ -32,12 +32,12 @@
     "note": "Depth is the oscillation rate of the registration trajectory relabelled through a declared sound wavelength. The volume repeats exactly every repeat_period_m."
   },
   "value_range_log10": [
-    -3.9782928502926866,
-    -2.9583869256105966
+    -3.9822653723724066,
+    -2.9560677359153735
   ],
   "surface_db_range": [
-    22.588852162188804,
-    49.751508426125454
+    22.59798606576426,
+    49.86137627943598
   ],
   "acquisition": {
     "satellite": "ICEYE-X33",
@@ -47,5 +47,5 @@
     "incidence_center_deg": 20.805111922042048,
     "polarization": "VV"
   },
-  "bytes": 2305536
+  "bytes": 768512
 }
