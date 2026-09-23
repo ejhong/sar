@@ -532,7 +532,7 @@ def build():
 <header class="db-top"><div class="wrap">
   <a class="db-mark" href="./"><span aria-hidden="true">◒</span> SAR / DEPTH, TESTED</a>
   <nav class="db-nav">
-    <a href="#argument">Argument</a><a href="#viewer">Viewer</a><a href="#scans">Scans</a><a href="#real">Real data</a><a href="#sim">Simulation</a><a href="#support">Steelman</a>
+    <a href="#viewer">Viewer</a><a href="#argument">Argument</a><a href="#scans">Scans</a><a href="#real">Real data</a><a href="#sim">Simulation</a><a href="#support">Steelman</a>
     <a href="#falsify">Falsification</a><a href="#scope">Scope</a><a href="#method">Method</a><a href="field.html">Field atlas</a><a href="{REPO}">Code ↗</a>
   </nav>
 </div></header>
@@ -556,17 +556,17 @@ def build():
 
 <section class="db-stats"><div class="wrap" style="display:contents">{stats(reps)}</div></section>
 
+<section class="db-sec" id="viewer"><div class="wrap">
+  <div class="db-head"><div><span class="db-kicker">Interactive · WebGL</span><h2>The depth volumes, in three dimensions</h2></div>
+  <p>Real output from the Giza acquisition. Compare a pyramid with empty plateau directly.</p></div>
+  {VIEWER}
+</div></section>
+
 <section class="db-sec" id="argument"><div class="wrap">
   <div class="db-head"><div><span class="db-kicker">The argument</span><h2>Six steps, each one measured</h2></div>
   <p>Including the strongest form of the idea, stated fairly before it is tested. Every step links to the
   experiment that establishes it.</p></div>
   {argument_block()}
-</div></section>
-
-<section class="db-sec" id="viewer"><div class="wrap">
-  <div class="db-head"><div><span class="db-kicker">Interactive · WebGL</span><h2>The depth volumes, in three dimensions</h2></div>
-  <p>Real output from the Giza acquisition. Compare a pyramid with empty plateau directly.</p></div>
-  {VIEWER}
 </div></section>
 
 <section class="db-sec" id="scans"><div class="wrap">
