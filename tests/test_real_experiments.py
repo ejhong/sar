@@ -38,7 +38,7 @@ def test_sites_are_well_formed():
         for name, label, lat, lon, height, kind in patches:
             assert isinstance(name, str) and name
             assert -90 <= lat <= 90 and -180 <= lon <= 180
-            assert kind in {"monument", "control", "urban"}
+            assert kind in {"monument", "control", "urban", "tombs"}
         assert len({p[0] for p in patches}) == len(patches)     # unique keys
     # every site needs at least one control to compare against
     for patches in SITES.values():
