@@ -233,3 +233,39 @@ a second can carry only 0.08 to 0.51 Hz, short by a factor of 36.
 has been rewritten against the current pages and now also checks the field atlas. It skips the
 volume-rendering assertions when the browser has no WebGL2, so it needs Chrome started with
 `--use-angle=swiftshader` to exercise the viewer.
+
+### Correction of scope, 23 September 2026: "you need minutes"
+
+Manu Seyfzadeh objected that the micro-motion literature, including long-standing work from the
+University of Zurich, establishes SAR sensitivity in the hundreds of micrometres from a single
+pass, and that measuring phase evolution precisely does not take minutes. Both points are
+correct, and the site previously stated the time requirement too broadly.
+
+Our own numbers agree with that literature rather than disputing it. R4's velocity floor on this
+dwell is 77 µm/s over a two-second series, about 13 times better than the roughly 1,000 µm/s
+reported for single-pass micro-motion on bridges. Phase precision is not what fails here, and
+the argument never depended on it failing.
+
+The "minutes" requirement applies to one specific route: using the image as a dense seismometer
+array and reconstructing structure from wave propagation, which is the strongest form of the
+claim and the one R11 tests. Ambient-noise tomography converges only after many wave periods,
+and microseism periods are seconds. It does not apply to measuring a single displacement, which
+is immediate. Argument step 3 has been rewritten to say which of the two it means.
+
+R16 then shows precision is not the binding constraint at all, by a bound that contains no
+precision term. Reaching a feature of size s through the ground needs an elastic wave no longer
+than about 2s, hence a frequency of at least Vs/2s, hence sub-apertures short enough to sample
+it. Azimuth resolution is inversely proportional to integration time, so
+
+    rho = rho_full * T * f_s  >=  rho_full * T * Vs / s,
+
+and requiring `rho <= s` gives `s_min = sqrt(rho_full * T * Vs)`. For this acquisition, with
+rho_full = 0.050 m and T = 24.76 s, that is 52 m, and it never falls below 27 m across azimuth
+resolutions from 0.02 to 0.5 m and shear speeds from 1,500 to 2,500 m/s. No term in it responds
+to better phase precision, better coherence or better signal-to-noise.
+
+**What R16 does not exclude.** The largest claimed Khafre structure, at about 79 m, is above the
+bound, so this test does not rule it out and must not be cited as if it did. It is excluded
+instead by the depth axis, which repeats every 27.4 m and therefore cannot place anything at
+648 m. Every chamber actually surveyed at Giza is far below the bound: the Subterranean Chamber
+by 43 times, the King's Chamber by 101, a mastaba shaft by 1,209.

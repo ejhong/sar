@@ -23,7 +23,7 @@ REPO = "https://github.com/ejhong/sar"
 ACQ = "r00_acquisitions"
 # Ordered as an argument, not by number: the summary, then the positive control, then what the
 # method does and does not distinguish, then why, then whether our own code is to blame.
-REAL = ["r14_budget", "r11_array", "r09_coherence", "r13_known_voids", "r01_giza_controls",
+REAL = ["r14_budget", "r16_resolution_bound", "r11_array", "r09_coherence", "r13_known_voids", "r01_giza_controls",
         "r06_second_site", "r08_sections", "r02_depth_axis", "r15_modal_gate", "r10_scatterer_coherence",
         "r03_split_dwell", "r04_velocity_floor", "r07_injected_motion", "r05_learned_null",
         "r12_independent_implementation"]
@@ -43,6 +43,9 @@ HEADLINE = {
     "r01_giza_controls": [("monuments", "monument_mean", "{:.4f}"), ("open desert", "control_mean", "{:.4f}"),
                           ("standardised gap", "cohens_d", "{:+.3f}")],
     "r02_depth_axis": [("folds back at", None, None), ("aperture for 648 m", "percent_of_aperture_for_648m_K50", "{:.1f}%")],
+    "r16_resolution_bound": [("smallest resolvable", "smallest_resolvable_m", "{:.0f} m"),
+                             ("our motion floor", "measured_floor_um_s", "{:.0f} µm/s"),
+                             ("vs published", "precision_margin_over_literature", "{:.0f}× better")],
     "r15_modal_gate": [("repeats every", "lattice_repeat_m", "{:.1f} m"),
                        ("correlation there", "best_repeat_correlation", "{:.5f}"),
                        ("pyramid vs plateau", "auc_pyramid_vs_plateau", "AUC {:.3f}")],
@@ -373,12 +376,20 @@ ARGUMENT = [
      "everywhere, and seismologists routinely turn such an array into an image of the structure below. This is "
      "the strongest version of the claim, and it is worth taking seriously.",
      "r11_array"),
-    ("But you have to watch for minutes, and one pass gives two seconds",
-     "That shaking has periods of several seconds, so you must record the same ground for minutes to use it. A "
-     "radar pass builds its image by looking from a sweep of angles, and time and angle are the same axis: to "
-     "wait a second you must also move a degree, and after about a second the ground no longer looks like itself "
-     "from the new angle. Under two seconds is all that survives.",
+    ("Using it as a seismic array needs minutes, and one pass gives two seconds",
+     "Turning an array into a picture of what lies below means watching waves travel, and those waves have "
+     "periods of several seconds, so the recording has to run for minutes. A radar pass builds its image from a "
+     "sweep of angles, and time and angle are the same axis: to wait a second you must also move a degree, and "
+     "after about a second the ground stops looking like itself. Measuring one displacement precisely is a "
+     "different matter and needs no time at all.",
      "r09_coherence"),
+    ("Sharper measurement does not help, because precision is not the limit",
+     "This scan resolves motion to 77 millionths of a metre per second, better than the published figure for a "
+     "single pass. The trouble is that reaching a chamber needs a short, fast wave, and sampling a fast wave "
+     "needs short slices of the pass, which widen every pixel by the same factor. The two demands pull apart. "
+     "The smallest thing this acquisition could ever resolve this way is about 52 metres. Giza's chambers are "
+     "metres.",
+     "r16_resolution_bound"),
     ("We ran the array test anyway, and nothing arrives",
      "Seven hundred and fifty-nine elements over 1.8 km, cross-correlated in pairs and stacked by distance, "
      "exactly as a seismologist would. A wave shows up as a peak that arrives later the further apart the pair "
@@ -529,7 +540,7 @@ def build():
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SAR Depth, Tested</title>
-<meta name="description" content="Single-image SAR depth tomography tested on two real ICEYE dwell acquisitions of Giza and Sacsayhuamán: fifteen measurements including a positive control against hundreds of surveyed burial shafts, with a three-dimensional viewer for the depth volumes.">
+<meta name="description" content="Single-image SAR depth tomography tested on two real ICEYE dwell acquisitions of Giza and Sacsayhuamán: sixteen measurements including a positive control against hundreds of surveyed burial shafts, with a three-dimensional viewer for the depth volumes.">
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="dashboard.css">
 <link rel="icon" href="favicon.svg">
@@ -550,7 +561,7 @@ def build():
   <h1>One radar image cannot map what is under the ground</h1>
   <p>Single-image SAR Doppler tomography, as published for the Great Pyramid in 2022 and announced for Khafre in
   2025, reimplemented and run on two real ICEYE Spotlight Dwell Fine acquisitions of Giza and Sacsayhuamán.
-  Fifteen measurements, eight simulations, three supporting benchmarks. Every figure is generated by code in the
+  Sixteen measurements, eight simulations, three supporting benchmarks. Every figure is generated by code in the
   repository.</p>
   <div class="db-verdict"><b>The idea is reasonable, and it fails on the recording, not on the arithmetic.</b>
   A radar image does measure motion at millions of points, a denser array than any seismic deployment, and turning
