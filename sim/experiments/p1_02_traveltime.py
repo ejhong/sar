@@ -21,7 +21,7 @@ from katabasis.compose import Grid, load_site, voxelise
 from katabasis.runs import RESULTS, Run
 from katabasis.seismic.arrays import Survey, borehole, surface_grid
 from katabasis.seismic.elastic3d import Medium, Receivers, Simulation, Source, ricker
-from katabasis.seismic.picking import add_noise, pick_all
+from katabasis.seismic.picking import add_noise, pick_all, reject_outliers
 from katabasis.seismic.traveltime import TomoGrid, invert
 
 SITE = 'bench-void'
@@ -30,7 +30,8 @@ F0 = 120.0                  # surface hammer
 F0_CROSS = 250.0            # borehole sparker: first arrivals are P, resolved at ten points per wavelength
 T_REC = 0.034
 T_REC_CROSS = 0.022
-SNR_DB = 30.0
+SNR_DB = 30.0               # crosshole (and P1-03): noise 30 dB below each record's peak
+SNR_SURF_DB = 50.0          # surface: 16 stacked hammer blows at a quiet site, as refraction surveys do
 H_INV = 1.0
 BOX = (-18.0, 18.0)        # inversion box, x and y: holds every station
 ZBOT = -32.0
@@ -144,7 +145,8 @@ def main():
     print(f'grid {g.shape} ({np.prod(g.shape) / 1e6:.2f} M cells), vs_min {med.vs_min:.0f} m/s, '
           f'{med.vs_min / (2.5 * F0) / H_SIM:.1f} points per S wavelength at 2.5 f0')
     params = {'site': SITE, 'sim_spacing_m': H_SIM, 'f0_hz': {'surface': F0, 'crosshole': F0_CROSS},
-              'record_s': {'surface': T_REC, 'crosshole': T_REC_CROSS}, 'snr_db': SNR_DB,
+              'record_s': {'surface': T_REC, 'crosshole': T_REC_CROSS},
+              'snr_db': {'crosshole': SNR_DB, 'surface (16 stacked blows)': SNR_SURF_DB},
               'inversion_spacing_m': H_INV, 'inversion_box': {'x': BOX, 'y': BOX, 'z': [ZBOT, 0.0]}}
     with Run('p1_02_traveltime', 'First-arrival travel-time tomography over one chamber', params) as run:
         rng = np.random.default_rng(2)
@@ -153,10 +155,16 @@ def main():
         for sv in surveys(g, med):
             traces, dt, w = simulate(sv, med, reuse)
             ns, nr = traces.shape[:2]
-            noisy = add_noise(traces.reshape(ns * nr, 3, -1), SNR_DB, rng)
-            picks = pick_all(noisy, 0.5 * dt, dt, w, period=1.0 / sv.meta['f0_hz']).reshape(ns, nr)
+            surf = sv.name == 'surface'
+            noisy = add_noise(traces.reshape(ns * nr, 3, -1), SNR_SURF_DB if surf else SNR_DB, rng)
+            picks = pick_all(noisy, 0.5 * dt, dt, w, period=1.0 / sv.meta['f0_hz'],
+                             **({'fraction': 0.004, 'noise_factor': 3.0} if surf else {})).reshape(ns, nr)
             pr = pairs_for(sv)
             t_obs = picks[pr[:, 0], pr[:, 1]]
+            dist_all = np.linalg.norm(sv.sources[pr[:, 0]] - sv.receivers[pr[:, 1]], axis=1)
+            n_before = int(np.isfinite(t_obs).sum())
+            t_obs = reject_outliers(t_obs, dist_all, 1.0 / sv.meta['f0_hz'])
+            print(f'  {sv.name}: {n_before} picks, {int(np.isfinite(t_obs).sum())} kept after quality control')
             inv_grid = Grid.covering(BOX, BOX, (ZBOT, 0.0), H_INV)
             tg = TomoGrid(inv_grid, np.ones(inv_grid.shape, bool))
             # starting model: the straight-ray average speed of the survey's own picks
@@ -172,6 +180,7 @@ def main():
             out['surveys'][sv.name] = {
                 **sv.summary(), 'pairs': len(pr), 'picked': int(np.isfinite(t_obs).sum()),
                 'starting_speed_m_s': v0, 'history': inv.history, 'score': sc,
+                'picks_before_qc': n_before,
                 'pick_minus_straight_ms': {'median': float(np.nanmedian(t_obs - straight) * 1e3),
                                            'p95_abs': float(np.nanpercentile(np.abs(t_obs - straight), 95) * 1e3)},
                 'stations': {'sources': sv.sources.round(2).tolist(), 'receivers': sv.receivers.round(2).tolist()}}
@@ -185,8 +194,9 @@ def main():
         cs, ss = out['surveys']['crosshole']['score'], out['surveys']['surface']['score']
         out['finding'] = (f"Crosshole rays through the chamber recover it as a slow patch of {100 * cs['chamber_mean_rel']:+.0f}% "
                           f"(air would be {100 * cs['true_air_rel']:.0f}%): first arrivals bend around a void, so travel-time "
-                          f"tomography sees its shadow, not its emptiness. From the surface the same method recovers "
-                          f"{100 * ss['chamber_mean_rel']:+.1f}%: no first-arrival ray reaches 12 m in uniform rock.")
+                          f"tomography sees its shadow, not its emptiness. From the surface, with the direct P picked on 16 "
+                          f"stacked blows, the same method recovers {100 * ss['chamber_mean_rel']:+.1f}%: in uniform rock no "
+                          f"first-arrival ray reaches 12 m.")
         run.save(out)
 
 

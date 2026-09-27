@@ -38,8 +38,6 @@ The lab does it by simulation over ground whose contents are known, in two phase
 
 ## Next, in order
 
-0. **Fix the surface picker** (it times the surface wave, not the weak direct P); consider vertical stacking of hammer
-   blows (+12 dB for 16), as surveys do; rerun the P1-02 surface inversion from cache.
 1. **Ambient-noise tomography** (P1-04): random surface sources, cross-correlation, Green's-function retrieval checked
    against direct simulation by reciprocity; then imaging with virtual sources, and how record length and noise level
    set what it can see. The seismic cousin of the radar claim.
@@ -68,7 +66,8 @@ The lab does it by simulation over ground whose contents are known, in two phase
 - A 6 m void delays a first arrival by about 0.1–0.3 ms: picks must be better than that, which is why crosshole work
   uses high frequencies.
 - Keep every station inside the travel-time inversion grid.
-- On the surface survey the picker times the surface wave (1,570 m/s), not the weak direct P of a vertical hammer:
-  trigger on the P window (radial component, lower threshold) before surface refraction results are trusted.
+- A vertical hammer's direct P along a free surface is some 30 dB below its surface wave: at 30 dB noise a picker times
+  the surface wave. Surface refraction picks use 16 stacked blows (50 dB), a low trigger and quality control whose
+  threshold never drops below a quarter period (so a real anomaly's delay is not thrown away).
 - From the first investigation: never use the image row span as aperture time; `nyquist_depth` returns π/ΔKz; confine
   sub-aperture banks to the coherent window.

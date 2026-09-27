@@ -195,11 +195,11 @@ const surfXY = (sc3.survey.stations.receivers as number[][]).map((p) => [p[0], p
         points={surfXZ}
         xLabel="east, m"
         yLabel="height, m"
-        caption={`hammer at ${tt.manifest.params.f0_hz.surface} Hz · the picks time the surface wave (${Math.round(su.starting_speed_m_s).toLocaleString('en-US')} m/s): a vertical hammer's direct P along a free surface is weak; either way no first-arrival path reaches 12 m in uniform rock`}
+        caption={`hammer at ${tt.manifest.params.f0_hz.surface} Hz · the weak direct P picked on 16 stacked blows (${Math.round(su.starting_speed_m_s).toLocaleString('en-US')} m/s) · in uniform rock no first-arrival path reaches 12 m`}
       />
     </div>
     <p class="finding">{tt.finding}</p>
-    <RunDetails manifest={tt.manifest} extra={[['crosshole picks', `${cx.picked} of ${cx.pairs} pairs · 95th-percentile error ${cx.pick_minus_straight_ms.p95_abs.toFixed(2)} ms`], ['surface picks', `${su.picked} of ${su.pairs} pairs`], ['inversion', `Gauss-Newton, ${cx.history.length - 1} iterations · smoothing 3 · damping 0.05 · 1 m cells`], ['picking', 'correlation with the leading lobe of the far-field P pulse'], ['viewer', 'the tomograms are in the underworld: bench-void, Show: Recovered']]} />
+    <RunDetails manifest={tt.manifest} extra={[['crosshole picks', `${cx.picked} of ${cx.pairs} pairs · 95th-percentile error ${cx.pick_minus_straight_ms.p95_abs.toFixed(2)} ms`], ['surface picks', `${su.picked} of ${su.pairs} pairs after quality control, noise 50 dB below each peak (16 stacked blows at a quiet site; at 30 dB the direct P is lost under the surface wave)`], ['inversion', `Gauss-Newton, ${cx.history.length - 1} iterations · smoothing 3 · damping 0.05 · 1 m cells`], ['picking', 'correlation with the leading lobe of the far-field P pulse'], ['viewer', 'the tomograms are in the underworld: bench-void, Show: Recovered']]} />
   </section>
 
   <section id="echo">

@@ -24,9 +24,9 @@
   "id": "p1_02_traveltime",
   "title": "First-arrival travel-time tomography over one chamber",
   "date": "2026-09-27",
-  "started_utc": "2026-09-27T15:48:05+00:00",
-  "runtime_s": 321.3,
-  "commit": "02cb393+",
+  "started_utc": "2026-09-27T19:26:05+00:00",
+  "runtime_s": 30.8,
+  "commit": "9d05145+",
   "params": {
    "site": "bench-void",
    "sim_spacing_m": 0.5,
@@ -38,7 +38,10 @@
     "surface": 0.034,
     "crosshole": 0.022
    },
-   "snr_db": 30.0,
+   "snr_db": {
+    "crosshole": 30.0,
+    "surface (16 stacked blows)": 50.0
+   },
    "inversion_spacing_m": 1.0,
    "inversion_box": {
     "x": [

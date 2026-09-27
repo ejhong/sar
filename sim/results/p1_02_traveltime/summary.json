@@ -3,9 +3,9 @@
   "id": "p1_02_traveltime",
   "title": "First-arrival travel-time tomography over one chamber",
   "date": "2026-09-27",
-  "started_utc": "2026-09-27T15:48:05+00:00",
-  "runtime_s": 321.3,
-  "commit": "02cb393+",
+  "started_utc": "2026-09-27T19:26:05+00:00",
+  "runtime_s": 30.8,
+  "commit": "9d05145+",
   "params": {
    "site": "bench-void",
    "sim_spacing_m": 0.5,
@@ -17,7 +17,10 @@
     "surface": 0.034,
     "crosshole": 0.022
    },
-   "snr_db": 30.0,
+   "snr_db": {
+    "crosshole": 30.0,
+    "surface (16 stacked blows)": 50.0
+   },
    "inversion_spacing_m": 1.0,
    "inversion_box": {
     "x": [
@@ -115,6 +118,7 @@
     "chamber_ray_length_m": 1305.9,
     "true_air_rel": -0.897955
    },
+   "picks_before_qc": 2808,
    "pick_minus_straight_ms": {
     "median": 0.071816,
     "p95_abs": 0.437538
@@ -4754,40 +4758,40 @@
    "source_kind": "force",
    "f0_hz": 120.0,
    "pairs": 2000,
-   "picked": 2000,
-   "starting_speed_m_s": 1567.285076,
+   "picked": 1414,
+   "starting_speed_m_s": 3249.242317,
    "history": [
     {
      "iteration": 0,
-     "rms_ms": 0.346932
+     "rms_ms": 0.85591
     },
     {
      "iteration": 1,
-     "rms_ms": 0.346932
+     "rms_ms": 0.85591
     },
     {
      "iteration": 2,
-     "rms_ms": 0.346932
+     "rms_ms": 0.85591
     },
     {
      "iteration": 3,
-     "rms_ms": 0.346932
+     "rms_ms": 0.85591
     },
     {
      "iteration": 4,
-     "rms_ms": 0.346932
+     "rms_ms": 0.85591
     },
     {
      "iteration": 5,
-     "rms_ms": 0.346932
+     "rms_ms": 0.85591
     },
     {
      "iteration": 6,
-     "rms_ms": 0.346932
+     "rms_ms": 0.85591
     }
    ],
    "score": {
-    "background_m_s": 1567.285076,
+    "background_m_s": 3249.242317,
     "chamber_mean_rel": 0.0,
     "chamber_min_rel": 0.0,
     "surroundings_std_rel": 0.0,
@@ -4798,11 +4802,12 @@
      -0.5
     ],
     "chamber_ray_length_m": 0.0,
-    "true_air_rel": -0.78115
+    "true_air_rel": -0.894437
    },
+   "picks_before_qc": 2000,
    "pick_minus_straight_ms": {
-    "median": 6.698485,
-    "p95_abs": 10.986575
+    "median": 0.136542,
+    "p95_abs": 2.09416
    },
    "stations": {
     "sources": [
@@ -9304,5 +9309,5 @@
    "units": "fraction of background"
   }
  ],
- "finding": "Crosshole rays through the chamber recover it as a slow patch of -11% (air would be -90%): first arrivals bend around a void, so travel-time tomography sees its shadow, not its emptiness. From the surface the same method recovers +0.0%: no first-arrival ray reaches 12 m in uniform rock."
+ "finding": "Crosshole rays through the chamber recover it as a slow patch of -11% (air would be -90%): first arrivals bend around a void, so travel-time tomography sees its shadow, not its emptiness. From the surface, with the direct P picked on 16 stacked blows, the same method recovers +0.0%: in uniform rock no first-arrival ray reaches 12 m."
 }

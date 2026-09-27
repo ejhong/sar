@@ -40,13 +40,14 @@ def first_energy(trace: np.ndarray, quiet: int, fraction: float = 0.04, noise_fa
     return int(above[0]) if len(above) else -1
 
 
-def pick(trace: np.ndarray, dt: float, pulse: np.ndarray, period: float, quiet: int) -> float:
+def pick(trace: np.ndarray, dt: float, pulse: np.ndarray, period: float, quiet: int,
+         fraction: float = 0.04, noise_factor: float = 6.0) -> float:
     """Travel time of one (components, nt) record by correlation with the reference pulse.
 
     `pulse` is the far-field P pulse sampled on the same dt, starting at the
     shot; the returned time is the lag at which it best matches.
     """
-    i0 = first_energy(trace, quiet)
+    i0 = first_energy(trace, quiet, fraction, noise_factor)
     if i0 < 0:
         return np.nan
     n = trace.shape[-1]
@@ -82,8 +83,28 @@ def far_field_pulse(wavelet: np.ndarray, dt: float, period: float, lobes: float 
 
 
 def pick_all(traces: np.ndarray, t0: float, dt: float, wavelet: np.ndarray, period: float,
-             quiet_s: float | None = None) -> np.ndarray:
-    """Travel times for every record (components, nt), `t0` the time of the first sample."""
+             quiet_s: float | None = None, fraction: float = 0.04, noise_factor: float = 6.0) -> np.ndarray:
+    """Travel times for every record (components, nt), `t0` the time of the first sample.
+
+    A low `fraction` lets the trigger reach a weak first arrival ahead of a
+    strong later one (the direct P ahead of a hammer's surface wave), as long
+    as the noise allows.
+    """
     pulse = far_field_pulse(wavelet, dt, period)
     quiet = int((quiet_s if quiet_s is not None else 0.25 * period) / dt)
-    return np.array([pick(tr, dt, pulse, period, quiet) for tr in traces]) + t0
+    return np.array([pick(tr, dt, pulse, period, quiet, fraction, noise_factor) for tr in traces]) + t0
+
+
+def reject_outliers(times: np.ndarray, distances: np.ndarray, period: float, k: float = 3.5) -> np.ndarray:
+    """Quality control a processor would do, using the data alone: drop picks whose delay from the
+    survey's own median apparent speed is more than k median absolute deviations from the rest and
+    more than a quarter period (so a real anomaly's delay is kept and only cycle skips and wrong
+    phases go)."""
+    ok = np.isfinite(times) & (times > 0)
+    v = np.nanmedian(distances[ok] / times[ok])
+    r = times - distances / v
+    med = np.nanmedian(r[ok])
+    mad = np.nanmedian(np.abs(r[ok] - med)) * 1.4826 + 1e-9
+    out = times.copy()
+    out[~ok | (np.abs(r - med) > max(k * mad, 0.25 * period))] = np.nan
+    return out
