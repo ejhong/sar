@@ -3,6 +3,7 @@ import Doc from '../layouts/Doc.astro';
 import LineChart from '../components/LineChart.astro';
 import v01 from '../../public/data/runs/p1_01_forward_validation.json';
 import tt from '../../public/data/runs/p1_02_traveltime.json';
+import sc3 from '../../public/data/runs/p1_03_scattered.json';
 import SectionMap from '../components/SectionMap.astro';
 import Scoreboard from '../components/Scoreboard.astro';
 import RunDetails from '../components/RunDetails.astro';
@@ -20,18 +21,21 @@ const chamber = { x0: -3, x1: 3, y0: -18, y1: -12 };
 const holesXZ = (cx.stations.receivers as number[][]).filter((p) => Math.abs(p[1]) < 0.3).map((p) => [p[0], p[2]] as [number, number]);
 const surfXZ = (su.stations.receivers as number[][]).filter((p) => Math.abs(p[1]) < 0.3).map((p) => [p[0], p[2]] as [number, number]);
 const pct = (v: number) => `${v > 0 ? '+' : ''}${(v * 100).toFixed(1)}%`;
+const e3 = sc3.score;
+const surfXY = (sc3.survey.stations.receivers as number[][]).map((p) => [p[0], p[1]] as [number, number]);
 ---
 <Doc
   title="Seismic tomography, simulated"
   kicker="Phase 1 · the reference ceiling"
   current="seismic"
   lede="Before asking whether a satellite can see a chamber, ask what the instruments built for the job can see. Geophysicists image the shallow ground with arrays of geophones and a source, hammer blows or the ambient hum, and invert the records into a three-dimensional tomogram. This chapter does that in simulation, over ground whose contents are known."
-  state="status · composition model and test benches done · 3-D elastic solver validated · inversions in progress"
+  state="status · solver validated · travel times and echo imaging done on the one-chamber bench · ambient noise next"
   index={[
     { id: 'chain', label: 'The chain' },
     { id: 'scoreboard', label: 'Scoreboard' },
     { id: 'forward', label: 'Forward model' },
     { id: 'traveltime', label: 'Travel times' },
+    { id: 'echo', label: 'Echo imaging' },
     { id: 'arrays', label: 'Arrays' },
     { id: 'methods', label: 'Three methods' },
     { id: 'scoring', label: 'Scoring' },
@@ -196,6 +200,55 @@ const pct = (v: number) => `${v > 0 ? '+' : ''}${(v * 100).toFixed(1)}%`;
     </div>
     <p class="finding">{tt.finding}</p>
     <RunDetails manifest={tt.manifest} extra={[['crosshole picks', `${cx.picked} of ${cx.pairs} pairs · 95th-percentile error ${cx.pick_minus_straight_ms.p95_abs.toFixed(2)} ms`], ['surface picks', `${su.picked} of ${su.pairs} pairs`], ['inversion', `Gauss-Newton, ${cx.history.length - 1} iterations · smoothing 3 · damping 0.05 · 1 m cells`], ['picking', 'correlation with the leading lobe of the far-field P pulse'], ['viewer', 'the tomograms are in the underworld: bench-void, Show: Recovered']]} />
+  </section>
+
+  <section id="echo">
+    <h2>The chamber's echo, too faint to see on any record, images it from the surface</h2>
+    <p class="sub">
+      The same hammer and geophone grids that saw nothing by travel times. Records are made twice, with and without the
+      chamber; the difference is its echo. On a typical record that echo is {Math.abs(e3.echo_over_record_db).toFixed(0)} dB
+      below the waves and {Math.abs(e3.echo_over_noise_db).toFixed(0)} dB below the noise. Sent back through the rock by{' '}
+      <Term k="rtm">reverse-time migration</Term>, 25 shots and 81 geophones add up where the echo came from. The rock
+      without the chamber is known exactly here, so this is the most favourable case for any waveform method: the first
+      step of <Term k="fwi">full-waveform inversion</Term>, taken with a perfect starting model.
+    </p>
+    <div class="stat-row">
+      <div class="stat"><span class="value">{e3.echo_over_record_db.toFixed(0)}<small>dB</small></span><span class="what">the chamber's echo against the whole record</span><span class="src">median over 2,025 records</span></div>
+      <div class="stat"><span class="value">{e3.echo_over_noise_db.toFixed(0)}<small>dB</small></span><span class="what">the echo against the noise on the same record</span><span class="src">noise 30 dB below each peak</span></div>
+      <div class="stat"><span class="value">{e3.contrast.toFixed(1)}<small>×</small></span><span class="what">the migrated image at the chamber against the image elsewhere</span><span class="src">below 3 m, 2 m around the chamber</span></div>
+      <div class="stat"><span class="value">{e3.brightest_offset_from_chamber_m.toFixed(1)}<small>m</small></span><span class="what">from the chamber's centre to the brightest point, on its top face</span><span class="src">image below 3 m</span></div>
+    </div>
+    <div class="grid-2 charts">
+      <SectionMap
+        title="Fig. 6a · Echo image: vertical section through the chamber"
+        x={sc3.slices.x}
+        y={sc3.slices.z}
+        values={sc3.slices.xz_image}
+        domain={0.6}
+        scale="sequential"
+        outlines={[{ x0: -3, x1: 3, y0: -18, y1: -12 }]}
+        xLabel="east, m"
+        yLabel="height, m"
+        width={360}
+        caption="migrated echo amplitude, normalised · strongest at the chamber's top face, where the waves turn back"
+      />
+      <SectionMap
+        title="Fig. 6b · Echo image: horizontal section at the chamber's centre"
+        x={sc3.slices.x}
+        y={sc3.slices.y.slice().reverse()}
+        values={sc3.slices.xy_image.slice().reverse()}
+        domain={0.6}
+        scale="sequential"
+        outlines={[{ x0: -3, x1: 3, y0: -3, y1: 3 }]}
+        points={surfXY}
+        xLabel="east, m"
+        yLabel="north, m"
+        width={360}
+        caption="at the chamber's centre depth; geophones 4 m apart in ochre, those over the imaged area"
+      />
+    </div>
+    <p class="finding">{sc3.finding}</p>
+    <RunDetails manifest={sc3.manifest} extra={[['survey', sc3.survey.description], ['imaging', 'reverse-time migration, velocity cross-correlation, source-illumination compensation, Laplacian filter'], ['background', 'exact: the site without its chamber (the most favourable case)'], ['viewer', 'Show: Recovered (echo imaging) and Show: Waves (the hammer blow; the echo alone)']]} />
   </section>
 
   <section id="arrays">

@@ -52,5 +52,32 @@
   ],
   "run": "p1_02_traveltime \u00b7 2026-09-27 \u00b7 02cb393+",
   "caption": "chamber recovered at +0.0% \u00b7 brightest = 12% slower than the rock or more"
+ },
+ {
+  "id": "rtm-surface",
+  "label": "Echo imaging, surface",
+  "method": "Reverse-time migration of the scattered wave",
+  "survey": "surface",
+  "status": "tomogram",
+  "quantity": "migrated echo amplitude",
+  "units": "normalised",
+  "file": "vol-rtm-surface.u8",
+  "shape": [
+   57,
+   57,
+   59
+  ],
+  "origin": [
+   -13.75,
+   -13.75,
+   -1.25
+  ],
+  "spacing": 0.5,
+  "range": [
+   0,
+   1
+  ],
+  "run": "p1_03_scattered \u00b7 2026-09-27 \u00b7 0eff4a5+",
+  "caption": "best case, rock known exactly \u00b7 chamber 6.0\u00d7 brighter than elsewhere"
  }
 ]

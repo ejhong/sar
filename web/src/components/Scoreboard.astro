@@ -4,6 +4,7 @@
  * generated from the published runs, planned rows marked as planned.
  */
 import tt from '../../public/data/runs/p1_02_traveltime.json';
+import sc3 from '../../public/data/runs/p1_03_scattered.json';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const pct = (v: number) => `${v > 0 ? '+' : ''}${(v * 100).toFixed(1)}%`;
 const cx = tt.surveys.crosshole.score;
@@ -11,8 +12,8 @@ const su = tt.surveys.surface.score;
 const rows = [
   { method: 'Travel-time tomography', survey: 'crosshole · four boreholes', f: '250 Hz', rec: pct(cx.chamber_mean_rel), cnr: `${cx.contrast_to_noise.toFixed(1)}×`, status: 'done', run: 'p1_02_traveltime', href: '#traveltime' },
   { method: 'Travel-time tomography', survey: 'surface · hammer and geophone grids', f: '120 Hz', rec: pct(su.chamber_mean_rel), cnr: `${Math.max(0, su.contrast_to_noise).toFixed(1)}×`, status: 'done', run: 'p1_02_traveltime', href: '#traveltime' },
-  { method: 'Echo imaging (RTM)', survey: 'surface · same grids, scattered wave', f: '120 Hz', rec: '—', cnr: '—', status: 'next', run: 'p1_03_scattered', href: '#methods' },
-  { method: 'Ambient-noise tomography', survey: 'surface · dense nodal array, passive', f: 'ambient', rec: '—', cnr: '—', status: 'planned', run: '', href: '#methods' },
+  { method: 'Echo imaging (RTM)', survey: 'surface · same grids, the chamber\u2019s echo', f: '120 Hz', rec: `lit, ${sc3.score.brightest_offset_from_chamber_m.toFixed(1)} m off centre`, cnr: `${sc3.score.contrast.toFixed(1)}×`, status: 'done', run: 'p1_03_scattered', href: '#echo' },
+  { method: 'Ambient-noise tomography', survey: 'surface · dense nodal array, passive', f: 'ambient', rec: '—', cnr: '—', status: 'next', run: '', href: '#methods' },
   { method: 'Full-waveform inversion', survey: 'surface · iterated from a practitioner’s start', f: 'multiscale', rec: '—', cnr: '—', status: 'planned', run: '', href: '#methods' },
 ];
 ---
@@ -38,7 +39,7 @@ const rows = [
     }
   </tbody>
 </table>
-<p class="sb-note">Chamber recovered: mean relative P-wave speed inside the true chamber (air would read −90%). vs scatter: that anomaly over the tomogram's own spread around it. One chamber, 6 m, top 12 m down, bare limestone, noise 30 dB below each record's peak.</p>
+<p class="sb-note">Chamber recovered: mean relative P-wave speed inside the true chamber (air would read −90%); for echo imaging, where the image is brightest. vs scatter: that anomaly over the image's own level around it. One chamber, 6 m, top 12 m down, bare limestone, noise 30 dB below each record's peak.</p>
 
 <style>
   .scoreboard a {

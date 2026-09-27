@@ -110,19 +110,19 @@
    "shape": {
     "type": "box",
     "centre": [
-     324.26,
-     349.69,
-     103.0
+     326.77,
+     338.17,
+     105.92
     ],
     "size": [
-     10.47,
-     5.23,
-     5.97
+     10.48,
+     5.24,
+     5.84
     ]
    },
-   "source": "Petrie 1883; Maragioglio & Rinaldi",
-   "note": "Granite chamber on the pyramid axis, floor about 43 m above the base. Simplified box; placement approximate until re-derived from Petrie (1883).",
-   "placement": "approximate"
+   "source": "Petrie (1883), The Pyramids and Temples of Gizeh, sec. 64, summary of interior positions (inches from the centre and above the pavement)",
+   "note": "From Petrie's tabulated positions; chambers drawn as boxes (the Queen's gabled roof to its ridge).",
+   "placement": "surveyed"
   },
   {
    "id": "khufu-queens-chamber",
@@ -133,19 +133,19 @@
    "shape": {
     "type": "box",
     "centre": [
-     324.26,
-     349.19,
-     81.2
+     329.09,
+     349.2,
+     84.3
     ],
     "size": [
-     5.76,
+     5.75,
      5.23,
-     6.26
+     6.21
     ]
    },
-   "source": "Petrie 1883",
-   "note": "On the pyramid axis, corbelled roof. Simplified box; placement approximate until re-derived from Petrie (1883).",
-   "placement": "approximate"
+   "source": "Petrie (1883), The Pyramids and Temples of Gizeh, sec. 64, summary of interior positions (inches from the centre and above the pavement)",
+   "note": "From Petrie's tabulated positions; chambers drawn as boxes (the Queen's gabled roof to its ridge).",
+   "placement": "surveyed"
   },
   {
    "id": "khufu-grand-gallery",
@@ -156,20 +156,21 @@
    "shape": {
     "type": "box",
     "centre": [
-     324.26,
-     361.19,
-     90.0
+     331.48,
+     369.07,
+     96.14
     ],
     "size": [
-     2.1,
-     41.8,
-     8.6
+     2.08,
+     47.86,
+     8.61
     ],
-    "pitch_deg": -26.5
+    "yaw_deg": -180.0,
+    "pitch_deg": 26.35
    },
-   "source": "Petrie 1883",
-   "note": "Corbelled ascending gallery, 46.7 m along its slope. Simplified box; placement approximate until re-derived from Petrie (1883).",
-   "placement": "approximate"
+   "source": "Petrie (1883), The Pyramids and Temples of Gizeh, sec. 64, summary of interior positions (inches from the centre and above the pavement)",
+   "note": "From Petrie's tabulated positions; chambers drawn as boxes (the Queen's gabled roof to its ridge).",
+   "placement": "surveyed"
   },
   {
    "id": "khufu-ascending-passage",
@@ -180,20 +181,21 @@
    "shape": {
     "type": "box",
     "centre": [
-     324.26,
-     377.19,
-     74.0
+     331.54,
+     408.16,
+     73.11
     ],
     "size": [
-     1.2,
-     34.0,
+     1.06,
+     39.21,
      1.2
     ],
-    "pitch_deg": -26.5
+    "yaw_deg": -179.98,
+    "pitch_deg": 25.83
    },
-   "source": "Petrie 1883",
-   "note": "Simplified box; placement approximate until re-derived from Petrie (1883).",
-   "placement": "approximate"
+   "source": "Petrie (1883), The Pyramids and Temples of Gizeh, sec. 64, summary of interior positions (inches from the centre and above the pavement)",
+   "note": "From Petrie's tabulated positions; chambers drawn as boxes (the Queen's gabled roof to its ridge).",
+   "placement": "surveyed"
   },
   {
    "id": "khufu-descending-passage",
@@ -204,20 +206,21 @@
    "shape": {
     "type": "box",
     "centre": [
-     324.26,
-     367.19,
-     51.0
+     331.54,
+     404.0,
+     53.49
     ],
     "size": [
-     1.2,
-     90.0,
+     1.06,
+     105.15,
      1.2
     ],
-    "pitch_deg": 26.5
+    "yaw_deg": 179.99,
+    "pitch_deg": -26.53
    },
-   "source": "Petrie 1883",
-   "note": "Runs from the north entrance down into the bedrock. Simplified box; placement approximate until re-derived from Petrie (1883).",
-   "placement": "approximate"
+   "source": "Petrie (1883), The Pyramids and Temples of Gizeh, sec. 64, summary of interior positions (inches from the centre and above the pavement)",
+   "note": "From Petrie's tabulated positions; chambers drawn as boxes (the Queen's gabled roof to its ridge).",
+   "placement": "surveyed"
   },
   {
    "id": "khufu-subterranean-chamber",
@@ -228,19 +231,19 @@
    "shape": {
     "type": "box",
     "centre": [
-     324.26,
-     344.19,
-     30.0
+     324.92,
+     344.03,
+     33.18
     ],
     "size": [
-     14.0,
-     8.3,
+     14.05,
+     8.25,
      5.0
     ]
    },
-   "source": "Petrie 1883",
-   "note": "Unfinished, cut into bedrock roughly 30 m below the base platform. Simplified box; placement approximate until re-derived from Petrie (1883).",
-   "placement": "approximate"
+   "source": "Petrie (1883), The Pyramids and Temples of Gizeh, sec. 64, summary of interior positions (inches from the centre and above the pavement)",
+   "note": "From Petrie's tabulated positions; chambers drawn as boxes (the Queen's gabled roof to its ridge).",
+   "placement": "surveyed"
   },
   {
    "id": "khufu-scanpyramids-big-void",
@@ -297,18 +300,18 @@
    "shape": {
     "type": "box",
     "centre": [
-     0.0,
+     8.53,
      0.0,
      72.5
     ],
     "size": [
-     14.15,
-     5.0,
-     6.83
+     14.17,
+     4.97,
+     5.24
     ]
    },
-   "source": "Maragioglio & Rinaldi V",
-   "note": "Burial chamber cut partly into bedrock at base level, granite sarcophagus in the floor. Simplified box; placement approximate until re-derived from Petrie (1883).",
+   "source": "Maragioglio & Rinaldi V; Petrie (1883), ch. 9",
+   "note": "East-west position and size from Petrie (secs. 73-75); north-south and height from the first investigation's table. Simplified box; placement approximate until re-derived from Petrie (1883).",
    "placement": "approximate"
   },
   {
@@ -325,13 +328,13 @@
      62.0
     ],
     "size": [
-     10.4,
-     3.1,
+     10.46,
+     3.13,
      2.6
     ]
    },
-   "source": "Maragioglio & Rinaldi V",
-   "note": "Subsidiary chamber on the lower descending passage. Simplified box; placement approximate until re-derived from Petrie (1883).",
+   "source": "Maragioglio & Rinaldi V; Petrie (1883), ch. 9",
+   "note": "Size from Petrie (sec. 78); position from the first investigation's table. Simplified box; placement approximate until re-derived from Petrie (1883).",
    "placement": "approximate"
   },
   {
@@ -343,7 +346,7 @@
    "shape": {
     "type": "box",
     "centre": [
-     0.0,
+     12.45,
      20.0,
      80.0
     ],
@@ -354,8 +357,8 @@
     ],
     "pitch_deg": 25.0
    },
-   "source": "Maragioglio & Rinaldi V",
-   "note": "Simplified box; placement approximate until re-derived from Petrie (1883).",
+   "source": "Maragioglio & Rinaldi V; Petrie (1883), ch. 9",
+   "note": "Axis from Petrie (sec. 73); the rest from the first investigation's table. Simplified box; placement approximate until re-derived from Petrie (1883).",
    "placement": "approximate"
   },
   {
@@ -398,7 +401,7 @@
  "notes": [
   "Bedrock: the plateau is Mokattam limestone at or near the surface; its base (-60 m here) and the rock beneath are assumed, not surveyed.",
   "Water table: \"The average water table elevation is about +15 m\" (Sharafeldin et al. 2019, abstract).",
-  "Chambers and passages are simplified boxes from the first investigation; their placement is approximate (the legacy Khufu table ran y southward and is corrected here) and will be re-derived from Petrie (1883) before a Giza simulation relies on them.",
+  "Khufu's chambers and passages are placed from Petrie (1883, sec. 64); the ScanPyramids voids and all of Khafre's features are still the first investigation's simplified boxes, approximate in placement, and are next to be re-derived.",
   "Terrain is a DSM: monument footprints are replaced by the surrounding ground and the pyramids are drawn from their survey dimensions."
  ],
  "sources": {

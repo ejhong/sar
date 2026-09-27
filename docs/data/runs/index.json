@@ -62,5 +62,42 @@
    "threads": 4,
    "cpus": 4
   }
+ },
+ "p1_03_scattered": {
+  "id": "p1_03_scattered",
+  "title": "The chamber's echo, imaged from the surface",
+  "date": "2026-09-27",
+  "started_utc": "2026-09-27T19:02:49+00:00",
+  "runtime_s": 999.5,
+  "commit": "0eff4a5+",
+  "params": {
+   "site": "bench-void",
+   "sim_spacing_m": 0.5,
+   "f0_hz": 120.0,
+   "record_s": 0.034,
+   "snr_db": 30.0,
+   "image_box": {
+    "x": [
+     -14.0,
+     14.0
+    ],
+    "y": [
+     -14.0,
+     14.0
+    ],
+    "z": [
+     -30.0,
+     -1.0
+    ]
+   },
+   "background": "exact (the site without its chamber)"
+  },
+  "environment": {
+   "python": "3.11.15",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 4,
+   "cpus": 4
+  }
  }
 }

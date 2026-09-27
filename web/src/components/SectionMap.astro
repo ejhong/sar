@@ -19,8 +19,10 @@ interface Props {
   caption?: string;
   width?: number;
   pct?: boolean;
+  /** 'diverging' about zero (speed anomalies) or 'sequential' from zero (image amplitude). */
+  scale?: 'diverging' | 'sequential';
 }
-const { title, x, y, values, domain, outlines = [], points = [], xLabel, yLabel, caption, width = 300, pct = true } = Astro.props;
+const { title, x, y, values, domain, outlines = [], points = [], xLabel, yLabel, caption, width = 300, pct = true, scale = 'diverging' } = Astro.props;
 
 // OKLab interpolation between three stops
 function srgbToLinear(c: number) {
@@ -51,7 +53,12 @@ function fromOklab([L, a, bb]: number[]) {
 const SLOW = toOklab('#0f6b57');
 const MID = toOklab('#e9e5dd');
 const FAST = toOklab('#7a5a36');
+const SEQ0 = toOklab('#eef2f1');
 const colour = (v: number) => {
+  if (scale === 'sequential') {
+    const k = Math.max(0, Math.min(1, v / domain));
+    return fromOklab(SEQ0.map((q, i) => q + (SLOW[i] - q) * k));
+  }
   const t = Math.max(-1, Math.min(1, v / domain));
   const [a, b] = t < 0 ? [MID, SLOW] : [MID, FAST];
   const k = Math.abs(t);
@@ -80,7 +87,7 @@ const ticks = (lo: number, hi: number) => {
   return out;
 };
 const fmt = (v: number) => (pct ? `${v > 0 ? '+' : ''}${(v * 100).toFixed(1)}%` : v.toFixed(2));
-const legendStops = [-1, -0.5, 0, 0.5, 1];
+const legendStops = scale === 'sequential' ? [0, 0.25, 0.5, 0.75, 1] : [-1, -0.5, 0, 0.5, 1];
 const data = JSON.stringify({ x, y, values, m, iw, ih, xmin, xmax, ymin, ymax, W: width, pct });
 ---
 <figure class="sm">
@@ -99,7 +106,9 @@ const data = JSON.stringify({ x, y, values, m, iw, ih, xmin, xmax, ymin, ymax, W
           <rect class="sm-truth" x={sx(o.x0)} y={sy(o.y1)} width={sx(o.x1) - sx(o.x0)} height={sy(o.y0) - sy(o.y1)} />
         ))
       }
-      {points.map(([px, py]) => <rect class="sm-station" x={sx(px) - 2} y={sy(py) - 2} width="4" height="4" />)}
+      {points
+        .filter(([px, py]) => px >= xmin && px <= xmax && py >= ymin && py <= ymax)
+        .map(([px, py]) => <rect class="sm-station" x={sx(px) - 2} y={sy(py) - 2} width="4" height="4" />)}
       <g class="sm-axis">
         {
           ticks(xmin, xmax).map((v) => (
@@ -123,10 +132,10 @@ const data = JSON.stringify({ x, y, values, m, iw, ih, xmin, xmax, ymin, ymax, W
     <div class="sm-tip" hidden></div>
   </div>
   <div class="sm-legend">
-    <span>slower</span>
+    <span>{scale === 'sequential' ? 'faint' : 'slower'}</span>
     <span class="sm-ramp">{legendStops.map((t) => <i style={`background:${colour(t * domain)}`}></i>)}</span>
-    <span>faster</span>
-    <span class="sm-range">±{pct ? `${(domain * 100).toFixed(0)}%` : domain}</span>
+    <span>{scale === 'sequential' ? 'bright' : 'faster'}</span>
+    {scale === 'diverging' && <span class="sm-range">±{pct ? `${(domain * 100).toFixed(0)}%` : domain}</span>}
     {outlines.length > 0 && <span class="sm-key"><b class="k-truth"></b>true chamber</span>}
     {points.length > 0 && <span class="sm-key"><b class="k-station"></b>stations</span>}
   </div>

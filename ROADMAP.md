@@ -30,11 +30,16 @@ The lab does it by simulation over ground whose contents are known, in two phase
   Rayleigh speed within 0.5% at ten points per wavelength, reciprocity across a void, PML energy to 10⁻⁹.
 - **Travel-time tomography** (P1-02) on the one-chamber bench: crosshole recovers the chamber as a −11% shadow (3.5× the
   scatter); the surface survey recovers nothing.
-- **Scattered-wave imaging** (P1-03, `sim/experiments/p1_03_scattered.py`, `katabasis/seismic/imaging.py`): written,
-  not yet run. Run it next (about 20 minutes), then `katabasis.export` publishes the image and the wavefield movies.
+- **Echo imaging** (P1-03): the chamber's scattered wave, 21 dB below the records and 6 dB below their noise, migrated
+  back through the exactly known rock images the chamber from the surface (6× the image elsewhere, brightest 2.8 m from
+  its centre, on its top face). The hammer blow and the echo alone play in the viewer (Show: Waves).
+- **Giza from Petrie (1883)**: Khufu's chambers and passages placed from his summary of interior positions (sec. 64);
+  Khafre's passage axis and Belzoni's Chamber's east-west span and size from ch. 9; the rest still approximate.
 
 ## Next, in order
 
+0. **Fix the surface picker** (it times the surface wave, not the weak direct P); consider vertical stacking of hammer
+   blows (+12 dB for 16), as surveys do; rerun the P1-02 surface inversion from cache.
 1. **Ambient-noise tomography** (P1-04): random surface sources, cross-correlation, Green's-function retrieval checked
    against direct simulation by reciprocity; then imaging with virtual sources, and how record length and noise level
    set what it can see. The seismic cousin of the radar claim.
@@ -42,7 +47,7 @@ The lab does it by simulation over ground whose contents are known, in two phase
    would have rather than the exact background.
 3. **Detectability sweeps**: chamber size × depth × array aperture and spacing × frequency, per method.
 4. **The shaft field and Giza**: the positive control at cemetery scale; Khufu's and Khafre's chambers under realistic
-   arrays. Re-derive the chamber placements from Petrie (1883) first (the legacy table's Khufu y axis ran south).
+   arrays (Khufu is placed from Petrie; Khafre's lower chamber and passages still need positions).
 5. **The claimed underworld**: would ordinary seismology see eight 10 m shafts to 640 m? Needs a coarse grid at low
    frequency.
 6. **Phase 2**: see `web/src/pages/satellite.astro` for the plan and the known gaps in `sim/sarsim` (ICEYE geometry,
