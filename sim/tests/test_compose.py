@@ -63,11 +63,10 @@ def test_voxelised_chamber_has_the_right_volume_and_is_air():
     cells = m.cells('chamber')
     assert cells.sum() * g.spacing ** 3 == pytest.approx(216.0, rel=0.02)
     assert np.all(m.vs[cells] == 0) and np.all(m.material[cells] == m.legend.index('air'))
-    # sand cover over limestone, air above the ground
+    # bare limestone under air
     col = m.material[g.shape[0] // 4, g.shape[1] // 4]
     names = [m.legend[c] for c in col]
-    iz0 = int(np.argmin(np.abs(g.z - 0.25)))
-    assert names[0] == 'air' and names[iz0 + 1] == 'dry-sand-giza' and names[-1] == 'limestone-mokattam'
+    assert names[0] == 'air' and names[-1] == 'limestone-mokattam' and 'dry-sand-giza' not in names
 
 
 def test_heterogeneity_perturbs_only_its_stratum_with_the_stated_sigma():

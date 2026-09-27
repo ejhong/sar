@@ -64,6 +64,12 @@ def export_sites(out: Path = DATA) -> list[dict]:
         vols = d / 'volumes.json'
         if vols.exists():                 # published runs register their volumes here
             sc['volumes'] = json.loads(vols.read_text())
+        svs = d / 'surveys.json'
+        if svs.exists():
+            sc['surveys'] = json.loads(svs.read_text())
+        wfs = d / 'wavefields.json'
+        if wfs.exists():
+            sc['wavefields'] = json.loads(wfs.read_text())
         (d / 'scene.json').write_text(json.dumps(sc, separators=(',', ':'), ensure_ascii=False))
         counts = {}
         for f in site.features:

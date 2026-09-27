@@ -19,5 +19,48 @@
    "threads": 4,
    "cpus": 4
   }
+ },
+ "p1_02_traveltime": {
+  "id": "p1_02_traveltime",
+  "title": "First-arrival travel-time tomography over one chamber",
+  "date": "2026-09-27",
+  "started_utc": "2026-09-27T15:48:05+00:00",
+  "runtime_s": 321.3,
+  "commit": "02cb393+",
+  "params": {
+   "site": "bench-void",
+   "sim_spacing_m": 0.5,
+   "f0_hz": {
+    "surface": 120.0,
+    "crosshole": 250.0
+   },
+   "record_s": {
+    "surface": 0.034,
+    "crosshole": 0.022
+   },
+   "snr_db": 30.0,
+   "inversion_spacing_m": 1.0,
+   "inversion_box": {
+    "x": [
+     -18.0,
+     18.0
+    ],
+    "y": [
+     -18.0,
+     18.0
+    ],
+    "z": [
+     -32.0,
+     0.0
+    ]
+   }
+  },
+  "environment": {
+   "python": "3.11.15",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 4,
+   "cpus": 4
+  }
  }
 }

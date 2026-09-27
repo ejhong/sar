@@ -1,7 +1,7 @@
 import { AmbientLight, DirectionalLight, Raycaster, TOUCH, Vector2, type Mesh } from 'three';
 import { Engine } from './engine/Engine';
 import { THEMES, type ThemeName } from './engine/theme';
-import { loadIndex, loadScene } from './data/load';
+import { loadIndex, loadScene, loadVolume } from './data/load';
 import type { Feature, SiteIndexEntry, SiteScene } from './data/types';
 import { Block } from './scene/Block';
 import { featureDepth, fmtM } from './ui/format';
@@ -36,6 +36,7 @@ export class Underworld {
   private ray = new Raycaster();
   private pointer = new Vector2(2, 2);
   private hovered?: Feature;
+  private wave?: import('./scene/Wavefield').Wavefield;
   private $ = <T extends HTMLElement>(sel: string) => this.opts.root.querySelector<T>(sel);
   private loading = 0;
 
@@ -54,7 +55,14 @@ export class Underworld {
       this.pointer.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
     });
     canvas.addEventListener('pointerleave', () => this.pointer.set(2, 2));
-    this.engine.onFrame(() => this.pick());
+    this.engine.onFrame((f) => {
+      this.pick();
+      if (this.wave?.mesh.visible) {
+        this.wave.tick(f.dt);
+        const el = this.$('[data-uw=wave-t]');
+        if (el) el.textContent = `${this.wave.time_ms.toFixed(1)} ms`;
+      }
+    });
     this.bindControls();
   }
 
@@ -113,6 +121,8 @@ export class Underworld {
       old.dispose();
     }
     this.applyLayerToggles();
+    await this.loadVolumes(scene, block);
+    await this.loadWaves(scene, block);
     const cut = this.$<HTMLInputElement>('[data-uw=cut]');
     if (cut) cut.value = '0';
     const ex = this.$<HTMLInputElement>('[data-uw=exaggeration]');
@@ -122,6 +132,62 @@ export class Underworld {
     this.frame(animate);
     if (this.opts.hash && location.hash.slice(1) !== id) history.replaceState(null, '', `#${id}`);
     this.setLoading(false);
+  }
+
+  private async loadVolumes(s: SiteScene, block: Block) {
+    const box = this.$('[data-uw=recovered]');
+    const sec = box?.closest('section') as HTMLElement | null;
+    if (!box || !sec) return;
+    sec.hidden = !s.volumes.length;
+    if (!s.volumes.length) {
+      block.showSurvey(null);
+      return;
+    }
+    await Promise.all(s.volumes.map(async (v) => block.addVolume(v, await loadVolume(s.id, v.file))));
+    const first = s.volumes[0];
+    box.innerHTML =
+      s.volumes
+        .map(
+          (v, i) => `<label class="uw-radio"><input type="radio" name="vol-${s.id}" value="${v.id}" ${i === 0 ? 'checked' : ''}/>
+          <span><span class="uw-site-name">${esc(v.label)}</span><span class="uw-site-sub">${esc(v.caption ?? v.method)}</span></span></label>`,
+        )
+        .join('') +
+      `<label class="uw-radio"><input type="radio" name="vol-${s.id}" value="" /><span><span class="uw-site-name">None</span></span></label>`;
+    const pick = (id: string) => {
+      block.showVolume(id || null);
+      const v = s.volumes.find((x) => x.id === id);
+      block.showSurvey(s.surveys?.find((sv) => sv.id === v?.survey) ?? null);
+      this.engine.poke();
+    };
+    box.querySelectorAll<HTMLInputElement>('input').forEach((el) => el.addEventListener('change', () => pick(el.value)));
+    pick(first.id);
+    const th = this.$<HTMLInputElement>('[data-uw=threshold]');
+    if (th) block.setVolumeThreshold(Number(th.value));
+  }
+
+  private async loadWaves(s: SiteScene, block: Block) {
+    const box = this.$('[data-uw=waves]');
+    const sec = box?.closest('section') as HTMLElement | null;
+    this.wave = undefined;
+    if (!box || !sec) return;
+    const list = s.wavefields ?? [];
+    sec.hidden = !list.length;
+    if (!list.length) return;
+    await Promise.all(list.map(async (w) => block.addWavefield(w, await loadVolume(s.id, w.file))));
+    box.innerHTML =
+      list
+        .map(
+          (w) => `<label class="uw-radio"><input type="radio" name="wave-${s.id}" value="${w.id}"/>
+          <span><span class="uw-site-name">${esc(w.label)}</span><span class="uw-site-sub">${esc(w.caption)}</span></span></label>`,
+        )
+        .join('') +
+      `<label class="uw-radio"><input type="radio" name="wave-${s.id}" value="" checked/><span><span class="uw-site-name">Still</span></span></label>`;
+    box.querySelectorAll<HTMLInputElement>('input').forEach((el) =>
+      el.addEventListener('change', () => {
+        this.wave = block.showWavefield(el.value || null);
+        this.engine.poke();
+      }),
+    );
   }
 
   private frame(animate: boolean) {
@@ -150,6 +216,7 @@ export class Underworld {
       el.addEventListener('change', () => this.applyLayerToggles()),
     );
     on('[data-uw=ground]', 'input', (el) => this.block?.setGroundOpacity(Number(el.value)));
+    on('[data-uw=threshold]', 'input', (el) => this.block?.setVolumeThreshold(Number(el.value)));
     on('[data-uw=cut]', 'input', (el) => {
       this.block?.setCut(Number(el.value));
       this.engine.poke();

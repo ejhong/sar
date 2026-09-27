@@ -24,11 +24,22 @@ const { mode = 'full', initial } = Astro.props;
         <div class="uw-seg">Sites</div>
         <div class="uw-sites" data-uw="sites"></div>
       </section>
+      <section hidden>
+        <div class="uw-seg">Waves <span class="uw-wave-t" data-uw="wave-t"></span></div>
+        <div data-uw="waves"></div>
+      </section>
+      <section hidden>
+        <div class="uw-seg">Recovered</div>
+        <div class="uw-recovered" data-uw="recovered"></div>
+        <label class="uw-range"><span>Show anomalies stronger than</span><input type="range" min="0.02" max="0.9" step="0.01" value="0.18" data-uw="threshold" /></label>
+      </section>
       <section>
         <div class="uw-seg">Layers</div>
         <label class="uw-check"><input type="checkbox" data-layer="features" checked /><span class="uw-dot surveyed"></span>Chambers and voids</label>
         <label class="uw-check"><input type="checkbox" data-layer="claimed" checked /><span class="uw-dot claimed"></span>Claimed structures</label>
         <label class="uw-check"><input type="checkbox" data-layer="structures" checked /><span class="uw-dot structure"></span>Monuments</label>
+        <label class="uw-check"><input type="checkbox" data-layer="volumes" checked /><span class="uw-dot recovered"></span>Recovered volume</label>
+        <label class="uw-check"><input type="checkbox" data-layer="stations" checked /><span class="uw-dot sensor"></span>Sensors and sources</label>
         <label class="uw-check"><input type="checkbox" data-layer="walls" checked /><span class="uw-dot strata"></span>Strata on the faces</label>
         <label class="uw-check"><input type="checkbox" data-layer="frame" checked /><span class="uw-dot frame"></span>Frame and north</label>
         <label class="uw-range"><span>Ground</span><input type="range" min="0" max="1" step="0.01" value="0.62" data-uw="ground" /></label>
@@ -198,6 +209,27 @@ const { mode = 'full', initial } = Astro.props;
     line-height: 1.4;
     color: var(--panel-muted);
     margin-top: 2px;
+  }
+  .uw-wave-t {
+    float: right;
+    color: var(--panel-muted);
+    text-transform: none;
+    letter-spacing: 0;
+  }
+  .uw-radio {
+    display: grid;
+    grid-template-columns: 16px 1fr;
+    gap: 6px;
+    align-items: start;
+    padding: 5px 0;
+    cursor: pointer;
+  }
+  .uw-radio input {
+    margin-top: 3px;
+    accent-color: var(--verdigris-night);
+  }
+  .uw-panel-body section[hidden] {
+    display: none;
   }
   .uw-check {
     display: flex;

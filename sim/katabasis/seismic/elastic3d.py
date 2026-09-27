@@ -375,7 +375,9 @@ class Simulation:
         return self.m.vs_min / fmax / self.grid.spacing if self.m.vs_min > 0 else math.inf
 
     def run(self, sources: list[Source], receivers: Receivers, nt: int, record_every: int = 1,
-            snapshot_every: int = 0, surface_index: np.ndarray | None = None, progress: bool = False) -> Result:
+            snapshot_every: int = 0, surface_index: np.ndarray | None = None, progress: bool = False,
+            on_step=None, on_step_every: int = 1) -> Result:
+        """Advance nt steps. `on_step(it, sim)` is called after step `it` every `on_step_every` steps."""
         g = self.grid
         h = g.spacing
         dt = np.float32(self.dt)
@@ -438,6 +440,8 @@ class Simulation:
                 I, J = np.meshgrid(np.arange(g.shape[0]), np.arange(g.shape[1]), indexing='ij')
                 snaps.append(-0.5 * (vz[I, J, K] + vz[I, J, np.maximum(K - 1, 0)]))
                 snap_t.append((it + 1) * self.dt)
+            if on_step is not None and it % on_step_every == 0:
+                on_step(it, self)
             if progress and it % max(1, nt // 10) == 0:
                 print(f'  step {it}/{nt}', flush=True)
         t = (np.arange(nt_rec) * record_every + 1) * self.dt      # velocities live at the half step; ignore

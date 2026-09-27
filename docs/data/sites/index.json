@@ -4,7 +4,7 @@
    "id": "bench-void",
    "name": "One chamber",
    "kind": "test",
-   "summary": "A single air-filled chamber, 6 m on a side, 15 m down in Giza limestone under a metre of sand. The simplest thing any method must find.",
+   "summary": "A single air-filled chamber, 6 m on a side, 15 m down in bare Giza limestone. The simplest thing any method must find.",
    "extent": {
     "x": [
      -60,
@@ -22,7 +22,7 @@
    "features": {
     "truth": 1
    },
-   "volumes": 0
+   "volumes": 2
   },
   {
    "id": "bench-shafts",

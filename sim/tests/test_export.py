@@ -9,6 +9,7 @@ def test_exported_scenes_are_current():
     for sid in list_sites():
         on_disk = json.loads((DATA / 'sites' / sid / 'scene.json').read_text())
         fresh = json.loads(json.dumps(scene(load_site(sid)), separators=(',', ':'), ensure_ascii=False))
-        on_disk.pop('volumes', None)
-        fresh.pop('volumes', None)
+        for k in ('volumes', 'surveys', 'wavefields'):
+            on_disk.pop(k, None)
+            fresh.pop(k, None)
         assert on_disk == fresh, f'{sid}: run `uv run python -m katabasis.export`'

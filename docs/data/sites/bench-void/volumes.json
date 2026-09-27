@@ -1,0 +1,56 @@
+[
+ {
+  "id": "tt-crosshole",
+  "label": "Travel-time tomography, crosshole",
+  "method": "First arrivals between four boreholes, inverted for P-wave speed",
+  "survey": "crosshole",
+  "status": "tomogram",
+  "quantity": "relative P-wave speed",
+  "units": "fraction of background",
+  "file": "vol-tt-crosshole.u8",
+  "shape": [
+   36,
+   36,
+   32
+  ],
+  "origin": [
+   -17.5,
+   -17.5,
+   -0.5
+  ],
+  "spacing": 1.0,
+  "range": [
+   -0.12,
+   0.0
+  ],
+  "run": "p1_02_traveltime \u00b7 2026-09-27 \u00b7 02cb393+",
+  "caption": "chamber recovered at -11.3% \u00b7 brightest = 12% slower than the rock or more"
+ },
+ {
+  "id": "tt-surface",
+  "label": "Travel-time tomography, surface",
+  "method": "First arrivals from a hammer grid to a geophone grid",
+  "survey": "surface",
+  "status": "tomogram",
+  "quantity": "relative P-wave speed",
+  "units": "fraction of background",
+  "file": "vol-tt-surface.u8",
+  "shape": [
+   36,
+   36,
+   32
+  ],
+  "origin": [
+   -17.5,
+   -17.5,
+   -0.5
+  ],
+  "spacing": 1.0,
+  "range": [
+   -0.12,
+   0.0
+  ],
+  "run": "p1_02_traveltime \u00b7 2026-09-27 \u00b7 02cb393+",
+  "caption": "chamber recovered at +0.0% \u00b7 brightest = 12% slower than the rock or more"
+ }
+]

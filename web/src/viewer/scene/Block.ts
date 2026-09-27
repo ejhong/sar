@@ -21,6 +21,8 @@ import {
   MeshLambertMaterial,
   NormalBlending,
   Plane,
+  Points,
+  PointsMaterial,
   Shape as ThreeShape,
   SphereGeometry,
   SRGBColorSpace,
@@ -32,8 +34,10 @@ import {
 } from 'three';
 import type { SceneTheme } from '../engine/theme';
 import { terrainHeight } from '../data/sample';
-import type { Feature, Shape, SiteScene, Structure } from '../data/types';
+import type { Feature, Shape, SiteScene, Structure, SurveyInfo, VolumeInfo } from '../data/types';
 import { drawSection, faceSpecs, type SectionSpec } from './sections';
+import { Volume } from './Volume';
+import { Wavefield, type WavefieldInfo } from './Wavefield';
 
 /**
  * One site as a block diagram. Everything inside `site` is in site
@@ -52,7 +56,12 @@ export class Block {
     features: new Group(),
     claimed: new Group(),
     frame: new Group(),
+    volumes: new Group(),
+    stations: new Group(),
+    waves: new Group(),
   };
+  readonly volumes = new Map<string, Volume>();
+  readonly wavefields = new Map<string, Wavefield>();
   readonly pickables: Mesh[] = [];
   readonly clip = new Plane(new Vector3(0, 0, -1), 0);
   private terrainMat?: ShaderMaterial;
@@ -142,6 +151,73 @@ export class Block {
     // keep y_site >= cut:  world z = root.z - s * y
     this.clip.constant = this.root.position.z - this.scale * this.cutY();
     if (this.cut <= 0) this.clip.constant += 1e3; // nothing clipped
+    for (const v of this.volumes.values()) v.setCut(this.cut <= 0 ? -1e9 : this.cutY());
+  }
+
+  // ---------- recovered volumes and the instruments ----------
+
+  addVolume(info: VolumeInfo, data: Uint8Array) {
+    const v = new Volume(info, data, this.theme);
+    v.mesh.visible = false;
+    this.volumes.set(info.id, v);
+    this.layers.volumes.add(v.mesh);
+    this.updateClip();
+  }
+
+  addWavefield(info: WavefieldInfo, data: Uint8Array) {
+    const w = new Wavefield(info, data, this.theme, this.scene.extent);
+    w.mesh.visible = false;
+    this.wavefields.set(info.id, w);
+    this.layers.waves.add(w.mesh);
+  }
+
+  showWavefield(id: string | null): Wavefield | undefined {
+    let shown: Wavefield | undefined;
+    for (const [k, w] of this.wavefields) {
+      w.mesh.visible = k === id;
+      if (k === id) shown = w;
+    }
+    return shown;
+  }
+
+  showVolume(id: string | null) {
+    for (const [k, v] of this.volumes) v.mesh.visible = k === id;
+  }
+
+  setVolumeThreshold(t: number) {
+    for (const v of this.volumes.values()) v.setThreshold(t);
+  }
+
+  /** Geophones as small squares, sources as brighter points, boreholes as fine lines. */
+  showSurvey(sv: SurveyInfo | null) {
+    const g = this.layers.stations;
+    for (const c of [...g.children]) {
+      g.remove(c);
+      disposeTree(c);
+    }
+    if (!sv) return;
+    const size = Math.max(3, Math.min(7, 900 / Math.sqrt(sv.receivers.length + 1) / 40));
+    const mk = (pts: [number, number, number][], s: number, opacity: number) => {
+      const geo = new BufferGeometry().setFromPoints(pts.map((p) => new Vector3(...p)));
+      const mat = new PointsMaterial({ color: this.theme.sensor, size: s, sizeAttenuation: false, transparent: true, opacity,
+        depthTest: false, clippingPlanes: [this.clip] });
+      this.themed.push({ obj: mat, apply: (t) => mat.color.set(t.sensor) });
+      const p = new Points(geo, mat);
+      p.renderOrder = 7;
+      return p;
+    };
+    g.add(mk(sv.receivers, size, 0.85), mk(sv.sources, size + 3, 1));
+    if (sv.boreholes?.length) {
+      const segs: Vector3[] = [];
+      const zs = [...sv.receivers, ...sv.sources].map((p) => p[2]);
+      const bottom = Math.min(...zs);
+      for (const [x, y] of sv.boreholes) segs.push(new Vector3(x, y, terrainHeight(this.scene, x, y)), new Vector3(x, y, bottom));
+      const mat = new LineBasicMaterial({ color: this.theme.sensor, transparent: true, opacity: 0.45, depthTest: false, clippingPlanes: [this.clip] });
+      this.themed.push({ obj: mat, apply: (t) => mat.color.set(t.sensor) });
+      const l = new LineSegments(new BufferGeometry().setFromPoints(segs), mat);
+      l.renderOrder = 6;
+      g.add(l);
+    }
   }
 
   private buildSection() {
@@ -513,6 +589,8 @@ export class Block {
   setTheme(t: SceneTheme) {
     this.theme = t;
     for (const th of this.themed) th.apply(t);
+    for (const v of this.volumes.values()) v.setTheme(t);
+    for (const w of this.wavefields.values()) w.setTheme(t);
     this.buildWalls();
     this.buildSection();
   }
@@ -522,6 +600,8 @@ export class Block {
   }
 
   dispose() {
+    for (const v of this.volumes.values()) v.dispose();
+    for (const w of this.wavefields.values()) w.dispose();
     disposeTree(this.root);
   }
 }
