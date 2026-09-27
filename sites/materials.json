@@ -1,0 +1,119 @@
+{
+  "version": 1,
+  "about": "Materials every site is composed from. Each property carries its source and the quoted line, or is marked assumed or derived with the reasoning. Values are a representative point inside a range; sweeps draw from the range. Units: m/s, kg/m3.",
+  "sources": {
+    "sharafeldin2019": {
+      "citation": "Sharafeldin, S. M., Essa, K. S., Youssef, M. A. S., Karsli, H., Diab, Z. E., Sayil, N. (2019). Shallow geophysical techniques to investigate the groundwater table at the Great Pyramids of Giza, Egypt. Geoscientific Instrumentation, Methods and Data Systems 8, 29-43.",
+      "doi": "10.5194/gi-8-29-2019",
+      "url": "https://gi.copernicus.org/articles/8/29/2019/",
+      "note": "26 seismic refraction profiles on the Giza plateau and its eastern edge (Sphinx, Valley Temple, mastaba field)."
+    },
+    "gpg": {
+      "citation": "UBC Geophysical Inversion Facility. Seismic Velocities of Rocks and Various Materials. Geophysics for Practicing Geoscientists (GPG), table_seismic_velocity.",
+      "url": "https://gpg.geosci.xyz/content/physical_properties/tables/seismic_velocity.html",
+      "note": "Textbook ranges, CC-BY. The basalt S-wave entry reads '2800 - 2400' in the source; recorded verbatim, not used."
+    },
+    "gamal2024": {
+      "citation": "Gamal, M. A., Abdelfattah, M., Maher, G. (2024). Investigation and monitoring of rotational landslides in El Mokkattam plateau Egypt, using integrated geological and geophysical techniques. Heliyon 10, e36545.",
+      "doi": "10.1016/j.heliyon.2024.e36545",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11403509/"
+    }
+  },
+  "materials": {
+    "air": {
+      "name": "Air", "family": "fluid", "colour": "#0b0d0f",
+      "vp": {"value": 343, "source": "gpg", "quote": "Air | 343 | N/A"},
+      "vs": {"value": 0, "status": "definition"},
+      "rho": {"value": 1.2, "status": "assumed", "note": "Near-surface air; a void is simulated as a traction-free cavity, so this value is not used by the elastic solver."}
+    },
+    "water": {
+      "name": "Water", "family": "fluid", "colour": "#3b6f8f",
+      "vp": {"value": 1480, "range": [1450, 1500], "source": "gpg", "quote": "Water | 1450 - 1500 | N/A"},
+      "vs": {"value": 0, "status": "definition"},
+      "rho": {"value": 1000, "status": "assumed"}
+    },
+    "soil": {
+      "name": "Soil", "family": "unconsolidated", "colour": "#8a7458",
+      "vp": {"value": 500, "range": [300, 700], "source": "gpg", "quote": "Vegetal Soil | 300 - 700 | 100 - 300"},
+      "vs": {"value": 200, "range": [100, 300], "source": "gpg", "quote": "Vegetal Soil | 300 - 700 | 100 - 300"},
+      "rho": {"value": 1600, "range": [1400, 1800], "status": "assumed"}
+    },
+    "dry-sand-giza": {
+      "name": "Dry sand and gravel (Giza surface layer)", "family": "unconsolidated", "colour": "#dcc9a3",
+      "vp": {"value": 750, "range": [500, 1000], "source": "sharafeldin2019", "locator": "section 3.2",
+             "quote": "The topmost layer exhibits a velocity range of 500–1000 m s−1, and thicknesses of 3 and 6 m are correlated with dry sand and gravels."},
+      "vs": {"value": 300, "range": [100, 500], "source": "gpg", "quote": "Dry Sands | 400 - 1200 | 100 - 500",
+             "note": "Giza-specific S-wave speeds are not reported by the refraction study; the textbook dry-sand range is used."},
+      "rho": {"value": 1700, "range": [1500, 1900], "status": "assumed"},
+      "saturated_as": "wet-sand"
+    },
+    "wet-sand": {
+      "name": "Wet sand", "family": "unconsolidated", "colour": "#b9a27a",
+      "vp": {"value": 1750, "range": [1500, 2000], "source": "gpg", "quote": "Wet Sands | 1500 - 2000 | 400 - 600"},
+      "vs": {"value": 500, "range": [400, 600], "source": "gpg", "quote": "Wet Sands | 1500 - 2000 | 400 - 600"},
+      "rho": {"value": 1950, "range": [1800, 2100], "status": "assumed"}
+    },
+    "clay": {
+      "name": "Saturated clay and shale", "family": "clastic", "colour": "#7d7466",
+      "vp": {"value": 1800, "range": [1100, 2500], "source": "gpg", "quote": "Saturated Shales and Clays | 1100 - 2500 | 200 - 800"},
+      "vs": {"value": 500, "range": [200, 800], "source": "gpg", "quote": "Saturated Shales and Clays | 1100 - 2500 | 200 - 800"},
+      "rho": {"value": 2000, "range": [1800, 2200], "status": "assumed"}
+    },
+    "marl": {
+      "name": "Marl (Maadi Formation)", "family": "clastic", "colour": "#a39b86",
+      "vp": {"value": 2500, "range": [2000, 3000], "source": "gpg", "quote": "Marls | 2000 - 3000 | 750 - 1500"},
+      "vs": {"value": 1100, "range": [750, 1500], "source": "gpg", "quote": "Marls | 2000 - 3000 | 750 - 1500"},
+      "rho": {"value": 2200, "range": [2000, 2400], "status": "assumed"}
+    },
+    "limestone-fractured": {
+      "name": "Fractured, wet limestone and marl (Giza second layer)", "family": "limestone", "colour": "#c2b393",
+      "vp": {"value": 1850, "range": [1200, 2500], "source": "sharafeldin2019", "locator": "section 3.2",
+             "quote": "The second layer shows a velocity range between 1200 and 2500 m s−1 at 8 m to more than 30 m thick. … the upper part of this layer shows a relatively lower velocity due to water saturation and fractures."},
+      "vs": {"value": 800, "range": [520, 1090], "status": "derived",
+             "note": "Vp divided by Vp/Vs ≈ 2.3, the ratio of the extremes measured on fractured Mokattam limestone by gamal2024 (P 850–2000 m/s, S 400–800 m/s).",
+             "source": "gamal2024",
+             "quote": "the lowest P-wave seismic velocity was found to be 850 m/s at the sliding zone … the highest … about 2000 m/s … The lowest S-wave seismic velocity was found to be between 400 and 580 m/s … the highest S-wave seismic velocity is about 800 m/s"},
+      "rho": {"value": 2150, "range": [1950, 2350], "status": "assumed"}
+    },
+    "limestone-mokattam": {
+      "name": "Mokattam limestone and dolomite (plateau bedrock)", "family": "limestone", "colour": "#e3d8bf",
+      "vp": {"value": 3300, "range": [2800, 3800], "source": "sharafeldin2019", "locator": "section 3.2",
+             "quote": "The third layer shows a higher velocity that ranges between 2800 and 3800 m s−1, which can be correlated with the limestone and dolomite of the Mokattam Formation."},
+      "vs": {"value": 1830, "range": [1550, 2110], "status": "derived",
+             "note": "Vp divided by Vp/Vs ≈ 1.8, the ratio implied by the textbook limestone ranges (P 3500–6000, S 2000–3300 m/s).",
+             "source": "gpg", "quote": "Limestones | 3500 - 6000 | 2000 - 3300"},
+      "rho": {"value": 2400, "range": [2200, 2600], "status": "assumed"}
+    },
+    "limestone": {
+      "name": "Limestone (textbook)", "family": "limestone", "colour": "#e8dfcb",
+      "vp": {"value": 4750, "range": [3500, 6000], "source": "gpg", "quote": "Limestones | 3500 - 6000 | 2000 - 3300"},
+      "vs": {"value": 2650, "range": [2000, 3300], "source": "gpg", "quote": "Limestones | 3500 - 6000 | 2000 - 3300"},
+      "rho": {"value": 2500, "range": [2300, 2700], "status": "assumed"}
+    },
+    "sandstone": {
+      "name": "Porous saturated sandstone", "family": "clastic", "colour": "#c89f72",
+      "vp": {"value": 2750, "range": [2000, 3500], "source": "gpg", "quote": "Porous and Saturated Sandstones | 2000 - 3500 | 800 - 1800"},
+      "vs": {"value": 1300, "range": [800, 1800], "source": "gpg", "quote": "Porous and Saturated Sandstones | 2000 - 3500 | 800 - 1800"},
+      "rho": {"value": 2300, "range": [2100, 2500], "status": "assumed"}
+    },
+    "granite": {
+      "name": "Granite", "family": "igneous", "colour": "#b08f8a",
+      "vp": {"value": 5250, "range": [4500, 6000], "source": "gpg", "quote": "Granite | 4500 - 6000 | 2500 - 3300"},
+      "vs": {"value": 2900, "range": [2500, 3300], "source": "gpg", "quote": "Granite | 4500 - 6000 | 2500 - 3300"},
+      "rho": {"value": 2650, "range": [2600, 2700], "status": "assumed"}
+    },
+    "masonry": {
+      "name": "Limestone masonry (pyramid core)", "family": "structure", "colour": "#d6c7a6",
+      "vp": {"value": 2200, "range": [1500, 3000], "status": "assumed",
+             "note": "Jointed blocks with mortar and gaps: slower than intact limestone. No measured value has been found; to be replaced when one is."},
+      "vs": {"value": 1100, "range": [700, 1600], "status": "assumed"},
+      "rho": {"value": 2200, "range": [1900, 2400], "status": "assumed"}
+    },
+    "rubble": {
+      "name": "Rubble fill", "family": "structure", "colour": "#9d8e74",
+      "vp": {"value": 900, "range": [500, 1400], "status": "assumed"},
+      "vs": {"value": 400, "range": [200, 700], "status": "assumed"},
+      "rho": {"value": 1800, "range": [1600, 2000], "status": "assumed"}
+    }
+  }
+}

@@ -1,0 +1,470 @@
+---
+/**
+ * The underworld: a basalt panel of sites, layers and composition beside the
+ * block diagram. `full` fills the page (the Underworld tab); `embed` sits in
+ * a page at a fixed height (the overview).
+ */
+interface Props {
+  mode?: 'full' | 'embed';
+  initial?: string;
+}
+const { mode = 'full', initial } = Astro.props;
+---
+<div class:list={['uw', mode]} data-theme="night" data-initial={initial} data-hash={mode === 'full' ? '1' : undefined}>
+  <aside class="uw-panel" aria-label="Sites and layers">
+    <div class="uw-panel-head">
+      <span class="label">The underworld</span>
+      <span class="uw-theme" role="group" aria-label="Ground">
+        <button type="button" data-theme="night" aria-pressed="true">basalt</button>
+        <button type="button" data-theme="day" aria-pressed="false">limestone</button>
+      </span>
+    </div>
+    <div class="uw-panel-body">
+      <section>
+        <div class="uw-seg">Sites</div>
+        <div class="uw-sites" data-uw="sites"></div>
+      </section>
+      <section>
+        <div class="uw-seg">Layers</div>
+        <label class="uw-check"><input type="checkbox" data-layer="features" checked /><span class="uw-dot surveyed"></span>Chambers and voids</label>
+        <label class="uw-check"><input type="checkbox" data-layer="claimed" checked /><span class="uw-dot claimed"></span>Claimed structures</label>
+        <label class="uw-check"><input type="checkbox" data-layer="structures" checked /><span class="uw-dot structure"></span>Monuments</label>
+        <label class="uw-check"><input type="checkbox" data-layer="walls" checked /><span class="uw-dot strata"></span>Strata on the faces</label>
+        <label class="uw-check"><input type="checkbox" data-layer="frame" checked /><span class="uw-dot frame"></span>Frame and north</label>
+        <label class="uw-range"><span>Ground</span><input type="range" min="0" max="1" step="0.01" value="0.62" data-uw="ground" /></label>
+      </section>
+      <section>
+        <div class="uw-seg">Section</div>
+        <label class="uw-range"><span>Cut from the south</span><input type="range" min="0" max="0.95" step="0.005" value="0" data-uw="cut" /></label>
+        <label class="uw-range"><span>Vertical scale</span><input type="range" min="0.3" max="3" step="0.05" value="1" data-uw="exaggeration" /></label>
+        <button type="button" class="uw-btn" data-uw="reset">Reset view</button>
+      </section>
+      <section>
+        <div class="uw-seg">Composition</div>
+        <div data-uw="composition"></div>
+      </section>
+      <section class="uw-notes-sec">
+        <div class="uw-seg">Notes</div>
+        <div class="uw-notes" data-uw="notes"></div>
+      </section>
+    </div>
+  </aside>
+  <div class="uw-stage">
+    <canvas aria-label="Three-dimensional block diagram of the selected site"></canvas>
+    <div class="uw-title" data-uw="title"></div>
+    <div class="uw-hover" data-uw="hover" hidden></div>
+    <div class="uw-foot">
+      <span class="uw-legend">
+        <span><span class="uw-dot surveyed"></span>chamber or void</span>
+        <span><span class="uw-dot claimed"></span>claimed</span>
+        <span><span class="uw-dot recovered"></span>recovered</span>
+        <span><span class="uw-dot sensor"></span>sensor</span>
+      </span>
+      <span class="uw-scale" data-uw="scale"></span>
+    </div>
+    <div class="uw-loading" data-uw="loading"><span class="ring"></span><span class="ring r2"></span></div>
+  </div>
+</div>
+
+<script>
+  import { Underworld } from '../viewer/Underworld';
+  for (const root of document.querySelectorAll<HTMLElement>('.uw')) {
+    const uw = new Underworld({ root, initial: root.dataset.initial, hash: root.dataset.hash === '1' });
+    uw.start().catch((e) => {
+      console.error(e);
+      const t = root.querySelector('[data-uw=title]');
+      if (t) t.textContent = 'The viewer could not start: ' + (e?.message ?? e);
+    });
+  }
+</script>
+
+<style is:global>
+  .uw {
+    --uw-lapis: var(--lapis-night);
+    display: grid;
+    grid-template-columns: 300px minmax(0, 1fr);
+    gap: 14px;
+    min-height: 0;
+  }
+  .uw.full {
+    flex: 1;
+  }
+  .uw.embed {
+    height: min(78vh, 720px);
+    min-height: 520px;
+  }
+  .uw-panel {
+    background: var(--panel-bg);
+    color: var(--panel-text);
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+  }
+  .uw-panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 12px 14px;
+    background: var(--panel-head);
+    border-bottom: 1px solid var(--panel-line);
+  }
+  .uw-panel-head .label {
+    color: var(--panel-muted);
+  }
+  .uw-theme {
+    display: inline-flex;
+    border: 1px solid var(--panel-line);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .uw-theme button {
+    font: 500 10px/1 var(--font-mono);
+    letter-spacing: 0.3px;
+    color: var(--panel-faint);
+    background: transparent;
+    border: 0;
+    padding: 5px 9px;
+    cursor: pointer;
+  }
+  .uw-theme button[aria-pressed='true'] {
+    color: var(--panel-text);
+    background: var(--panel-line);
+  }
+  .uw-panel-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 4px 0 14px;
+    background: var(--panel-body);
+    scrollbar-width: thin;
+    scrollbar-color: #3b4448 transparent;
+  }
+  .uw-panel-body section {
+    padding: 0 14px 10px;
+    border-bottom: 1px solid var(--panel-line);
+  }
+  .uw-panel-body section:last-child {
+    border-bottom: 0;
+  }
+  .uw-seg {
+    font: 600 10px/1 var(--font-mono);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--panel-faint);
+    padding: 14px 0 8px;
+  }
+  .uw-group {
+    font: 500 9.5px/1 var(--font-mono);
+    color: var(--panel-faint);
+    margin: 6px 0 4px;
+  }
+  .uw-site {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 7px 9px;
+    margin: 0 -9px 2px;
+    width: calc(100% + 18px);
+    color: var(--panel-text);
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .uw-site:hover {
+    background: rgba(255, 255, 255, 0.03);
+  }
+  .uw-site[aria-current='true'] {
+    background: rgba(130, 179, 255, 0.07);
+    border-color: rgba(130, 179, 255, 0.22);
+  }
+  .uw-site-name {
+    display: block;
+    font-size: 12.5px;
+    font-weight: 600;
+  }
+  .uw-site-sub {
+    display: block;
+    font-size: 11px;
+    line-height: 1.4;
+    color: var(--panel-muted);
+    margin-top: 2px;
+  }
+  .uw-check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--panel-muted);
+    padding: 3px 0;
+    cursor: pointer;
+  }
+  .uw-check input,
+  .uw-range input {
+    accent-color: #8aa0a8;
+  }
+  .uw-range {
+    display: grid;
+    gap: 3px;
+    font: 500 10px/1.3 var(--font-mono);
+    color: var(--panel-faint);
+    padding: 7px 0 2px;
+  }
+  .uw-range input {
+    width: 100%;
+  }
+  .uw-btn {
+    margin-top: 8px;
+    font: 500 10.5px/1 var(--font-mono);
+    color: var(--panel-muted);
+    background: transparent;
+    border: 1px solid var(--panel-line);
+    border-radius: 6px;
+    padding: 6px 10px;
+    cursor: pointer;
+  }
+  .uw-btn:hover {
+    color: var(--panel-text);
+  }
+  .uw-dot {
+    display: inline-block;
+    flex: none;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: 0;
+    background: var(--uw-lapis);
+    box-shadow: 0 0 6px rgba(130, 179, 255, 0.55);
+  }
+  .uw-dot.claimed {
+    background: transparent;
+    border: 1.5px dashed var(--porphyry-night);
+    box-shadow: none;
+  }
+  .uw-dot.representative {
+    background: transparent;
+    border: 1.5px solid var(--uw-lapis);
+  }
+  .uw-dot.recovered {
+    background: var(--verdigris-night);
+    box-shadow: 0 0 6px rgba(116, 216, 188, 0.5);
+  }
+  .uw-dot.sensor {
+    background: var(--ochre-night);
+    border-radius: 1px;
+    box-shadow: none;
+  }
+  .uw-dot.structure {
+    background: transparent;
+    border: 1.5px solid #d9ccb0;
+    border-radius: 1px;
+    box-shadow: none;
+  }
+  .uw-dot.strata {
+    background: repeating-linear-gradient(0deg, #6c6453 0 2px, #3a3a34 2px 4px);
+    border-radius: 1px;
+    box-shadow: none;
+  }
+  .uw-dot.frame {
+    background: transparent;
+    border: 1px solid #59625f;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .uw-mat {
+    display: grid;
+    grid-template-columns: 12px 1fr auto;
+    align-items: center;
+    gap: 8px;
+    font-size: 11.5px;
+    color: var(--panel-muted);
+    padding: 3px 0;
+  }
+  .uw-swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.25);
+  }
+  .uw-mat-v {
+    font: 10px/1 var(--font-mono);
+    color: var(--panel-faint);
+    white-space: nowrap;
+  }
+  .uw-mat-foot {
+    font: 9.5px/1.4 var(--font-mono);
+    color: var(--panel-faint);
+    margin-top: 6px;
+  }
+  .uw-counts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    font: 10.5px/1.4 var(--font-mono);
+    color: var(--panel-muted);
+    margin-top: 10px;
+  }
+  .uw-notes p {
+    font-family: var(--font-serif);
+    font-size: 11.5px;
+    line-height: 1.55;
+    color: var(--panel-muted);
+    margin-bottom: 7px;
+  }
+
+  .uw-stage {
+    position: relative;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--night);
+    min-height: 0;
+    transition: background 0.3s;
+  }
+  .uw[data-theme='day'] .uw-stage {
+    background: var(--bg);
+    box-shadow: inset 0 0 0 1px var(--border);
+  }
+  .uw-stage canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+  }
+  .uw-title {
+    position: absolute;
+    top: 16px;
+    left: 18px;
+    max-width: min(460px, 70%);
+    pointer-events: none;
+    color: var(--panel-text);
+  }
+  .uw[data-theme='day'] .uw-title {
+    color: var(--text);
+  }
+  .uw-kind {
+    font: 600 9.5px/1 var(--font-mono);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    opacity: 0.6;
+  }
+  .uw-title h2 {
+    font-size: 17px;
+    color: inherit;
+    margin: 6px 0 4px;
+  }
+  .uw-title p {
+    font-family: var(--font-serif);
+    font-size: 12.5px;
+    line-height: 1.55;
+    opacity: 0.78;
+  }
+  .uw-hover {
+    position: absolute;
+    left: 16px;
+    bottom: 44px;
+    max-width: 360px;
+    background: rgba(20, 24, 27, 0.9);
+    border: 1px solid var(--panel-line);
+    border-radius: 8px;
+    padding: 9px 11px;
+    color: var(--panel-text);
+    pointer-events: none;
+    backdrop-filter: blur(4px);
+  }
+  .uw-hover-head {
+    font-size: 12.5px;
+    font-weight: 600;
+  }
+  .uw-hover-meta {
+    font: 10px/1.5 var(--font-mono);
+    color: var(--panel-muted);
+    margin-top: 3px;
+  }
+  .uw-hover-src {
+    font-family: var(--font-serif);
+    font-size: 11px;
+    line-height: 1.45;
+    color: var(--panel-faint);
+    margin-top: 5px;
+  }
+  .uw-foot {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    font: 10px/1.4 var(--font-mono);
+    color: var(--panel-faint);
+    pointer-events: none;
+  }
+  .uw[data-theme='day'] .uw-foot {
+    color: var(--muted);
+  }
+  .uw-legend {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .uw-loading {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    pointer-events: none;
+  }
+  .uw-loading[hidden] {
+    display: none;
+  }
+  .uw-loading .ring {
+    grid-area: 1 / 1;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1px solid var(--lapis-night);
+    animation: uw-wave 1.6s var(--ease) infinite;
+  }
+  .uw-loading .r2 {
+    animation-delay: 0.8s;
+  }
+  @keyframes uw-wave {
+    from {
+      transform: scale(0.3);
+      opacity: 0.9;
+    }
+    to {
+      transform: scale(4);
+      opacity: 0;
+    }
+  }
+  @media (max-width: 900px) {
+    .uw {
+      grid-template-columns: 1fr;
+      grid-template-rows: minmax(340px, 58vh) auto;
+    }
+    .uw.embed {
+      height: auto;
+    }
+    .uw-panel {
+      order: 2;
+      max-height: none;
+    }
+    .uw-stage {
+      order: 1;
+      min-height: 340px;
+    }
+    .uw-title p {
+      display: none;
+    }
+    .uw-legend {
+      display: none;
+    }
+  }
+</style>

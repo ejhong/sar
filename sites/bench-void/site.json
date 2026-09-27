@@ -1,0 +1,19 @@
+{
+  "id": "bench-void",
+  "name": "One chamber",
+  "kind": "test",
+  "summary": "A single air-filled chamber, 6 m on a side, 15 m down in Giza limestone under a metre of sand. The simplest thing any method must find.",
+  "frame": {"axes": "x east, y north, z up; metres", "vertical": "z = 0 at the ground"},
+  "extent": {"x": [-60, 60], "y": [-60, 60], "z": [-60, 4]},
+  "terrain": {"type": "flat", "z": 0},
+  "cover": [{"material": "dry-sand-giza", "thickness": 1.0}],
+  "strata": [{"name": "Mokattam limestone", "material": "limestone-mokattam", "top": "surface"}],
+  "water_table": null,
+  "structures": [],
+  "features": [
+    {"id": "chamber", "name": "Chamber", "kind": "chamber", "status": "truth", "fill": "air",
+     "shape": {"type": "box", "centre": [0, 0, -15], "size": [6, 6, 6]},
+     "source": "Test geometry: the ground truth the methods are scored against."}
+  ],
+  "notes": ["Depth, size and the host rock are swept in the detectability experiment; this file is the reference case."]
+}

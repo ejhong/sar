@@ -1,0 +1,98 @@
+---
+import Doc from '../layouts/Doc.astro';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const acquisitions = [
+  ['Satellite', 'ICEYE X33', 'ICEYE X35'],
+  ['Date', '27 Aug 2025', '22 Aug 2025'],
+  ['Mode', 'Spotlight Dwell Fine', 'Spotlight Dwell Fine'],
+  ['Synthetic aperture', '24.49 s', '19.9 s'],
+  ['Incidence', '20.8°', '20.5°'],
+  ['Wavelength', '3.12 cm (9.6 GHz)', '3.12 cm'],
+  ['Pixel (azimuth × slant range)', '0.044 × 0.154 m', '0.044 × 0.152 m'],
+  ['Look and pass', 'right, ascending', 'left, descending'],
+  ['Platform travel during the dwell', '168 km', '—'],
+];
+const findings = [
+  { id: 'R9', title: 'Time diversity and coherence are the same axis in a dwell', body: 'Coherence with the band-centre look halves by 0.98 s of separation and falls to a tenth by 1.76 s, on the pyramid and on open desert alike.' },
+  { id: 'R4', title: 'One dwell measures a two-second velocity series with a 77 µm/s floor', body: 'Looks kept inside the coherent window give a line-of-sight velocity series for every pixel. Its floor on the brightest targets is the same on monuments and desert.' },
+  { id: 'R13', title: 'Hundreds of surveyed burial shafts give no signal at their depths', body: 'Over the Eastern and Western Cemeteries, shafts 5 to 30 m deep, the depth profiles match bare plateau: standardised difference +0.022, and +0.031 after matching surface brightness.' },
+  { id: 'R2', title: 'The depth axis is set by the processing, not by the ground', body: 'The platform moves 168 km during the aperture, so a bank over the whole aperture folds depth back at 6.8 m and repeats it at 13.6 m. Hundreds of metres need about one percent of the aperture.' },
+  { id: 'R15', title: 'The modal gate picks which pixels get a depth, not which depth is right', body: 'The steering model repeats exactly every 27.4 m by an algebraic identity. The gate itself separates Khafre from plateau no better than chance (AUC 0.504).' },
+  { id: 'R11', title: 'Used as a dense array, the image holds no propagating wave', body: 'Cross-correlating 759 pixel series over 1.8 km finds a median peak of 0.004, against 0.49 for an injected wavefield put through the identical stack.' },
+];
+---
+<Doc
+  title="The satellite over the same ground"
+  kicker="Phase 2 · next"
+  current="satellite"
+  lede="Phase 2 flies an ICEYE Spotlight Dwell, with the real Giza and Sacsayhuamán parameters, over the same simulated shaking ground the geophones recorded. What the radar can measure is then compared pixel by pixel with what the seismometers measured, and handed to the same inversions."
+  state="status · planned · the measured evidence below is already in hand"
+  index={[
+    { id: 'plan', label: 'The plan' },
+    { id: 'acquisitions', label: 'The acquisitions' },
+    { id: 'measured', label: 'Already measured' },
+  ]}
+>
+  <section id="plan">
+    <h2>The radar sees only the surface, so it is judged on the surface first</h2>
+    <p class="sub">
+      X-band enters centimetres of dry limestone, so any radar view of the underworld must come through motion of the
+      surface. Phase 2 simulates exactly that motion and asks, in order, three questions of increasing difficulty.
+    </p>
+    <div class="grid-3">
+      <div class="note-card">
+        <span class="tag planned">step 1</span>
+        <h3>Does the radar record the ground's motion?</h3>
+        <p>The Phase 1 surface wavefield, projected on the real line of sight, modulates a synthesised dwell; its velocity series is compared with the geophone at the same spot.</p>
+      </div>
+      <div class="note-card">
+        <span class="tag planned">step 2</span>
+        <h3>Does the published pipeline find the chambers?</h3>
+        <p>The same simulated product goes through the Doppler-tomography chain exactly as published, over ground whose chambers are known.</p>
+      </div>
+      <div class="note-card">
+        <span class="tag planned">step 3</span>
+        <h3>Can any inversion make a tomogram from it?</h3>
+        <p>The radar's velocity field, with its real sampling, record length and floor, is given to the Phase 1 inversions as if it were a geophone array.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="acquisitions">
+    <h2>Two real dwells set the parameters</h2>
+    <table class="data">
+      <thead><tr><th></th><th>Giza</th><th>Sacsayhuamán</th></tr></thead>
+      <tbody>
+        {
+          acquisitions.map((r) => (
+            <tr>
+              <td>{r[0]}</td>
+              <td class="num">{r[1]}</td>
+              <td class="num">{r[2]}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </section>
+
+  <section id="measured">
+    <h2>What the real acquisitions already show</h2>
+    <p class="sub">
+      From the first investigation, measured on the real products, not simulated. Each becomes a calibration or a check
+      for the Phase 2 simulation. <a href={`${base}/archive/`}>The full record</a>
+    </p>
+    <div class="grid-2">
+      {
+        findings.map((f) => (
+          <div class="note-card">
+            <span class="tag measured">{f.id} · measured</span>
+            <h3>{f.title}</h3>
+            <p>{f.body}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+</Doc>

@@ -1,0 +1,100 @@
+{
+ "sites": [
+  {
+   "id": "bench-void",
+   "name": "One chamber",
+   "kind": "test",
+   "summary": "A single air-filled chamber, 6 m on a side, 15 m down in Giza limestone under a metre of sand. The simplest thing any method must find.",
+   "extent": {
+    "x": [
+     -60,
+     60
+    ],
+    "y": [
+     -60,
+     60
+    ],
+    "z": [
+     -60,
+     4
+    ]
+   },
+   "features": {
+    "truth": 1
+   },
+   "volumes": 0
+  },
+  {
+   "id": "bench-shafts",
+   "name": "A field of shaft tombs",
+   "kind": "test",
+   "summary": "Twelve narrow burial shafts, 8 to 30 m deep, each ending in a small chamber, in fractured limestone over sound bedrock. The scale of Giza's cemeteries: the positive control any claim must pass.",
+   "extent": {
+    "x": [
+     -60,
+     60
+    ],
+    "y": [
+     -60,
+     60
+    ],
+    "z": [
+     -50,
+     4
+    ]
+   },
+   "features": {
+    "representative": 24
+   },
+   "volumes": 0
+  },
+  {
+   "id": "bench-khafre-claim",
+   "name": "The claimed underworld",
+   "kind": "test",
+   "summary": "The structures announced beneath Khafre in March 2025, placed in the ground as if they were real: eight vertical shafts reaching about 640 m, and a deeper structure near 1,220 m. If they existed, would ordinary seismology see them?",
+   "extent": {
+    "x": [
+     -800,
+     800
+    ],
+    "y": [
+     -800,
+     800
+    ],
+    "z": [
+     -1500,
+     150
+    ]
+   },
+   "features": {
+    "claimed": 9
+   },
+   "volumes": 0
+  },
+  {
+   "id": "giza",
+   "name": "Giza plateau",
+   "kind": "real",
+   "summary": "Khufu, Khafre and Menkaure on Mokattam limestone, with the chambers and passages already surveyed inside and beneath them.",
+   "extent": {
+    "x": [
+     -640.0,
+     960.0
+    ],
+    "y": [
+     -760.0,
+     640.0
+    ],
+    "z": [
+     -120.0,
+     220.0
+    ]
+   },
+   "features": {
+    "surveyed": 12
+   },
+   "volumes": 0
+  }
+ ]
+}

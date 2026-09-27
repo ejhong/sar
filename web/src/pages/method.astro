@@ -1,0 +1,96 @@
+---
+import Doc from '../layouts/Doc.astro';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const materials = (await import('../../public/data/materials.json')).default as {
+  sources: Record<string, { citation: string; url: string; doi?: string }>;
+  materials: Record<string, { name: string; vp: { value: number; range: number[] | null; status: string; source: string | null }; vs: { value: number; range: number[] | null; status: string; source: string | null }; rho: { value: number; status: string } }>;
+};
+const fmtR = (p: { value: number; range: number[] | null }) =>
+  p.value === 0 ? '0' : p.range ? `${p.range[0].toLocaleString('en-US')}–${p.range[1].toLocaleString('en-US')}` : p.value.toLocaleString('en-US');
+const mark = (s: string) => (s === 'sourced' || s === 'definition' ? '' : s === 'derived' ? ' ′' : ' *');
+---
+<Doc
+  title="Method and sources"
+  kicker="Reproducibility"
+  current="method"
+  lede="Everything on this site is generated from the repository by code anyone can run: the compositions from their JSON, the simulations from their scripts, the figures and volumes from the runs that made them. Nothing is edited by hand, and every number carries its source or is marked as assumed."
+  index={[
+    { id: 'materials', label: 'Materials' },
+    { id: 'run', label: 'Run it' },
+    { id: 'layout', label: 'Layout' },
+  ]}
+>
+  <section id="materials">
+    <h2>Every material property is sourced, derived from a source, or marked assumed</h2>
+    <p class="sub">P and S wave speeds in m/s; ′ derived from a source by a stated ratio; * assumed. Densities are assumed throughout until an open source is found.</p>
+    <table class="data">
+      <thead><tr><th>Material</th><th>P wave</th><th>S wave</th><th>Source</th></tr></thead>
+      <tbody>
+        {
+          Object.entries(materials.materials).map(([, m]) => (
+            <tr>
+              <td>{m.name}</td>
+              <td class="num">{fmtR(m.vp)}{mark(m.vp.status)}</td>
+              <td class="num">{fmtR(m.vs)}{mark(m.vs.status)}</td>
+              <td class="mono" style="font-size:10.5px">{m.vp.source ?? (m.vp.status === 'assumed' ? 'assumed' : '')}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+    <div class="sources">
+      {
+        Object.entries(materials.sources).map(([id, s]) => (
+          <p>
+            <span class="mono">{id}</span> {s.citation} <a href={s.url}>{s.doi ? `doi:${s.doi}` : 'link'}</a>
+          </p>
+        ))
+      }
+    </div>
+  </section>
+
+  <section id="run">
+    <h2>Two commands rebuild everything</h2>
+    <pre><code>cd sim && uv sync && uv run pytest        # the simulation and its checks
+uv run python -m katabasis.export          # everything the site reads
+cd ../web && npm ci && npm run build        # the site, into docs/</code></pre>
+  </section>
+
+  <section id="layout">
+    <h2>One repository, three parts</h2>
+    <div class="grid-3">
+      <div class="note-card"><h3>sites/</h3><p>The materials library and one composition per site, shared by the simulation and the viewer.</p></div>
+      <div class="note-card"><h3>sim/</h3><p>The Python lab: compositions, the elastic solver, the arrays and inversions, and the first investigation kept intact in <span class="mono">sim/legacy/</span>.</p></div>
+      <div class="note-card"><h3>web/</h3><p>This site: Astro and Three.js, hand-drawn figures, no chart library. <a href="https://github.com/ejhong/sar">Source</a> · <a href={`${base}/archive/`}>first investigation</a></p></div>
+    </div>
+  </section>
+</Doc>
+
+<style>
+  .sources {
+    margin-top: 14px;
+    display: grid;
+    gap: 6px;
+  }
+  .sources p {
+    font-family: var(--font-serif);
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--body);
+  }
+  .sources .mono {
+    font-size: 10px;
+    color: var(--muted);
+    margin-right: 6px;
+  }
+  pre {
+    background: var(--panel-bg);
+    color: var(--panel-text);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    line-height: 1.7;
+    overflow-x: auto;
+  }
+</style>

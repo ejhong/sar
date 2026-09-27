@@ -1,0 +1,126 @@
+---
+/**
+ * The sandstone band: the title, a line of Virgil, and beneath a hairline
+ * the pages, sitting like tabs on the band's lower edge.
+ */
+import Seal from './Seal.astro';
+
+interface Props {
+  current?: string;
+}
+const { current = '' } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const links = [
+  { id: 'home', href: `${base}/`, label: 'Overview' },
+  { id: 'underworld', href: `${base}/underworld/`, label: 'Underworld' },
+  { id: 'seismic', href: `${base}/seismic/`, label: 'Seismic' },
+  { id: 'satellite', href: `${base}/satellite/`, label: 'Satellite' },
+  { id: 'claim', href: `${base}/claim/`, label: 'The claim' },
+  { id: 'method', href: `${base}/method/`, label: 'Method' },
+];
+---
+<header class="top-bar">
+  <div class="titles">
+    <a class="title" href={`${base}/`}><Seal />Katabasis</a>
+    <p class="subtitle-quote">
+      “The descent to Avernus is easy … but to retrace the step and come out to the upper air, this is the task, this
+      the labour.” <span class="attribution">— Virgil, Aeneid VI.126–129</span>
+    </p>
+  </div>
+  <nav aria-label="Primary">
+    {
+      links.map((l) => (
+        <a href={l.href} aria-current={current === l.id ? 'page' : undefined}>
+          {l.label}
+        </a>
+      ))
+    }
+  </nav>
+</header>
+
+<style>
+  .top-bar {
+    padding: 13px 24px 0;
+    background: var(--band);
+    border-bottom: 1px solid #d5cab6;
+    flex-shrink: 0;
+  }
+  .title {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .subtitle-quote {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 11.5px;
+    color: var(--muted);
+    margin-top: 5px;
+    line-height: 1.5;
+    max-width: 900px;
+  }
+  .attribution {
+    font-style: normal;
+    font-size: 10px;
+    opacity: 0.8;
+    white-space: nowrap;
+  }
+  nav {
+    display: flex;
+    gap: 26px;
+    margin-top: 11px;
+    border-top: 1px solid rgba(45, 41, 36, 0.1);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  nav::-webkit-scrollbar {
+    display: none;
+  }
+  nav a {
+    flex: none;
+    font-size: 12px;
+    letter-spacing: 0.2px;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 8px 0 7px;
+    margin-bottom: -1px;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  nav a:hover {
+    color: var(--text);
+    border-bottom-color: var(--border-strong);
+  }
+  nav a[aria-current='page'] {
+    color: var(--text);
+    font-weight: 600;
+    border-bottom-color: var(--seal);
+  }
+  @media (max-width: 760px) {
+    .top-bar {
+      padding: 10px 16px 0;
+    }
+    .subtitle-quote {
+      display: none;
+    }
+    nav {
+      gap: 18px;
+      margin-top: 8px;
+    }
+  }
+  @media (max-width: 480px) {
+    nav {
+      flex-wrap: wrap;
+      gap: 0 14px;
+    }
+    nav a {
+      font-size: 11.5px;
+      letter-spacing: 0;
+    }
+  }
+</style>

@@ -1,0 +1,63 @@
+/*
+ * Katabasis — limestone and basalt.
+ *
+ * Day is the page: limestone paper and a sandstone band, ink warm and dark.
+ * Night is the underworld: basalt panels and the viewer, where the only
+ * things that glow are the ones that carry meaning. Each accent has one role
+ * and keeps it on every page, in 2-D and 3-D:
+ *
+ *   lapis      voids and chambers (the truth, or the survey)
+ *   verdigris  what an instrument recovered (tomograms, detections)
+ *   ochre      sensors and sources (the instrument itself)
+ *   porphyry   claimed structures (published claims, always dashed)
+ *   cinnabar   the radar (satellite, Phase 2)
+ *
+ * Mirror any change in src/viewer/engine/theme.ts.
+ */
+:root {
+  --bg: #f4efe5; /* limestone */
+  --sheet: #faf7f0; /* a fresh-cut face: cards and sheets */
+  --band: #e4dccd; /* sandstone: the top band */
+  --border: #ddd3c2;
+  --border-strong: #c3b59e;
+  --stone: #a89a84;
+
+  --text: #2d2924;
+  --body: #4a443c;
+  --muted: #877b6b;
+  --faint: #b2a692;
+  --accent: #8a7a64; /* umber: the hand (controls) */
+  --accent-dark: #5e5243;
+
+  --night: #0f1214; /* basalt */
+  --panel-bg: #1a1f22;
+  --panel-head: #14181b;
+  --panel-body: #1d2326;
+  --panel-line: #2d3539;
+  --panel-text: #e9e5db;
+  --panel-muted: #aab0a9;
+  --panel-faint: #6e7672;
+
+  --lapis: #2c5aa0;
+  --lapis-night: #82b3ff;
+  --verdigris: #347f6f;
+  --verdigris-night: #74d8bc;
+  --ochre: #a8741f;
+  --ochre-night: #e8b95c;
+  --porphyry: #7f6396;
+  --porphyry-night: #c0a6da;
+  --cinnabar: #aa4b33;
+  --cinnabar-night: #f0906f;
+  --seal: #24406a;
+
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-serif: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
+  --font-mono: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Menlo', 'DejaVu Sans Mono', monospace;
+
+  --radius: 12px;
+  --radius-sm: 6px;
+  --gap: 16px;
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  color-scheme: light;
+}

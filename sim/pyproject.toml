@@ -16,6 +16,7 @@ dependencies = [
     "tifffile>=2024.1",
     "scikit-image>=0.25",
     "scikit-learn>=1.6,<2",
+    "imagecodecs>=2026.3.6",
 ]
 
 [dependency-groups]

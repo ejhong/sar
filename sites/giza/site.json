@@ -1,0 +1,408 @@
+{
+ "id": "giza",
+ "name": "Giza plateau",
+ "kind": "real",
+ "summary": "Khufu, Khafre and Menkaure on Mokattam limestone, with the chambers and passages already surveyed inside and beneath them.",
+ "frame": {
+  "axes": "x east, y north, z up; metres",
+  "origin": {
+   "latitude": 29.976025,
+   "longitude": 31.130794,
+   "label": "Khafre base centre"
+  },
+  "vertical": "z = metres above EGM2008 (orthometric)"
+ },
+ "extent": {
+  "x": [
+   -640.0,
+   960.0
+  ],
+  "y": [
+   -760.0,
+   640.0
+  ],
+  "z": [
+   -120.0,
+   220.0
+  ]
+ },
+ "terrain": {
+  "type": "dem",
+  "file": "terrain.json",
+  "datum_m": 0.0
+ },
+ "cover": [],
+ "strata": [
+  {
+   "name": "Mokattam Formation",
+   "material": "limestone-mokattam",
+   "top": "surface"
+  },
+  {
+   "name": "Older limestone (assumed)",
+   "material": "limestone",
+   "top": -60.0
+  }
+ ],
+ "water_table": {
+  "z": 15.0
+ },
+ "structures": [
+  {
+   "id": "khufu",
+   "name": "Khufu",
+   "material": "masonry",
+   "shape": {
+    "type": "pyramid",
+    "centre": [
+     324.26,
+     349.19,
+     60.0
+    ],
+    "base": 230.33,
+    "height": 146.6,
+    "yaw_deg": 0.0
+   },
+   "source": "sim/legacy/catalog/giza/underworld.json (Petrie 1883; Maragioglio & Rinaldi)"
+  },
+  {
+   "id": "khafre",
+   "name": "Khafre",
+   "material": "masonry",
+   "shape": {
+    "type": "pyramid",
+    "centre": [
+     0.0,
+     0.0,
+     72.0
+    ],
+    "base": 215.25,
+    "height": 136.4,
+    "yaw_deg": 0.0
+   },
+   "source": "sim/legacy/catalog/giza/underworld.json (Petrie 1883; Maragioglio & Rinaldi)"
+  },
+  {
+   "id": "menkaure",
+   "name": "Menkaure",
+   "material": "masonry",
+   "shape": {
+    "type": "pyramid",
+    "centre": [
+     -237.81,
+     -390.75,
+     75.14
+    ],
+    "base": 103.4,
+    "height": 61.0,
+    "yaw_deg": 0.0
+   },
+   "source": "Wikipedia, Pyramid of Menkaure (infobox): \"29\u00b058\u203221\u2033N 31\u00b007\u203242\u2033E\", base \"102.2 by 104.6 metres\", current height \"61 m\". Base drawn square at the mean side; base elevation from the terrain."
+  }
+ ],
+ "features": [
+  {
+   "id": "khufu-kings-chamber",
+   "name": "King's Chamber (Khufu)",
+   "kind": "chamber",
+   "status": "surveyed",
+   "fill": "air",
+   "shape": {
+    "type": "box",
+    "centre": [
+     324.26,
+     349.69,
+     103.0
+    ],
+    "size": [
+     10.47,
+     5.23,
+     5.97
+    ]
+   },
+   "source": "Petrie 1883; Maragioglio & Rinaldi",
+   "note": "Granite chamber on the pyramid axis, floor about 43 m above the base. Simplified box; placement approximate until re-derived from Petrie (1883).",
+   "placement": "approximate"
+  },
+  {
+   "id": "khufu-queens-chamber",
+   "name": "Queen's Chamber (Khufu)",
+   "kind": "chamber",
+   "status": "surveyed",
+   "fill": "air",
+   "shape": {
+    "type": "box",
+    "centre": [
+     324.26,
+     349.19,
+     81.2
+    ],
+    "size": [
+     5.76,
+     5.23,
+     6.26
+    ]
+   },
+   "source": "Petrie 1883",
+   "note": "On the pyramid axis, corbelled roof. Simplified box; placement approximate until re-derived from Petrie (1883).",
+   "placement": "approximate"
+  },
+  {
+   "id": "khufu-grand-gallery",
+   "name": "Grand Gallery (Khufu)",
+   "kind": "passage",
+   "status": "surveyed",
+   "fill": "air",
+   "shape": {
+    "type": "box",
+    "centre": [
+     324.26,
+     361.19,
+     90.0
+    ],
+    "size": [
+     2.1,
+     41.8,
+     8.6
+    ],
+    "pitch_deg": -26.5
+   },
+   "source": "Petrie 1883",
+   "note": "Corbelled ascending gallery, 46.7 m along its slope. Simplified box; placement approximate until re-derived from Petrie (1883).",
+   "placement": "approximate"
+  },
+  {
+   "id": "khufu-ascending-passage",
+   "name": "Ascending Passage (Khufu)",
+   "kind": "passage",
+   "status": "surveyed",
+   "fill": "air",
+   "shape": {
+    "type": "box",
+    "centre": [
+     324.26,
+     377.19,
+     74.0
+    ],
+    "size": [
+     1.2,
+     34.0,
+     1.2
+    ],
+    "pitch_deg": -26.5
+   },
+   "source": "Petrie 1883",
+   "note": "Simplified box; placement approximate until re-derived from Petrie (1883).",
+   "placement": "approximate"
+  },
+  {
+   "id": "khufu-descending-passage",
+   "name": "Descending Passage (Khufu)",
+   "kind": "passage",
+   "status": "surveyed",
+   "fill": "air",
+   "shape": {
+    "type": "box",
+    "centre": [
+     324.26,
+     367.19,
+     51.0
+    ],
+    "size": [
+     1.2,
+     90.0,
+     1.2
+    ],
+    "pitch_deg": 26.5
+   },
+   "source": "Petrie 1883",
+   "note": "Runs from the north entrance down into the bedrock. Simplified box; placement approximate until re-derived from Petrie (1883).",
+   "placement": "approximate"
+  },
+  {
+   "id": "khufu-subterranean-chamber",
+   "name": "Subterranean Chamber (Khufu)",
+   "kind": "chamber",
+   "status": "surveyed",
+   "fill": "air",
+   "shape": {
+    "type": "box",
+    "centre": [
+     324.26,
+     344.19,
+     30.0
+    ],
+    "size": [
+     14.0,
+     8.3,
+     5.0
+    ]
+   },
+   "source": "Petrie 1883",
+   "note": "Unfinished, cut into bedrock roughly 30 m below the base platform. Simplified box; placement approximate until re-derived from Petrie (1883).",
+   "placement": "approximate"
+  },
+  {
+   "id": "khufu-scanpyramids-big-void",
+   "name": "ScanPyramids Big Void (Khufu)",
+   "kind": "void",
+   "status": "surveyed",
+   "fill": "air",
+   "shape": {
+    "type": "box",
+    "centre": [
+     324.26,
+     359.19,
+     100.0
+    ],
+    "size": [
+     3.0,
+     30.0,
+     6.0
+    ]
+   },
+   "source": "Morishima et al., Nature 552, 386 (2017)",
+   "note": "Detected by muon tomography above the Grand Gallery. Length at least 30 m; cross-section and exact position are not tightly constrained. Simplified box; placement approximate until re-derived from Petrie (1883).",
+   "placement": "approximate"
+  },
+  {
+   "id": "khufu-north-face-corridor",
+   "name": "North Face Corridor (Khufu)",
+   "kind": "void",
+   "status": "surveyed",
+   "fill": "air",
+   "shape": {
+    "type": "box",
+    "centre": [
+     324.26,
+     459.19,
+     77.0
+    ],
+    "size": [
+     2.1,
+     9.0,
+     2.3
+    ]
+   },
+   "source": "Procureur et al., Nature Communications 14, 1144 (2023)",
+   "note": "Corridor behind the chevrons on the north face, confirmed by muon imaging and endoscopy. Simplified box; placement approximate until re-derived from Petrie (1883).",
+   "placement": "approximate"
+  },
+  {
+   "id": "khafre-belzonis-chamber",
+   "name": "Belzoni's Chamber (Khafre)",
+   "kind": "chamber",
+   "status": "surveyed",
+   "fill": "air",
+   "shape": {
+    "type": "box",
+    "centre": [
+     0.0,
+     0.0,
+     72.5
+    ],
+    "size": [
+     14.15,
+     5.0,
+     6.83
+    ]
+   },
+   "source": "Maragioglio & Rinaldi V",
+   "note": "Burial chamber cut partly into bedrock at base level, granite sarcophagus in the floor. Simplified box; placement approximate until re-derived from Petrie (1883).",
+   "placement": "approximate"
+  },
+  {
+   "id": "khafre-lower-chamber",
+   "name": "Lower Chamber (Khafre)",
+   "kind": "chamber",
+   "status": "surveyed",
+   "fill": "air",
+   "shape": {
+    "type": "box",
+    "centre": [
+     0.0,
+     30.0,
+     62.0
+    ],
+    "size": [
+     10.4,
+     3.1,
+     2.6
+    ]
+   },
+   "source": "Maragioglio & Rinaldi V",
+   "note": "Subsidiary chamber on the lower descending passage. Simplified box; placement approximate until re-derived from Petrie (1883).",
+   "placement": "approximate"
+  },
+  {
+   "id": "khafre-upper-descending-passage",
+   "name": "Upper Descending Passage (Khafre)",
+   "kind": "passage",
+   "status": "surveyed",
+   "fill": "air",
+   "shape": {
+    "type": "box",
+    "centre": [
+     0.0,
+     20.0,
+     80.0
+    ],
+    "size": [
+     1.1,
+     50.0,
+     1.2
+    ],
+    "pitch_deg": 25.0
+   },
+   "source": "Maragioglio & Rinaldi V",
+   "note": "Simplified box; placement approximate until re-derived from Petrie (1883).",
+   "placement": "approximate"
+  },
+  {
+   "id": "khafre-lower-descending-passage",
+   "name": "Lower Descending Passage (Khafre)",
+   "kind": "passage",
+   "status": "surveyed",
+   "fill": "air",
+   "shape": {
+    "type": "box",
+    "centre": [
+     0.0,
+     45.0,
+     66.0
+    ],
+    "size": [
+     1.1,
+     40.0,
+     1.2
+    ],
+    "pitch_deg": 22.0
+   },
+   "source": "Maragioglio & Rinaldi V",
+   "note": "Begins outside the pyramid on the north side and descends into the bedrock. Simplified box; placement approximate until re-derived from Petrie (1883).",
+   "placement": "approximate"
+  }
+ ],
+ "landmarks": [
+  {
+   "id": "sphinx",
+   "name": "Great Sphinx",
+   "position": [
+    654.9,
+    -84.8,
+    23.5
+   ],
+   "source": "Wikipedia, Great Sphinx of Giza (infobox): \"29.97526\u00b0N 31.13758\u00b0E\"; length \"73 metres\", height \"20 metres\"."
+  }
+ ],
+ "notes": [
+  "Bedrock: the plateau is Mokattam limestone at or near the surface; its base (-60 m here) and the rock beneath are assumed, not surveyed.",
+  "Water table: \"The average water table elevation is about +15 m\" (Sharafeldin et al. 2019, abstract).",
+  "Chambers and passages are simplified boxes from the first investigation; their placement is approximate (the legacy Khufu table ran y southward and is corrected here) and will be re-derived from Petrie (1883) before a Giza simulation relies on them.",
+  "Terrain is a DSM: monument footprints are replaced by the surrounding ground and the pyramids are drawn from their survey dimensions."
+ ],
+ "sources": {
+  "sharafeldin2019": "doi:10.5194/gi-8-29-2019",
+  "copernicus": "Copernicus GLO-30 DEM, ESA/Airbus, via copernicus-dem-30m.s3.amazonaws.com"
+ }
+}

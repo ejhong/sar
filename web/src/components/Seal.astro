@@ -1,0 +1,15 @@
+---
+/**
+ * The seal: a stair going down into one lit chamber. Drawn, not typed, so
+ * it renders the same everywhere.
+ */
+interface Props {
+  size?: number;
+}
+const { size = 20 } = Astro.props;
+---
+<svg class="seal" width={size} height={size} viewBox="0 0 20 20" aria-hidden="true">
+  <rect width="20" height="20" rx="3.5" fill="var(--seal)" />
+  <path d="M3.5 5.5h3v2.6h3v2.6h3v2.6" fill="none" stroke="#f4efe5" stroke-width="1.35" stroke-linejoin="miter" />
+  <circle cx="15.2" cy="14.6" r="1.75" fill="#9cc2ff" />
+</svg>

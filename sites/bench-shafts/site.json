@@ -1,0 +1,623 @@
+{
+ "id": "bench-shafts",
+ "name": "A field of shaft tombs",
+ "kind": "test",
+ "summary": "Twelve narrow burial shafts, 8 to 30 m deep, each ending in a small chamber, in fractured limestone over sound bedrock. The scale of Giza's cemeteries: the positive control any claim must pass.",
+ "frame": {
+  "axes": "x east, y north, z up; metres",
+  "vertical": "z = 0 at the ground"
+ },
+ "extent": {
+  "x": [
+   -60,
+   60
+  ],
+  "y": [
+   -60,
+   60
+  ],
+  "z": [
+   -50,
+   4
+  ]
+ },
+ "terrain": {
+  "type": "relief",
+  "z": 0,
+  "amplitude": 0.8,
+  "wavelength": 45,
+  "seed": 3
+ },
+ "cover": [
+  {
+   "material": "dry-sand-giza",
+   "thickness": 1.5
+  }
+ ],
+ "strata": [
+  {
+   "name": "Fractured limestone",
+   "material": "limestone-fractured",
+   "top": "surface",
+   "heterogeneity": {
+    "sigma": 0.06,
+    "corr_m": [
+     6,
+     6,
+     2
+    ],
+    "hurst": 0.4,
+    "seed": 11
+   }
+  },
+  {
+   "name": "Mokattam limestone",
+   "material": "limestone-mokattam",
+   "top": {
+    "plane": {
+     "z0": -9,
+     "dip_deg": 2,
+     "dip_azimuth_deg": 250
+    }
+   },
+   "heterogeneity": {
+    "sigma": 0.03,
+    "corr_m": [
+     12,
+     12,
+     4
+    ],
+    "hurst": 0.5,
+    "seed": 12
+   }
+  }
+ ],
+ "water_table": null,
+ "structures": [],
+ "features": [
+  {
+   "id": "shaft-01",
+   "name": "Shaft 1 (16 m)",
+   "kind": "shaft",
+   "status": "representative",
+   "fill": "air",
+   "shape": {
+    "type": "box",
+    "centre": [
+     -33.4,
+     -27.6,
+     -7.5
+    ],
+    "size": [
+     1.3,
+     1.3,
+     17.0
+    ]
+   },
+   "source": "Representative: dimensions after Idu (G 7102 C) and Hetepheres I (G 7000 X) in sim/legacy/catalog/giza/surveys.json; positions and depths chosen to span the 5-30 m band.",
+   "group": "shafts"
+  },
+  {
+   "id": "chamber-01",
+   "name": "Chamber 1",
+   "kind": "tomb",
+   "status": "representative",
+   "fill": "air",
+   "shape": {
+    "type": "box",
+    "centre": [
+     -33.4,
+     -25.2,
+     -15.0
+    ],
+    "size": [
+     2.72,
+     5.22,
+     1.95
+    ],
+    "yaw_deg": 0.0
+   },
+   "source": "Representative: dimensions after Idu (G 7102 C) and Hetepheres I (G 7000 X) in sim/legacy/catalog/giza/surveys.json; positions and depths chosen to span the 5-30 m band.",
+   "group": "shafts"
+  },
+  {
+   "id": "shaft-02",
+   "name": "Shaft 2 (20 m)",
+   "kind": "shaft",
+   "status": "representative",
+   "fill": "air",
+   "shape": {
+    "type": "box",
+    "centre": [
+     -13.6,
+     -31.8,
+     -9.5
+    ],
+    "size": [
+     1.3,
+     1.3,
+     21.0
+    ]
+   },
+   "source": "Representative: dimensions after Idu (G 7102 C) and Hetepheres I (G 7000 X) in sim/legacy/catalog/giza/surveys.json; positions and depths chosen to span the 5-30 m band.",
+   "group": "shafts"
+  },
+  {
+   "id": "chamber-02",
+   "name": "Chamber 2",
+   "kind": "tomb",
+   "status": "representative",
+   "fill": "air",
+   "shape": {
+    "type": "box",
+    "centre": [
+     -13.6,
+     -29.4,
+     -19.0
+    ],
+    "size": [
+     2.72,
+     5.22,
+     1.95
+    ],
+    "yaw_deg": 0.0
+   },
+   "source": "Representative: dimensions after Idu (G 7102 C) and Hetepheres I (G 7000 X) in sim/legacy/catalog/giza/surveys.json; positions and depths chosen to span the 5-30 m band.",
+   "group": "shafts"
+  },
+  {
+   "id": "shaft-03",
+   "name": "Shaft 3 (28 m)",
+   "kind": "shaft",
+   "status": "representative",
+   "fill": "air",
+   "shape": {
+    "type": "box",
+    "centre": [
+     10.0,
+     -30.4,
+     -13.5
+    ],
+    "size": [
+     1.3,
+     1.3,
+     29.0
+    ]
+   },
+   "source": "Representative: dimensions after Idu (G 7102 C) and Hetepheres I (G 7000 X) in sim/legacy/catalog/giza/surveys.json; positions and depths chosen to span the 5-30 m band.",
+   "group": "shafts"
+  },
+  {
+   "id": "chamber-03",
+   "name": "Chamber 3",
+   "kind": "tomb",
+   "status": "representative",
+   "fill": "air",
+   "shape": {
+    "type": "box",
+    "centre": [
+     10.0,
+     -28.0,
+     -27.0
+    ],
+    "size": [
+     2.72,
+     5.22,
+     1.95
+    ],
+    "yaw_deg": 0.0
+   },
+   "source": "Representative: dimensions after Idu (G 7102 C) and Hetepheres I (G 7000 X) in sim/legacy/catalog/giza/surveys.json; positions and depths chosen to span the 5-30 m band.",
+   "group": "shafts"
+  },
+  {
+   "id": "shaft-04",
+   "name": "Shaft 4 (8 m)",
+   "kind": "shaft",
+   "status": "representative",
+   "fill": "air",
+   "shape": {
+    "type": "box",
+    "centre": [
+     36.4,
+     -26.0,
+     -3.5
+    ],
+    "size": [
+     1.72,
+     1.72,
+     9.0
+    ]
+   },
+   "source": "Representative: dimensions after Idu (G 7102 C) and Hetepheres I (G 7000 X) in sim/legacy/catalog/giza/surveys.json; positions and depths chosen to span the 5-30 m band.",
+   "group": "shafts"
+  },
+  {
+   "id": "chamber-04",
+   "name": "Chamber 4",
+   "kind": "tomb",
+   "status": "representative",
+   "fill": "air",
+   "shape": {
+    "type": "box",
+    "centre": [
+     36.4,
+     -23.6,
+     -7.0
+    ],
+    "size": [
+     2.72,
+     5.22,
+     1.95
+    ],
+    "yaw_deg": 90.0
+   },
+   "source": "Representative: dimensions after Idu (G 7102 C) and Hetepheres I (G 7000 X) in sim/legacy/catalog/giza/surveys.json; positions and depths chosen to span the 5-30 m band.",
+   "group": "shafts"
+  },
+  {
+   "id": "shaft-05",
+   "name": "Shaft 5 (10 m)",
+   "kind": "shaft",
+   "status": "representative",
+   "fill": "air",
+   "shape": {
+    "type": "box",
+    "centre": [
+     -33.7,
+     -5.0,
+     -4.5
+    ],
+    "size": [
+     1.72,
+     1.72,
+     11.0
+    ]
+   },
+   "source": "Representative: dimensions after Idu (G 7102 C) and Hetepheres I (G 7000 X) in sim/legacy/catalog/giza/surveys.json; positions and depths chosen to span the 5-30 m band.",
+   "group": "shafts"
+  },
+  {
+   "id": "chamber-05",
+   "name": "Chamber 5",
+   "kind": "tomb",
+   "status": "representative",
+   "fill": "air",
+   "shape": {
+    "type": "box",
+    "centre": [
+     -33.7,
+     -2.6,
+     -9.0
+    ],
+    "size": [
+     2.72,
+     5.22,
+     1.95
+    ],
+    "yaw_deg": 0.0
+   },
+   "source": "Representative: dimensions after Idu (G 7102 C) and Hetepheres I (G 7000 X) in sim/legacy/catalog/giza/surveys.json; positions and depths chosen to span the 5-30 m band.",
+   "group": "shafts"
+  },
+  {
+   "id": "shaft-06",
+   "name": "Shaft 6 (14 m)",
+   "kind": "shaft",
+   "status": "representative",
+   "fill": "air",
+   "shape": {
+    "type": "box",
+    "centre": [
+     -14.3,
+     -8.7,
+     -6.5
+    ],
+    "size": [
+     1.72,
+     1.72,
+     15.0
+    ]
+   },
+   "source": "Representative: dimensions after Idu (G 7102 C) and Hetepheres I (G 7000 X) in sim/legacy/catalog/giza/surveys.json; positions and depths chosen to span the 5-30 m band.",
+   "group": "shafts"
+  },
+  {
+   "id": "chamber-06",
+   "name": "Chamber 6",
+   "kind": "tomb",
+   "status": "representative",
+   "fill": "air",
+   "shape": {
+    "type": "box",
+    "centre": [
+     -14.3,
+     -6.3,
+     -13.0
+    ],
+    "size": [
+     2.72,
+     5.22,
+     1.95
+    ],
+    "yaw_deg": 90.0
+   },
+   "source": "Representative: dimensions after Idu (G 7102 C) and Hetepheres I (G 7000 X) in sim/legacy/catalog/giza/surveys.json; positions and depths chosen to span the 5-30 m band.",
+   "group": "shafts"
+  },
+  {
+   "id": "shaft-07",
+   "name": "Shaft 7 (24 m)",
+   "kind": "shaft",
+   "status": "representative",
+   "fill": "air",
+   "shape": {
+    "type": "box",
+    "centre": [
+     12.9,
+     -9.6,
+     -11.5
+    ],
+    "size": [
+     1.3,
+     1.3,
+     25.0
+    ]
+   },
+   "source": "Representative: dimensions after Idu (G 7102 C) and Hetepheres I (G 7000 X) in sim/legacy/catalog/giza/surveys.json; positions and depths chosen to span the 5-30 m band.",
+   "group": "shafts"
+  },
+  {
+   "id": "chamber-07",
+   "name": "Chamber 7",
+   "kind": "tomb",
+   "status": "representative",
+   "fill": "air",
+   "shape": {
+    "type": "box",
+    "centre": [
+     12.9,
+     -7.2,
+     -23.0
+    ],
+    "size": [
+     2.72,
+     5.22,
+     1.95
+    ],
+    "yaw_deg": 0.0
+   },
+   "source": "Representative: dimensions after Idu (G 7102 C) and Hetepheres I (G 7000 X) in sim/legacy/catalog/giza/surveys.json; positions and depths chosen to span the 5-30 m band.",
+   "group": "shafts"
+  },
+  {
+   "id": "shaft-08",
+   "name": "Shaft 8 (22 m)",
+   "kind": "shaft",
+   "status": "representative",
+   "fill": "air",
+   "shape": {
+    "type": "box",
+    "centre": [
+     36.1,
+     -6.3,
+     -10.5
+    ],
+    "size": [
+     1.3,
+     1.3,
+     23.0
+    ]
+   },
+   "source": "Representative: dimensions after Idu (G 7102 C) and Hetepheres I (G 7000 X) in sim/legacy/catalog/giza/surveys.json; positions and depths chosen to span the 5-30 m band.",
+   "group": "shafts"
+  },
+  {
+   "id": "chamber-08",
+   "name": "Chamber 8",
+   "kind": "tomb",
+   "status": "representative",
+   "fill": "air",
+   "shape": {
+    "type": "box",
+    "centre": [
+     36.1,
+     -3.9,
+     -21.0
+    ],
+    "size": [
+     2.72,
+     5.22,
+     1.95
+    ],
+    "yaw_deg": 0.0
+   },
+   "source": "Representative: dimensions after Idu (G 7102 C) and Hetepheres I (G 7000 X) in sim/legacy/catalog/giza/surveys.json; positions and depths chosen to span the 5-30 m band.",
+   "group": "shafts"
+  },
+  {
+   "id": "shaft-09",
+   "name": "Shaft 9 (12 m)",
+   "kind": "shaft",
+   "status": "representative",
+   "fill": "air",
+   "shape": {
+    "type": "box",
+    "centre": [
+     -32.7,
+     19.0,
+     -5.5
+    ],
+    "size": [
+     1.72,
+     1.72,
+     13.0
+    ]
+   },
+   "source": "Representative: dimensions after Idu (G 7102 C) and Hetepheres I (G 7000 X) in sim/legacy/catalog/giza/surveys.json; positions and depths chosen to span the 5-30 m band.",
+   "group": "shafts"
+  },
+  {
+   "id": "chamber-09",
+   "name": "Chamber 9",
+   "kind": "tomb",
+   "status": "representative",
+   "fill": "air",
+   "shape": {
+    "type": "box",
+    "centre": [
+     -32.7,
+     21.4,
+     -11.0
+    ],
+    "size": [
+     2.72,
+     5.22,
+     1.95
+    ],
+    "yaw_deg": 0.0
+   },
+   "source": "Representative: dimensions after Idu (G 7102 C) and Hetepheres I (G 7000 X) in sim/legacy/catalog/giza/surveys.json; positions and depths chosen to span the 5-30 m band.",
+   "group": "shafts"
+  },
+  {
+   "id": "shaft-10",
+   "name": "Shaft 10 (18 m)",
+   "kind": "shaft",
+   "status": "representative",
+   "fill": "air",
+   "shape": {
+    "type": "box",
+    "centre": [
+     -12.0,
+     16.0,
+     -8.5
+    ],
+    "size": [
+     1.3,
+     1.3,
+     19.0
+    ]
+   },
+   "source": "Representative: dimensions after Idu (G 7102 C) and Hetepheres I (G 7000 X) in sim/legacy/catalog/giza/surveys.json; positions and depths chosen to span the 5-30 m band.",
+   "group": "shafts"
+  },
+  {
+   "id": "chamber-10",
+   "name": "Chamber 10",
+   "kind": "tomb",
+   "status": "representative",
+   "fill": "air",
+   "shape": {
+    "type": "box",
+    "centre": [
+     -12.0,
+     18.4,
+     -17.0
+    ],
+    "size": [
+     2.72,
+     5.22,
+     1.95
+    ],
+    "yaw_deg": 90.0
+   },
+   "source": "Representative: dimensions after Idu (G 7102 C) and Hetepheres I (G 7000 X) in sim/legacy/catalog/giza/surveys.json; positions and depths chosen to span the 5-30 m band.",
+   "group": "shafts"
+  },
+  {
+   "id": "shaft-11",
+   "name": "Shaft 11 (26 m)",
+   "kind": "shaft",
+   "status": "representative",
+   "fill": "air",
+   "shape": {
+    "type": "box",
+    "centre": [
+     8.1,
+     15.5,
+     -12.5
+    ],
+    "size": [
+     1.3,
+     1.3,
+     27.0
+    ]
+   },
+   "source": "Representative: dimensions after Idu (G 7102 C) and Hetepheres I (G 7000 X) in sim/legacy/catalog/giza/surveys.json; positions and depths chosen to span the 5-30 m band.",
+   "group": "shafts"
+  },
+  {
+   "id": "chamber-11",
+   "name": "Chamber 11",
+   "kind": "tomb",
+   "status": "representative",
+   "fill": "air",
+   "shape": {
+    "type": "box",
+    "centre": [
+     8.1,
+     17.9,
+     -25.0
+    ],
+    "size": [
+     2.72,
+     5.22,
+     1.95
+    ],
+    "yaw_deg": 90.0
+   },
+   "source": "Representative: dimensions after Idu (G 7102 C) and Hetepheres I (G 7000 X) in sim/legacy/catalog/giza/surveys.json; positions and depths chosen to span the 5-30 m band.",
+   "group": "shafts"
+  },
+  {
+   "id": "shaft-12",
+   "name": "Shaft 12 (30 m)",
+   "kind": "shaft",
+   "status": "representative",
+   "fill": "air",
+   "shape": {
+    "type": "box",
+    "centre": [
+     33.6,
+     17.0,
+     -14.5
+    ],
+    "size": [
+     1.3,
+     1.3,
+     31.0
+    ]
+   },
+   "source": "Representative: dimensions after Idu (G 7102 C) and Hetepheres I (G 7000 X) in sim/legacy/catalog/giza/surveys.json; positions and depths chosen to span the 5-30 m band.",
+   "group": "shafts"
+  },
+  {
+   "id": "chamber-12",
+   "name": "Chamber 12",
+   "kind": "tomb",
+   "status": "representative",
+   "fill": "air",
+   "shape": {
+    "type": "box",
+    "centre": [
+     33.6,
+     19.4,
+     -29.0
+    ],
+    "size": [
+     2.72,
+     5.22,
+     1.95
+    ],
+    "yaw_deg": 90.0
+   },
+   "source": "Representative: dimensions after Idu (G 7102 C) and Hetepheres I (G 7000 X) in sim/legacy/catalog/giza/surveys.json; positions and depths chosen to span the 5-30 m band.",
+   "group": "shafts"
+  }
+ ],
+ "generator": "katabasis.compose.benches.shaft_field",
+ "notes": [
+  "Shaft and chamber dimensions follow Idu (G 7102 C: 1.72 m square shaft to 8.05 m) and Hetepheres I (G 7000 X: 1.30 x 1.14 m shaft to 27.42 m; chamber 2.72 x 5.22 m); the layout is representative."
+ ]
+}

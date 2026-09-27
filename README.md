@@ -1,100 +1,43 @@
-# sar — testing single-image "SAR Doppler tomography"
+# Katabasis — a simulation lab for the underworld
 
-Code and data behind **[SAR Depth, Tested](https://ejhong.github.io/sar/)**, including an
-interactive [three-dimensional viewer](https://ejhong.github.io/sar/underworld.html) for the
-depth volumes.
+Code and data behind **[Katabasis](https://ejhong.github.io/sar/)**, which asks what can see beneath the ground, and
+how far down, by building ground whose contents are known and simulating the instruments over it.
 
-Read `STYLE.md` before touching `docs/`, and `ROADMAP.md` before picking the work up cold.
+The claim under test is the single-image SAR "Doppler tomography" of Biondi & Malanga (2022, retracted 2026) and the
+2025 Khafre "underground city" announcement. The lab answers it in two phases:
 
-The question is whether one radar image can map structure under the ground. The claim under
-test is the single-SLC "Doppler tomography" of Biondi & Malanga (2022, retracted 2026) and the
-2025 Khafre "underground city" announcement. The repository answers it in two halves.
+1. **Seismic tomography, simulated.** Full 3-D elastic waves through composed test sites and Giza, recorded by the arrays
+   near-surface surveys deploy, inverted by travel-time, ambient-noise and full-waveform tomography, and scored against the
+   truth. The reference ceiling.
+2. **The satellite over the same ground.** An ICEYE Spotlight Dwell with the real Giza and Sacsayhuamán parameters,
+   simulated over the same shaking ground and compared pixel by pixel with the geophones; then the real products.
 
-**Simulation.** Reimplement the published pipeline exactly as described, then feed it scenes
-whose contents are known: a motionless stepped pyramid, empty desert, two rocks, a wall of
-courses, ground that really vibrates. Whatever it draws at depth in those scenes cannot be
-geology. A separate coupled benchmark gives depth recovery a fair chance to succeed, using a
-wave-equation forward model and a physical-template inverse, and measures when it does.
-
-**Real acquisitions.** Run the same chain on two ICEYE Spotlight Dwell Fine products, one of
-the Giza plateau and one of Sacsayhuamán. A dwell is the most favourable case the method can be
-given: its Doppler axis spans about 24.5 s of real aperture, so sub-apertures are separated by
-seconds and genuine ground motion is at least in principle within reach. Depth geometry uses
-the products' own orbit state vectors rather than a scalar baseline approximation.
+The first investigation (the published pipeline reimplemented and run on two real ICEYE dwells) is kept intact in
+`sim/legacy/` and its site at [/sar/archive/](https://ejhong.github.io/sar/archive/).
 
 ## Layout
 
 ```
-sarsim/           the toolkit
-  geometry.py     synthetic radar geometry; Doppler <-> slow time <-> baseline <-> aspect
-  scene.py        scatterer scenes: stepped pyramid with layover/occlusion/flash, rocks, vibration
-  synth.py        spectral-domain synthesis of a focused SLC (+ speckle clutter)
-  subap.py        reference/offset sub-aperture bank in spatial frequency (synthetic side)
-  track.py        batched complex cross-correlation with upsampled-DFT sub-pixel refinement
-  tomo.py         trajectory -> depth: paper variant and the derivative protocol's branches
-  gates.py        the derivative protocol's ellipse acceptance gates
-  pipeline.py     end-to-end synthetic run
-  waves.py        2-D SH cavity forward model for the coupled benchmark
-  measurement.py  reflector acquisition model and the physical-template inverse
-  dwell.py        REAL DATA: ICEYE dwell product adapter and Doppler bank in hertz
-  terrain.py      REAL DATA: Copernicus DEM heights
-  orbit.py        REAL DATA: WGS84, state-vector ephemeris, virtual baselines, steering Kz
-  geolocation.py  strict RPC projection and geometry audit
-  realdata.py     bounded, read-only product inspection
-  viz.py          figure styling
-experiments/
-  t01..t07        simulation chapter: what the method computes and why
-  validation.py   coupled physical benchmark and its controls
-  feasibility.py  phase readout, motion detection, AI controls
-  robustness.py   stress tests of the simulation examples
-  real_common.py  REAL DATA: patch orchestration and caching
-  r01..r09        REAL DATA: within-image controls, depth axis, split dwell, velocity floor,
-                  learned null, second site, injected motion, sections, coherence
-  export_voxels.py  volume bundles for the three-dimensional viewer
-fieldwork/        real-image checks: spectra, timing audit, planted translations, previews
-catalog/          site definitions and survey references
-research/         known-void inventory, geometry audits
-scripts/          product inspection and audit entry points
-build_dashboard.py  builds docs/index.html from results/*/summary.json
-docs/             the published GitHub Pages site: dashboard, viewer, field atlas
-site/             the field atlas template and its assets
-tests/            pytest suites for every module above
+sites/            materials.json (sourced) and one composition per site: bench-void, bench-shafts,
+                  bench-khafre-claim, giza
+sim/              the Python lab (uv)
+  katabasis/
+    compose/      materials, site schema, shapes, terrain, heterogeneity, voxeliser, DEM crops
+    seismic/      3-D elastic solver, arrays, inversions (Phase 1, in progress)
+    export/       everything the site reads, written to web/public/data/
+  sarsim/         the SAR toolkit from the first investigation (Phase 2 builds on it)
+  legacy/         the first investigation: experiments, fieldwork, results, catalog, tests
+  tests/
+web/              the site: Astro + Three.js; builds into docs/
+docs/             the built site, served by GitHub Pages from main
 ```
 
 ## Run
 
 ```bash
-python3.11 -m venv .venv && .venv/bin/pip install -r requirements.txt
-.venv/bin/python -m pytest tests
-
-# simulation chapter
-cd experiments && ../.venv/bin/python run_all.py
-
-# real chapter (needs the two ICEYE products; paths in experiments/real_common.py)
-cd experiments && ../.venv/bin/python r01_giza_controls.py
-../.venv/bin/python r02_depth_axis.py
-../.venv/bin/python r03_split_dwell.py
-../.venv/bin/python r04_velocity_floor.py
-../.venv/bin/python r05_learned_null.py
-
-cd .. && .venv/bin/python build_dashboard.py
+cd sim && uv sync && uv run pytest            # simulation and checks
+uv run python -m katabasis.export             # regenerate web/public/data/
+cd ../web && npm ci && npm run check && npm test && npm run build   # site → docs/
 ```
 
-The 10 GB products stay outside the repository. Nothing reads a full raster; every real-data
-step works on a bounded, geolocated crop and records the crop origin in its report.
-
-Adding an experiment: write `experiments/<id>.py` that saves figures under `results/<id>/figs`
-and a `summary.json` with `id, order, tag, eyebrow, title, question, finding, limitations,
-method, figures, metrics`, then rebuild the site.
-
-## Status
-
-Simulation chapter complete. Real chapter complete for both acquisitions: Giza at four
-monuments and two controls, Sacsayhuamán at four patches, plus the depth-axis, coherence,
-split-dwell, velocity-floor, injected-motion, section and learned-null tests.
-
-Open work is listed in `ROADMAP.md`; the next task is the positive control against surveyed
-chambers, which is blocked on placing them in the radar image to better than a chamber's width.
-
-`METHOD_AUDIT.md` is the running ledger of what is and is not established, including
-corrections to earlier versions of this work.
+`METHOD_AUDIT.md` records what is and is not established; `ROADMAP.md` is the plan.

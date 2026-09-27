@@ -1,0 +1,148 @@
+---
+import Base from './Base.astro';
+
+/**
+ * Reading pages: one limestone sheet with a quiet index under the title.
+ * Dashboard pieces (stat rows, tables, figures) sit inside it on a grid.
+ */
+interface Props {
+  title: string;
+  kicker: string;
+  lede?: string;
+  current: string;
+  description?: string;
+  index?: { id: string; label: string }[];
+  state?: string;
+}
+const { title, kicker, lede, current, description, index = [], state } = Astro.props;
+---
+<Base title={title} current={current} description={description ?? lede}>
+  <div class="doc">
+    <article class="sheet">
+      <header class="sheet-head">
+        <p class="label">{kicker}</p>
+        <h1>{title}</h1>
+        {lede && <p class="lede">{lede}</p>}
+        {state && <p class="state mono">{state}</p>}
+        {
+          index.length > 0 && (
+            <nav class="index" aria-label="On this page">
+              {index.map((t) => (
+                <a href={`#${t.id}`}>{t.label}</a>
+              ))}
+            </nav>
+          )
+        }
+      </header>
+      <div class="sheet-body">
+        <slot />
+      </div>
+    </article>
+  </div>
+</Base>
+
+<style is:global>
+  .doc {
+    padding: 22px 16px 0;
+  }
+  .sheet {
+    max-width: 1080px;
+    margin: 0 auto;
+    background: var(--sheet);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 38px 56px 48px;
+  }
+  .sheet-head {
+    max-width: 760px;
+    margin-bottom: 26px;
+  }
+  .sheet-head h1 {
+    margin: 8px 0 10px;
+  }
+  .lede {
+    font-family: var(--font-serif);
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--body);
+  }
+  .state {
+    font-size: 10.5px;
+    color: var(--muted);
+    margin-top: 10px;
+  }
+  .index {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 18px;
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+  .index a {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .index a:hover {
+    color: var(--lapis);
+  }
+  .sheet-body > section {
+    padding: 26px 0;
+    border-top: 1px solid var(--border);
+    scroll-margin-top: 16px;
+  }
+  .sheet-body > section > h2 {
+    margin-bottom: 10px;
+  }
+  .sheet-body > section > .sub {
+    font-family: var(--font-serif);
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: var(--body);
+    max-width: 760px;
+    margin-bottom: 16px;
+  }
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .note-card {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    background: var(--bg);
+  }
+  .note-card h3 {
+    margin-bottom: 6px;
+  }
+  .note-card p,
+  .note-card li {
+    font-family: var(--font-serif);
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--body);
+  }
+  .note-card ul {
+    padding-left: 1.1em;
+  }
+  .note-card .tag {
+    margin-bottom: 8px;
+  }
+  @media (max-width: 860px) {
+    .sheet {
+      padding: 26px 18px 34px;
+    }
+    .grid-2,
+    .grid-3 {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
