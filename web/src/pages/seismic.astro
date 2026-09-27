@@ -1,13 +1,21 @@
 ---
 import Doc from '../layouts/Doc.astro';
+import LineChart from '../components/LineChart.astro';
+import v01 from '../../public/data/runs/p1_01_forward_validation.json';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const st = v01.stokes;
+const ra = v01.rayleigh;
+const rc = v01.reciprocity;
+const ab = v01.absorbing;
+const run = v01.manifest;
+const ray10 = ra.rows.find((r) => r.points_per_wavelength === 10)!;
 ---
 <Doc
   title="Seismic tomography, simulated"
   kicker="Phase 1 · the reference ceiling"
   current="seismic"
   lede="Before asking whether a satellite can see a chamber, ask what the instruments built for the job can see. Geophysicists image the shallow ground with arrays of geophones and a source, hammer blows or the ambient hum, and invert the records into a three-dimensional tomogram. This chapter does that in simulation, over ground whose contents are known."
-  state="status · composition model and test benches done · 3-D elastic solver in progress"
+  state="status · composition model and test benches done · 3-D elastic solver validated · inversions in progress"
   index={[
     { id: 'chain', label: 'The chain' },
     { id: 'forward', label: 'Forward model' },
@@ -46,17 +54,73 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   </section>
 
   <section id="forward">
-    <h2>The forward model is validated against exact solutions before it touches a chamber</h2>
-    <table class="data">
-      <thead><tr><th>Check</th><th>What it proves</th><th>State</th></tr></thead>
-      <tbody>
-        <tr><td>Lamb's problem</td><td>Point force on a half-space: the free surface and the Rayleigh wave arrive where theory puts them</td><td class="mono">building</td></tr>
-        <tr><td>Stokes solution</td><td>Point force in a whole space: P and S amplitudes and arrival times</td><td class="mono">building</td></tr>
-        <tr><td>Absorbing boundaries</td><td>Energy leaving the grid does not return</td><td class="mono">building</td></tr>
-        <tr><td>Reciprocity</td><td>Swapping source and receiver leaves the record unchanged</td><td class="mono">building</td></tr>
-        <tr><td>2-D cross-check</td><td>Agreement with the first investigation's independent shear-wave cavity solver</td><td class="mono">building</td></tr>
-      </tbody>
-    </table>
+    <h2>The solver matches exact solutions to within a fraction of a percent</h2>
+    <p class="sub">
+      Before it touches a chamber, the forward model is checked where the answer is known exactly, in Mokattam limestone
+      (P {v01.manifest.params.vp_m_s.toLocaleString('en-US')} m/s, S {v01.manifest.params.vs_m_s.toLocaleString('en-US')} m/s).
+    </p>
+    <div class="stat-row">
+      <div class="stat"><span class="value">{st.worst_ncc.toFixed(3)}</span><span class="what">worst correlation with the exact point-force response, every component</span><span class="src">Stokes · {st.points_per_wavelength.toFixed(0)} points per wavelength</span></div>
+      <div class="stat"><span class="value">{(100 * st.worst_amplitude_error).toFixed(1)}<small>%</small></span><span class="what">worst amplitude error against the same solution</span><span class="src">Stokes</span></div>
+      <div class="stat"><span class="value">{ray10.error_percent.toFixed(2)}<small>%</small></span><span class="what">Rayleigh-wave speed error on the free surface at ten points per S wavelength</span><span class="src">Rayleigh equation</span></div>
+      <div class="stat"><span class="value">{rc.ncc.toFixed(4)}</span><span class="what">reciprocity: swapping source and receiver across a {rc.void_m} m void</span><span class="src">reciprocity</span></div>
+      <div class="stat"><span class="value">{ab.final_relative.toExponential(0).replace('e-', '×10⁻').replace(/(\d+)$/, (d) => [...d].map((c) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[+c]).join(''))}</span><span class="what">of the peak energy left in the grid once the waves have gone</span><span class="src">absorbing boundaries</span></div>
+    </div>
+    <div class="grid-2 charts">
+      {
+        st.panels.map((p) => (
+          <LineChart
+            title={`Point force: ${p.component} velocity, ${p.receiver}, ${p.offset_m.toFixed(0)} m`}
+            series={[
+              { name: 'exact', x: p.t_ms, y: p.exact, color: 'var(--text)', width: 1.5 },
+              { name: 'simulated', x: p.t_ms, y: p.simulated, color: 'var(--verdigris)', dash: '4 3' },
+            ]}
+            xLabel="time, ms"
+            yLabel="velocity (scaled)"
+            height={170}
+            zeroLine
+            directLabels={false}
+            caption={`correlation ${p.ncc.toFixed(4)} · amplitude ratio ${p.amplitude_ratio.toFixed(3)}`}
+          />
+        ))
+      }
+      <LineChart
+        title="Rayleigh-wave speed on the free surface"
+        series={[{ name: 'error', x: ra.rows.map((r) => r.points_per_wavelength), y: ra.rows.map((r) => r.error_percent), color: 'var(--verdigris)', markers: true }]}
+        xLabel="points per minimum S wavelength"
+        yLabel="speed error"
+        yFormat="pct"
+        height={170}
+        zeroLine
+        yDomain={[-1.2, 0.2]}
+        caption={`measured by cross-correlation at 3 to 8 wavelengths; exact ${ra.exact_m_s.toFixed(0)} m/s from the Rayleigh equation`}
+      />
+      <LineChart
+        title="Energy left in the grid"
+        series={[{ name: 'energy', x: ab.t_ms, y: ab.energy_relative, color: 'var(--verdigris)' }]}
+        xLabel="time, ms"
+        yLabel="relative energy"
+        logY
+        yFormat="exp"
+        height={170}
+        yDomain={[1e-10, 1]}
+        caption={`C-PML, ${ab.pml_cells} cells on every face`}
+      />
+      <LineChart
+        title={`Reciprocity across a ${rc.void_m} m void`}
+        series={[
+          { name: 'east force → up velocity', x: rc.t_ms, y: rc.forward, color: 'var(--text)', width: 1.5 },
+          { name: 'up force → east velocity', x: rc.t_ms, y: rc.reverse, color: 'var(--verdigris)', dash: '4 3' },
+        ]}
+        xLabel="time, ms"
+        yLabel="velocity (scaled)"
+        height={170}
+        zeroLine
+        directLabels={false}
+        caption={`correlation ${rc.ncc.toFixed(5)} · amplitude ratio ${rc.amplitude_ratio.toFixed(3)}`}
+      />
+    </div>
+    <p class="runline mono">run {run.id} · {run.date} · commit {run.commit} · {run.runtime_s} s · {st.mcell_steps_per_s.toFixed(0)} M cell-steps/s on {run.environment.threads} threads</p>
   </section>
 
   <section id="arrays">
@@ -101,3 +165,15 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     </p>
   </section>
 </Doc>
+
+<style>
+  .charts {
+    margin-top: 18px;
+    gap: 22px 28px;
+  }
+  .runline {
+    font-size: 10px;
+    color: var(--faint);
+    margin-top: 14px;
+  }
+</style>

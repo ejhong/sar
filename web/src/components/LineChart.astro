@@ -1,0 +1,346 @@
+---
+/**
+ * A small line chart drawn at build time as SVG, with a crosshair and a
+ * tooltip on hover. Thin marks, hairline grid, one axis, a legend for two or
+ * more series with direct labels at the line ends; text in ink, never in the
+ * series colour. Colours come from the token roles.
+ */
+interface Series {
+  name: string;
+  x: number[];
+  y: number[];
+  color: string; // a CSS colour, normally var(--role)
+  dash?: string;
+  markers?: boolean;
+  width?: number;
+}
+interface Props {
+  series: Series[];
+  xLabel: string;
+  yLabel: string;
+  title?: string;
+  height?: number;
+  xDomain?: [number, number];
+  yDomain?: [number, number];
+  logY?: boolean;
+  xTicks?: number[];
+  yTicks?: number[];
+  yFormat?: 'num' | 'pct' | 'exp';
+  zeroLine?: boolean;
+  caption?: string;
+  directLabels?: boolean;
+}
+const {
+  series,
+  xLabel,
+  yLabel,
+  title,
+  height = 200,
+  logY = false,
+  yFormat = 'num',
+  zeroLine = false,
+  caption,
+  directLabels = true,
+} = Astro.props;
+
+const W = 560;
+const H = height;
+const m = { l: 46, r: directLabels && series.length > 1 ? 86 : 14, t: 12, b: 34 };
+const iw = W - m.l - m.r;
+const ih = H - m.t - m.b;
+const allX = series.flatMap((s) => s.x);
+const allY = series.flatMap((s) => s.y).filter((v) => !logY || v > 0);
+const xd = Astro.props.xDomain ?? [Math.min(...allX), Math.max(...allX)];
+let yd = Astro.props.yDomain ?? [Math.min(...allY), Math.max(...allY)];
+if (!Astro.props.yDomain && !logY) {
+  const pad = (yd[1] - yd[0]) * 0.08 || 1;
+  yd = [yd[0] - pad, yd[1] + pad];
+}
+const ty = (v: number) => (logY ? Math.log10(Math.max(v, 1e-30)) : v);
+const yLo = ty(yd[0]);
+const yHi = ty(yd[1]);
+const sx = (v: number) => m.l + ((v - xd[0]) / (xd[1] - xd[0])) * iw;
+const sy = (v: number) => m.t + ih - ((ty(v) - yLo) / (yHi - yLo)) * ih;
+
+function nice(lo: number, hi: number, n = 5): number[] {
+  const raw = (hi - lo) / n;
+  const p = Math.pow(10, Math.floor(Math.log10(raw)));
+  const step = [1, 2, 2.5, 5, 10].map((k) => k * p).find((s) => s >= raw) ?? raw;
+  const out: number[] = [];
+  for (let v = Math.ceil(lo / step) * step; v <= hi + step * 1e-9; v += step) out.push(+v.toPrecision(10));
+  return out;
+}
+const xt = Astro.props.xTicks ?? nice(xd[0], xd[1], 6);
+const yt =
+  Astro.props.yTicks ??
+  (logY
+    ? Array.from({ length: Math.floor(yHi) - Math.ceil(yLo) + 1 }, (_, i) => Math.pow(10, Math.ceil(yLo) + i)).filter(
+        (_, i, a) => a.length <= 6 || (a.length - 1 - i) % 2 === 0,
+      )
+    : nice(yd[0], yd[1], 4));
+const fmt = (v: number) => {
+  if (yFormat === 'pct') return `${v > 0 ? '+' : ''}${v.toFixed(Math.abs(v) < 1 ? 1 : 0)}%`;
+  if (yFormat === 'exp') return v === 1 ? '1' : `10${String(Math.round(Math.log10(v))).replace('-', '⁻').replace(/\d/g, (d) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[+d])}`;
+  return Math.abs(v) >= 1000 ? v.toLocaleString('en-US') : String(+v.toPrecision(4));
+};
+const path = (s: Series) =>
+  s.x
+    .map((x, i) => [x, s.y[i]] as const)
+    .filter(([, y]) => !logY || y > 0)
+    .map(([x, y], i) => `${i ? 'L' : 'M'}${sx(x).toFixed(1)},${sy(y).toFixed(1)}`)
+    .join('');
+const data = JSON.stringify({
+  xd,
+  m,
+  iw,
+  W,
+  series: series.map((s) => ({ name: s.name, color: s.color, x: s.x, y: s.y })),
+  yFormat,
+});
+const labelY = series.map((s) => sy(s.y[s.y.length - 1]));
+// keep direct labels apart
+const order = labelY.map((y, i) => [y, i] as const).sort((a, b) => a[0] - b[0]);
+const placed: number[] = new Array(series.length);
+let last = -Infinity;
+for (const [y, i] of order) {
+  const yy = Math.max(y, last + 12);
+  placed[i] = yy;
+  last = yy;
+}
+---
+<figure class="lc">
+  {title && <figcaption class="lc-title">{title}</figcaption>}
+  {
+    series.length > 1 && (
+      <div class="lc-legend">
+        {series.map((s) => (
+          <span>
+            <svg width="18" height="8" aria-hidden="true">
+              <line x1="0" y1="4" x2="18" y2="4" stroke={s.color} stroke-width="2" stroke-dasharray={s.dash} />
+            </svg>
+            {s.name}
+          </span>
+        ))}
+      </div>
+    )
+  }
+  <div class="lc-plot" data-chart={data}>
+    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`${yLabel} against ${xLabel}`}>
+      <g class="lc-grid">
+        {yt.map((v) => <line x1={m.l} x2={m.l + iw} y1={sy(v)} y2={sy(v)} />)}
+      </g>
+      {zeroLine && !logY && <line class="lc-zero" x1={m.l} x2={m.l + iw} y1={sy(0)} y2={sy(0)} />}
+      <g class="lc-axis">
+        <line x1={m.l} x2={m.l + iw} y1={m.t + ih} y2={m.t + ih} />
+        {
+          xt.map((v) => (
+            <g>
+              <line x1={sx(v)} x2={sx(v)} y1={m.t + ih} y2={m.t + ih + 4} />
+              <text x={sx(v)} y={m.t + ih + 15} text-anchor="middle">
+                {Math.abs(v) >= 1000 ? v.toLocaleString('en-US') : String(+v.toPrecision(4))}
+              </text>
+            </g>
+          ))
+        }
+        {
+          yt.map((v) => (
+            <text x={m.l - 6} y={sy(v) + 3} text-anchor="end">
+              {fmt(v)}
+            </text>
+          ))
+        }
+        <text class="lc-label" x={m.l + iw / 2} y={H - 4} text-anchor="middle">{xLabel}</text>
+        <text class="lc-label" x={10} y={m.t + ih / 2} text-anchor="middle" transform={`rotate(-90 10 ${m.t + ih / 2})`}>{yLabel}</text>
+      </g>
+      {
+        series.map((s) => (
+          <path d={path(s)} fill="none" stroke={s.color} stroke-width={s.width ?? 2} stroke-dasharray={s.dash} stroke-linejoin="round" stroke-linecap="round" />
+        ))
+      }
+      {
+        series
+          .filter((s) => s.markers)
+          .map((s) =>
+            s.x.map((x, i) => <circle cx={sx(x)} cy={sy(s.y[i])} r="4.5" fill={s.color} stroke="var(--sheet)" stroke-width="2" />),
+          )
+      }
+      {
+        directLabels &&
+          series.length > 1 &&
+          series.map((s, i) => (
+            <text class="lc-direct" x={m.l + iw + 8} y={placed[i] + 3}>
+              {s.name}
+            </text>
+          ))
+      }
+      <g class="lc-hover" visibility="hidden">
+        <line class="lc-cross" y1={m.t} y2={m.t + ih} />
+        {series.map((s) => <circle r="4.5" fill={s.color} stroke="var(--sheet)" stroke-width="2" />)}
+      </g>
+      <rect class="lc-hit" x={m.l} y={m.t} width={iw} height={ih} fill="transparent" />
+    </svg>
+    <div class="lc-tip" hidden></div>
+  </div>
+  {caption && <p class="lc-caption">{caption}</p>}
+</figure>
+
+<script>
+  for (const el of document.querySelectorAll<HTMLElement>('.lc-plot')) {
+    const d = JSON.parse(el.dataset.chart!);
+    const svg = el.querySelector('svg')!;
+    const hover = svg.querySelector<SVGGElement>('.lc-hover')!;
+    const cross = hover.querySelector('line')!;
+    const dots = [...hover.querySelectorAll('circle')];
+    const tip = el.querySelector<HTMLElement>('.lc-tip')!;
+    const hit = svg.querySelector<SVGRectElement>('.lc-hit')!;
+    const paths = [...svg.querySelectorAll<SVGPathElement>('path')];
+    const fmt = (v: number) =>
+      d.yFormat === 'pct' ? `${v > 0 ? '+' : ''}${v.toFixed(2)}%` : d.yFormat === 'exp' ? v.toExponential(1) : (+v.toPrecision(3)).toString();
+    hit.addEventListener('pointermove', (e) => {
+      const r = svg.getBoundingClientRect();
+      const px = ((e.clientX - r.left) / r.width) * d.W;
+      const xv = d.xd[0] + ((px - d.m.l) / d.iw) * (d.xd[1] - d.xd[0]);
+      const rows: string[] = [];
+      let xs = 0;
+      d.series.forEach((s: { x: number[]; y: number[]; name: string; color: string }, i: number) => {
+        let best = 0;
+        for (let k = 1; k < s.x.length; k++) if (Math.abs(s.x[k] - xv) < Math.abs(s.x[best] - xv)) best = k;
+        xs = s.x[best];
+        const p = paths[i];
+        const len = p.getTotalLength();
+        // find the point on the path nearest this x (binary search on length)
+        let lo = 0,
+          hi = len;
+        const target = d.m.l + ((s.x[best] - d.xd[0]) / (d.xd[1] - d.xd[0])) * d.iw;
+        for (let it = 0; it < 24; it++) {
+          const mid = (lo + hi) / 2;
+          if (p.getPointAtLength(mid).x < target) lo = mid;
+          else hi = mid;
+        }
+        const pt = p.getPointAtLength(lo);
+        dots[i].setAttribute('cx', String(pt.x));
+        dots[i].setAttribute('cy', String(pt.y));
+        rows.push(`<span><i style="background:${s.color}"></i>${s.name}</span><b>${fmt(s.y[best])}</b>`);
+      });
+      const cx = d.m.l + ((xs - d.xd[0]) / (d.xd[1] - d.xd[0])) * d.iw;
+      cross.setAttribute('x1', String(cx));
+      cross.setAttribute('x2', String(cx));
+      hover.setAttribute('visibility', 'visible');
+      tip.hidden = false;
+      tip.innerHTML = `<div class="lc-tip-x">${(+xs.toPrecision(4)).toString()}</div>${rows.join('')}`;
+      const left = (cx / d.W) * r.width;
+      tip.style.left = `${Math.min(left + 12, r.width - tip.offsetWidth - 4)}px`;
+    });
+    hit.addEventListener('pointerleave', () => {
+      hover.setAttribute('visibility', 'hidden');
+      tip.hidden = true;
+    });
+  }
+</script>
+
+<style is:global>
+  .lc {
+    margin: 0;
+    min-width: 0;
+  }
+  .lc-title {
+    font-size: 12.5px;
+    font-weight: 650;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .lc-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 14px;
+    font: 10.5px/1.4 var(--font-mono);
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .lc-legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .lc-plot {
+    position: relative;
+  }
+  .lc-plot svg {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  .lc-grid line {
+    stroke: var(--border);
+    stroke-width: 1;
+  }
+  .lc-zero {
+    stroke: var(--border-strong);
+    stroke-width: 1;
+  }
+  .lc-axis line {
+    stroke: var(--border-strong);
+    stroke-width: 1;
+  }
+  .lc-axis text,
+  .lc-direct {
+    font: 10px var(--font-mono);
+    fill: var(--muted);
+  }
+  .lc-axis .lc-label {
+    fill: var(--muted);
+    font-size: 10px;
+  }
+  .lc-direct {
+    fill: var(--body);
+  }
+  .lc-cross {
+    stroke: var(--stone);
+    stroke-width: 1;
+  }
+  .lc-tip {
+    position: absolute;
+    top: 6px;
+    pointer-events: none;
+    background: var(--sheet);
+    border: 1px solid var(--border-strong);
+    border-radius: 6px;
+    padding: 6px 8px;
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 2px 10px;
+    font: 10.5px/1.35 var(--font-mono);
+    color: var(--body);
+    box-shadow: 0 2px 8px rgba(45, 41, 36, 0.08);
+    white-space: nowrap;
+  }
+  .lc-tip[hidden] {
+    display: none;
+  }
+  .lc-tip-x {
+    grid-column: 1 / -1;
+    color: var(--muted);
+  }
+  .lc-tip span {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .lc-tip i {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+  .lc-tip b {
+    font-weight: 600;
+    color: var(--text);
+    text-align: right;
+  }
+  .lc-caption {
+    font-family: var(--font-serif);
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+</style>

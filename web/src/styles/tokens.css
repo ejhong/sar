@@ -40,11 +40,11 @@
 
   --lapis: #2c5aa0;
   --lapis-night: #82b3ff;
-  --verdigris: #347f6f;
+  --verdigris: #16876e;
   --verdigris-night: #74d8bc;
   --ochre: #a8741f;
   --ochre-night: #e8b95c;
-  --porphyry: #7f6396;
+  --porphyry: #7a55a6;
   --porphyry-night: #c0a6da;
   --cinnabar: #aa4b33;
   --cinnabar-night: #f0906f;
@@ -61,3 +61,6 @@
 
   color-scheme: light;
 }
+
+/* Chart palette (light sheets): validated with the dataviz six checks against --sheet —
+   lapis, verdigris, ochre, porphyry, cinnabar all pass (CVD ΔE ≥ 9.2, normal ΔE ≥ 15). */

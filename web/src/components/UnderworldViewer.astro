@@ -62,6 +62,7 @@ const { mode = 'full', initial } = Astro.props;
       </span>
       <span class="uw-scale" data-uw="scale"></span>
     </div>
+    {mode === 'embed' && <div class="uw-hint" data-uw="hint" hidden>hold ctrl or ⌘ and scroll to zoom · two fingers to turn</div>}
     <div class="uw-loading" data-uw="loading"><span class="ring"></span><span class="ring r2"></span></div>
   </div>
 </div>
@@ -69,7 +70,12 @@ const { mode = 'full', initial } = Astro.props;
 <script>
   import { Underworld } from '../viewer/Underworld';
   for (const root of document.querySelectorAll<HTMLElement>('.uw')) {
-    const uw = new Underworld({ root, initial: root.dataset.initial, hash: root.dataset.hash === '1' });
+    const uw = new Underworld({
+      root,
+      initial: root.dataset.initial,
+      hash: root.dataset.hash === '1',
+      embedded: root.classList.contains('embed'),
+    });
     uw.start().catch((e) => {
       console.error(e);
       const t = root.querySelector('[data-uw=title]');
@@ -413,6 +419,21 @@ const { mode = 'full', initial } = Astro.props;
     gap: 12px;
     flex-wrap: wrap;
   }
+  .uw-hint {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(20, 24, 27, 0.82);
+    color: var(--panel-text);
+    font: 11px/1.4 var(--font-mono);
+    padding: 8px 12px;
+    border-radius: 999px;
+    pointer-events: none;
+  }
+  .uw-hint[hidden] {
+    display: none;
+  }
   .uw-loading {
     position: absolute;
     inset: 0;
@@ -444,21 +465,29 @@ const { mode = 'full', initial } = Astro.props;
       opacity: 0;
     }
   }
+  /* Phones and narrow windows: the viewer pinned above at a fixed height, the
+     panel below scrolling on its own, so turning and scrolling never compete. */
   @media (max-width: 900px) {
     .uw {
       grid-template-columns: 1fr;
-      grid-template-rows: minmax(340px, 58vh) auto;
+      grid-template-rows: minmax(260px, 52%) minmax(0, 1fr);
+      gap: 8px;
+    }
+    .uw.full {
+      min-height: 0;
     }
     .uw.embed {
-      height: auto;
+      height: 86vh;
+      height: 86dvh;
+      min-height: 560px;
     }
     .uw-panel {
       order: 2;
-      max-height: none;
+      min-height: 0;
     }
     .uw-stage {
       order: 1;
-      min-height: 340px;
+      min-height: 0;
     }
     .uw-title p {
       display: none;

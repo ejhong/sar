@@ -1,0 +1,23 @@
+{
+ "p1_01_forward_validation": {
+  "id": "p1_01_forward_validation",
+  "title": "The elastic solver against exact solutions",
+  "date": "2026-09-27",
+  "started_utc": "2026-09-27T15:14:05+00:00",
+  "runtime_s": 147.3,
+  "commit": "3468943",
+  "params": {
+   "vp_m_s": 3300.0,
+   "vs_m_s": 1830.0,
+   "rho_kg_m3": 2400.0,
+   "material": "limestone-mokattam"
+  },
+  "environment": {
+   "python": "3.11.15",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 4,
+   "cpus": 4
+  }
+ }
+}

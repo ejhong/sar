@@ -1,4 +1,4 @@
-import { AmbientLight, DirectionalLight, Raycaster, Vector2, type Mesh } from 'three';
+import { AmbientLight, DirectionalLight, Raycaster, TOUCH, Vector2, type Mesh } from 'three';
 import { Engine } from './engine/Engine';
 import { THEMES, type ThemeName } from './engine/theme';
 import { loadIndex, loadScene } from './data/load';
@@ -9,6 +9,8 @@ import { featureDepth, fmtM } from './ui/format';
 export interface UnderworldOptions {
   root: HTMLElement;
   initial?: string;
+  /** Embedded in a scrolling page: plain wheel and one-finger drags scroll the page. */
+  embedded?: boolean;
   /** Update the URL hash when the site changes (full page only). */
   hash?: boolean;
 }
@@ -43,6 +45,7 @@ export class Underworld {
     this.engine.autoRotate = !matchMedia('(prefers-reduced-motion: reduce)').matches;
     this.engine.autoRotateSpeed = 0.045;
     this.engine.setViewShift(0.06, 0.01);
+    if (opts.embedded) this.yieldScrollToPage(canvas);
     const sun = new DirectionalLight(0xffffff, 1.6);
     sun.position.set(-3, 4, 2);
     this.engine.scene.add(sun, new AmbientLight(0xffffff, 0.9));
@@ -53,6 +56,33 @@ export class Underworld {
     canvas.addEventListener('pointerleave', () => this.pointer.set(2, 2));
     this.engine.onFrame(() => this.pick());
     this.bindControls();
+  }
+
+  /**
+   * In a scrolling page the viewer must not steal the scroll: the wheel zooms
+   * only with ctrl or ⌘ held (a trackpad pinch sends exactly that), and on
+   * touch screens one finger scrolls the page while two turn and zoom.
+   */
+  private yieldScrollToPage(canvas: HTMLCanvasElement) {
+    const c = this.engine.controls;
+    c.enableZoom = false;
+    canvas.style.touchAction = 'pan-y';
+    c.touches = { ONE: -1 as unknown as TOUCH, TWO: TOUCH.DOLLY_ROTATE };
+    const hint = this.$('[data-uw=hint]');
+    let t = 0;
+    canvas.addEventListener(
+      'wheel',
+      (e) => {
+        const zoom = e.ctrlKey || e.metaKey;
+        c.enableZoom = zoom;
+        if (!zoom && hint) {
+          hint.hidden = false;
+          clearTimeout(t);
+          t = window.setTimeout(() => (hint.hidden = true), 1400);
+        }
+      },
+      { capture: true, passive: true },
+    );
   }
 
   async start() {
