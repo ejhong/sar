@@ -39,6 +39,12 @@ The lab does it by simulation over ground whose contents are known, in two phase
   imaging with the rock known exactly and an unlimited record, the image is only 2.2× brighter around the chamber than
   elsewhere (the hammer: 6×), its brightest point 7 m off; no record length reaches 3×. Fluctuations of a finite record
   are imaged from one realisation and scaled as 1/√T.
+- **Ambient motion, measured** (M1-01, `/ambient/`): MedNet KEG at Kottamya (67 km east of Giza, open data at INGV),
+  twelve days of 1996, response removed, McNamara–Buland spectra: median vertical 0.049 µm/s at 0.1–0.3 Hz, 0.029 µm/s at
+  1–3 Hz; bracketed by Peterson (1993, Tables 3–4, in `sim/katabasis/ambient/peterson.py`). This replaced the first
+  investigation's unsourced "0.1–10 µm/s": the radar's 77 µm/s floor is at least 22× (Peterson high) and about 1,600×
+  (measured) above the microseisms. Giza's ground rings near 0.6 Hz and Khufu's pyramid near 2.3 Hz (ELGabry et al.
+  2026, Sci. Rep. 16, 14032). No open absolute measurement on the plateau itself has been found.
 - **Full-waveform inversion** (`sim/katabasis/seismic/fwi.py`): adjoint-state gradients of P and S speed from stress
   correlations, L-BFGS with an illumination preconditioner; the gradient is checked against finite differences.
 - **Giza from Petrie (1883)**: Khufu's chambers and passages placed from his summary of interior positions (sec. 64);
@@ -50,14 +56,17 @@ The lab does it by simulation over ground whose contents are known, in two phase
    start (Vp from the surface travel times, Vs = Vp/√3, 3% fast), 60 Hz on a 1 m grid then 120 Hz on 0.5 m. The
    full-band stage commits the inverse crime (same grid and solver as the data); say so wherever it is shown. Then the
    ambient-noise dispersion inversion practitioners actually run (a 1-D shear profile), for completeness.
-2. **Make the near-air stencils symmetric**: surface-to-depth reciprocity is off by 1–2% with them (exact without), which
+2. **The ambient field as part of every site**: microseisms as plane Rayleigh waves from all azimuths (levels from
+   M1-01), cultural sources on the roads and paths with sourced spectra (Giza's absolute level is the open question),
+   then P1-04 at realistic bands and levels, the same field as the noise on the active surveys, and as Phase 2's input.
+3. **Make the near-air stencils symmetric**: surface-to-depth reciprocity is off by 1–2% with them (exact without), which
    limits adjoint gradients near the free surface.
-3. **Detectability sweeps**: chamber size × depth × array aperture and spacing × frequency, per method.
-4. **The shaft field and Giza**: the positive control at cemetery scale; Khufu's and Khafre's chambers under realistic
+4. **Detectability sweeps**: chamber size × depth × array aperture and spacing × frequency, per method.
+5. **The shaft field and Giza**: the positive control at cemetery scale; Khufu's and Khafre's chambers under realistic
    arrays (Khufu is placed from Petrie; Khafre's lower chamber and passages still need positions).
-5. **The claimed underworld**: would ordinary seismology see eight 10 m shafts to 640 m? Needs a coarse grid at low
+6. **The claimed underworld**: would ordinary seismology see eight 10 m shafts to 640 m? Needs a coarse grid at low
    frequency.
-6. **Phase 2**: see `web/src/pages/satellite.astro` for the plan and the known gaps in `sim/sarsim` (ICEYE geometry,
+7. **Phase 2**: see `web/src/pages/satellite.astro` for the plan and the known gaps in `sim/sarsim` (ICEYE geometry,
    arbitrary scatterer motion, decorrelation, per-row zero-Doppler time).
 
 ## Open decisions

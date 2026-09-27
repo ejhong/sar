@@ -1,0 +1,209 @@
+---
+import Doc from '../layouts/Doc.astro';
+import LineChart from '../components/LineChart.astro';
+import RunDetails from '../components/RunDetails.astro';
+import Term from '../components/Term.astro';
+import m1 from '../../public/data/runs/m1_01_ambient_levels.json';
+import v01 from '../../public/data/runs/p1_01_forward_validation.json';
+import am from '../../public/data/runs/p1_04_ambient.json';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const z = m1.components.BHZ;
+const per = z.period_s as number[];
+const keep = per.map((p, i) => [p, i] as const).filter(([p]) => p >= 0.1 && p <= 30);
+const px = keep.map(([p]) => p);
+const curve = (k: string) => keep.map(([, i]) => (z.acc_db as Record<string, number[]>)[k][i]);
+const pet = m1.peterson;
+const bands = Object.entries(z.band_rms_um_s as Record<string, Record<string, number>>);
+const micro = z.band_rms_um_s['0.1-0.3 Hz'];
+const cult = z.band_rms_um_s['1.0-3.0 Hz'];
+const nhnmMicro = pet.band_rms_um_s['0.1-0.3 Hz'].high;
+const floor = 77; // µm/s: the velocity floor measured on the real Giza dwell (legacy R4/R14)
+const cR = v01.rayleigh.exact_m_s as number;
+const fFor = (size: number) => cR / (2 * size); // half a wavelength across the target
+const lamFreq = [0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100, 200];
+const hund = (v: number) => (Math.round(v / 100) * 100).toLocaleString('en-US');
+const sig = (v: number) => (v >= 10 ? v.toFixed(0) : v >= 1 ? v.toFixed(1) : v.toPrecision(2));
+---
+<Doc
+  title="The ground's own motion"
+  kicker="Ambient · measured"
+  current="ambient"
+  lede="Without a hammer the ground still moves: ocean swell felt as microseisms, wind, traffic, footsteps. It is what ambient-noise seismology listens to and what the radar claim says it reads. How much it moves near Giza, and at what frequencies, sets what either can see. Here it is measured, not assumed."
+  state="status · measured near Giza · the ambient-field model for the simulations is next"
+  index={[
+    { id: 'levels', label: 'Levels' },
+    { id: 'spectrum', label: 'Spectrum' },
+    { id: 'giza', label: 'Giza’s frequencies' },
+    { id: 'resolution', label: 'What each band sees' },
+    { id: 'radar', label: 'Against the radar' },
+    { id: 'next', label: 'Next' },
+  ]}
+>
+  <section id="levels">
+    <h2>Near Giza the ground moves by hundredths of a micrometre per second on its own</h2>
+    <p class="sub">
+      The nearest open broadband record is MedNet station KEG at Kottamya, 67 km east of Khafre: an STS-1 seismometer in a
+      7 m vault on a limestone hill. Twelve days of 1996, one in the middle of each month, three components, instrument
+      response removed, turned into power spectra the way network operators do. Its <Term k="microseism">microseisms</Term> are the region’s, Giza’s
+      included; above 1 Hz a quiet hill is a lower bound for a plateau at the edge of a city of twenty million.
+    </p>
+    <div class="stat-row">
+      <div class="stat"><span class="value">{micro.all_p50.toFixed(3)}<small>µm/s</small></span><span class="what">median vertical ground velocity in the microseism band, 0.1–0.3 Hz</span><span class="src">10th–90th percentile {micro.all_p10.toFixed(3)}–{micro.all_p90.toFixed(3)}</span></div>
+      <div class="stat"><span class="value">{cult.all_p50.toFixed(3)}<small>µm/s</small></span><span class="what">median at 1–3 Hz, by day {cult.day_p50.toFixed(3)}, by night {cult.night_p50.toFixed(3)}</span><span class="src">local time, UTC+2</span></div>
+      <div class="stat"><span class="value">{nhnmMicro.toFixed(1)}<small>µm/s</small></span><span class="what">the microseism band at the world’s noisiest stations, Peterson’s high-noise model</span><span class="src">Peterson 1993, Table 4</span></div>
+      <div class="stat"><span class="value">{Math.round(fFor(6))}<small>Hz</small></span><span class="what">the lowest frequency whose half wavelength fits a 6 m chamber, where only nearby feet and machines make noise</span><span class="src">Rayleigh speed {Math.round(cR).toLocaleString('en-US')} m/s</span></div>
+    </div>
+  </section>
+
+  <section id="spectrum">
+    <h2>A quiet site: well above the global floor, far below the noisiest stations</h2>
+    <div class="grid-2 charts">
+      <LineChart
+        title="Fig. A1 · Vertical ground acceleration spectrum at Kottamya, 1996"
+        series={[
+          { name: 'Peterson high', x: pet.period_s, y: pet.high_db, color: 'var(--muted)', dash: '5 3', width: 1.3 },
+          { name: '90th percentile', x: px, y: curve('all_p90'), color: 'var(--verdigris)', width: 1, dash: '2 2' },
+          { name: 'median', x: px, y: curve('all_p50'), color: 'var(--verdigris)', width: 2.2 },
+          { name: '10th percentile', x: px, y: curve('all_p10'), color: 'var(--verdigris)', width: 1, dash: '2 2' },
+          { name: 'Peterson low', x: pet.period_s, y: pet.low_db, color: 'var(--muted)', dash: '5 3', width: 1.3 },
+        ]}
+        xLabel="period, s"
+        yLabel="dB re 1 (m/s²)²/Hz"
+        logX
+        xTicks={[0.1, 1, 10]}
+        xDomain={[0.1, 30]}
+        height={250}
+        directLabels={false}
+        caption={`${z.windows} one-hour windows · the microseism peak near 3–5 s; above 2 Hz a day–night difference of a few dB, the mark of people`}
+      />
+      <div>
+        <table class="data">
+          <thead><tr><th>Band</th><th class="r">Kottamya, median</th><th class="r">10th–90th</th><th class="r">Peterson low</th><th class="r">high</th></tr></thead>
+          <tbody>
+            {
+              bands.map(([b, v]) => (
+                <tr>
+                  <td class="mono">{b}</td>
+                  <td class="num">{sig(v.all_p50)}</td>
+                  <td class="num">{sig(v.all_p10)}–{sig(v.all_p90)}</td>
+                  <td class="num">{sig((pet.band_rms_um_s as Record<string, { low: number; high: number }>)[b].low)}</td>
+                  <td class="num">{sig((pet.band_rms_um_s as Record<string, { low: number; high: number }>)[b].high)}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+        <p class="note">RMS vertical ground velocity in each band, µm/s, integrated from the spectra. Peterson’s low-noise model is a composite of the quietest stations on Earth, “unlikely to be duplicated at any single location”; his high-noise model is the average of the noisiest.</p>
+      </div>
+    </div>
+    <p class="finding">{m1.finding}</p>
+    <RunDetails manifest={m1.manifest} extra={[['station', 'MN.KEG Kottamya, 29.9275 N 31.8292 E, 460 m, STS-1 at 7 m depth, open data at INGV'], ['method', 'McNamara & Buland (2004) power spectral densities via ObsPy PPSD'], ['bounds', 'Peterson (1993), USGS Open-File Report 93-322, Tables 3 and 4']]} />
+  </section>
+
+  <section id="giza">
+    <h2>Giza’s ground rings near 0.6 Hz, and the Great Pyramid near 2.3 Hz</h2>
+    <p class="sub">
+      An ambient-noise survey of Khufu’s pyramid, 37 points in its chambers, on its blocks and on the ground around it
+      (ELGabry and others, <em>Scientific Reports</em> 16, 14032, 2026), found the pyramid’s fundamental frequency between
+      2.0 and 2.6 Hz, “with an average of ~ 2.3”, and “the average predominant frequency on the surrounding ground is about
+      0.60 Hz”. The survey reports spectral ratios, not absolute levels. We have found no open, absolute measurement of
+      ambient motion on the plateau itself; the city’s traffic will raise it above Kottamya’s above about 1 Hz, by an
+      amount still to be sourced.
+    </p>
+  </section>
+
+  <section id="resolution">
+    <h2>The ground’s own waves are kilometres long where they are strong, and metres long only where they are local</h2>
+    <div class="grid-2 charts">
+      <LineChart
+        title="Fig. A2 · Rayleigh wavelength in Giza limestone against frequency"
+        series={[
+          { name: 'wavelength', x: lamFreq, y: lamFreq.map((f) => cR / f), color: 'var(--verdigris)', width: 2 },
+          { name: 'claimed depth, 648 m', x: [0.1, 200], y: [648, 648], color: 'var(--porphyry)', dash: '4 3', width: 1.2 },
+          { name: 'claimed shafts, 10 m', x: [0.1, 200], y: [10, 10], color: 'var(--porphyry)', dash: '2 2', width: 1.2 },
+          { name: 'bench chamber, 6 m', x: [0.1, 200], y: [6, 6], color: 'var(--lapis)', dash: '2 2', width: 1.2 },
+        ]}
+        xLabel="frequency, Hz"
+        yLabel="metres"
+        logX
+        logY
+        yFormat="num"
+        xTicks={[0.1, 1, 10, 100]}
+        height={250}
+        directLabels={false}
+        caption={`λ = c / f with the Rayleigh speed of the bench rock, ${Math.round(cR).toLocaleString('en-US')} m/s (P1-01); an image resolves about half a wavelength`}
+      />
+      <div class="note-card">
+        <h3>What each band can see</h3>
+        <p>In the microseism band, where the ground moves most, a wave is 6 to 17 km long: it feels the average of kilometres of rock. At Giza’s 0.6 Hz resonance it is about 3 km. To resolve a 6 m chamber takes about {Math.round(fFor(6))} Hz; a 10 m shaft about {Math.round(fFor(10))} Hz.</p>
+        <p>At those frequencies there is no regional noise field, only sources within tens of metres: footsteps, engines, pumps. That is the setting of the ambient-noise imaging test, which even then, with the rock known exactly and an unlimited record, reaches only {am.score.image_contrast_ensemble.toFixed(1)}× at the chamber (<a href={`${base}/seismic/#ambient`}>P1-04</a>).</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="radar">
+    <h2>The radar’s floor is {Math.round(floor / nhnmMicro)}× above the noisiest microseisms and about {hund(floor / micro.all_p50)}× above Giza’s</h2>
+    <p class="sub">
+      On the real ICEYE dwell over Giza, the line-of-sight velocity floor on the brightest targets is {floor} µm/s, the same
+      on monuments as on open desert (<a href={`${base}/satellite/#measured`}>R4</a>). The microseisms near Giza move the
+      ground {micro.all_p50.toFixed(3)} µm/s; even Peterson’s high-noise model, the world’s noisiest stations, reaches
+      {' '}{nhnmMicro.toFixed(1)} µm/s. The first investigation set ambient motion at 0.1–10 µm/s, an unsourced range that made the
+      shortfall look like 8×; measured, it is at least {Math.round(floor / nhnmMicro)}×.
+    </p>
+  </section>
+
+  <section id="next">
+    <h2>Next: the ambient field as part of every site</h2>
+    <div class="grid-3">
+      <div class="note-card">
+        <h3>Microseisms</h3>
+        <p>Surface waves from distant storms, arriving from every direction as plane waves at 0.1–1 Hz, their levels from this measurement. Too long for the 3-D grid; computed exactly for a layered ground.</p>
+      </div>
+      <div class="note-card">
+        <h3>Cultural noise</h3>
+        <p>Traffic on the roads round the plateau, visitors on its paths, the city beyond: sources with measured spectra, simulated on coarser grids over hundreds of metres. Their absolute level at Giza is the open question.</p>
+      </div>
+      <div class="note-card">
+        <h3>One field, three uses</h3>
+        <p>The ambient-noise test redone at realistic levels; the noise on the active surveys, replacing white noise; and the ground motion the simulated ICEYE dwell looks at in Phase 2.</p>
+      </div>
+    </div>
+  </section>
+</Doc>
+
+<style>
+  .charts {
+    margin-top: 12px;
+    gap: 22px 28px;
+    align-items: start;
+  }
+  .finding {
+    font-family: var(--font-serif);
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: var(--text);
+    max-width: 780px;
+    margin-top: 16px;
+    padding-left: 12px;
+    border-left: 2px solid var(--verdigris);
+  }
+  .note {
+    font-family: var(--font-serif);
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--muted);
+    margin-top: 10px;
+  }
+  .data .r {
+    text-align: right;
+  }
+  .data td.mono {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .note-card p + p {
+    margin-top: 8px;
+  }
+</style>

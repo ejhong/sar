@@ -53,9 +53,10 @@ def gaussian_sigma(f_half: float) -> float:
 
 
 def shot_gradient(sim: Simulation, source: Source, receivers: np.ndarray, obs: np.ndarray,
-                  box: tuple[slice, slice, slice], every: int = 4, sigma_s: float = 0.0):
+                  box: tuple[slice, slice, slice], every: int = 4, sigma_s: float = 0.0,
+                  weights: np.ndarray | None = None):
     """Misfit, ∂J/∂λ, ∂J/∂μ and forward illumination inside `box` for one shot; obs is (nrec, 3, nt),
-    already filtered when sigma_s > 0."""
+    already filtered when sigma_s > 0; `weights` (nrec,) scales each trace's residual (0 mutes it)."""
     nt = obs.shape[-1]
     dt = sim.dt
     frames: list[np.ndarray] = []
@@ -66,9 +67,10 @@ def shot_gradient(sim: Simulation, source: Source, receivers: np.ndarray, obs: n
     sim.reset()
     syn = sim.run([source], Receivers(receivers), nt, on_step=keep, on_step_every=every).traces
     filt = (lambda x: lowpass(x, sigma_s, dt)) if sigma_s > 0 else (lambda x: x)
-    r = filt(syn.astype(np.float64)) - obs
+    w_tr = np.ones(len(receivers)) if weights is None else weights
+    r = (filt(syn.astype(np.float64)) - obs) * w_tr[:, None, None]
     J = 0.5 * float(np.sum(r ** 2)) * dt
-    r = filt(r)                                              # the filter's transpose (itself)
+    r = filt(r * w_tr[:, None, None])                        # the weights and the filter, transposed
     f = np.gradient(r[:, :, ::-1], dt, axis=-1)              # −∂t r, reversed in time
     adj = [Source(tuple(p), np.ascontiguousarray(f[i, c]), 'force', d)
            for i, p in enumerate(receivers) for c, d in enumerate(DIRS)]
@@ -130,6 +132,7 @@ class Problem:
     sigma_s: float = 0.0                             # Gaussian low-pass of synthetics and records (0: none)
     obs_filtered: bool = False                       # the records were low-passed already (before decimation)
     mute_m: tuple[float, float] = (1.5, 3.0)         # gradient zero within the first radius of a station, whole beyond the second
+    min_offset: float = 4.0                          # traces nearer their source leave the misfit (near field, grid-sensitive)
     log: list = field(default_factory=list)
 
     def __post_init__(self):
@@ -140,6 +143,8 @@ class Problem:
         d = np.full(X.shape, np.inf)
         for p in np.concatenate([self.sources, self.receivers]):
             d = np.minimum(d, np.sqrt((X - p[0]) ** 2 + (Y - p[1]) ** 2 + (Z - p[2]) ** 2))
+        off = np.linalg.norm(self.sources[:, None, :] - self.receivers[None, :, :], axis=-1)
+        self.weights = (off >= self.min_offset).astype(np.float64)
         r0, r1 = self.mute_m
         self.mute = np.clip((d - r0) / (r1 - r0), 0, 1)
         self.mute = 0.5 - 0.5 * np.cos(np.pi * self.mute)
@@ -162,7 +167,7 @@ class Problem:
         gl = gm = il = None
         for n, s in enumerate(self.sources):
             j, a, b, c, _ = shot_gradient(sim, Source(tuple(s), self.wavelet, 'force', (0, 0, -1)), self.receivers,
-                                          self.obs[n], self.box, self.every, self.sigma_s)
+                                          self.obs[n], self.box, self.every, self.sigma_s, self.weights[n])
             J += j
             gl, gm, il = (a, b, c) if gl is None else (gl + a, gm + b, il + c)
         rho, vpb, vsb = self.rho[self.box], vp[self.box], vs[self.box]
@@ -172,9 +177,19 @@ class Problem:
         return J, g_vp * self.vp0[self.box], g_vs * self.vs0[self.box], il
 
 
+def noise_misfit(obs: np.ndarray, weights: np.ndarray, dt: float, quiet_s: float) -> float:
+    """The misfit the noise alone would leave: each record's noise variance from its first `quiet_s`
+    (before any arrival), over the whole record and every kept trace. Data only."""
+    k = max(8, int(quiet_s / dt))
+    var = obs[..., :k].var(axis=-1)                           # (ns, nr, 3)
+    return 0.5 * float(np.sum(var * weights[..., None]) * obs.shape[-1] * dt)
+
+
 def lbfgs(problem: Problem, iterations: int, first_step: float = 0.05, memory: int = 5,
-          precondition_eps: float = 0.02, smooth_cells: float = 1.0, start=None, label: str = '') -> dict:
-    """Minimise the misfit over (dvp, dvs). The first step moves the largest cell by `first_step`."""
+          precondition_eps: float = 0.02, smooth_cells: float = 1.0, start=None, label: str = '',
+          target: float | None = None) -> dict:
+    """Minimise the misfit over (dvp, dvs). The first step moves the largest cell by `first_step`;
+    iterations stop once the misfit reaches `target` (the noise level: fitting below it fits noise)."""
     from scipy.ndimage import gaussian_filter
     shape = problem.vp0[problem.box].shape
     n = int(np.prod(shape))
@@ -242,5 +257,8 @@ def lbfgs(problem: Problem, iterations: int, first_step: float = 0.05, memory: i
         x, J, g = xn, Jn, gn
         hist.append({'iteration': it, 'misfit': J / J0, 'evaluations': evals, 'seconds': round(sec, 1)})
         print(f'  {label} iteration {it}: misfit {J / J0:.4f} ({evals} evaluations, {sec:.0f} s each)', flush=True)
+        if target is not None and J <= target:
+            print(f'  {label}: misfit at the noise level ({target / J0:.4f}); stopping', flush=True)
+            break
     dvp, dvs = split(x)
     return {'dvp': dvp, 'dvs': dvs, 'history': hist, 'misfit_start': J0, 'misfit_end': J}

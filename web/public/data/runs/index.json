@@ -131,5 +131,68 @@
    "threads": 4,
    "cpus": 4
   }
+ },
+ "m1_01_ambient_levels": {
+  "id": "m1_01_ambient_levels",
+  "title": "Ambient ground motion measured near Giza",
+  "date": "2026-09-27",
+  "started_utc": "2026-09-27T22:23:55+00:00",
+  "runtime_s": 200.3,
+  "commit": "d341330+",
+  "params": {
+   "station": "MN.KEG",
+   "archive": "https://webservices.ingv.it/fdsnws",
+   "days": [
+    "1996-01-15",
+    "1996-02-15",
+    "1996-03-15",
+    "1996-04-15",
+    "1996-05-15",
+    "1996-06-15",
+    "1996-07-15",
+    "1996-08-15",
+    "1996-09-15",
+    "1996-10-15",
+    "1996-11-15",
+    "1996-12-15"
+   ],
+   "channels": "BHZ, BHN, BHE (20 sps)",
+   "method": "McNamara & Buland (2004) via obspy PPSD, 1 h windows, 50% overlap",
+   "local_time": "UTC+2",
+   "bands_hz": [
+    [
+     0.05,
+     0.1
+    ],
+    [
+     0.1,
+     0.3
+    ],
+    [
+     0.3,
+     1.0
+    ],
+    [
+     1.0,
+     3.0
+    ],
+    [
+     3.0,
+     8.0
+    ]
+   ],
+   "percentiles": [
+    10,
+    50,
+    90
+   ]
+  },
+  "environment": {
+   "python": "3.11.15",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 4,
+   "cpus": 4
+  }
  }
 }

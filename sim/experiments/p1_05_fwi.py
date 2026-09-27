@@ -10,12 +10,16 @@ practitioner would have, uniform rock at the P speed the surface travel
 times gave (P1-02) and an S speed from the textbook ratio Vp/Vs = √3,
 which is 3% fast here. Density is held at its assumed value.
 
-Multiscale, as FWI is done: first synthetics and records low-passed alike
-(half amplitude at 60 Hz) on a 1 m grid, then the full band on the 0.5 m
-grid the records were made on. The
-second stage computes the data with the same solver and grid that made
-them (the "inverse crime"); the noise and the wrong start soften it, and it
-is stated wherever the result is shown.
+One stage, the full band: at 120 Hz the start is only about 16 degrees of
+phase out at the farthest geophones, so no low-frequency stage is needed to
+avoid cycle skips, and below 60 Hz this source carries too little energy
+above the noise (a 60 Hz stage, tried, fitted noise and the near field).
+Traces within 4 m of their source leave the misfit (the near field, which
+no practitioner fits), and the iterations stop when the misfit reaches the
+noise level, estimated from each record's quiet first 2 ms. The data are
+computed with the same solver and grid that made them (the "inverse
+crime"); the noise and the wrong start soften it, and it is stated wherever
+the result is shown.
 """
 import json
 import sys
@@ -27,7 +31,7 @@ from scipy.ndimage import map_coordinates
 from katabasis.compose import Grid, load_site, voxelise
 from katabasis.runs import RESULTS, Run
 from katabasis.seismic.arrays import snap_to_ground
-from katabasis.seismic.fwi import Problem, gaussian_sigma, lbfgs, lowpass
+from katabasis.seismic.fwi import Problem, gaussian_sigma, lbfgs, lowpass, noise_misfit
 from katabasis.seismic.picking import add_noise
 
 sys.path.insert(0, str(__import__('pathlib').Path(__file__).parent))
@@ -37,9 +41,9 @@ from p1_02_traveltime import CACHE as CACHE02, F0, SITE, SNR_DB, build, surveys 
 # so everywhere they go may change (the absorbing layers begin 20 m out on the fine grid)
 BOX = ((-19.0, 19.0), (-19.0, 19.0), (-30.0, -0.2))
 STAGES = [
-    {'name': 'low', 'h': 1.0, 'lowpass_hz': 60.0, 'iterations': 12, 'extent': 34.5, 'pml': 12},   # nodes on whole metres
-    {'name': 'full', 'h': 0.5, 'lowpass_hz': None, 'iterations': 6, 'extent': 28.0, 'pml': 16},
+    {'name': 'full', 'h': 0.5, 'lowpass_hz': None, 'iterations': 10, 'extent': 28.0, 'pml': 16},
 ]
+QUIET_S = 0.002             # the start of every record, before any arrival: its noise level
 CACHE = RESULTS / 'cache' / 'p1_05'
 
 
@@ -96,7 +100,8 @@ def main():
     params = {'site': SITE, 'survey': sv.description, 'f0_hz': F0, 'snr_db': SNR_DB,
               'start': {'vp_m_s': vp0, 'vs_m_s': vs0, 'from': 'P1-02 surface travel times; Vs = Vp / sqrt(3)'},
               'stages': STAGES, 'box': {'x': BOX[0], 'y': BOX[1], 'z': BOX[2]},
-              'optimiser': 'L-BFGS (memory 5), illumination preconditioner, 1-cell smoothing of the gradient',
+              'optimiser': 'L-BFGS (memory 5), illumination preconditioner, 1-cell smoothing of the gradient, muted within 1.5-3 m of stations',
+              'misfit': 'L2 on the velocity records, traces within 4 m of their source excluded; stop at the noise level',
               'inverse_crime': 'the full-band stage uses the grid and solver that made the records'}
     with Run('p1_05_fwi' + ('_smoke' if smoke else ''), "Full-waveform inversion from a practitioner's start", params) as run:
         prev = None
@@ -130,13 +135,16 @@ def main():
                 start = (map_coordinates(pdvp, idx, order=1, mode='nearest'), map_coordinates(pdvs, idx, order=1, mode='nearest'))
             t0 = time.time()
             print(f"  stage {st['name']}: grid {g.shape} ({np.prod(g.shape) / 1e6:.2f} M cells), box {prob.vp0[box].shape}", flush=True)
-            res = lbfgs(prob, 1 if smoke else st['iterations'], start=start, label=st['name'])
+            target = noise_misfit(prob.obs, prob.weights, prob.dt, QUIET_S) if not st['lowpass_hz'] else None
+            res = lbfgs(prob, 1 if smoke else st['iterations'], start=start, label=st['name'], target=target)
             vpi, vsi = prob.speeds(res['dvp'], res['dvs'])
             sc = score(g, box, vpi[box], vsi[box], site)
             print(f"  stage {st['name']}: misfit {res['history'][-1]['misfit']:.3f}, Vp chamber {100 * sc['vp']['chamber_mean_rel']:+.1f}% "
                   f"(CNR {sc['vp']['contrast_to_noise']:.1f}), Vs chamber {100 * sc['vs']['chamber_mean_rel']:+.1f}% "
                   f"(CNR {sc['vs']['contrast_to_noise']:.1f}) ({time.time() - t0:.0f} s)", flush=True)
-            stages_out.append({'name': st['name'], 'spacing_m': h, 'lowpass_hz': st['lowpass_hz'], 'history': res['history'], 'score': sc})
+            stages_out.append({'name': st['name'], 'spacing_m': h, 'lowpass_hz': st['lowpass_hz'], 'history': res['history'], 'score': sc,
+                               'noise_misfit': None if target is None else target / res['misfit_start'],
+                               'traces_kept': int(prob.weights.sum()), 'traces': int(prob.weights.size)})
             CACHE.mkdir(parents=True, exist_ok=True)
             np.savez_compressed(CACHE / f"{st['name']}.npz", dvp=res['dvp'], dvs=res['dvs'])
             prev = (g, res['dvp'], res['dvs'])
@@ -162,8 +170,8 @@ def main():
                        'xz_vs': rel_s[:, j, :].T.round(4), 'xy_vs': rel_s[:, :, k].T.round(4)},
             'volume': {'shape': list(vols['vs'].shape), 'origin': [float(xs[0]), float(ys[0]), float(zs[0])], 'spacing': g.spacing,
                        'range': [lo, 0.0], 'units': 'fraction of background'},
-            'finding': (f"From uniform rock at the travel-time P speed and a textbook S speed, fitting the whole records recovers the "
-                        f"chamber as {100 * final['vs']['chamber_mean_rel']:+.0f}% in S speed "
+            'finding': (f"From uniform rock at the travel-time P speed and a textbook S speed, fitting the whole records to the "
+                        f"noise level leaves the chamber at {100 * final['vs']['chamber_mean_rel']:+.0f}% in S speed "
                         f"({final['vs']['contrast_to_noise']:.1f}x the scatter around it) and {100 * final['vp']['chamber_mean_rel']:+.0f}% "
                         f"in P speed; the background S speed moves from {vs0:.0f} to {final['vs']['background_m_s']:.0f} m/s "
                         f"(true 1830)."),
