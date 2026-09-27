@@ -47,6 +47,13 @@ class PlaneWaveField:
 
     def velocity(self, points: np.ndarray, t: np.ndarray) -> np.ndarray:
         """(npoints, 3, nt) velocity: east, north, up."""
+        return self._motion(points, t, displacement=False)
+
+    def displacement(self, points: np.ndarray, t: np.ndarray) -> np.ndarray:
+        """(npoints, 3, nt) displacement (m): east, north, up; the time integral of velocity, wave by wave."""
+        return self._motion(points, t, displacement=True)
+
+    def _motion(self, points: np.ndarray, t: np.ndarray, displacement: bool) -> np.ndarray:
         p = np.atleast_2d(points)[:, :2]
         kx = 2 * np.pi * self.freq / self.speed * np.sin(self.azimuth)       # wavenumber, east
         ky = 2 * np.pi * self.freq / self.speed * np.cos(self.azimuth)       # north
@@ -54,9 +61,13 @@ class PlaneWaveField:
         w = 2 * np.pi * self.freq
         for n in range(len(self.freq)):
             arg = (p[:, 0:1] * kx[n] + p[:, 1:2] * ky[n]) - w[n] * t[None, :] + self.phase[n]
-            vz = self.amp[n] * np.cos(arg)
-            # retrograde ellipse: horizontal leads vertical by a quarter period along the propagation direction
-            vh = self.hv * self.amp[n] * np.sin(arg)
+            if displacement:      # ∫cos(arg) dt = -sin(arg)/ω and ∫sin(arg) dt = cos(arg)/ω, since d(arg)/dt = -ω
+                vz = -self.amp[n] / w[n] * np.sin(arg)
+                vh = self.hv * self.amp[n] / w[n] * np.cos(arg)
+            else:
+                vz = self.amp[n] * np.cos(arg)
+                # retrograde ellipse: horizontal leads vertical by a quarter period along the propagation direction
+                vh = self.hv * self.amp[n] * np.sin(arg)
             out[:, 0] += vh * np.sin(self.azimuth[n])
             out[:, 1] += vh * np.cos(self.azimuth[n])
             out[:, 2] += vz

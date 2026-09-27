@@ -60,3 +60,15 @@ def test_plane_wave_field_has_the_target_spectrum():
     assert abs(np.trapezoid(pz[band], fw[band]) / np.trapezoid(target, f) - 1) < 0.15
     h = np.sqrt((v[0] ** 2 + v[1] ** 2).mean() / (v[2] ** 2).mean())
     assert abs(h - 0.7) < 0.05
+
+
+def test_displacement_is_the_integral_of_velocity():
+    from katabasis.ambient.field import microseisms
+    f = np.linspace(0.1, 0.4, 13)
+    fld = microseisms(f, np.full(f.shape, 1e-15), np.random.default_rng(2), per_bin=2)
+    t = np.arange(0, 60, 0.01)
+    pts = np.array([[100.0, -50.0, 0.0]])
+    v = fld.velocity(pts, t)[0]
+    u = fld.displacement(pts, t)[0]
+    dudt = np.gradient(u, t, axis=-1)
+    assert np.abs(dudt[:, 5:-5] - v[:, 5:-5]).max() < 1e-3 * np.abs(v).max()

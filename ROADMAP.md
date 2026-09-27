@@ -66,8 +66,19 @@ The lab does it by simulation over ground whose contents are known, in two phase
    arrays (Khufu is placed from Petrie; Khafre's lower chamber and passages still need positions).
 6. **The claimed underworld**: would ordinary seismology see eight 10 m shafts to 640 m? Needs a coarse grid at low
    frequency.
-7. **Phase 2**: see `web/src/pages/satellite.astro` for the plan and the known gaps in `sim/sarsim` (ICEYE geometry,
-   arbitrary scatterer motion, decorrelation, per-row zero-Doppler time).
+7. **Phase 2, the satellite over the same ground**, in steps:
+   - *P2-01 geometry*: the real dwell's acquisition (24.49 s aperture, 20.8° incidence, 3.12 cm, 168 km of track;
+     `web/src/pages/satellite.astro`, measured in the first investigation) as the simulator's geometry, with
+     per-row zero-Doppler time.
+   - *P2-02 motion*: `sarsim.synth.synthesize` takes one sinusoid per scatterer; generalise to any line-of-sight
+     motion field evaluated at each scatterer's slow time t(ν) (the microseism generator
+     `katabasis.ambient.field`, traffic, and the elastic solver's surface wavefield all plug in). Validate
+     against the sinusoid path.
+   - *P2-03 decorrelation*: the measured coherence decay (half by 0.98 s, a tenth by 1.76 s; R9) as a
+     per-scatterer phase random walk.
+   - *P2-04 the claim's pipeline on simulated ground*: ambient only; ambient plus the bench chamber and the
+     claimed shafts; does the "depth" image change? Then the velocity series the dwell can measure (R4) against
+     the geophone records at the same points: the SAR-versus-seismograph comparison.
 
 ## Open decisions
 

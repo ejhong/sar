@@ -26,7 +26,10 @@ def image_coords(scat, geom, x_centre=0.0, r_centre=0.0):
 
 
 def synthesize(scat, geom, shape, x_centre=0.0, r_centre=0.0, ground_intensity=0.0,
-               seed=0, chunk=4096, verbose=False):
+               seed=0, chunk=4096, verbose=False, motion=None):
+    """`motion(x, y, z, t)`, if given, returns each scatterer's increase in slant range (m) at slow times t:
+    x, y, z are (n,) scatterer coordinates, t is (m,) seconds; the result is (m, n). It applies on top of any
+    sinusoidal vibration, so an ambient field or a simulated wavefield can move the ground."""
     Nx, Nr = shape
     nu = np.fft.fftfreq(Nx, d=geom.dx)
     kr = np.fft.fftfreq(Nr, d=geom.dr)
@@ -50,6 +53,9 @@ def synthesize(scat, geom, shape, x_centre=0.0, r_centre=0.0, ground_intensity=0
             va = scat.vib_amp[sl]
             if np.any(va != 0):
                 d = va * np.sin(2 * np.pi * scat.vib_freq[sl] * t + scat.vib_phase[sl])
+                Ex *= np.exp(-4j * np.pi * d / geom.lam)
+            if motion is not None:
+                d = np.asarray(motion(scat.x[sl], scat.y[sl], scat.z[sl], t[:, 0]))
                 Ex *= np.exp(-4j * np.pi * d / geom.lam)
             Er = np.exp(-2j * np.pi * np.outer(r_img[sl], kr_in))
             S += Ex.astype(np.complex64) @ Er.astype(np.complex64)
