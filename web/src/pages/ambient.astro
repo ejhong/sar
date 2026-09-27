@@ -6,6 +6,7 @@ import Term from '../components/Term.astro';
 import m1 from '../../public/data/runs/m1_01_ambient_levels.json';
 import v01 from '../../public/data/runs/p1_01_forward_validation.json';
 import am from '../../public/data/runs/p1_04_ambient.json';
+import lib from '../../public/data/ambient.json';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 const z = m1.components.BHZ;
@@ -23,6 +24,13 @@ const cR = v01.rayleigh.exact_m_s as number;
 const fFor = (size: number) => cR / (2 * size); // half a wavelength across the target
 const lamFreq = [0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100, 200];
 const hund = (v: number) => (Math.round(v / 100) * 100).toLocaleString('en-US');
+const cul = lib.cultural as unknown as Record<string, { vdb?: number; value?: number; quote?: string; status?: string }>;
+const culRows = [
+  ['urban_background', 'Typical background vibration'],
+  ['bus_or_truck_typical', 'Bus or truck, typical'],
+  ['human_perception', 'Threshold of human perception'],
+  ['bus_or_truck_over_bump', 'Bus or truck over a bump'],
+].map(([k, label]) => ({ label, vdb: cul[k].vdb!, um: cul[k].value! * 1e6, status: cul[k].status! }));
 const sig = (v: number) => (v >= 10 ? v.toFixed(0) : v >= 1 ? v.toFixed(1) : v.toPrecision(2));
 ---
 <Doc
@@ -36,6 +44,7 @@ const sig = (v: number) => (v >= 10 ? v.toFixed(0) : v >= 1 ? v.toFixed(1) : v.t
     { id: 'spectrum', label: 'Spectrum' },
     { id: 'giza', label: 'Giza’s frequencies' },
     { id: 'resolution', label: 'What each band sees' },
+    { id: 'cultural', label: 'Near roads' },
     { id: 'radar', label: 'Against the radar' },
     { id: 'next', label: 'Next' },
   ]}
@@ -138,6 +147,35 @@ const sig = (v: number) => (v >= 10 ? v.toFixed(0) : v >= 1 ? v.toFixed(1) : v.t
         <h3>What each band can see</h3>
         <p>In the microseism band, where the ground moves most, a wave is 6 to 17 km long: it feels the average of kilometres of rock. At Giza’s 0.6 Hz resonance it is about 3 km. To resolve a 6 m chamber takes about {Math.round(fFor(6))} Hz; a 10 m shaft about {Math.round(fFor(10))} Hz.</p>
         <p>At those frequencies there is no regional noise field, only sources within tens of metres: footsteps, engines, pumps. That is the setting of the ambient-noise imaging test, which even then, with the rock known exactly and an unlimited record, reaches only {am.score.image_contrast_ensemble.toFixed(1)}× at the chamber (<a href={`${base}/seismic/#ambient`}>P1-04</a>).</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="cultural">
+    <h2>Fifteen metres from a road, a passing truck shakes the ground a thousand times harder than the microseisms</h2>
+    <div class="grid-2 charts">
+      <div>
+        <table class="data">
+          <thead><tr><th>At 15 m (50 ft) from the source</th><th class="r">VdB</th><th class="r">µm/s</th><th class="r">× microseisms</th></tr></thead>
+          <tbody>
+            {
+              culRows.map((r) => (
+                <tr>
+                  <td>{r.label}</td>
+                  <td class="num">{r.vdb}</td>
+                  <td class="num">{sig(r.um)}</td>
+                  <td class="num">{hund(r.um / micro.all_p50)}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+        <p class="note">RMS velocity over one second, above 8 Hz, from the Federal Transit Administration’s <em>Transit Noise and Vibration Impact Assessment</em> (1995), Figure 7-3 (levels read from the figure; the perception threshold quoted from the text). VdB is 20 log₁₀ of the velocity over 10⁻⁶ in/s.</p>
+      </div>
+      <div class="note-card">
+        <h3>Local, brief, and above 8 Hz</h3>
+        <p>Traffic is the strongest ambient source a site like Giza has, and it is local: it falls off within tens of metres of the road, comes and goes with each vehicle, and lives above 8 Hz, “for all practical purposes the frequency range of interest to ground-borne vibration” in the manual’s words.</p>
+        <p>A truck over a bump reaches about {sig(culRows[3].um)} µm/s, above the radar’s {floor} µm/s floor. Whether a dwell’s looks can follow motion that fast is a question for Phase 2; the microseisms, slow enough to follow, are {hund(floor / micro.all_p50)} times too weak.</p>
       </div>
     </div>
   </section>

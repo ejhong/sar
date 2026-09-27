@@ -1,0 +1,31 @@
+{
+  "about": "The ambient field's sourced values, as materials.json is for rock: every level carries its source and the line it comes from, or is marked measured by this lab (with its run) or derived. Velocities are RMS, m/s.",
+  "sources": {
+    "peterson1993": "Peterson, J.R., 1993, Observations and modeling of seismic background noise: U.S. Geological Survey Open-File Report 93-322, 94 p., https://doi.org/10.3133/ofr93322",
+    "m1_01": "This lab, run m1_01_ambient_levels: MedNet KEG, Kottamya (29.9275 N, 31.8292 E), twelve days of 1996, open data at INGV, McNamara & Buland (2004) spectra via ObsPy PPSD",
+    "elgabry2026": "ELGabry, M., Hamed, A., Yoshimura, S., Hussein, H.M., Maklad, M., Salama, A., 2026, Architectural and geotechnical aspects affecting earthquake resilience for the antique Egyptian Khufu pyramid: Scientific Reports 16, 14032, https://doi.org/10.1038/s41598-026-49962-6",
+    "fta1995": "Federal Transit Administration, 1995, Transit Noise and Vibration Impact Assessment, Chapter 7, Basic Ground-Borne Vibration Concepts (copy in the City of Los Angeles EIR references: https://planning.lacity.gov/eir/8150Sunset/References/4.G.%20Noise/N.05_%20FTA%20Noise%20and%20Vibration%20Impact%20Assessment%20Chapter%207_1995.pdf)"
+  },
+  "bounds": {
+    "global_low": {"model": "NLNM", "source": "peterson1993", "quote": "a hypothetical background spectrum that is unlikely to be duplicated at any single location on Earth", "where": "Table 3, p. 33; katabasis.ambient.peterson"},
+    "global_high": {"model": "NHNM", "source": "peterson1993", "quote": "a spectrum of average high background noise power in the network", "where": "Table 4, p. 34; katabasis.ambient.peterson"},
+    "band_limit_hz": {"value": 10, "source": "peterson1993", "quote": "Line parameters for constructing the NLNM curve given the period (P)", "note": "the tables start at P = 0.10 s: the models say nothing above 10 Hz"}
+  },
+  "regional": {
+    "microseism_vertical_0.1_0.3_hz": {"value": 4.9e-8, "range": [4.0e-8, 6.6e-8], "status": "measured", "source": "m1_01", "note": "median, 10th-90th percentile; Kottamya, 67 km east of Giza; the band is regional"},
+    "vertical_1_3_hz": {"value": 2.9e-8, "range": [2.2e-8, 3.8e-8], "status": "measured", "source": "m1_01", "note": "a quiet hill: a lower bound for Giza above 1 Hz"},
+    "vertical_3_8_hz": {"value": 2.5e-8, "range": [1.8e-8, 3.6e-8], "status": "measured", "source": "m1_01", "note": "day 2.9e-8, night 2.1e-8"}
+  },
+  "site_frequencies": {
+    "giza_ground_hz": {"value": 0.6, "source": "elgabry2026", "quote": "the average predominant frequency on the surrounding ground is about 0.60 Hz"},
+    "khufu_pyramid_hz": {"value": 2.3, "range": [2.0, 2.6], "source": "elgabry2026", "quote": "fundamental frequency between 2.0 and 2.6, with an average of ~ 2.3"}
+  },
+  "cultural": {
+    "reference": "RMS over 1 s, VdB re 1e-6 in/s (2.54e-8 m/s), 50 ft (15.2 m) from the source, above 8 Hz; levels read from Figure 7-3 unless quoted",
+    "urban_background": {"vdb": 51, "value": 9.0e-6, "status": "read from figure", "source": "fta1995", "quote": "Typical background vibration", "note": "Figure 7-3; 'Background vibration is usually well below the threshold of human perception'"},
+    "bus_or_truck_typical": {"vdb": 63, "value": 3.6e-5, "status": "read from figure", "source": "fta1995", "quote": "Bus or truck, typical", "note": "Figure 7-3, 50 ft"},
+    "bus_or_truck_over_bump": {"vdb": 72, "value": 1.0e-4, "status": "read from figure", "source": "fta1995", "quote": "Buses and trucks rarely create vibration that exceeds 70 VdB unless there are bumps in the road", "note": "Figure 7-3, 50 ft"},
+    "human_perception": {"vdb": 65, "value": 4.5e-5, "status": "quoted", "source": "fta1995", "quote": "threshold of perception for humans which is around 65 VdB"},
+    "band_hz": {"value": [8, 100], "source": "fta1995", "quote": "At frequencies greater than 8 Hz, which for all practical purposes is the frequency range of interest to ground-borne vibration", "note": "upper limit assumed"}
+  }
+}

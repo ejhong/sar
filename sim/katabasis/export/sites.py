@@ -85,4 +85,7 @@ def export_sites(out: Path = DATA) -> list[dict]:
         {'sources': load_sources(),
          'materials': {m.id: m.summary() | {'vp_quote': m.vp.quote, 'vs_note': m.vs.note}
                        for m in load_site(list_sites()[0]).materials.values()}}, indent=1, ensure_ascii=False))
+    lib = Path(__file__).resolve().parents[3] / 'sites' / 'ambient.json'
+    if lib.exists():                                  # the ambient library, verbatim
+        (out / 'ambient.json').write_text(lib.read_text())
     return index
