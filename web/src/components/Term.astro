@@ -1,0 +1,62 @@
+---
+/**
+ * A term from the other community, with its definition on hover or focus.
+ *   <Term k="fwi">full-waveform inversion</Term>
+ */
+import { GLOSSARY } from '../data/glossary';
+interface Props {
+  k: keyof typeof GLOSSARY;
+}
+const { k } = Astro.props;
+const e = GLOSSARY[k];
+if (!e) throw new Error(`glossary: no entry ${String(k)}`);
+---
+<span class="term" tabindex="0"><slot>{e.term}</slot><span class="term-pop" role="tooltip"><b>{e.term}</b> <i>{e.field === 'both' ? 'seismic · radar' : e.field}</i>{e.text}</span></span>
+
+<style is:global>
+  .term {
+    position: relative;
+    text-decoration: underline dotted var(--stone);
+    text-underline-offset: 3px;
+    cursor: help;
+    outline: none;
+  }
+  .term-pop {
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 8px);
+    transform: translateX(-50%) translateY(4px);
+    width: 270px;
+    background: var(--deep);
+    color: var(--panel-text);
+    border-radius: 8px;
+    padding: 9px 11px;
+    font: 12px/1.5 var(--font-sans);
+    font-style: normal;
+    text-align: left;
+    box-shadow: 0 6px 20px rgba(15, 24, 34, 0.25);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.15s, transform 0.15s;
+    z-index: 50;
+    pointer-events: none;
+  }
+  .term-pop b {
+    font-weight: 600;
+    color: #eef3f7;
+  }
+  .term-pop i {
+    font: 9.5px var(--font-mono);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--lapis-night);
+    margin: 0 0 4px;
+    display: block;
+  }
+  .term:hover .term-pop,
+  .term:focus .term-pop {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%);
+  }
+</style>

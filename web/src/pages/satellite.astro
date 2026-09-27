@@ -1,5 +1,7 @@
 ---
 import Doc from '../layouts/Doc.astro';
+import DwellDiagram from '../components/DwellDiagram.astro';
+import Term from '../components/Term.astro';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 const acquisitions = [
@@ -30,6 +32,7 @@ const findings = [
   state="status · planned · the measured evidence below is already in hand"
   index={[
     { id: 'plan', label: 'The plan' },
+    { id: 'geometry', label: 'Geometry' },
     { id: 'acquisitions', label: 'The acquisitions' },
     { id: 'measured', label: 'Already measured' },
   ]}
@@ -37,7 +40,7 @@ const findings = [
   <section id="plan">
     <h2>The radar sees only the surface, so it is judged on the surface first</h2>
     <p class="sub">
-      X-band enters centimetres of dry limestone, so any radar view of the underworld must come through motion of the
+      <Term k="xband">X-band</Term> enters centimetres of dry limestone, so any radar view of the underworld must come through motion of the
       surface. Phase 2 simulates exactly that motion and asks, in order, three questions of increasing difficulty.
     </p>
     <div class="grid-3">
@@ -57,6 +60,17 @@ const findings = [
         <p>The radar's velocity field, with its real sampling, record length and floor, is given to the Phase 1 inversions as if it were a geophone array.</p>
       </div>
     </div>
+  </section>
+
+  <section id="geometry">
+    <h2>A dwell trades looking longer for looking from further round</h2>
+    <p class="sub">
+      A <Term k="dwell">Spotlight Dwell</Term> holds the beam on Giza for 24.5 s. Every second of{' '}
+      <Term k="aperture">synthetic aperture</Term> is also a change of viewing direction, and the claimed method reads ground
+      motion from the differences between <Term k="sub-aperture">sub-apertures</Term>: looks from different moments that are
+      also looks from different angles.
+    </p>
+    <DwellDiagram />
   </section>
 
   <section id="acquisitions">

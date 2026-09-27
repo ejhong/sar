@@ -1,0 +1,97 @@
+---
+/**
+ * Every method against the one-chamber bench, as far as the lab has got:
+ * generated from the published runs, planned rows marked as planned.
+ */
+import tt from '../../public/data/runs/p1_02_traveltime.json';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const pct = (v: number) => `${v > 0 ? '+' : ''}${(v * 100).toFixed(1)}%`;
+const cx = tt.surveys.crosshole.score;
+const su = tt.surveys.surface.score;
+const rows = [
+  { method: 'Travel-time tomography', survey: 'crosshole · four boreholes', f: '250 Hz', rec: pct(cx.chamber_mean_rel), cnr: `${cx.contrast_to_noise.toFixed(1)}×`, status: 'done', run: 'p1_02_traveltime', href: '#traveltime' },
+  { method: 'Travel-time tomography', survey: 'surface · hammer and geophone grids', f: '120 Hz', rec: pct(su.chamber_mean_rel), cnr: `${Math.max(0, su.contrast_to_noise).toFixed(1)}×`, status: 'done', run: 'p1_02_traveltime', href: '#traveltime' },
+  { method: 'Echo imaging (RTM)', survey: 'surface · same grids, scattered wave', f: '120 Hz', rec: '—', cnr: '—', status: 'next', run: 'p1_03_scattered', href: '#methods' },
+  { method: 'Ambient-noise tomography', survey: 'surface · dense nodal array, passive', f: 'ambient', rec: '—', cnr: '—', status: 'planned', run: '', href: '#methods' },
+  { method: 'Full-waveform inversion', survey: 'surface · iterated from a practitioner’s start', f: 'multiscale', rec: '—', cnr: '—', status: 'planned', run: '', href: '#methods' },
+];
+---
+<table class="data scoreboard">
+  <thead>
+    <tr><th>Method</th><th>Survey</th><th>Frequency</th><th class="r">Chamber recovered</th><th class="r">vs scatter</th><th>State</th></tr>
+  </thead>
+  <tbody>
+    {
+      rows.map((r) => (
+        <tr class={r.status}>
+          <td><a href={r.href}>{r.method}</a></td>
+          <td>{r.survey}</td>
+          <td class="mono">{r.f}</td>
+          <td class="num">{r.rec}</td>
+          <td class="num">{r.cnr}</td>
+          <td>
+            <span class={`st ${r.status}`}>{r.status}</span>
+            {r.run && r.status === 'done' && <a class="run" href={`${base}/data/runs/${r.run}.json`}>{r.run}</a>}
+          </td>
+        </tr>
+      ))
+    }
+  </tbody>
+</table>
+<p class="sb-note">Chamber recovered: mean relative P-wave speed inside the true chamber (air would read −90%). vs scatter: that anomaly over the tomogram's own spread around it. One chamber, 6 m, top 12 m down, bare limestone, noise 30 dB below each record's peak.</p>
+
+<style>
+  .scoreboard a {
+    color: var(--text);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .scoreboard a:hover {
+    color: var(--lapis);
+  }
+  .scoreboard .r {
+    text-align: right;
+  }
+  .scoreboard td.mono {
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .scoreboard tr.planned td,
+  .scoreboard tr.next td {
+    color: var(--muted);
+  }
+  .st {
+    display: inline-block;
+    font: 600 9px/1 var(--font-mono);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    padding: 3px 7px;
+    margin-right: 8px;
+  }
+  .st.done {
+    color: var(--verdigris);
+  }
+  .st.next {
+    color: var(--lapis);
+    border-style: dashed;
+  }
+  .st.planned {
+    color: var(--muted);
+    border-style: dashed;
+  }
+  a.run {
+    font: 10px var(--font-mono);
+    font-weight: 400;
+    color: var(--muted);
+  }
+  .sb-note {
+    font-family: var(--font-serif);
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--muted);
+    margin-top: 10px;
+    max-width: 820px;
+  }
+</style>

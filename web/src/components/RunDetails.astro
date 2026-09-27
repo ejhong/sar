@@ -1,0 +1,124 @@
+---
+/**
+ * Everything an expert needs to trust or reproduce a run: its manifest, its
+ * parameters, the data it published and the code that made it.
+ */
+interface Props {
+  manifest: {
+    id: string;
+    title: string;
+    date: string;
+    commit: string;
+    runtime_s: number;
+    params: Record<string, unknown>;
+    environment?: Record<string, unknown>;
+  };
+  extra?: [string, string][];
+  open?: boolean;
+}
+const { manifest: m, extra = [], open = false } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const repo = 'https://github.com/ejhong/sar';
+const commit = m.commit.replace('+', '');
+const fmt = (v: unknown): string => {
+  if (v === null || v === undefined) return '—';
+  if (Array.isArray(v)) return v.map(fmt).join(', ');
+  if (typeof v === 'object') return Object.entries(v as Record<string, unknown>).map(([k, x]) => `${k} ${fmt(x)}`).join(' · ');
+  if (typeof v === 'number') return Number.isInteger(v) ? v.toLocaleString('en-US') : String(+v.toPrecision(4));
+  return String(v);
+};
+const rows: [string, string][] = [
+  ...Object.entries(m.params).map(([k, v]) => [k.replace(/_/g, ' '), fmt(v)] as [string, string]),
+  ...extra,
+];
+const env = m.environment ? fmt(m.environment) : '';
+---
+<details class="run-details" open={open}>
+  <summary>
+    <span class="rd-id">{m.id}</span>
+    <span class="rd-meta">{m.date} · {m.runtime_s.toLocaleString('en-US')} s · commit {m.commit}</span>
+    <span class="rd-links">
+      <a href={`${base}/data/runs/${m.id}.json`}>data</a>
+      <a href={`${repo}/blob/main/sim/experiments/${m.id}.py`}>code</a>
+    </span>
+  </summary>
+  <table class="data">
+    <tbody>
+      {
+        rows.map(([k, v]) => (
+          <tr>
+            <td class="k">{k}</td>
+            <td>{v}</td>
+          </tr>
+        ))
+      }
+      {env && (
+        <tr>
+          <td class="k">environment</td>
+          <td>{env}</td>
+        </tr>
+      )}
+      <tr>
+        <td class="k">source at</td>
+        <td><a href={`${repo}/tree/${commit}`}>{commit}</a>{m.commit.endsWith('+') ? ' (with local changes to the solver at run time)' : ''}</td>
+      </tr>
+    </tbody>
+  </table>
+</details>
+
+<style>
+  .run-details {
+    margin-top: 16px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: var(--bg);
+  }
+  summary {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 14px;
+    padding: 9px 12px;
+    cursor: pointer;
+    list-style: none;
+    font: 10.5px/1.4 var(--font-mono);
+    color: var(--muted);
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  summary::before {
+    content: '+';
+    color: var(--stone);
+  }
+  details[open] summary::before {
+    content: '−';
+  }
+  .rd-id {
+    font-weight: 600;
+    color: var(--text);
+  }
+  .rd-links {
+    margin-left: auto;
+    display: inline-flex;
+    gap: 12px;
+  }
+  .rd-links a {
+    color: var(--lapis);
+  }
+  table {
+    margin: 0 12px 12px;
+    width: calc(100% - 24px);
+  }
+  .k {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--muted);
+    white-space: nowrap;
+    width: 1%;
+    padding-right: 18px !important;
+  }
+  td {
+    font-size: 12px;
+  }
+</style>

@@ -1,0 +1,135 @@
+---
+/**
+ * The ICEYE Spotlight Dwell over Giza, drawn from the product's own numbers:
+ * 168 km of track in 24.49 s, a slant range near 607 km, so the look
+ * direction sweeps about 16° across the aperture. Beside it, the measured
+ * coherence between looks against their separation in time (R9).
+ */
+const trackKm = 168;
+const rangeKm = 606.9;
+const halfDeg = (Math.atan(trackKm / 2 / rangeKm) * 180) / Math.PI;
+// R9: coherence with the band-centre look, halves by 0.98 s, a quarter by 1.47 s, a tenth by 1.76 s
+const coh: [number, number][] = [
+  [0, 1],
+  [0.5, 0.82],
+  [0.98, 0.5],
+  [1.47, 0.25],
+  [1.76, 0.1],
+  [2.4, 0.03],
+  [3, 0.02],
+];
+const X0 = 470,
+  X1 = 680,
+  Y0 = 60,
+  Y1 = 230;
+const cxp = (t: number) => X0 + (t / 3) * (X1 - X0);
+const cyp = (c: number) => Y1 - c * (Y1 - Y0);
+const path = coh.map(([t, c], i) => `${i ? 'L' : 'M'}${cxp(t).toFixed(1)},${cyp(c).toFixed(1)}`).join('');
+// the track: 360 px for 168 km; the coherent 8 % sub-aperture = 1.96 s of 24.49 s
+const TX0 = 50,
+  TX1 = 410,
+  TY = 46,
+  SX = 230,
+  SY = 250;
+const sub = ((TX1 - TX0) * 1.96) / 24.49;
+---
+<figure class="dwell">
+  <svg viewBox="0 0 700 300" role="img" aria-label="Dwell geometry and measured coherence">
+    <!-- track and satellite positions -->
+    <line x1={TX0} x2={TX1} y1={TY} y2={TY} stroke="#34495b" stroke-width="1.2" />
+    <rect x={SX - sub / 2} y={TY - 5} width={sub} height="10" fill="var(--cinnabar)" opacity="0.28" />
+    {[TX0, SX, TX1].map((x) => (
+      <g transform={`translate(${x} ${TY})`}>
+        <rect x="-6" y="-5" width="12" height="9" rx="1.5" fill="#34495b" />
+        <rect x="-18" y="-2.5" width="11" height="4" fill="#5b7894" />
+        <rect x="7" y="-2.5" width="11" height="4" fill="#5b7894" />
+      </g>
+    ))}
+    <!-- beams converging on the scene -->
+    <g stroke="var(--cinnabar)" stroke-width="1" fill="none">
+      <line x1={TX0} y1={TY + 6} x2={SX} y2={SY} stroke-dasharray="4 4" opacity="0.8" />
+      <line x1={SX} y1={TY + 6} x2={SX} y2={SY} opacity="0.9" />
+      <line x1={TX1} y1={TY + 6} x2={SX} y2={SY} stroke-dasharray="4 4" opacity="0.8" />
+    </g>
+    <path d={`M${SX - 36} ${SY - 58} A62 62 0 0 1 ${SX + 36} ${SY - 58}`} stroke="#34495b" fill="none" stroke-width="1" />
+    <line x1="20" x2="440" y1={SY} y2={SY} stroke="#8f8573" stroke-width="1.2" />
+    <rect x="20" y={SY} width="420" height="30" fill="#e3dccd" />
+    <circle cx={SX} cy={SY} r="4" fill="var(--lapis)" />
+    <!-- labels -->
+    <text x={TX0} y={TY - 14} class="t" text-anchor="middle">−12.2 s</text>
+    <text x={SX} y={TY - 14} class="t" text-anchor="middle">aperture centre</text>
+    <text x={TX1} y={TY - 14} class="t" text-anchor="middle">+12.2 s</text>
+    <text x={SX + 10} y={TY + 30} class="t strong">{trackKm} km of track in 24.49 s</text>
+    <text x={SX + 8} y={150} class="t">{rangeKm.toFixed(0)} km slant range</text>
+    <text x={SX} y={SY - 70} class="t strong" text-anchor="middle">look sweeps {(2 * halfDeg).toFixed(0)}°</text>
+    <text x={SX - sub / 2 - 8} y={TY + 16} class="t c" text-anchor="end">coherent look: 1.96 s (8%)</text>
+    <text x={SX} y={SY + 20} class="t" text-anchor="middle">Giza · incidence 20.8°</text>
+
+    <!-- coherence panel -->
+    <g class="axis">
+      <line x1={X0} x2={X1} y1={Y1} y2={Y1} />
+      <line x1={X0} x2={X0} y1={Y0} y2={Y1} />
+      {[0, 1, 2, 3].map((t) => (
+        <text x={cxp(t)} y={Y1 + 14} text-anchor="middle">{t}</text>
+      ))}
+      {[0, 0.5, 1].map((c) => (
+        <text x={X0 - 6} y={cyp(c) + 3} text-anchor="end">{c}</text>
+      ))}
+      <line class="grid" x1={X0} x2={X1} y1={cyp(0.5)} y2={cyp(0.5)} />
+      <text x={(X0 + X1) / 2} y={Y1 + 30} text-anchor="middle">separation between looks, s</text>
+      <text x={X0} y={Y0 - 16}>coherence with the centre look, measured</text>
+    </g>
+    <path d={path} fill="none" stroke="var(--cinnabar)" stroke-width="2" stroke-linejoin="round" />
+    <circle cx={cxp(0.98)} cy={cyp(0.5)} r="4" fill="var(--cinnabar)" stroke="var(--sheet)" stroke-width="2" />
+    <text x={cxp(0.98) + 8} y={cyp(0.5) - 6} class="t strong">half by 0.98 s</text>
+    <circle cx={cxp(1.76)} cy={cyp(0.1)} r="4" fill="var(--cinnabar)" stroke="var(--sheet)" stroke-width="2" />
+    <text x={cxp(1.76) + 10} y={cyp(0.1) - 14} class="t">tenth by 1.76 s</text>
+  </svg>
+  <figcaption>
+    Fig. 1 · The dwell's look direction sweeps about {(2 * halfDeg).toFixed(0)}° (derived from the track length and slant
+    range), so looks seconds apart are degrees apart, and natural ground decorrelates across a fraction of a degree:
+    coherence with the centre look halves by 0.98 s on the pyramid and on open desert alike (R9, measured). A bank of
+    sub-apertures spread over the whole aperture folds the claimed depth axis back at 6.8 m and repeats it at 13.6 m (R2).
+  </figcaption>
+</figure>
+
+<style>
+  .dwell {
+    margin: 0;
+  }
+  svg {
+    width: 100%;
+    height: auto;
+    background: var(--sheet);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+  .t {
+    font: 10px var(--font-mono);
+    fill: #4b5a66;
+  }
+  .t.strong {
+    font-weight: 600;
+    fill: var(--text);
+  }
+  .t.c {
+    fill: var(--cinnabar);
+  }
+  .axis line {
+    stroke: var(--border-strong);
+  }
+  .axis .grid {
+    stroke: var(--border);
+  }
+  .axis text {
+    font: 9.5px var(--font-mono);
+    fill: var(--muted);
+  }
+  figcaption {
+    font-family: var(--font-serif);
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--body);
+    margin-top: 8px;
+  }
+</style>

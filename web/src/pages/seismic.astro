@@ -4,6 +4,9 @@ import LineChart from '../components/LineChart.astro';
 import v01 from '../../public/data/runs/p1_01_forward_validation.json';
 import tt from '../../public/data/runs/p1_02_traveltime.json';
 import SectionMap from '../components/SectionMap.astro';
+import Scoreboard from '../components/Scoreboard.astro';
+import RunDetails from '../components/RunDetails.astro';
+import Term from '../components/Term.astro';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const st = v01.stokes;
 const ra = v01.rayleigh;
@@ -26,6 +29,7 @@ const pct = (v: number) => `${v > 0 ? '+' : ''}${(v * 100).toFixed(1)}%`;
   state="status · composition model and test benches done · 3-D elastic solver validated · inversions in progress"
   index={[
     { id: 'chain', label: 'The chain' },
+    { id: 'scoreboard', label: 'Scoreboard' },
     { id: 'forward', label: 'Forward model' },
     { id: 'traveltime', label: 'Travel times' },
     { id: 'arrays', label: 'Arrays' },
@@ -33,6 +37,11 @@ const pct = (v: number) => `${v > 0 ? '+' : ''}${(v * 100).toFixed(1)}%`;
     { id: 'scoring', label: 'Scoring' },
   ]}
 >
+  <section id="scoreboard">
+    <h2>Where each method stands on the one-chamber bench</h2>
+    <Scoreboard />
+  </section>
+
   <section id="chain">
     <h2>Every tomogram here is scored against a truth the method never saw</h2>
     <p class="sub">
@@ -77,9 +86,9 @@ const pct = (v: number) => `${v > 0 ? '+' : ''}${(v * 100).toFixed(1)}%`;
     </div>
     <div class="grid-2 charts">
       {
-        st.panels.map((p) => (
+        st.panels.map((p, i) => (
           <LineChart
-            title={`Point force: ${p.component} velocity, ${p.receiver}, ${p.offset_m.toFixed(0)} m`}
+            title={`Fig. 1${'abcd'[i]} · Point force: ${p.component} velocity, ${p.receiver}, ${p.offset_m.toFixed(0)} m`}
             series={[
               { name: 'exact', x: p.t_ms, y: p.exact, color: 'var(--text)', width: 1.5 },
               { name: 'simulated', x: p.t_ms, y: p.simulated, color: 'var(--verdigris)', dash: '4 3' },
@@ -94,7 +103,7 @@ const pct = (v: number) => `${v > 0 ? '+' : ''}${(v * 100).toFixed(1)}%`;
         ))
       }
       <LineChart
-        title="Rayleigh-wave speed on the free surface"
+        title="Fig. 2 · Rayleigh-wave speed on the free surface"
         series={[{ name: 'error', x: ra.rows.map((r) => r.points_per_wavelength), y: ra.rows.map((r) => r.error_percent), color: 'var(--verdigris)', markers: true }]}
         xLabel="points per minimum S wavelength"
         yLabel="speed error"
@@ -105,7 +114,7 @@ const pct = (v: number) => `${v > 0 ? '+' : ''}${(v * 100).toFixed(1)}%`;
         caption={`measured by cross-correlation at 3 to 8 wavelengths; exact ${ra.exact_m_s.toFixed(0)} m/s from the Rayleigh equation`}
       />
       <LineChart
-        title="Energy left in the grid"
+        title="Fig. 3 · Energy left in the grid"
         series={[{ name: 'energy', x: ab.t_ms, y: ab.energy_relative, color: 'var(--verdigris)' }]}
         xLabel="time, ms"
         yLabel="relative energy"
@@ -116,7 +125,7 @@ const pct = (v: number) => `${v > 0 ? '+' : ''}${(v * 100).toFixed(1)}%`;
         caption={`C-PML, ${ab.pml_cells} cells on every face`}
       />
       <LineChart
-        title={`Reciprocity across a ${rc.void_m} m void`}
+        title={`Fig. 4 · Reciprocity across a ${rc.void_m} m void`}
         series={[
           { name: 'east force → up velocity', x: rc.t_ms, y: rc.forward, color: 'var(--text)', width: 1.5 },
           { name: 'up force → east velocity', x: rc.t_ms, y: rc.reverse, color: 'var(--verdigris)', dash: '4 3' },
@@ -129,14 +138,14 @@ const pct = (v: number) => `${v > 0 ? '+' : ''}${(v * 100).toFixed(1)}%`;
         caption={`correlation ${rc.ncc.toFixed(5)} · amplitude ratio ${rc.amplitude_ratio.toFixed(3)}`}
       />
     </div>
-    <p class="runline mono">run {run.id} · {run.date} · commit {run.commit} · {run.runtime_s} s · {st.mcell_steps_per_s.toFixed(0)} M cell-steps/s on {run.environment.threads} threads</p>
+    <RunDetails manifest={run} extra={[['grid', `${st.grid.join(' × ')} cells at ${st.spacing_m} m`], ['points per S wavelength', st.points_per_wavelength.toFixed(1)], ['speed', `${st.mcell_steps_per_s.toFixed(0)} M cell-steps per second`]]} />
   </section>
 
   <section id="traveltime">
     <h2>Travel times catch the chamber's shadow from boreholes, and nothing from the surface</h2>
     <p class="sub">
       The one-chamber bench: a 6 m air-filled cube, its top 12 m down, in bare limestone. Every record comes from the
-      solver above, with noise 30 dB below each record's peak; arrivals are picked by waveform correlation; the picks are
+      solver above, with noise 30 dB below each record's peak; <Term k="first-break">first arrivals</Term> are picked by waveform correlation; the picks are
       inverted on a 1 m grid by a code that never sees the model. Air is {Math.round(-100 * cx.score.true_air_rel)}% slower
       than the rock; a first arrival goes around the void instead of through it, so what travel times can see is the
       delay of the detour.
@@ -149,7 +158,7 @@ const pct = (v: number) => `${v > 0 ? '+' : ''}${(v * 100).toFixed(1)}%`;
     </div>
     <div class="grid-3 charts">
       <SectionMap
-        title={`Crosshole: vertical section through the chamber`}
+        title="Fig. 5a · Crosshole: vertical section through the chamber"
         x={cx.slices.x}
         y={cx.slices.z}
         values={cx.slices.xz_rel}
@@ -161,7 +170,7 @@ const pct = (v: number) => `${v > 0 ? '+' : ''}${(v * 100).toFixed(1)}%`;
         caption={`relative P speed · sparker at ${tt.manifest.params.f0_hz.crosshole} Hz · boreholes at ±12 m`}
       />
       <SectionMap
-        title="Crosshole: horizontal section at the chamber's centre"
+        title="Fig. 5b · Crosshole: horizontal section at the chamber's centre"
         x={cx.slices.x}
         y={cx.slices.y.slice().reverse()}
         values={cx.slices.xy_rel.slice().reverse()}
@@ -173,7 +182,7 @@ const pct = (v: number) => `${v > 0 ? '+' : ''}${(v * 100).toFixed(1)}%`;
         caption="the four boreholes in ochre"
       />
       <SectionMap
-        title="Surface: vertical section through the chamber"
+        title="Fig. 5c · Surface: vertical section through the chamber"
         x={su.slices.x}
         y={su.slices.z}
         values={su.slices.xz_rel}
@@ -186,7 +195,7 @@ const pct = (v: number) => `${v > 0 ? '+' : ''}${(v * 100).toFixed(1)}%`;
       />
     </div>
     <p class="finding">{tt.finding}</p>
-    <p class="runline mono">run {tt.manifest.id} · {tt.manifest.date} · commit {tt.manifest.commit} · {tt.manifest.runtime_s} s · <a href={`${base}/underworld/#bench-void`}>see the tomograms in the underworld</a></p>
+    <RunDetails manifest={tt.manifest} extra={[['crosshole picks', `${cx.picked} of ${cx.pairs} pairs · 95th-percentile error ${cx.pick_minus_straight_ms.p95_abs.toFixed(2)} ms`], ['surface picks', `${su.picked} of ${su.pairs} pairs`], ['inversion', `Gauss-Newton, ${cx.history.length - 1} iterations · smoothing 3 · damping 0.05 · 1 m cells`], ['picking', 'correlation with the leading lobe of the far-field P pulse'], ['viewer', 'the tomograms are in the underworld: bench-void, Show: Recovered']]} />
   </section>
 
   <section id="arrays">
@@ -207,15 +216,15 @@ const pct = (v: number) => `${v > 0 ? '+' : ''}${(v * 100).toFixed(1)}%`;
     <h2>Three inversions, from the classic to the state of the art</h2>
     <div class="grid-3">
       <div class="note-card">
-        <h3>Travel-time tomography</h3>
+        <h3><Term k="traveltime">Travel-time tomography</Term></h3>
         <p>First arrivals picked from the records, bent rays traced through an eikonal solver, a regularised least-squares update. Robust, and blurred at a wavelength.</p>
       </div>
       <div class="note-card">
-        <h3>Ambient-noise tomography</h3>
+        <h3><Term k="ambient-noise">Ambient-noise tomography</Term></h3>
         <p>Noise cross-correlated between sensor pairs becomes the wave that would travel between them; its dispersion is mapped and inverted for shear speed with depth.</p>
       </div>
       <div class="note-card">
-        <h3>Full-waveform inversion</h3>
+        <h3><Term k="fwi">Full-waveform inversion</Term></h3>
         <p>The whole record fitted by adjoint-state gradients, from low frequencies up. The sharpest images near-surface geophysics makes, and the most demanding.</p>
       </div>
     </div>

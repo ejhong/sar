@@ -1,5 +1,6 @@
 ---
 import Doc from '../layouts/Doc.astro';
+import { GLOSSARY } from '../data/glossary';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const materials = (await import('../../public/data/materials.json')).default as {
   sources: Record<string, { citation: string; url: string; doi?: string }>;
@@ -16,6 +17,7 @@ const mark = (s: string) => (s === 'sourced' || s === 'definition' ? '' : s === 
   lede="Everything on this site is generated from the repository by code anyone can run: the compositions from their JSON, the simulations from their scripts, the figures and volumes from the runs that made them. Nothing is edited by hand, and every number carries its source or is marked as assumed."
   index={[
     { id: 'materials', label: 'Materials' },
+    { id: 'glossary', label: 'Glossary' },
     { id: 'run', label: 'Run it' },
     { id: 'layout', label: 'Layout' },
   ]}
@@ -49,11 +51,28 @@ const mark = (s: string) => (s === 'sourced' || s === 'definition' ? '' : s === 
     </div>
   </section>
 
+  <section id="glossary">
+    <h2>Two communities, one vocabulary</h2>
+    <p class="sub">Seismologists and radar engineers rarely read each other. The terms this site uses from each, in plain words; they are underlined where they appear.</p>
+    <dl class="glossary">
+      {
+        Object.values(GLOSSARY)
+          .sort((a, b) => a.term.localeCompare(b.term))
+          .map((e) => (
+            <div>
+              <dt>{e.term} <span class={`field ${e.field}`}>{e.field === 'both' ? 'seismic · radar' : e.field}</span></dt>
+              <dd>{e.text}</dd>
+            </div>
+          ))
+      }
+    </dl>
+  </section>
+
   <section id="run">
-    <h2>Two commands rebuild everything</h2>
-    <pre><code>cd sim && uv sync && uv run pytest        # the simulation and its checks
-uv run python -m katabasis.export          # everything the site reads
-cd ../web && npm ci && npm run build        # the site, into docs/</code></pre>
+    <h2>Three commands rebuild everything</h2>
+    <pre><code>cd sim && uv sync && uv run pytest      # the simulation and its checks
+uv run python -m katabasis.export        # everything the site reads
+cd ../web && npm ci && npm run build     # the site, into docs/</code></pre>
   </section>
 
   <section id="layout">
@@ -67,6 +86,41 @@ cd ../web && npm ci && npm run build        # the site, into docs/</code></pre>
 </Doc>
 
 <style>
+  .glossary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px 32px;
+  }
+  .glossary dt {
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--text);
+  }
+  .glossary dd {
+    font-family: var(--font-serif);
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--body);
+    margin-top: 2px;
+  }
+  .field {
+    font: 9px var(--font-mono);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-left: 6px;
+  }
+  .field.radar {
+    color: var(--cinnabar);
+  }
+  .field.seismic {
+    color: var(--ochre);
+  }
+  @media (max-width: 760px) {
+    .glossary {
+      grid-template-columns: 1fr;
+    }
+  }
   .sources {
     margin-top: 14px;
     display: grid;

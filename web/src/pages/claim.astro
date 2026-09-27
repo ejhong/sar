@@ -1,5 +1,7 @@
 ---
 import Doc from '../layouts/Doc.astro';
+import Timeline from '../components/Timeline.astro';
+import Term from '../components/Term.astro';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 <Doc
@@ -8,18 +10,24 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   current="claim"
   lede="The idea is that a single satellite radar image, reprocessed as a set of sub-apertures, holds the vibration of the ground, and that the vibration can be focused into a picture of what lies hundreds of metres beneath it. This page keeps apart the four things that are easily blurred: the published claims, the public protocol derived from them, this lab's own work, and the difference between simulation and measurement."
   index={[
+    { id: 'timeline', label: 'Timeline' },
     { id: 'published', label: 'Published claims' },
     { id: 'protocol', label: 'Derivative protocol' },
     { id: 'ours', label: 'This lab' },
     { id: 'honesty', label: 'Simulated and measured' },
   ]}
 >
+  <section id="timeline">
+    <h2>Four years from the method to its retraction</h2>
+    <Timeline />
+  </section>
+
   <section id="published">
     <h2>The method was published in 2022 and retracted in 2026</h2>
     <div class="grid-2">
       <div class="note-card">
         <span class="tag claimed">claimed</span>
-        <h3>Single-image Doppler tomography</h3>
+        <h3>Single-image <Term k="doppler-tomography">Doppler tomography</Term></h3>
         <p>
           Biondi and Malanga described the method in 2022, applied to the Great Pyramid
           (<a href="https://arxiv.org/abs/2208.00811">arXiv:2208.00811</a>). The paper was retracted by <em>Remote

@@ -1,33 +1,32 @@
-# Design — limestone and basalt
+# Design — mist and deep water
 
-The craft of ejhong/knots (and The OM Project before it), in a register drawn from the subject: an instrument more than a
-magazine, small dense type, and one image allowed to be beautiful — the underworld.
+An instrument more than a magazine: small dense type, statement headings, and one image allowed to be beautiful — the
+underworld. Cool and muted: mist for reading, deep slate-blue where the drama and the instruments are.
 
-- **Surfaces.** Day is the page: limestone `#f4efe5`, fresh-cut sheets `#faf7f0`, a sandstone band `#e4dccd` with the
-  title and a line of Virgil in Georgia italic, 12 px cards with 1 px `#ddd3c2` borders. Night is the underworld: basalt
-  `#0f1214` behind the viewer with a soft lamp-lit vignette, slate panels `#1a1f22` with mono labels.
-- **Type (system only, no web fonts).** Sans for UI and headings (title 20/700, sections 16/700), Georgia for prose
-  (13.5–15 px), SF Mono for labels, data and captions (9.5–11 px). Headings are statements, never questions.
-- **Colour roles — one each, everywhere, 2-D and 3-D.**
-  lapis `#2c5aa0` / night `#82b3ff` = voids and chambers (the truth or the survey);
-  verdigris `#16876e` / `#74d8bc` = what an instrument recovered;
-  ochre `#a8741f` / `#e8b95c` = sensors and sources;
-  porphyry `#7a55a6` / `#c0a6da` = claimed structures, always dashed;
-  cinnabar `#aa4b33` / `#f0906f` = the radar (Phase 2).
-  Everything else is stone, ink and paper. The day palette passes the dataviz six checks against `--sheet`; night
-  colours are emissive glows in the viewer, not chart fills.
-- **Charts.** Hand-made SVG, drawn at build time, 2 px lines, hairline grids, a legend for two or more series, hover
-  read-outs. Tomogram sections use a diverging scale about the background: slower in verdigris, faster in umber, a
-  neutral grey between, true chambers outlined in lapis, stations in ochre.
-- **The underworld.** Each site is a geological block diagram: terrain lit low with contours, strata on the faces in
-  their conventional patterns (limestone bedded blocks, sand stipple, marl dashes, igneous crosses, masonry large
-  blocks), the water table dashed, depth ticks on each face, a section plane that reveals a patterned cut face, chambers
-  glowing through the rock with plumb lines to the ground, pyramids as survey outlines, recovered volumes ray-marched in
-  verdigris, stations as ochre points, the wavefield as a sheet of light (the echo alone in lapis). Slow turntable when
-  idle; motion stops under `prefers-reduced-motion`.
-- **Layout.** The instrument: a basalt panel beside the viewer card. Embedded in a page the viewer never steals the
-  scroll (ctrl/⌘ to zoom, two fingers to turn); on phones the viewer is pinned above and the panel scrolls below.
-  Reading pages are one limestone sheet with a quiet index, dashboard pieces on a grid: stat rows first, then figures.
+- **Mist (reading).** Page `#e8eef2`, sheets and cards `#f5f8fa`, borders `#d3dde5`/`#b7c6d2`, ink `#1c2833`, body
+  `#3d4c5a`, muted `#6b7d8e`.
+- **Deep water (drama).** The top band and footer `#132030` with a faint lapis glow; the front-page hero and the
+  viewer ground `#0f1822` with a lamp-lit vignette; instrument panels `#16222e`/`#1b2836` with text `#dfe6ec`; full-bleed
+  feature bands (the measured budget) in deep water with light type.
+- **Type.** IBM Plex Sans (UI, section headings), IBM Plex Mono (data, labels, captions), Newsreader (display titles and
+  prose), all self-hosted through fontsource so every reader sees the same page. Headings are statements.
+- **Colour roles — one each, everywhere, 2-D and 3-D.** lapis = voids and chambers; verdigris = what an instrument
+  recovered; ochre = sensors and sources; porphyry = claimed structures, always dashed; cinnabar = the radar. Three sets:
+  on mist (`#2c5aa0 #16876e #a8741f #7a55a6 #aa4b33`), on deep water (`#5b8fe0 #23a07f #be8a2e #9a78d3 #d46e50`), both
+  passing the dataviz six checks; and emissive glows in the viewer (`#82b3ff #74d8bc #e8b95c #c0a6da #f0906f`).
+- **Front page.** An introduction, not an instrument: the hero tours the underworld on its own (no controls, never
+  catching the scroll), then the claim with its timeline, the ladder of instruments (the organising figure: borehole to
+  orbit, each with its verdict), the latest results, and the measured budget in a deep band.
+- **The underworld.** Each site a geological block diagram: terrain lit low with contours, strata on the faces in their
+  conventional patterns, depth ticks, a section plane with a patterned cut face, chambers glowing through the rock with
+  plumb lines, pyramids as survey outlines, recovered volumes ray-marched in verdigris, stations in ochre, the wavefield
+  as a sheet of light (the echo alone in lapis). The panel leads with the site and a Show control (truth · recovered ·
+  waves); features pin on click; a live scale bar; keyboard shortcuts; the view lives in the URL.
+- **Reading pages.** One mist sheet with a quiet index; a scoreboard first where there are results; numbered figures;
+  every run with a collapsible details panel linking its data and code; terms from the other community underlined with
+  their definition on hover (`src/data/glossary.ts`).
+- **Charts.** Hand-made SVG at build time: 2 px lines, hairline grids, legends for two or more series, hover read-outs.
+  Tomogram sections diverge about the background: slower in verdigris, faster in umber, true chambers outlined in lapis.
 - **Honesty in the interface.** Every figure says simulated, measured, claimed or planned; every run names its date and
   commit; every material number traces to a source or says assumed.
 
