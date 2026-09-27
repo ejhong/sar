@@ -20,3 +20,9 @@ data/
 
 # transient run logs
 results/*.log
+
+# web
+web/node_modules/
+web/dist/
+web/.astro/
+shots/

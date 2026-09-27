@@ -1,0 +1,33 @@
+{
+  "name": "katabasis",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Katabasis: a simulation lab for imaging the underworld. Seismic tomography and satellite radar, simulated over known ground and applied to Giza.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Eugene Jhong",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "test": "vitest run",
+    "shot": "tsx scripts/shot.ts"
+  },
+  "dependencies": {
+    "astro": "^7.3.4",
+    "three": "^0.186.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@types/node": "^26.6.2",
+    "@types/three": "^0.186.0",
+    "playwright": "^1.63.0",
+    "tsx": "^4.23.15",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.11"
+  }
+}

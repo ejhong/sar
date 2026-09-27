@@ -135,5 +135,5 @@ def test_field_reports_keep_failures_and_every_trial_reproduces_tolerance(site):
     assert report['field_depth_results']==0
     for filename,digest in report['output_sha256'].items():
         assert hashlib.sha256((path/filename).read_bytes()).hexdigest()==digest
-    published=ROOT/'docs/data/field'/site/'report.json'
+    published=ROOT.parents[1]/'web/public/archive/data/field'/site/'report.json'
     assert json.loads(published.read_text())==report
