@@ -1,8 +1,8 @@
 /**
- * The underworld's two grounds. Night (basalt) is the default: the only
- * things that glow are the ones that carry meaning. Day (limestone) reads
- * like a printed block diagram. Keep the roles in step with
- * src/styles/tokens.css.
+ * The underworld's two grounds. Night (deep water) is the default: a lamp-lit
+ * slate-blue in which the only things that glow are the ones that carry
+ * meaning. Day (mist) reads like a printed block diagram. Keep the roles in
+ * step with src/styles/tokens.css.
  */
 export type ThemeName = 'night' | 'day';
 
@@ -34,46 +34,46 @@ export interface SceneTheme {
 export const THEMES: Record<ThemeName, SceneTheme> = {
   night: {
     name: 'night',
-    background: 0x0b0d0f,
-    backgroundInner: '#1b2024',
-    fog: 0x0f1214,
+    background: 0x0a121a,
+    backgroundInner: '#1d3043',
+    fog: 0x0f1822,
     glow: 0.55,
     void: 0x82b3ff,
     recovered: 0x74d8bc,
     sensor: 0xe8b95c,
     claimed: 0xc0a6da,
     radar: 0xf0906f,
-    terrainLow: 0x2a2c2b,
-    terrainHigh: 0x5b5548,
-    terrainLight: 0xf1e3c4,
-    contour: 0x8d826c,
-    wallDim: 0.26,
-    interface: 'rgba(233,229,219,0.55)',
-    structure: 0xd9ccb0,
-    structureEdge: 0xe9dcc0,
-    frame: 0x59625f,
-    text: '#e9e5db',
+    terrainLow: 0x223140,
+    terrainHigh: 0x56636f,
+    terrainLight: 0xe8f0f7,
+    contour: 0x7f93a6,
+    wallDim: 0.3,
+    interface: 'rgba(223,230,236,0.55)',
+    structure: 0xdfe6ec,
+    structureEdge: 0xe8eef3,
+    frame: 0x5d7082,
+    text: '#dfe6ec',
   },
   day: {
     name: 'day',
-    background: 0xece5d8,
-    backgroundInner: '#faf7f0',
-    fog: 0xf4efe5,
+    background: 0xdbe3ea,
+    backgroundInner: '#f8fafc',
+    fog: 0xe8eef2,
     glow: 0,
     void: 0x2c5aa0,
     recovered: 0x16876e,
     sensor: 0xa8741f,
     claimed: 0x7a55a6,
     radar: 0xaa4b33,
-    terrainLow: 0xcbbd9f,
-    terrainHigh: 0xefe6d2,
-    terrainLight: 0xfffaf0,
-    contour: 0x9d8f74,
+    terrainLow: 0xc9c2b2,
+    terrainHigh: 0xefe9dc,
+    terrainLight: 0xffffff,
+    contour: 0x8f8a7e,
     wallDim: 1,
-    interface: 'rgba(45,41,36,0.55)',
-    structure: 0xe6dcc6,
-    structureEdge: 0x6b5f4e,
-    frame: 0x8a7a64,
-    text: '#2d2924',
+    interface: 'rgba(28,40,51,0.55)',
+    structure: 0xebe6dc,
+    structureEdge: 0x55636f,
+    frame: 0x6b7d8e,
+    text: '#1c2833',
   },
 };

@@ -1,4 +1,14 @@
 ---
+import '@fontsource/ibm-plex-sans/400.css';
+import '@fontsource/ibm-plex-sans/400-italic.css';
+import '@fontsource/ibm-plex-sans/500.css';
+import '@fontsource/ibm-plex-sans/600.css';
+import '@fontsource/ibm-plex-sans/700.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/500.css';
+import '@fontsource/ibm-plex-mono/600.css';
+import '@fontsource-variable/newsreader/opsz.css';
+import '@fontsource-variable/newsreader/opsz-italic.css';
 import '../styles/global.css';
 import TopBar from '../components/TopBar.astro';
 import Seal from '../components/Seal.astro';
@@ -32,7 +42,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <link rel="canonical" href={canonical} />
     {noindex && <meta name="robots" content="noindex" />}
     <link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
-    <meta name="theme-color" content="#e4dccd" />
+    <meta name="theme-color" content="#132030" />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
@@ -81,10 +91,16 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     display: grid;
     justify-items: center;
     gap: 6px;
-    padding: 44px 24px 48px;
+    margin-top: 56px;
+    padding: 40px 24px 46px;
     font-size: 9.5px;
-    color: var(--muted);
+    color: var(--panel-muted);
     text-align: center;
+    background: var(--deep);
+  }
+  main:has(> .deep-band:last-child) + .page-footer {
+    margin-top: 0;
+    border-top: 1px solid var(--panel-line);
   }
   .page-footer .seal {
     margin-bottom: 6px;
@@ -97,19 +113,19 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     gap: 4px 0;
   }
   .page-footer .links a {
-    color: var(--accent-dark);
+    color: var(--panel-text);
     text-decoration: none;
   }
   .page-footer .links a:hover {
-    color: var(--lapis);
+    color: var(--lapis-night);
   }
   .page-footer .links a + a::before {
     content: '·';
-    color: var(--faint);
+    color: var(--panel-faint);
     margin: 0 9px;
   }
   .page-footer .fine {
-    color: var(--faint);
+    color: var(--panel-faint);
     font-size: 9px;
   }
   .skip:focus {

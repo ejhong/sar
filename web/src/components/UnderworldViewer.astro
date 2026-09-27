@@ -1,8 +1,8 @@
 ---
 /**
- * The underworld: a basalt panel of sites, layers and composition beside the
- * block diagram. `full` fills the page (the Underworld tab); `embed` sits in
- * a page at a fixed height (the overview).
+ * The underworld: a deep-water panel beside the block diagram. The first
+ * choice is the site; the second is what to show — the truth in the ground,
+ * what an instrument recovered, or the waves themselves.
  */
 interface Props {
   mode?: 'full' | 'embed';
@@ -11,59 +11,64 @@ interface Props {
 const { mode = 'full', initial } = Astro.props;
 ---
 <div class:list={['uw', mode]} data-theme="night" data-initial={initial} data-hash={mode === 'full' ? '1' : undefined}>
-  <aside class="uw-panel" aria-label="Sites and layers">
+  <aside class="uw-panel" aria-label="Sites and view">
     <div class="uw-panel-head">
-      <span class="label">The underworld</span>
-      <span class="uw-theme" role="group" aria-label="Ground">
-        <button type="button" data-theme="night" aria-pressed="true">basalt</button>
-        <button type="button" data-theme="day" aria-pressed="false">limestone</button>
+      <span class="uw-panel-title">The underworld</span>
+      <span class="uw-seg-toggle" role="group" aria-label="Ground">
+        <button type="button" data-theme="night" aria-pressed="true">night</button>
+        <button type="button" data-theme="day" aria-pressed="false">day</button>
       </span>
     </div>
     <div class="uw-panel-body">
-      <section>
-        <div class="uw-seg">Sites</div>
+      <section class="uw-block">
+        <div class="uw-label">Site</div>
         <div class="uw-sites" data-uw="sites"></div>
       </section>
-      <section hidden>
-        <div class="uw-seg">Waves <span class="uw-wave-t" data-uw="wave-t"></span></div>
-        <div data-uw="waves"></div>
+      <section class="uw-block">
+        <div class="uw-label">Show</div>
+        <div class="uw-modes" role="group" aria-label="What to show">
+          <button type="button" data-mode="truth" aria-pressed="true"><span class="uw-dot surveyed"></span>Truth</button>
+          <button type="button" data-mode="recovered" aria-pressed="false"><span class="uw-dot recovered"></span>Recovered</button>
+          <button type="button" data-mode="waves" aria-pressed="false"><span class="uw-dot wave"></span>Waves</button>
+        </div>
+        <div class="uw-mode-context" data-uw="mode-context"></div>
       </section>
-      <section hidden>
-        <div class="uw-seg">Recovered</div>
-        <div class="uw-recovered" data-uw="recovered"></div>
-        <label class="uw-range"><span>Show anomalies stronger than</span><input type="range" min="0.02" max="0.9" step="0.01" value="0.18" data-uw="threshold" /></label>
-      </section>
-      <section>
-        <div class="uw-seg">Layers</div>
+      <details class="uw-block" open>
+        <summary class="uw-label">View</summary>
+        <label class="uw-range"><span>Ground</span><input type="range" min="0" max="1" step="0.01" value="0.62" data-uw="ground" /></label>
+        <label class="uw-range"><span>Cut from the south</span><input type="range" min="0" max="0.95" step="0.005" value="0" data-uw="cut" /></label>
+        <label class="uw-range"><span>Vertical scale</span><input type="range" min="0.3" max="3" step="0.05" value="1" data-uw="exaggeration" /></label>
+        <button type="button" class="uw-btn" data-uw="reset">Reset view</button>
+      </details>
+      <details class="uw-block">
+        <summary class="uw-label">Layers</summary>
         <label class="uw-check"><input type="checkbox" data-layer="features" checked /><span class="uw-dot surveyed"></span>Chambers and voids</label>
         <label class="uw-check"><input type="checkbox" data-layer="claimed" checked /><span class="uw-dot claimed"></span>Claimed structures</label>
         <label class="uw-check"><input type="checkbox" data-layer="structures" checked /><span class="uw-dot structure"></span>Monuments</label>
         <label class="uw-check"><input type="checkbox" data-layer="volumes" checked /><span class="uw-dot recovered"></span>Recovered volume</label>
         <label class="uw-check"><input type="checkbox" data-layer="stations" checked /><span class="uw-dot sensor"></span>Sensors and sources</label>
+        <label class="uw-check"><input type="checkbox" data-layer="waves" checked /><span class="uw-dot wave"></span>Waves</label>
         <label class="uw-check"><input type="checkbox" data-layer="walls" checked /><span class="uw-dot strata"></span>Strata on the faces</label>
         <label class="uw-check"><input type="checkbox" data-layer="frame" checked /><span class="uw-dot frame"></span>Frame and north</label>
-        <label class="uw-range"><span>Ground</span><input type="range" min="0" max="1" step="0.01" value="0.62" data-uw="ground" /></label>
-      </section>
-      <section>
-        <div class="uw-seg">Section</div>
-        <label class="uw-range"><span>Cut from the south</span><input type="range" min="0" max="0.95" step="0.005" value="0" data-uw="cut" /></label>
-        <label class="uw-range"><span>Vertical scale</span><input type="range" min="0.3" max="3" step="0.05" value="1" data-uw="exaggeration" /></label>
-        <button type="button" class="uw-btn" data-uw="reset">Reset view</button>
-      </section>
-      <section>
-        <div class="uw-seg">Composition</div>
+      </details>
+      <details class="uw-block" open>
+        <summary class="uw-label">Composition</summary>
         <div data-uw="composition"></div>
-      </section>
-      <section class="uw-notes-sec">
-        <div class="uw-seg">Notes</div>
+      </details>
+      <details class="uw-block">
+        <summary class="uw-label">Notes</summary>
         <div class="uw-notes" data-uw="notes"></div>
-      </section>
+      </details>
+      <p class="uw-keys">keys · 1–4 site · t truth · v recovered · w waves · space play · r reset · esc unpin</p>
     </div>
   </aside>
   <div class="uw-stage">
     <canvas aria-label="Three-dimensional block diagram of the selected site"></canvas>
     <div class="uw-title" data-uw="title"></div>
-    <div class="uw-hover" data-uw="hover" hidden></div>
+    <div class="uw-card" data-uw="card" hidden>
+      <button type="button" class="uw-unpin" data-uw="unpin" aria-label="Unpin">×</button>
+      <div data-uw="card-body"></div>
+    </div>
     <div class="uw-foot">
       <span class="uw-legend">
         <span><span class="uw-dot surveyed"></span>chamber or void</span>
@@ -71,6 +76,7 @@ const { mode = 'full', initial } = Astro.props;
         <span><span class="uw-dot recovered"></span>recovered</span>
         <span><span class="uw-dot sensor"></span>sensor</span>
       </span>
+      <span class="uw-scalebar" data-uw="scalebar"><i></i><span></span></span>
       <span class="uw-scale" data-uw="scale"></span>
     </div>
     {mode === 'embed' && <div class="uw-hint" data-uw="hint" hidden>hold ctrl or ⌘ and scroll to zoom · two fingers to turn</div>}
@@ -97,10 +103,9 @@ const { mode = 'full', initial } = Astro.props;
 
 <style is:global>
   .uw {
-    --uw-lapis: var(--lapis-night);
     display: grid;
-    grid-template-columns: 300px minmax(0, 1fr);
-    gap: 14px;
+    grid-template-columns: 296px minmax(0, 1fr);
+    gap: 12px;
     min-height: 0;
   }
   .uw.full {
@@ -118,6 +123,7 @@ const { mode = 'full', initial } = Astro.props;
     flex-direction: column;
     min-height: 0;
     overflow: hidden;
+    border: 1px solid #0b131c;
   }
   .uw-panel-head {
     display: flex;
@@ -128,93 +134,169 @@ const { mode = 'full', initial } = Astro.props;
     background: var(--panel-head);
     border-bottom: 1px solid var(--panel-line);
   }
-  .uw-panel-head .label {
-    color: var(--panel-muted);
+  .uw-panel-title {
+    font-family: var(--font-serif);
+    font-size: 16px;
+    font-weight: 500;
+    color: #eef3f7;
   }
-  .uw-theme {
+  .uw-seg-toggle {
     display: inline-flex;
     border: 1px solid var(--panel-line);
     border-radius: 999px;
     overflow: hidden;
   }
-  .uw-theme button {
+  .uw-seg-toggle button {
     font: 500 10px/1 var(--font-mono);
     letter-spacing: 0.3px;
     color: var(--panel-faint);
     background: transparent;
     border: 0;
-    padding: 5px 9px;
+    padding: 5px 10px;
     cursor: pointer;
   }
-  .uw-theme button[aria-pressed='true'] {
+  .uw-seg-toggle button[aria-pressed='true'] {
     color: var(--panel-text);
     background: var(--panel-line);
   }
   .uw-panel-body {
     flex: 1;
     overflow-y: auto;
-    padding: 4px 0 14px;
+    padding: 2px 0 12px;
     background: var(--panel-body);
     scrollbar-width: thin;
-    scrollbar-color: #3b4448 transparent;
+    scrollbar-color: #33475c transparent;
   }
-  .uw-panel-body section {
-    padding: 0 14px 10px;
+  .uw-block {
+    padding: 0 14px 12px;
     border-bottom: 1px solid var(--panel-line);
   }
-  .uw-panel-body section:last-child {
-    border-bottom: 0;
-  }
-  .uw-seg {
+  .uw-label {
+    display: block;
     font: 600 10px/1 var(--font-mono);
-    letter-spacing: 0.8px;
+    letter-spacing: 0.9px;
     text-transform: uppercase;
     color: var(--panel-faint);
-    padding: 14px 0 8px;
+    padding: 14px 0 9px;
+    list-style: none;
+    cursor: default;
+  }
+  summary.uw-label {
+    cursor: pointer;
+    position: relative;
+  }
+  summary.uw-label::-webkit-details-marker {
+    display: none;
+  }
+  summary.uw-label::after {
+    content: '+';
+    position: absolute;
+    right: 0;
+    color: var(--panel-faint);
+  }
+  details[open] > summary.uw-label::after {
+    content: '−';
   }
   .uw-group {
     font: 500 9.5px/1 var(--font-mono);
     color: var(--panel-faint);
-    margin: 6px 0 4px;
+    margin: 4px 0 4px;
   }
   .uw-site {
-    display: block;
-    width: 100%;
+    display: grid;
+    grid-template-columns: 16px 1fr;
+    gap: 8px;
+    width: calc(100% + 16px);
     text-align: left;
     background: transparent;
     border: 1px solid transparent;
     border-radius: 8px;
-    padding: 7px 9px;
-    margin: 0 -9px 2px;
-    width: calc(100% + 18px);
+    padding: 6px 8px;
+    margin: 0 -8px 1px;
     color: var(--panel-text);
     cursor: pointer;
     transition: background 0.15s, border-color 0.15s;
   }
   .uw-site:hover {
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(255, 255, 255, 0.035);
   }
   .uw-site[aria-current='true'] {
-    background: rgba(130, 179, 255, 0.07);
-    border-color: rgba(130, 179, 255, 0.22);
+    background: rgba(130, 179, 255, 0.08);
+    border-color: rgba(130, 179, 255, 0.28);
+  }
+  .uw-site-key {
+    font: 500 10px/1.9 var(--font-mono);
+    color: var(--panel-faint);
+    text-align: center;
   }
   .uw-site-name {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 6px;
     font-size: 12.5px;
     font-weight: 600;
+  }
+  .uw-site-runs {
+    font: 500 9px/1 var(--font-mono);
+    color: #0f1822;
+    background: var(--verdigris-night);
+    border-radius: 999px;
+    padding: 2px 5px;
   }
   .uw-site-sub {
     display: block;
     font-size: 11px;
     line-height: 1.4;
     color: var(--panel-muted);
-    margin-top: 2px;
+    margin-top: 1px;
   }
-  .uw-wave-t {
-    float: right;
+  .uw-site:not([aria-current='true']) .uw-site-sub {
+    display: none;
+  }
+  .uw-modes {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+    background: var(--panel-head);
+    border: 1px solid var(--panel-line);
+    border-radius: 9px;
+    padding: 3px;
+  }
+  .uw-modes button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    font: 500 11.5px/1 var(--font-sans);
     color: var(--panel-muted);
-    text-transform: none;
-    letter-spacing: 0;
+    background: transparent;
+    border: 0;
+    border-radius: 6px;
+    padding: 8px 4px;
+    cursor: pointer;
+  }
+  .uw-modes button .uw-dot {
+    margin: 0;
+  }
+  .uw-modes button[aria-pressed='true'] {
+    background: var(--panel-line);
+    color: #f1f5f8;
+  }
+  .uw-modes button:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+  .uw-mode-context {
+    margin-top: 10px;
+  }
+  .uw-ctx-note {
+    font-family: var(--font-serif);
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: var(--panel-muted);
+  }
+  .uw-inline {
+    white-space: nowrap;
   }
   .uw-radio {
     display: grid;
@@ -228,8 +310,40 @@ const { mode = 'full', initial } = Astro.props;
     margin-top: 3px;
     accent-color: var(--verdigris-night);
   }
-  .uw-panel-body section[hidden] {
-    display: none;
+  .uw-opt-name {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--panel-text);
+  }
+  .uw-opt-sub {
+    display: block;
+    font-size: 10.5px;
+    line-height: 1.4;
+    color: var(--panel-muted);
+  }
+  .uw-timeline {
+    display: grid;
+    grid-template-columns: 30px 1fr auto;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .uw-play {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1px solid var(--panel-line);
+    background: var(--panel-head);
+    color: var(--panel-text);
+    font-size: 10px;
+    cursor: pointer;
+  }
+  .uw-time {
+    font: 500 10.5px var(--font-mono);
+    color: var(--panel-muted);
+    min-width: 52px;
+    text-align: right;
   }
   .uw-check {
     display: flex;
@@ -241,17 +355,19 @@ const { mode = 'full', initial } = Astro.props;
     cursor: pointer;
   }
   .uw-check input,
-  .uw-range input {
-    accent-color: #8aa0a8;
+  .uw-range input,
+  .uw-timeline input {
+    accent-color: #8aa4b8;
   }
   .uw-range {
     display: grid;
     gap: 3px;
     font: 500 10px/1.3 var(--font-mono);
     color: var(--panel-faint);
-    padding: 7px 0 2px;
+    padding: 6px 0 2px;
   }
-  .uw-range input {
+  .uw-range input,
+  .uw-timeline input {
     width: 100%;
   }
   .uw-btn {
@@ -267,6 +383,11 @@ const { mode = 'full', initial } = Astro.props;
   .uw-btn:hover {
     color: var(--panel-text);
   }
+  .uw-keys {
+    font: 9.5px/1.6 var(--font-mono);
+    color: var(--panel-faint);
+    padding: 12px 14px 0;
+  }
   .uw-dot {
     display: inline-block;
     flex: none;
@@ -274,9 +395,12 @@ const { mode = 'full', initial } = Astro.props;
     height: 8px;
     border-radius: 50%;
     margin-right: 6px;
-    vertical-align: 0;
-    background: var(--uw-lapis);
+    background: var(--lapis-night);
     box-shadow: 0 0 6px rgba(130, 179, 255, 0.55);
+  }
+  .uw-dot.truth,
+  .uw-dot.surveyed {
+    background: var(--lapis-night);
   }
   .uw-dot.claimed {
     background: transparent;
@@ -285,11 +409,15 @@ const { mode = 'full', initial } = Astro.props;
   }
   .uw-dot.representative {
     background: transparent;
-    border: 1.5px solid var(--uw-lapis);
+    border: 1.5px solid var(--lapis-night);
   }
   .uw-dot.recovered {
     background: var(--verdigris-night);
     box-shadow: 0 0 6px rgba(116, 216, 188, 0.5);
+  }
+  .uw-dot.wave {
+    background: radial-gradient(circle, #f3ead6 0 30%, transparent 32% 55%, #f3ead6 57% 72%, transparent 74%);
+    box-shadow: none;
   }
   .uw-dot.sensor {
     background: var(--ochre-night);
@@ -298,18 +426,18 @@ const { mode = 'full', initial } = Astro.props;
   }
   .uw-dot.structure {
     background: transparent;
-    border: 1.5px solid #d9ccb0;
+    border: 1.5px solid #dfe6ec;
     border-radius: 1px;
     box-shadow: none;
   }
   .uw-dot.strata {
-    background: repeating-linear-gradient(0deg, #6c6453 0 2px, #3a3a34 2px 4px);
+    background: repeating-linear-gradient(0deg, #6f7682 0 2px, #2a3542 2px 4px);
     border-radius: 1px;
     box-shadow: none;
   }
   .uw-dot.frame {
     background: transparent;
-    border: 1px solid #59625f;
+    border: 1px solid #5d7082;
     border-radius: 0;
     box-shadow: none;
   }
@@ -338,17 +466,9 @@ const { mode = 'full', initial } = Astro.props;
     color: var(--panel-faint);
     margin-top: 6px;
   }
-  .uw-counts {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px 12px;
-    font: 10.5px/1.4 var(--font-mono);
-    color: var(--panel-muted);
-    margin-top: 10px;
-  }
   .uw-notes p {
     font-family: var(--font-serif);
-    font-size: 11.5px;
+    font-size: 12px;
     line-height: 1.55;
     color: var(--panel-muted);
     margin-bottom: 7px;
@@ -360,11 +480,12 @@ const { mode = 'full', initial } = Astro.props;
     overflow: hidden;
     background: var(--night);
     min-height: 0;
+    border: 1px solid #0b131c;
     transition: background 0.3s;
   }
   .uw[data-theme='day'] .uw-stage {
     background: var(--bg);
-    box-shadow: inset 0 0 0 1px var(--border);
+    border-color: var(--border);
   }
   .uw-stage canvas {
     position: absolute;
@@ -377,7 +498,7 @@ const { mode = 'full', initial } = Astro.props;
     position: absolute;
     top: 16px;
     left: 18px;
-    max-width: min(460px, 70%);
+    max-width: min(440px, 64%);
     pointer-events: none;
     color: var(--panel-text);
   }
@@ -386,46 +507,77 @@ const { mode = 'full', initial } = Astro.props;
   }
   .uw-kind {
     font: 600 9.5px/1 var(--font-mono);
-    letter-spacing: 0.8px;
+    letter-spacing: 0.9px;
     text-transform: uppercase;
-    opacity: 0.6;
+    opacity: 0.62;
   }
   .uw-title h2 {
-    font-size: 17px;
+    font-family: var(--font-serif);
+    font-size: 22px;
+    font-weight: 500;
     color: inherit;
     margin: 6px 0 4px;
   }
   .uw-title p {
     font-family: var(--font-serif);
-    font-size: 12.5px;
-    line-height: 1.55;
+    font-size: 13px;
+    line-height: 1.5;
     opacity: 0.78;
   }
-  .uw-hover {
+  .uw-card {
     position: absolute;
     left: 16px;
-    bottom: 44px;
-    max-width: 360px;
-    background: rgba(20, 24, 27, 0.9);
+    bottom: 48px;
+    max-width: 370px;
+    background: rgba(18, 28, 39, 0.9);
     border: 1px solid var(--panel-line);
-    border-radius: 8px;
-    padding: 9px 11px;
+    border-radius: 9px;
+    padding: 10px 12px;
     color: var(--panel-text);
     pointer-events: none;
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(6px);
   }
-  .uw-hover-head {
-    font-size: 12.5px;
+  .uw-card.pinned {
+    pointer-events: auto;
+    border-color: rgba(130, 179, 255, 0.4);
+  }
+  .uw-unpin {
+    display: none;
+    position: absolute;
+    top: 4px;
+    right: 6px;
+    border: 0;
+    background: transparent;
+    color: var(--panel-muted);
+    font-size: 15px;
+    cursor: pointer;
+  }
+  .uw-card.pinned .uw-unpin {
+    display: block;
+  }
+  .uw-card-head {
+    font-size: 13px;
     font-weight: 600;
+    padding-right: 14px;
   }
-  .uw-hover-meta {
+  .uw-card-meta {
     font: 10px/1.5 var(--font-mono);
     color: var(--panel-muted);
     margin-top: 3px;
   }
-  .uw-hover-src {
+  .uw-card-warn {
+    display: inline-block;
+    font: 600 9.5px/1 var(--font-mono);
+    letter-spacing: 0.4px;
+    color: #0f1822;
+    background: var(--ochre-night);
+    border-radius: 999px;
+    padding: 3px 7px;
+    margin-top: 6px;
+  }
+  .uw-card-src {
     font-family: var(--font-serif);
-    font-size: 11px;
+    font-size: 11.5px;
     line-height: 1.45;
     color: var(--panel-faint);
     margin-top: 5px;
@@ -436,8 +588,9 @@ const { mode = 'full', initial } = Astro.props;
     right: 16px;
     bottom: 12px;
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    gap: 12px;
+    gap: 14px;
     flex-wrap: wrap;
     font: 10px/1.4 var(--font-mono);
     color: var(--panel-faint);
@@ -451,12 +604,24 @@ const { mode = 'full', initial } = Astro.props;
     gap: 12px;
     flex-wrap: wrap;
   }
+  .uw-scalebar {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-left: auto;
+  }
+  .uw-scalebar i {
+    display: inline-block;
+    height: 5px;
+    border: 1px solid currentColor;
+    border-top: 0;
+  }
   .uw-hint {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: rgba(20, 24, 27, 0.82);
+    background: rgba(18, 28, 39, 0.85);
     color: var(--panel-text);
     font: 11px/1.4 var(--font-mono);
     padding: 8px 12px;
@@ -521,10 +686,10 @@ const { mode = 'full', initial } = Astro.props;
       order: 1;
       min-height: 0;
     }
-    .uw-title p {
-      display: none;
-    }
-    .uw-legend {
+    .uw-title p,
+    .uw-legend,
+    .uw-scale,
+    .uw-keys {
       display: none;
     }
   }

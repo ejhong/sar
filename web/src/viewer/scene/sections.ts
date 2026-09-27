@@ -44,9 +44,9 @@ export function drawSection(s: SiteScene, spec: SectionSpec, theme: SceneTheme, 
     return [spec.from[0] + (spec.to[0] - spec.from[0]) * t, spec.from[1] + (spec.to[1] - spec.from[1]) * t];
   };
   const night = theme.name === 'night';
-  const ground = night ? hex('#0f1214') : hex('#f4efe5');
+  const ground = night ? hex('#0f1822') : hex('#e8eef2');
   const colourOf = (m: string) => tint(s.materials[m]?.colour ?? '#888888', theme.wallDim, ground);
-  const ink = night ? 'rgba(233,229,219,0.20)' : 'rgba(45,41,36,0.26)';
+  const ink = night ? 'rgba(223,230,236,0.18)' : 'rgba(28,40,51,0.24)';
 
   // Column by column: the material runs, then fill each run and pattern it.
   const step = Math.max(1, Math.round(W / 512));
@@ -103,11 +103,11 @@ export function drawSection(s: SiteScene, spec: SectionSpec, theme: SceneTheme, 
     const ground = terrainHeight(s, x0, y0);
     const depth = ground - spec.zMin;
     const step = niceStep(depth / 5);
-    g.fillStyle = night ? 'rgba(233,229,219,0.62)' : 'rgba(45,41,36,0.7)';
+    g.fillStyle = night ? 'rgba(223,230,236,0.66)' : 'rgba(28,40,51,0.7)';
     g.strokeStyle = g.fillStyle;
     g.lineWidth = Math.max(1, lw * 0.8);
     const fs = Math.max(9, Math.min(26, u * 0.9));
-    g.font = `500 ${fs}px ui-monospace, SFMono-Regular, Menlo, monospace`;
+    g.font = `500 ${fs}px 'IBM Plex Mono', ui-monospace, Menlo, monospace`;
     g.textBaseline = 'middle';
     for (let d = step; d < depth - step * 0.3; d += step) {
       const py = (spec.zMax - (ground - d)) * spec.ppm;

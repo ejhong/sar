@@ -40,41 +40,49 @@ const links = [
 
 <style>
   .top-bar {
-    padding: 13px 24px 0;
-    background: var(--band);
-    border-bottom: 1px solid #d5cab6;
+    padding: 14px 24px 0;
+    background: var(--deep);
+    background-image: radial-gradient(120% 140% at 12% 0%, rgba(91, 143, 224, 0.12), transparent 60%);
+    border-bottom: 1px solid #0b131c;
     flex-shrink: 0;
+    color: var(--panel-text);
   }
   .title {
     display: inline-flex;
     align-items: center;
-    gap: 9px;
-    font-size: 20px;
-    font-weight: 700;
-    letter-spacing: 0.6px;
-    color: var(--text);
+    gap: 10px;
+    font-family: var(--font-serif);
+    font-size: 23px;
+    font-weight: 500;
+    letter-spacing: 0.4px;
+    color: #eef3f7;
     text-decoration: none;
+  }
+  .title:hover {
+    color: #fff;
   }
   .subtitle-quote {
     font-family: var(--font-serif);
     font-style: italic;
-    font-size: 11.5px;
-    color: var(--muted);
-    margin-top: 5px;
+    font-size: 12.5px;
+    color: var(--panel-muted);
+    margin-top: 4px;
     line-height: 1.5;
     max-width: 900px;
   }
   .attribution {
+    font-family: var(--font-mono);
     font-style: normal;
-    font-size: 10px;
+    font-size: 9.5px;
+    letter-spacing: 0.3px;
     opacity: 0.8;
     white-space: nowrap;
   }
   nav {
     display: flex;
     gap: 26px;
-    margin-top: 11px;
-    border-top: 1px solid rgba(45, 41, 36, 0.1);
+    margin-top: 12px;
+    border-top: 1px solid rgba(223, 230, 236, 0.08);
     overflow-x: auto;
     scrollbar-width: none;
   }
@@ -83,27 +91,27 @@ const links = [
   }
   nav a {
     flex: none;
-    font-size: 12px;
+    font-size: 12.5px;
     letter-spacing: 0.2px;
-    color: var(--muted);
+    color: var(--panel-muted);
     text-decoration: none;
-    padding: 8px 0 7px;
+    padding: 9px 0 8px;
     margin-bottom: -1px;
     border-bottom: 2px solid transparent;
     transition: color 0.15s, border-color 0.15s;
   }
   nav a:hover {
-    color: var(--text);
-    border-bottom-color: var(--border-strong);
+    color: var(--panel-text);
+    border-bottom-color: var(--panel-line);
   }
   nav a[aria-current='page'] {
-    color: var(--text);
-    font-weight: 600;
-    border-bottom-color: var(--seal);
+    color: #f3f7fa;
+    font-weight: 500;
+    border-bottom-color: var(--lapis-night);
   }
   @media (max-width: 760px) {
     .top-bar {
-      padding: 10px 16px 0;
+      padding: 11px 16px 0;
     }
     .subtitle-quote {
       display: none;
@@ -119,7 +127,7 @@ const links = [
       gap: 0 14px;
     }
     nav a {
-      font-size: 11.5px;
+      font-size: 12px;
       letter-spacing: 0;
     }
   }

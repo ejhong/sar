@@ -1,0 +1,118 @@
+---
+/**
+ * The claim's history on one line: what was published, by whom, and where
+ * this lab stands. Kinds keep the four-way distinction: claimed, derivative,
+ * the record, and this lab.
+ */
+const events = [
+  { date: 'Aug 2022', title: 'The method', text: 'Biondi & Malanga: SAR Doppler tomography of the Great Pyramid', kind: 'claimed', href: 'https://arxiv.org/abs/2208.00811' },
+  { date: 'Mar 2025', title: 'The announcement', text: 'Bologna briefing: eight vertical structures beneath Khafre, over 2,000 ft deep', kind: 'claimed' },
+  { date: '2025–26', title: 'A public protocol', text: 'Replication and Verification, v1.5 and v1.7: a derivative with choices of its own', kind: 'derivative', href: 'https://github.com/BiondiProtocol/Replication-and-Verification-Biondi-Protocol' },
+  { date: 'Aug 2026', title: 'Retraction', text: 'Remote Sensing retracts the 2022 paper', kind: 'record', href: 'https://www.mdpi.com/2072-4292/18/16/2679' },
+  { date: 'Sep 2026', title: 'This lab', text: 'Known ground, simulated instruments: seismic first, then the satellite', kind: 'ours' },
+];
+---
+<ol class="timeline">
+  {
+    events.map((e) => (
+      <li class={e.kind}>
+        <span class="dot" />
+        <span class="date">{e.date}</span>
+        <span class="t">{e.href ? <a href={e.href}>{e.title}</a> : e.title}</span>
+        <span class="x">{e.text}</span>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .timeline {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0 18px;
+    position: relative;
+    padding-top: 18px;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 5px;
+    right: 0;
+    top: 23px;
+    height: 1px;
+    background: var(--border-strong);
+  }
+  li {
+    position: relative;
+    display: grid;
+    gap: 3px;
+  }
+  .dot {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: var(--sheet);
+    border: 2px solid var(--stone);
+    margin-bottom: 8px;
+    position: relative;
+    z-index: 1;
+  }
+  .claimed .dot {
+    border-color: var(--porphyry);
+    border-style: dashed;
+  }
+  .derivative .dot {
+    border-color: var(--stone);
+  }
+  .record .dot {
+    border-color: var(--text);
+    background: var(--text);
+  }
+  .ours .dot {
+    border-color: var(--verdigris);
+    background: var(--verdigris);
+  }
+  .date {
+    font: 600 10px/1 var(--font-mono);
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .t {
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--text);
+  }
+  .t a {
+    color: inherit;
+    text-decoration-color: var(--border-strong);
+  }
+  .x {
+    font-family: var(--font-serif);
+    font-size: 12.5px;
+    line-height: 1.45;
+    color: var(--body);
+  }
+  @media (max-width: 760px) {
+    .timeline {
+      grid-template-columns: 1fr;
+      gap: 14px;
+      padding-top: 0;
+      padding-left: 22px;
+    }
+    .timeline::before {
+      left: 5px;
+      top: 4px;
+      bottom: 4px;
+      right: auto;
+      width: 1px;
+      height: auto;
+    }
+    .dot {
+      position: absolute;
+      left: -22px;
+      top: 0;
+    }
+  }
+</style>

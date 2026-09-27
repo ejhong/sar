@@ -63,6 +63,8 @@ export class Block {
   readonly volumes = new Map<string, Volume>();
   readonly wavefields = new Map<string, Wavefield>();
   readonly pickables: Mesh[] = [];
+  private emphasis = 1;
+  private featureFills: { mat: MeshBasicMaterial; claimed: boolean }[] = [];
   readonly clip = new Plane(new Vector3(0, 0, -1), 0);
   private terrainMat?: ShaderMaterial;
   private themed: { obj: Material; apply: (t: SceneTheme) => void }[] = [];
@@ -532,19 +534,31 @@ export class Block {
     g.add(mesh, line);
     this.pickables.push(mesh);
     const lm = line.material as LineBasicMaterial;
+    this.featureFills.push({ mat: fill, claimed });
     this.themed.push({
       obj: fill,
       apply: (t) => {
         const c = claimed ? t.claimed : t.void;
         fill.color.set(c);
         lm.color.set(c);
-        const night = t.name === 'night';
-        fill.blending = night ? AdditiveBlending : NormalBlending;
-        fill.opacity = claimed ? (night ? 0.16 : 0.12) : night ? 0.5 : 0.55;
+        fill.blending = t.name === 'night' ? AdditiveBlending : NormalBlending;
+        fill.opacity = this.fillOpacity(claimed, t);
         fill.needsUpdate = true;
       },
     });
     return g;
+  }
+
+  private fillOpacity(claimed: boolean, t: SceneTheme): number {
+    const night = t.name === 'night';
+    const base = claimed ? (night ? 0.16 : 0.12) : night ? 0.5 : 0.55;
+    return base * this.emphasis;
+  }
+
+  /** 1 draws chambers as glowing solids; lower values fade them toward outlines. */
+  setFeatureEmphasis(k: number) {
+    this.emphasis = k;
+    for (const f of this.featureFills) f.mat.opacity = this.fillOpacity(f.claimed, this.theme);
   }
 
   // ---------- frame ----------

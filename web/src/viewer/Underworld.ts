@@ -1,18 +1,31 @@
-import { AmbientLight, DirectionalLight, Raycaster, TOUCH, Vector2, type Mesh } from 'three';
+import { AmbientLight, DirectionalLight, Raycaster, TOUCH, Vector2, Vector3, type Mesh } from 'three';
 import { Engine } from './engine/Engine';
 import { THEMES, type ThemeName } from './engine/theme';
 import { loadIndex, loadScene, loadVolume } from './data/load';
 import type { Feature, SiteIndexEntry, SiteScene } from './data/types';
 import { Block } from './scene/Block';
+import type { Wavefield } from './scene/Wavefield';
 import { featureDepth, fmtM } from './ui/format';
+
+export type Mode = 'truth' | 'recovered' | 'waves';
+
+export interface TourStop {
+  site: string;
+  mode?: Mode;
+  item?: string;
+  caption: string;
+  seconds?: number;
+}
 
 export interface UnderworldOptions {
   root: HTMLElement;
   initial?: string;
   /** Embedded in a scrolling page: plain wheel and one-finger drags scroll the page. */
   embedded?: boolean;
-  /** Update the URL hash when the site changes (full page only). */
+  /** Keep the view in the URL hash (full page only). */
   hash?: boolean;
+  /** A control-free tour through these stops (the front-page hero). */
+  tour?: TourStop[];
 }
 
 const STATUS_LABEL: Record<string, string> = {
@@ -24,29 +37,37 @@ const STATUS_LABEL: Record<string, string> = {
 
 /**
  * The underworld viewer: one engine, many sites. The DOM it binds to is
- * rendered by UnderworldViewer.astro; everything site-specific is filled in
- * here from the exported scene.
+ * rendered by UnderworldViewer.astro (or Hero.astro for the tour); everything
+ * site-specific is filled in here from the exported scene.
  */
 export class Underworld {
   readonly engine: Engine;
   private block?: Block;
+  private scene?: SiteScene;
   private sites: SiteIndexEntry[] = [];
   private current = '';
+  private mode: Mode = 'truth';
+  private item: Partial<Record<Mode, string>> = {};
   private themeName: ThemeName = 'night';
   private ray = new Raycaster();
   private pointer = new Vector2(2, 2);
   private hovered?: Feature;
-  private wave?: import('./scene/Wavefield').Wavefield;
-  private $ = <T extends HTMLElement>(sel: string) => this.opts.root.querySelector<T>(sel);
+  private pinned?: Feature;
+  private wave?: Wavefield;
+  private down?: { x: number; y: number };
   private loading = 0;
+  private scaleTick = 0;
+  private $ = <T extends HTMLElement>(sel: string) => this.opts.root.querySelector<T>(sel);
+  private $$ = <T extends HTMLElement>(sel: string) => [...this.opts.root.querySelectorAll<T>(sel)];
 
   constructor(private opts: UnderworldOptions) {
     const canvas = this.$<HTMLCanvasElement>('canvas')!;
     this.engine = new Engine(canvas, 'night');
-    this.engine.autoRotate = !matchMedia('(prefers-reduced-motion: reduce)').matches;
-    this.engine.autoRotateSpeed = 0.045;
-    this.engine.setViewShift(0.06, 0.01);
-    if (opts.embedded) this.yieldScrollToPage(canvas);
+    const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.engine.autoRotate = !still;
+    this.engine.autoRotateSpeed = opts.tour ? 0.07 : 0.045;
+    this.engine.setViewShift(opts.tour ? 0.12 : 0.06, 0.01);
+    if (opts.embedded || opts.tour) this.yieldScrollToPage(canvas);
     const sun = new DirectionalLight(0xffffff, 1.6);
     sun.position.set(-3, 4, 2);
     this.engine.scene.add(sun, new AmbientLight(0xffffff, 0.9));
@@ -55,15 +76,22 @@ export class Underworld {
       this.pointer.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
     });
     canvas.addEventListener('pointerleave', () => this.pointer.set(2, 2));
+    canvas.addEventListener('pointerdown', (e) => (this.down = { x: e.clientX, y: e.clientY }));
+    canvas.addEventListener('pointerup', (e) => {
+      if (!this.down || opts.tour) return;
+      const moved = Math.hypot(e.clientX - this.down.x, e.clientY - this.down.y);
+      this.down = undefined;
+      if (moved < 5) this.pin(this.hovered);
+    });
     this.engine.onFrame((f) => {
-      this.pick();
+      if (!opts.tour) this.pick();
       if (this.wave?.mesh.visible) {
         this.wave.tick(f.dt);
-        const el = this.$('[data-uw=wave-t]');
-        if (el) el.textContent = `${this.wave.time_ms.toFixed(1)} ms`;
+        this.updateTimeline();
       }
+      if (++this.scaleTick % 6 === 0) this.updateScaleBar();
     });
-    this.bindControls();
+    if (!opts.tour) this.bindControls();
   }
 
   /**
@@ -81,7 +109,7 @@ export class Underworld {
     canvas.addEventListener(
       'wheel',
       (e) => {
-        const zoom = e.ctrlKey || e.metaKey;
+        const zoom = (e.ctrlKey || e.metaKey) && !this.opts.tour;
         c.enableZoom = zoom;
         if (!zoom && hint) {
           hint.hidden = false;
@@ -96,14 +124,29 @@ export class Underworld {
   async start() {
     this.engine.start();
     this.sites = await loadIndex();
+    if (this.opts.tour) {
+      (window as any).underworld = this;
+      await this.runTour(this.opts.tour);
+      return;
+    }
     this.renderSiteList();
-    const fromHash = this.opts.hash ? location.hash.slice(1) : '';
-    const first = this.sites.find((s) => s.id === fromHash)?.id ?? this.opts.initial ?? this.sites[0].id;
+    const h = this.opts.hash ? parseHash() : null;
+    const first = this.sites.find((s) => s.id === h?.site)?.id ?? this.opts.initial ?? this.sites[0].id;
+    if (h?.mode) this.mode = h.mode;
+    if (h?.item && h.mode) this.item[h.mode] = h.item;
     await this.show(first, false);
-    if (this.opts.hash) addEventListener('hashchange', () => this.show(location.hash.slice(1)));
+    if (this.opts.hash)
+      addEventListener('hashchange', () => {
+        const p = parseHash();
+        if (!p) return;
+        if (p.site !== this.current) void this.show(p.site);
+        else if (p.mode && p.mode !== this.mode) this.setMode(p.mode, p.item);
+      });
     (window as any).viewerReady = true;
     (window as any).underworld = this;
   }
+
+  // ---------- sites ----------
 
   async show(id: string, animate = true) {
     if (!this.sites.find((s) => s.id === id) || id === this.current) return;
@@ -115,85 +158,182 @@ export class Underworld {
     const block = new Block(scene, THEMES[this.themeName]);
     block.applyTheme();
     this.block = block;
+    this.scene = scene;
     this.engine.scene.add(block.root);
     if (old) {
       this.engine.scene.remove(old.root);
       old.dispose();
     }
+    await Promise.all([
+      ...scene.volumes.map(async (v) => block.addVolume(v, await loadVolume(scene.id, v.file))),
+      ...(scene.wavefields ?? []).map(async (w) => block.addWavefield(w, await loadVolume(scene.id, w.file))),
+    ]);
+    this.pin(undefined);
     this.applyLayerToggles();
-    await this.loadVolumes(scene, block);
-    await this.loadWaves(scene, block);
     const cut = this.$<HTMLInputElement>('[data-uw=cut]');
     if (cut) cut.value = '0';
     const ex = this.$<HTMLInputElement>('[data-uw=exaggeration]');
     if (ex) ex.value = String(block.verticalExaggeration);
     this.renderSiteInfo(scene);
     this.markCurrent();
+    const available = this.availableModes();
+    this.setMode(available.includes(this.mode) ? this.mode : 'truth', this.item[this.mode]);
     this.frame(animate);
-    if (this.opts.hash && location.hash.slice(1) !== id) history.replaceState(null, '', `#${id}`);
     this.setLoading(false);
   }
 
-  private async loadVolumes(s: SiteScene, block: Block) {
-    const box = this.$('[data-uw=recovered]');
-    const sec = box?.closest('section') as HTMLElement | null;
-    if (!box || !sec) return;
-    sec.hidden = !s.volumes.length;
-    if (!s.volumes.length) {
-      block.showSurvey(null);
-      return;
-    }
-    await Promise.all(s.volumes.map(async (v) => block.addVolume(v, await loadVolume(s.id, v.file))));
-    const first = s.volumes[0];
-    box.innerHTML =
-      s.volumes
-        .map(
-          (v, i) => `<label class="uw-radio"><input type="radio" name="vol-${s.id}" value="${v.id}" ${i === 0 ? 'checked' : ''}/>
-          <span><span class="uw-site-name">${esc(v.label)}</span><span class="uw-site-sub">${esc(v.caption ?? v.method)}</span></span></label>`,
-        )
-        .join('') +
-      `<label class="uw-radio"><input type="radio" name="vol-${s.id}" value="" /><span><span class="uw-site-name">None</span></span></label>`;
-    const pick = (id: string) => {
-      block.showVolume(id || null);
-      const v = s.volumes.find((x) => x.id === id);
-      block.showSurvey(s.surveys?.find((sv) => sv.id === v?.survey) ?? null);
-      this.engine.poke();
-    };
-    box.querySelectorAll<HTMLInputElement>('input').forEach((el) => el.addEventListener('change', () => pick(el.value)));
-    pick(first.id);
-    const th = this.$<HTMLInputElement>('[data-uw=threshold]');
-    if (th) block.setVolumeThreshold(Number(th.value));
+  private availableModes(): Mode[] {
+    const s = this.scene;
+    if (!s) return ['truth'];
+    const m: Mode[] = ['truth'];
+    if (s.volumes.length) m.push('recovered');
+    if (s.wavefields?.length) m.push('waves');
+    return m;
   }
 
-  private async loadWaves(s: SiteScene, block: Block) {
-    const box = this.$('[data-uw=waves]');
-    const sec = box?.closest('section') as HTMLElement | null;
-    this.wave = undefined;
-    if (!box || !sec) return;
-    const list = s.wavefields ?? [];
-    sec.hidden = !list.length;
-    if (!list.length) return;
-    await Promise.all(list.map(async (w) => block.addWavefield(w, await loadVolume(s.id, w.file))));
-    box.innerHTML =
-      list
+  // ---------- modes ----------
+
+  setMode(mode: Mode, item?: string) {
+    const b = this.block;
+    const s = this.scene;
+    if (!b || !s) return;
+    if (!this.availableModes().includes(mode)) mode = 'truth';
+    this.mode = mode;
+    const vols = s.volumes;
+    const waves = s.wavefields ?? [];
+    if (mode === 'recovered') {
+      const id = vols.find((v) => v.id === item)?.id ?? this.item.recovered ?? vols[0].id;
+      this.item.recovered = id;
+      b.showVolume(id);
+      const v = vols.find((x) => x.id === id);
+      b.showSurvey(s.surveys?.find((sv) => sv.id === v?.survey) ?? null);
+    } else {
+      b.showVolume(null);
+      b.showSurvey(null);
+    }
+    if (mode === 'waves') {
+      const id = waves.find((w) => w.id === item)?.id ?? this.item.waves ?? waves[0].id;
+      this.item.waves = id;
+      this.wave = b.showWavefield(id);
+      this.wave?.setFrame(0);
+      if (this.wave) this.wave.playing = true;
+    } else {
+      b.showWavefield(null);
+      this.wave = undefined;
+    }
+    b.setFeatureEmphasis(mode === 'truth' ? 1 : 0.35);
+    this.renderModeUI();
+    this.writeHash();
+    this.engine.poke();
+  }
+
+  private renderModeUI() {
+    const s = this.scene;
+    if (!s || this.opts.tour) return;
+    const available = this.availableModes();
+    this.$$<HTMLButtonElement>('[data-mode]').forEach((b) => {
+      const m = b.dataset.mode as Mode;
+      b.setAttribute('aria-pressed', String(m === this.mode));
+      b.disabled = !available.includes(m);
+      b.title = b.disabled ? 'No runs on this site yet' : '';
+    });
+    const ctx = this.$('[data-uw=mode-context]');
+    if (!ctx) return;
+    if (this.mode === 'truth') {
+      const counts = s.features.reduce<Record<string, number>>((a, f) => ((a[f.status] = (a[f.status] ?? 0) + 1), a), {});
+      ctx.innerHTML = `<p class="uw-ctx-note">What is really in the ground: ${Object.entries(counts)
+        .map(([k, v]) => `<span class="uw-inline"><span class="uw-dot ${k}"></span>${v} ${STATUS_LABEL[k] ?? k}</span>`)
+        .join(' ')}. Click one to pin its details.</p>`;
+      return;
+    }
+    if (this.mode === 'recovered') {
+      ctx.innerHTML =
+        s.volumes
+          .map(
+            (v) => `<label class="uw-radio"><input type="radio" name="vol" value="${v.id}" ${v.id === this.item.recovered ? 'checked' : ''}/>
+          <span><span class="uw-opt-name">${esc(v.label)}</span><span class="uw-opt-sub">${esc(v.caption ?? v.method)}</span></span></label>`,
+          )
+          .join('') +
+        `<label class="uw-range"><span>Show anomalies stronger than</span><input type="range" min="0.02" max="0.9" step="0.01" value="0.18" data-uw="threshold" /></label>`;
+      ctx.querySelectorAll<HTMLInputElement>('input[name=vol]').forEach((el) =>
+        el.addEventListener('change', () => this.setMode('recovered', el.value)),
+      );
+      const th = ctx.querySelector<HTMLInputElement>('[data-uw=threshold]')!;
+      th.addEventListener('input', () => this.block?.setVolumeThreshold(Number(th.value)));
+      this.block?.setVolumeThreshold(Number(th.value));
+      return;
+    }
+    const waves = s.wavefields ?? [];
+    ctx.innerHTML =
+      waves
         .map(
-          (w) => `<label class="uw-radio"><input type="radio" name="wave-${s.id}" value="${w.id}"/>
-          <span><span class="uw-site-name">${esc(w.label)}</span><span class="uw-site-sub">${esc(w.caption)}</span></span></label>`,
+          (w) => `<label class="uw-radio"><input type="radio" name="wave" value="${w.id}" ${w.id === this.item.waves ? 'checked' : ''}/>
+        <span><span class="uw-opt-name">${esc(w.label)}</span><span class="uw-opt-sub">${esc(w.caption)}</span></span></label>`,
         )
         .join('') +
-      `<label class="uw-radio"><input type="radio" name="wave-${s.id}" value="" checked/><span><span class="uw-site-name">Still</span></span></label>`;
-    box.querySelectorAll<HTMLInputElement>('input').forEach((el) =>
-      el.addEventListener('change', () => {
-        this.wave = block.showWavefield(el.value || null);
-        this.engine.poke();
-      }),
+      `<div class="uw-timeline">
+        <button type="button" class="uw-play" data-uw="play" aria-label="Pause">❚❚</button>
+        <input type="range" min="0" max="1" step="0.001" value="0" data-uw="scrub" aria-label="Time" />
+        <span class="uw-time" data-uw="time">0.0 ms</span>
+      </div>`;
+    ctx.querySelectorAll<HTMLInputElement>('input[name=wave]').forEach((el) =>
+      el.addEventListener('change', () => this.setMode('waves', el.value)),
     );
+    const play = ctx.querySelector<HTMLButtonElement>('[data-uw=play]')!;
+    play.addEventListener('click', () => {
+      if (!this.wave) return;
+      this.wave.playing = !this.wave.playing;
+      play.textContent = this.wave.playing ? '❚❚' : '▶';
+      play.setAttribute('aria-label', this.wave.playing ? 'Pause' : 'Play');
+    });
+    const scrub = ctx.querySelector<HTMLInputElement>('[data-uw=scrub]')!;
+    scrub.addEventListener('input', () => {
+      if (!this.wave) return;
+      this.wave.playing = false;
+      play.textContent = '▶';
+      this.wave.setFrame(Number(scrub.value) * (this.wave.frames - 1));
+      this.updateTimeline();
+    });
   }
+
+  private updateTimeline() {
+    const w = this.wave;
+    if (!w) return;
+    const t = this.$('[data-uw=time]');
+    if (t) t.textContent = `${w.time_ms.toFixed(1)} ms`;
+    const s = this.$<HTMLInputElement>('[data-uw=scrub]');
+    if (s && w.playing) s.value = String(Math.min(1, w.time_ms / (w.info.dt_ms * (w.frames - 1))));
+  }
+
+  // ---------- the tour ----------
+
+  private async runTour(stops: TourStop[]) {
+    const cap = this.$('[data-uw=caption]');
+    const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let i = 0;
+    for (;;) {
+      const stop = stops[i % stops.length];
+      if (cap) cap.classList.remove('on');
+      await this.show(stop.site, i > 0);
+      if (stop.mode) this.setMode(stop.mode, stop.item);
+      if (cap) {
+        cap.innerHTML = stop.caption;
+        cap.classList.add('on');
+      }
+      (window as any).viewerReady = true;
+      if (still) return;
+      await new Promise((r) => setTimeout(r, (stop.seconds ?? 9) * 1000));
+      i++;
+      if (document.hidden) await new Promise((r) => document.addEventListener('visibilitychange', r, { once: true }));
+    }
+  }
+
+  // ---------- camera ----------
 
   private frame(animate: boolean) {
     const b = this.block!;
     const h = b.worldHeight;
-    const r = 5.5 + h * 1.25;
+    const r = (this.opts.tour ? 5.0 : 5.5) + h * 1.25;
     const az = (38 * Math.PI) / 180; // from the south, toward the east
     const el = (21 * Math.PI) / 180;
     const pose = {
@@ -205,6 +345,34 @@ export class Underworld {
     else this.engine.setPose(pose);
   }
 
+  /** A scale bar measured on the ground plane at the block's centre, in nice metres. */
+  private updateScaleBar() {
+    const el = this.$('[data-uw=scalebar]');
+    const b = this.block;
+    if (!el || !b) return;
+    const { x, y } = b.scene.extent;
+    const cx = (x[0] + x[1]) / 2;
+    const cy = (y[0] + y[1]) / 2;
+    const z = b.zTop;
+    const canvas = this.engine.canvas;
+    const px = (p: Vector3) => {
+      const v = p.clone().project(this.engine.camera);
+      return [((v.x + 1) / 2) * canvas.clientWidth, ((1 - v.y) / 2) * canvas.clientHeight];
+    };
+    const span = (x[1] - x[0]) / 4;
+    const a = px(b.world([cx, cy, z]));
+    const c = px(b.world([cx + span, cy, z]));
+    const ppm = Math.hypot(c[0] - a[0], c[1] - a[1]) / span;
+    if (!isFinite(ppm) || ppm <= 0) return;
+    const target = 90 / ppm;
+    const p10 = Math.pow(10, Math.floor(Math.log10(target)));
+    const len = [1, 2, 5, 10].map((k) => k * p10).reduce((best, v) => (Math.abs(v - target) < Math.abs(best - target) ? v : best));
+    const bar = el.querySelector<HTMLElement>('i');
+    const lab = el.querySelector<HTMLElement>('span');
+    if (bar) bar.style.width = `${Math.round(len * ppm)}px`;
+    if (lab) lab.textContent = fmtM(len);
+  }
+
   // ---------- controls ----------
 
   private bindControls() {
@@ -212,11 +380,8 @@ export class Underworld {
       const el = this.$<HTMLInputElement>(sel);
       if (el) el.addEventListener(ev, () => fn(el));
     };
-    this.opts.root.querySelectorAll<HTMLInputElement>('[data-layer]').forEach((el) =>
-      el.addEventListener('change', () => this.applyLayerToggles()),
-    );
+    this.$$<HTMLInputElement>('[data-layer]').forEach((el) => el.addEventListener('change', () => this.applyLayerToggles()));
     on('[data-uw=ground]', 'input', (el) => this.block?.setGroundOpacity(Number(el.value)));
-    on('[data-uw=threshold]', 'input', (el) => this.block?.setVolumeThreshold(Number(el.value)));
     on('[data-uw=cut]', 'input', (el) => {
       this.block?.setCut(Number(el.value));
       this.engine.poke();
@@ -225,10 +390,32 @@ export class Underworld {
       this.block?.setExaggeration(Number(el.value));
       this.updateScaleNote();
     });
-    this.opts.root.querySelectorAll<HTMLButtonElement>('[data-theme]').forEach((b) =>
+    this.$$<HTMLButtonElement>('[data-theme]').forEach((b) =>
       b.addEventListener('click', () => this.setTheme(b.dataset.theme as ThemeName)),
     );
+    this.$$<HTMLButtonElement>('[data-mode]').forEach((b) =>
+      b.addEventListener('click', () => this.setMode(b.dataset.mode as Mode)),
+    );
     this.$('[data-uw=reset]')?.addEventListener('click', () => this.frame(true));
+    this.$('[data-uw=unpin]')?.addEventListener('click', () => this.pin(undefined));
+    if (this.opts.hash) addEventListener('keydown', (e) => this.key(e));
+  }
+
+  private key(e: KeyboardEvent) {
+    const t = e.target as HTMLElement;
+    if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable) && (t as HTMLInputElement).type !== 'range') return;
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    const n = Number(e.key);
+    if (n >= 1 && n <= this.sites.length) void this.show(this.sites[n - 1].id);
+    else if (e.key === 't') this.setMode('truth');
+    else if (e.key === 'v') this.setMode('recovered');
+    else if (e.key === 'w') this.setMode('waves');
+    else if (e.key === 'r') this.frame(true);
+    else if (e.key === 'Escape') this.pin(undefined);
+    else if (e.key === ' ' && this.wave) {
+      e.preventDefault();
+      this.$<HTMLButtonElement>('[data-uw=play]')?.click();
+    } else return;
   }
 
   setTheme(name: ThemeName) {
@@ -236,20 +423,25 @@ export class Underworld {
     this.engine.setTheme(name);
     this.block?.setTheme(THEMES[name]);
     this.opts.root.dataset.theme = name;
-    this.opts.root.querySelectorAll<HTMLButtonElement>('[data-theme]').forEach((b) =>
-      b.setAttribute('aria-pressed', String(b.dataset.theme === name)),
-    );
+    this.$$<HTMLButtonElement>('[data-theme]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.theme === name)));
   }
 
   private applyLayerToggles() {
     const b = this.block;
     if (!b) return;
-    this.opts.root.querySelectorAll<HTMLInputElement>('[data-layer]').forEach((el) => {
+    this.$$<HTMLInputElement>('[data-layer]').forEach((el) => {
       const g = b.layers[el.dataset.layer as keyof Block['layers']];
       if (g) g.visible = el.checked;
     });
     const ground = this.$<HTMLInputElement>('[data-uw=ground]');
     if (ground) b.setGroundOpacity(Number(ground.value));
+  }
+
+  private writeHash() {
+    if (!this.opts.hash || !this.current) return;
+    const item = this.mode === 'truth' ? '' : this.item[this.mode] ?? '';
+    const h = [this.current, this.mode === 'truth' ? '' : this.mode, item].filter(Boolean).join('/');
+    if (location.hash.slice(1) !== h) history.replaceState(null, '', `#${h}`);
   }
 
   // ---------- picking ----------
@@ -266,21 +458,42 @@ export class Underworld {
   private setHover(f?: Feature) {
     if (f === this.hovered) return;
     this.hovered = f;
-    const box = this.$('[data-uw=hover]');
+    this.engine.canvas.style.cursor = f ? 'pointer' : '';
+    if (!this.pinned) this.renderCard(f, false);
+  }
+
+  private pin(f?: Feature) {
+    this.pinned = f;
+    this.renderCard(f ?? this.hovered, !!f);
+  }
+
+  private renderCard(f: Feature | undefined, pinned: boolean) {
+    const box = this.$('[data-uw=card]');
     if (!box) return;
-    if (!f) {
+    if (!f || !this.scene) {
       box.hidden = true;
       return;
     }
-    const s = this.block!.scene;
-    const d = featureDepth(s, f);
+    const s = this.scene;
+    const sh = f.shape;
+    const size =
+      sh.type === 'box'
+        ? sh.size.map((v) => fmtM(v)).join(' × ')
+        : sh.type === 'cylinder'
+          ? `${fmtM(2 * sh.radius)} across, ${fmtM(sh.height)} tall`
+          : sh.type === 'sphere'
+            ? `${fmtM(2 * sh.radius)} across`
+            : '';
     box.hidden = false;
-    box.innerHTML = `
-      <div class="uw-hover-head"><span class="uw-dot ${f.status}"></span>${esc(f.name)}</div>
-      <div class="uw-hover-meta">${esc(STATUS_LABEL[f.status] ?? f.status)} · ${esc(f.kind)} · ${d}${
-        f.placement === 'approximate' ? ' · placement approximate' : ''
+    box.classList.toggle('pinned', pinned);
+    box.querySelector('[data-uw=card-body]')!.innerHTML = `
+      <div class="uw-card-head"><span class="uw-dot ${f.status}"></span>${esc(f.name)}</div>
+      <div class="uw-card-meta">${esc(STATUS_LABEL[f.status] ?? f.status)} · ${esc(f.kind)} · ${featureDepth(s, f)}${size ? ` · ${size}` : ''}${
+        f.fill !== 'air' ? ` · filled with ${esc(s.materials[f.fill]?.name ?? f.fill)}` : ''
       }</div>
-      <div class="uw-hover-src">${esc(f.source)}</div>`;
+      ${f.placement === 'approximate' ? '<div class="uw-card-warn">placement approximate</div>' : ''}
+      <div class="uw-card-src">${esc(f.source)}</div>
+      ${pinned && f.note ? `<div class="uw-card-src">${esc(f.note)}</div>` : ''}`;
     this.engine.poke();
   }
 
@@ -293,18 +506,22 @@ export class Underworld {
       ['Test benches', this.sites.filter((s) => s.kind === 'test')],
       ['Real sites', this.sites.filter((s) => s.kind === 'real')],
     ];
+    let n = 0;
     list.innerHTML = groups
       .filter(([, g]) => g.length)
       .map(
         ([label, g]) => `
         <div class="uw-group">${label}</div>
         ${g
-          .map(
-            (s) => `<button class="uw-site" data-site="${s.id}" type="button">
-              <span class="uw-site-name">${esc(s.name)}</span>
-              <span class="uw-site-sub">${esc(firstSentence(s.summary))}</span>
-            </button>`,
-          )
+          .map((s) => {
+            n++;
+            const runs = s.volumes ? `<span class="uw-site-runs" title="recovered volumes">${s.volumes}</span>` : '';
+            return `<button class="uw-site" data-site="${s.id}" type="button">
+              <span class="uw-site-key">${n}</span>
+              <span class="uw-site-text"><span class="uw-site-name">${esc(s.name)}${runs}</span>
+              <span class="uw-site-sub">${esc(firstSentence(s.summary))}</span></span>
+            </button>`;
+          })
           .join('')}`,
       )
       .join('');
@@ -314,9 +531,7 @@ export class Underworld {
   }
 
   private markCurrent() {
-    this.opts.root.querySelectorAll<HTMLButtonElement>('[data-site]').forEach((b) =>
-      b.setAttribute('aria-current', String(b.dataset.site === this.current)),
-    );
+    this.$$<HTMLButtonElement>('[data-site]').forEach((b) => b.setAttribute('aria-current', String(b.dataset.site === this.current)));
   }
 
   private renderSiteInfo(s: SiteScene) {
@@ -340,12 +555,7 @@ export class Underworld {
           </div>`;
         })
         .join('');
-      const counts = s.features.reduce<Record<string, number>>((a, f) => ((a[f.status] = (a[f.status] ?? 0) + 1), a), {});
-      legend.innerHTML = `${rows}
-        <div class="uw-mat-foot">P / S wave speed, m/s · ′ derived · * assumed</div>
-        <div class="uw-counts">${Object.entries(counts)
-          .map(([k, v]) => `<span><span class="uw-dot ${k}"></span>${v} ${STATUS_LABEL[k] ?? k}</span>`)
-          .join('')}</div>`;
+      legend.innerHTML = `${rows}<div class="uw-mat-foot">P / S wave speed, m/s · ′ derived from a source · * assumed</div>`;
     }
     const notes = this.$('[data-uw=notes]');
     if (notes) notes.innerHTML = s.notes.map((n) => `<p>${esc(n)}</p>`).join('');
@@ -357,9 +567,7 @@ export class Underworld {
     const b = this.block;
     if (!el || !b) return;
     const { x, y, z } = b.scene.extent;
-    el.textContent = `block ${fmtM(x[1] - x[0])} × ${fmtM(y[1] - y[0])} × ${fmtM(b.zTop - z[0])} deep · vertical ×${b.verticalExaggeration.toFixed(
-      2,
-    )}`;
+    el.textContent = `block ${fmtM(x[1] - x[0])} × ${fmtM(y[1] - y[0])} × ${fmtM(b.zTop - z[0])} deep · vertical ×${b.verticalExaggeration.toFixed(2)}`;
   }
 
   private setLoading(on: boolean) {
@@ -367,6 +575,13 @@ export class Underworld {
     const el = this.$('[data-uw=loading]');
     if (el) el.hidden = this.loading <= 0;
   }
+}
+
+function parseHash(): { site: string; mode?: Mode; item?: string } | null {
+  const h = decodeURIComponent(location.hash.slice(1));
+  if (!h) return null;
+  const [site, mode, item] = h.split('/');
+  return { site, mode: (['truth', 'recovered', 'waves'] as Mode[]).includes(mode as Mode) ? (mode as Mode) : undefined, item };
 }
 
 function isVisible(o: { visible: boolean; parent: any }): boolean {

@@ -1,10 +1,10 @@
 /*
- * Katabasis — limestone and basalt.
+ * Katabasis — mist and deep water.
  *
- * Day is the page: limestone paper and a sandstone band, ink warm and dark.
- * Night is the underworld: basalt panels and the viewer, where the only
- * things that glow are the ones that carry meaning. Each accent has one role
- * and keeps it on every page, in 2-D and 3-D:
+ * Mist is for reading: pale blue-grey pages, near-white sheets, slate ink.
+ * Deep water is for drama and instruments: the top band, the front-page
+ * hero, the underworld viewer, its panels, and full-width feature bands.
+ * Each accent has one role and keeps it on every page, in 2-D and 3-D:
  *
  *   lapis      voids and chambers (the truth, or the survey)
  *   verdigris  what an instrument recovered (tomograms, detections)
@@ -15,44 +15,56 @@
  * Mirror any change in src/viewer/engine/theme.ts.
  */
 :root {
-  --bg: #f4efe5; /* limestone */
-  --sheet: #faf7f0; /* a fresh-cut face: cards and sheets */
-  --band: #e4dccd; /* sandstone: the top band */
-  --border: #ddd3c2;
-  --border-strong: #c3b59e;
-  --stone: #a89a84;
+  /* mist */
+  --bg: #e8eef2;
+  --sheet: #f5f8fa;
+  --band: #dde5eb; /* a light secondary band */
+  --border: #d3dde5;
+  --border-strong: #b7c6d2;
+  --stone: #8fa0ae;
 
-  --text: #2d2924;
-  --body: #4a443c;
-  --muted: #877b6b;
-  --faint: #b2a692;
-  --accent: #8a7a64; /* umber: the hand (controls) */
-  --accent-dark: #5e5243;
+  --text: #1c2833;
+  --body: #3d4c5a;
+  --muted: #6b7d8e;
+  --faint: #9aaab8;
+  --accent: #5d7385; /* the hand (controls) */
+  --accent-dark: #34495b;
 
-  --night: #0f1214; /* basalt */
-  --panel-bg: #1a1f22;
-  --panel-head: #14181b;
-  --panel-body: #1d2326;
-  --panel-line: #2d3539;
-  --panel-text: #e9e5db;
-  --panel-muted: #aab0a9;
-  --panel-faint: #6e7672;
+  /* deep water */
+  --deep: #132030; /* band, footer, feature bands */
+  --deep-2: #182838;
+  --night: #0f1822; /* the viewer and the hero */
+  --panel-bg: #16222e;
+  --panel-head: #121c27;
+  --panel-body: #1a2735;
+  --panel-line: #263748;
+  --panel-text: #dfe6ec;
+  --panel-muted: #9fb0bf;
+  --panel-faint: #6b7f91;
 
+  /* roles on mist (chart palette validated against --sheet) */
   --lapis: #2c5aa0;
-  --lapis-night: #82b3ff;
   --verdigris: #16876e;
-  --verdigris-night: #74d8bc;
   --ochre: #a8741f;
-  --ochre-night: #e8b95c;
   --porphyry: #7a55a6;
-  --porphyry-night: #c0a6da;
   --cinnabar: #aa4b33;
+  /* roles on deep water (chart palette validated against --panel-bg) */
+  --lapis-deep: #5b8fe0;
+  --verdigris-deep: #23a07f;
+  --ochre-deep: #be8a2e;
+  --porphyry-deep: #9a78d3;
+  --cinnabar-deep: #d46e50;
+  /* roles as light in the underworld (emissive glows, not chart fills) */
+  --lapis-night: #82b3ff;
+  --verdigris-night: #74d8bc;
+  --ochre-night: #e8b95c;
+  --porphyry-night: #c0a6da;
   --cinnabar-night: #f0906f;
-  --seal: #24406a;
+  --seal: #2c5aa0;
 
-  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --font-serif: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
-  --font-mono: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Menlo', 'DejaVu Sans Mono', monospace;
+  --font-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-serif: 'Newsreader Variable', 'Newsreader', Georgia, 'Times New Roman', serif;
+  --font-mono: 'IBM Plex Mono', 'SF Mono', Menlo, Consolas, monospace;
 
   --radius: 12px;
   --radius-sm: 6px;
@@ -62,5 +74,6 @@
   color-scheme: light;
 }
 
-/* Chart palette (light sheets): validated with the dataviz six checks against --sheet —
-   lapis, verdigris, ochre, porphyry, cinnabar all pass (CVD ΔE ≥ 9.2, normal ΔE ≥ 15). */
+/* Chart palettes validated with the dataviz six checks:
+   on --sheet   #2c5aa0 #16876e #a8741f #7a55a6 #aa4b33  (CVD ΔE ≥ 9.2, normal ≥ 17)
+   on --panel-bg #5b8fe0 #23a07f #be8a2e #9a78d3 #d46e50 (CVD ΔE ≥ 9.3, normal ≥ 17.5) */
