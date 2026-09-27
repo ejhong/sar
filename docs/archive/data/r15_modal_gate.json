@@ -1,0 +1,161 @@
+{
+  "id": "r15_modal_gate",
+  "order": 25,
+  "tag": "mechanism",
+  "eyebrow": "15 \u00b7 The modal branch",
+  "title": "The modal gate picks which pixels get a depth, not which depth is right",
+  "question": "Does the elliptical modal branch, the spring-like part of the method, resolve the repeating depth axis?",
+  "finding": "No, and it cannot. The depth stage fits each measured vector sequence to cos(Kz z) and sin(Kz z). The steering wavenumbers sit on a near-regular ladder of 0.22970 radians per metre, so the two model columns at any depth z and at z + 27.4 m span the same plane, and a least-squares fit cannot tell them apart. Run on real measured vectors the protocol's own focus stage scores one repeat apart at a correlation of 0.99947, which leaves only 13.7 m of depth ever distinguishable, and its own section 11.4 says so. The modal branch runs before that stage and only decides which windows are admitted, so it changes the population and leaves the axis untouched: windows that pass the gate repeat at 0.99946. The gate is not a structure detector either, since at its frozen settings it admits 0 per cent here, asking for a minor axis 25 times larger than this acquisition's displacements, and with that size threshold removed it admits 1.9 per cent on the pyramid against 1.2 per cent on open plateau, separating them at AUC 0.504 where 0.5 is a coin toss, while a random walk containing nothing at all passes 74 per cent of the time. Its harmonic index counts cycles across sub-aperture position rather than vibrations in time, as the protocol's own symbol table states, and a real mechanical resonance fails separately: a chamber 30 m down rings near 18 Hz while a dwell that decorrelates in about a second carries only 0.08 to 0.51 Hz.",
+  "limitations": "The exact-repetition argument holds for an evenly spaced ladder of steering wavenumbers. This geometry is even to 0.0 per cent, so the repeat is very close but not perfect, which is why the correlation is quoted rather than an identity. The gate rates come from our registration vectors, not theirs, because their own registration returns whole pixels and would yield nothing to gate at all; using ours is the more favourable choice. The acquisition is an ICEYE dwell, while their frozen values describe a Capella scene, so the absolute size threshold may suit their data better than ours, and the shape-only comparison is included for that reason. The resonance figures use one representative shear speed and the simplest quarter-wave model, so they bound the band rather than predict a spectrum.",
+  "method": "Package v1.7 was used unmodified, with the sha256 of its modal and focus stages checked before import. Real sub-pixel registration vectors were measured on the Giza acquisition with the protocol's frozen bank design of 50 pairs, half-band masks and 88 Hz separation, at 600 positions on Khafre and the same number on open plateau. Those vectors were passed to its own modal fit at window 25 over modes 1 to 6, and to its own depth focus across three repeat lengths. Two gates are reported: the frozen Branch B rule of adjusted R-squared at least 0.25, axis ratio at least 0.1 and minor axis at least 0.005 pixels, and the same rule with the absolute size threshold removed.",
+  "figures": [
+    {
+      "file": "/Users/eugene/prj/sar/results/r15_modal_gate/r15_repeat.png",
+      "caption": "<b>The depth axis is periodic by construction.</b> Left: the median fit score of 200 real Khafre positions, scored by the published depth stage over three repeat lengths. Dashed lines mark multiples of 27.4 m. Right: every score plotted against the score one repeat deeper. They agree to a correlation of 0.99947, so a peak at any depth has an equally good twin 27.4 m below it, and another below that. Nothing in the data causes this; the two model columns at those depths span the same plane."
+    },
+    {
+      "file": "/Users/eugene/prj/sar/results/r15_modal_gate/r15_gate.png",
+      "caption": "<b>The gate does not know where the pyramid is.</b> Left: the share of windows admitted, at the published settings and again with the absolute size threshold removed. The frozen threshold asks for a minor axis of 0.005 pixels, about 25 times larger than the displacements this acquisition actually contains, so it admits nothing. Right: the modal score itself, where the pyramid and open plateau distributions sit on top of one another, AUC 0.504 against 0.5 for a coin. A random walk with no structure whatsoever scores far higher than either, because the fit rewards smoothness along the sweep rather than anything underground."
+    }
+  ],
+  "metrics": {
+    "kz_spacing_rad_m": 0.2297017184804444,
+    "kz_spacing_spread": 9.379005342447399e-06,
+    "lattice_repeat_m": 27.353671312278422,
+    "unique_interval_m": 13.676835656139211,
+    "measured_repeat_m": 27.353671312278422,
+    "lambda_eff_m": 0.48,
+    "column_space_residual": 0.0008842123601902757,
+    "repeat_correlation": 0.9994667387569885,
+    "repeat_max_diff": 0.09750464153050242,
+    "best_repeat_correlation": 0.9994667387569885,
+    "half_period_correlation": 0.444524871663311,
+    "frozen_gate": {
+      "adj_r2": 0.25,
+      "axis_ratio": 0.1,
+      "minor_px": 0.005
+    },
+    "shape_gate": {
+      "adj_r2": 0.25,
+      "axis_ratio": 0.1,
+      "minor_px": 0.0
+    },
+    "window_w": 25,
+    "modes": [
+      1,
+      6
+    ],
+    "cases": [
+      {
+        "label": "Khafre pyramid",
+        "windows": 15600,
+        "frozen_accept": 0.0,
+        "shape_accept": 0.018525641025641026,
+        "median_best_adj_r2": 0.08157612717530094,
+        "median_minor_px": 0.0001999937012021972,
+        "median_axis_ratio": 0.20464668443935002
+      },
+      {
+        "label": "Open plateau",
+        "windows": 15600,
+        "frozen_accept": 0.0,
+        "shape_accept": 0.012435897435897436,
+        "median_best_adj_r2": 0.08069423500223205,
+        "median_minor_px": 0.0002000798371496894,
+        "median_axis_ratio": 0.20480446182279446
+      },
+      {
+        "label": "White noise",
+        "windows": 15600,
+        "frozen_accept": 0.0,
+        "shape_accept": 0.004294871794871795,
+        "median_best_adj_r2": 0.06611456360626428,
+        "median_minor_px": 0.00027838985264885276,
+        "median_axis_ratio": 0.2748426584493029
+      },
+      {
+        "label": "Random walk",
+        "windows": 15600,
+        "frozen_accept": 0.0,
+        "shape_accept": 0.7390384615384615,
+        "median_best_adj_r2": 0.5436538082970573,
+        "median_minor_px": 8.474403781572141e-05,
+        "median_axis_ratio": 0.23880249589660835
+      }
+    ],
+    "minor_threshold_ratio": 25.000787374522915,
+    "auc_pyramid_vs_plateau": 0.5039284968770545,
+    "auc_pyramid_vs_noise": 0.5684405941814595,
+    "gated_positions": 34,
+    "gated_total": 200,
+    "gated_repeat_correlation": 0.9994625760661833,
+    "gated_repeat_max_diff": 0.08299117374457088,
+    "lambda_rows": [
+      {
+        "lambda_eff_m": 0.03107,
+        "repeat_m": 1.7705803493176888,
+        "median_peak_m": 4.329068954081749
+      },
+      {
+        "lambda_eff_m": 0.2405679137,
+        "repeat_m": 13.70919924922992,
+        "median_peak_m": 33.51899216436715
+      },
+      {
+        "lambda_eff_m": 1.0,
+        "repeat_m": 56.98681523391338,
+        "median_peak_m": 139.3327632469182
+      },
+      {
+        "lambda_eff_m": 7.6,
+        "repeat_m": 433.0997957777417,
+        "median_peak_m": 1058.9290006765784
+      }
+    ],
+    "resonance_band_hz": [
+      0.08243118407743553,
+      0.5102040816326531
+    ],
+    "resonance": [
+      {
+        "name": "King's Chamber roof",
+        "depth_m": 43.0,
+        "quarter_wave_hz": 12.790697674418604,
+        "in_band": false,
+        "too_fast_by": 25.069767441860463
+      },
+      {
+        "name": "Subterranean chamber",
+        "depth_m": 30.0,
+        "quarter_wave_hz": 18.333333333333332,
+        "in_band": false,
+        "too_fast_by": 35.93333333333333
+      },
+      {
+        "name": "Typical mastaba shaft",
+        "depth_m": 12.0,
+        "quarter_wave_hz": 45.833333333333336,
+        "in_band": false,
+        "too_fast_by": 89.83333333333334
+      },
+      {
+        "name": "Claimed deep structure",
+        "depth_m": 648.0,
+        "quarter_wave_hz": 0.8487654320987654,
+        "in_band": false,
+        "too_fast_by": 1.6635802469135803
+      }
+    ],
+    "shear_speed_m_s": 2200.0,
+    "aperture_span_s": 12.13133125760518,
+    "coherence_half_life_s": 0.98,
+    "positions_modal": 600,
+    "positions_focus": 200,
+    "package_sha256": {
+      "modal.py": "7735bb58ca3d7b7d34a0b0983f56eae23fc93acd46f359d5f9feade2dc27d20f",
+      "focus.py": "58dbce38595bba41021badc187d86f20294a72dd5a2b147dd3f728a19edb735f"
+    },
+    "runtime_s": 11.720969915390015
+  },
+  "date": "2026-09-23"
+}

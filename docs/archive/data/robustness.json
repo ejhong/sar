@@ -1,0 +1,275 @@
+{
+  "date": "2026-09-19",
+  "seed_runs": [
+    {
+      "seed": 0,
+      "separation_m": 1.0,
+      "predicted_depth_m": 8.86215107245308,
+      "peak_depth_m": 7.73665788625154
+    },
+    {
+      "seed": 0,
+      "separation_m": 2.0,
+      "predicted_depth_m": 17.72430214490616,
+      "peak_depth_m": 16.33294442653103
+    },
+    {
+      "seed": 0,
+      "separation_m": 3.0,
+      "predicted_depth_m": 26.586453217359246,
+      "peak_depth_m": 28.36774558292231
+    },
+    {
+      "seed": 0,
+      "separation_m": 4.0,
+      "predicted_depth_m": 35.44860428981232,
+      "peak_depth_m": 36.10440346917385
+    },
+    {
+      "seed": 1,
+      "separation_m": 1.0,
+      "predicted_depth_m": 8.86215107245308,
+      "peak_depth_m": 7.73665788625154
+    },
+    {
+      "seed": 1,
+      "separation_m": 2.0,
+      "predicted_depth_m": 17.72430214490616,
+      "peak_depth_m": 15.47331577250308
+    },
+    {
+      "seed": 1,
+      "separation_m": 3.0,
+      "predicted_depth_m": 26.586453217359246,
+      "peak_depth_m": 27.508116928894363
+    },
+    {
+      "seed": 1,
+      "separation_m": 4.0,
+      "predicted_depth_m": 35.44860428981232,
+      "peak_depth_m": 36.10440346917385
+    },
+    {
+      "seed": 2,
+      "separation_m": 1.0,
+      "predicted_depth_m": 8.86215107245308,
+      "peak_depth_m": 8.596286540279488
+    },
+    {
+      "seed": 2,
+      "separation_m": 2.0,
+      "predicted_depth_m": 17.72430214490616,
+      "peak_depth_m": 16.33294442653103
+    },
+    {
+      "seed": 2,
+      "separation_m": 3.0,
+      "predicted_depth_m": 26.586453217359246,
+      "peak_depth_m": 27.508116928894363
+    },
+    {
+      "seed": 2,
+      "separation_m": 4.0,
+      "predicted_depth_m": 35.44860428981232,
+      "peak_depth_m": 36.10440346917385
+    },
+    {
+      "seed": 3,
+      "separation_m": 1.0,
+      "predicted_depth_m": 8.86215107245308,
+      "peak_depth_m": 7.73665788625154
+    },
+    {
+      "seed": 3,
+      "separation_m": 2.0,
+      "predicted_depth_m": 17.72430214490616,
+      "peak_depth_m": 16.33294442653103
+    },
+    {
+      "seed": 3,
+      "separation_m": 3.0,
+      "predicted_depth_m": 26.586453217359246,
+      "peak_depth_m": 27.508116928894363
+    },
+    {
+      "seed": 3,
+      "separation_m": 4.0,
+      "predicted_depth_m": 35.44860428981232,
+      "peak_depth_m": 36.10440346917385
+    },
+    {
+      "seed": 4,
+      "separation_m": 1.0,
+      "predicted_depth_m": 8.86215107245308,
+      "peak_depth_m": 7.73665788625154
+    },
+    {
+      "seed": 4,
+      "separation_m": 2.0,
+      "predicted_depth_m": 17.72430214490616,
+      "peak_depth_m": 16.33294442653103
+    },
+    {
+      "seed": 4,
+      "separation_m": 3.0,
+      "predicted_depth_m": 26.586453217359246,
+      "peak_depth_m": 27.508116928894363
+    },
+    {
+      "seed": 4,
+      "separation_m": 4.0,
+      "predicted_depth_m": 35.44860428981232,
+      "peak_depth_m": 35.2447748151459
+    },
+    {
+      "seed": 5,
+      "separation_m": 1.0,
+      "predicted_depth_m": 8.86215107245308,
+      "peak_depth_m": 8.596286540279488
+    },
+    {
+      "seed": 5,
+      "separation_m": 2.0,
+      "predicted_depth_m": 17.72430214490616,
+      "peak_depth_m": 16.33294442653103
+    },
+    {
+      "seed": 5,
+      "separation_m": 3.0,
+      "predicted_depth_m": 26.586453217359246,
+      "peak_depth_m": 27.508116928894363
+    },
+    {
+      "seed": 5,
+      "separation_m": 4.0,
+      "predicted_depth_m": 35.44860428981232,
+      "peak_depth_m": 36.10440346917385
+    },
+    {
+      "seed": 6,
+      "separation_m": 1.0,
+      "predicted_depth_m": 8.86215107245308,
+      "peak_depth_m": 7.73665788625154
+    },
+    {
+      "seed": 6,
+      "separation_m": 2.0,
+      "predicted_depth_m": 17.72430214490616,
+      "peak_depth_m": 16.33294442653103
+    },
+    {
+      "seed": 6,
+      "separation_m": 3.0,
+      "predicted_depth_m": 26.586453217359246,
+      "peak_depth_m": 27.508116928894363
+    },
+    {
+      "seed": 6,
+      "separation_m": 4.0,
+      "predicted_depth_m": 35.44860428981232,
+      "peak_depth_m": 36.10440346917385
+    },
+    {
+      "seed": 7,
+      "separation_m": 1.0,
+      "predicted_depth_m": 8.86215107245308,
+      "peak_depth_m": 6.877029232223591
+    },
+    {
+      "seed": 7,
+      "separation_m": 2.0,
+      "predicted_depth_m": 17.72430214490616,
+      "peak_depth_m": 16.33294442653103
+    },
+    {
+      "seed": 7,
+      "separation_m": 3.0,
+      "predicted_depth_m": 26.586453217359246,
+      "peak_depth_m": 27.508116928894363
+    },
+    {
+      "seed": 7,
+      "separation_m": 4.0,
+      "predicted_depth_m": 35.44860428981232,
+      "peak_depth_m": 36.10440346917385
+    },
+    {
+      "seed": 8,
+      "separation_m": 1.0,
+      "predicted_depth_m": 8.86215107245308,
+      "peak_depth_m": 7.73665788625154
+    },
+    {
+      "seed": 8,
+      "separation_m": 2.0,
+      "predicted_depth_m": 17.72430214490616,
+      "peak_depth_m": 16.33294442653103
+    },
+    {
+      "seed": 8,
+      "separation_m": 3.0,
+      "predicted_depth_m": 26.586453217359246,
+      "peak_depth_m": 27.508116928894363
+    },
+    {
+      "seed": 8,
+      "separation_m": 4.0,
+      "predicted_depth_m": 35.44860428981232,
+      "peak_depth_m": 36.10440346917385
+    },
+    {
+      "seed": 9,
+      "separation_m": 1.0,
+      "predicted_depth_m": 8.86215107245308,
+      "peak_depth_m": 7.73665788625154
+    },
+    {
+      "seed": 9,
+      "separation_m": 2.0,
+      "predicted_depth_m": 17.72430214490616,
+      "peak_depth_m": 15.47331577250308
+    },
+    {
+      "seed": 9,
+      "separation_m": 3.0,
+      "predicted_depth_m": 26.586453217359246,
+      "peak_depth_m": 27.508116928894363
+    },
+    {
+      "seed": 9,
+      "separation_m": 4.0,
+      "predicted_depth_m": 35.44860428981232,
+      "peak_depth_m": 36.10440346917385
+    }
+  ],
+  "wavelength_invariance": [
+    {
+      "wavelength_m": 0.24,
+      "max_axis_error_m": 7.105427357601002e-15,
+      "max_power_error": 0.0
+    },
+    {
+      "wavelength_m": 0.48,
+      "max_axis_error_m": 1.4210854715202004e-14,
+      "max_power_error": 0.0
+    },
+    {
+      "wavelength_m": 0.96,
+      "max_axis_error_m": 2.842170943040401e-14,
+      "max_power_error": 0.0
+    }
+  ],
+  "ordering_control": {
+    "ordered_rejection_fraction": 1.0,
+    "noise_rejection_fraction": 0.020833333333333332,
+    "trajectories_per_class": 96,
+    "permutations": 99,
+    "nominal_level": 0.05,
+    "scope": "Synthetic noisy steering sinusoids and independent Gaussian samples; not radar-derived trajectories."
+  },
+  "median_peak_error_m": 0.9216637115351176,
+  "max_peak_error_m": 2.250986372403082,
+  "runs": 40,
+  "limitations": "Ten phase realizations of the same two-point scene, with negligible clutter. Not a multi-scene estimate of cavity-detection performance. The ordering positive control is generated in trajectory space.",
+  "runtime_s": 6.129199981689453
+}

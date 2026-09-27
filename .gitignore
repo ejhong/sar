@@ -7,9 +7,10 @@ __pycache__/
 .pytest_cache/
 results/cache/
 results/validation/*.partial.json
-# large data
-data/
-!docs/data/
+# large data (raw products stay outside the repo); site data directories are tracked
+/data/
+/sim/data/
+/sim/legacy/data/
 *.h5
 *.tif
 *.tiff

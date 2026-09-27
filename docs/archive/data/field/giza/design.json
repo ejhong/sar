@@ -1,0 +1,125 @@
+{
+  "version": 1,
+  "role": "exploratory field quality control; no depth reconstruction",
+  "selection_note": "Crops chosen from metadata and surface preview before these measurement controls. Survey publications were already consulted; this is not a blinded trial.",
+  "views": [
+    {
+      "id": "overview",
+      "label": "Full acquisition",
+      "rows": [
+        0,
+        113692
+      ],
+      "cols": [
+        0,
+        11562
+      ],
+      "block": [
+        128,
+        12
+      ],
+      "flip_rows": true,
+      "description": "Incoherent intensity overview of the native complex acquisition. Approximate flat-ground aspect; terrain, layover and shadow are retained. This is not an orthophoto or a subsurface image."
+    },
+    {
+      "id": "cemetery",
+      "label": "Eastern Cemetery",
+      "rows": [
+        68000,
+        80000
+      ],
+      "cols": [
+        8000,
+        9400
+      ],
+      "block": [
+        20,
+        2
+      ],
+      "flip_rows": true,
+      "description": "Khufu’s eastern flank, subsidiary pyramids and mastabas. Surface survey points may be projected here; no buried target mask has been accepted."
+    }
+  ],
+  "spectrum_strips": [
+    {
+      "rows": [
+        0,
+        113692
+      ],
+      "cols": [
+        2890,
+        2914
+      ]
+    },
+    {
+      "rows": [
+        0,
+        113692
+      ],
+      "cols": [
+        5781,
+        5805
+      ]
+    },
+    {
+      "rows": [
+        0,
+        113692
+      ],
+      "cols": [
+        8671,
+        8695
+      ]
+    }
+  ],
+  "translation": {
+    "rows": [
+      72000,
+      72512
+    ],
+    "cols": [
+      8350,
+      8862
+    ],
+    "patch": 32,
+    "upsample": 1000,
+    "shifts_px": [
+      [
+        0,
+        0
+      ],
+      [
+        0.005,
+        0
+      ],
+      [
+        -0.005,
+        0
+      ],
+      [
+        0,
+        0.005
+      ],
+      [
+        0,
+        -0.005
+      ],
+      [
+        0.025,
+        -0.04
+      ],
+      [
+        -0.25,
+        0.4
+      ],
+      [
+        1,
+        -1
+      ]
+    ],
+    "max_p95_error_px": 0.02,
+    "interpretation": "Software calibration using known image translations applied to real texture; these inputs are not ground vibration or evidence of depth."
+  },
+  "depth_output_enabled": false,
+  "native_target_masks": null
+}

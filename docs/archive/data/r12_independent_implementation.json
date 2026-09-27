@@ -1,0 +1,113 @@
+{
+  "id": "r12_independent_implementation",
+  "order": 23,
+  "tag": "mechanism",
+  "eyebrow": "12 \u00b7 Independent code",
+  "title": "The derivative protocol's own code, run unmodified on the real acquisition",
+  "question": "Do these conclusions depend on our reimplementation being faithful?",
+  "finding": "No. Version 1.7 of the public derivative protocol was installed unchanged, its own tests passed, and it was given a real Khafre crop with an honest configuration. It runs. Its registration returns only the integer peak of the cross-correlation, so the displacement vectors it feeds to the depth fit are whole numbers of pixels, with 1 distinct values across the whole target track. Real inter-look displacements in this data are thousandths of a pixel, so that estimator quantises the entire measurement to zero. Its geometry is also misconfigured by default: the shipped example assumes a 1 km aperture span where the real span for that bank is 9,868 m, which moves its recurrence depth from 494 m to 50 m, below the 100 m grid it searches.",
+  "limitations": "Our configuration is not theirs. Target track, nuisance arcs, patch size and depth grid were chosen by us from the shipped example, because the settings behind the published images were never released. This shows what their code does on real data under a reasonable configuration, not that any particular published figure came from it.",
+  "method": "v1.7 installed from its published package and run through its own command line on a 1024 by 512 complex crop of the real Giza product, twice: once with the aperture span its example assumes and once with the span derived from the product state vectors.",
+  "figures": [],
+  "metrics": {
+    "runs": [
+      {
+        "name": "shipped_1km",
+        "baseline_perp_m": 1000.0,
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "/Users/eugene/prj/sar/results/r12_independent_implementation/work/out_shipped_1km\n",
+        "arrays": [
+          "G_arc",
+          "Y",
+          "best_depth_m",
+          "identity_error",
+          "kz",
+          "modal_table",
+          "nuisance",
+          "offset",
+          "q_arc",
+          "reference",
+          "registration_score",
+          "score",
+          "z_m"
+        ],
+        "recurrence_depth_m": 494.0737676914165,
+        "realized_overlap": 0.05000000000002881,
+        "best_depth_m": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "depth_unique": 1,
+        "vector_values_unique": 1,
+        "vector_all_integers": true,
+        "vector_abs_max": 0.0,
+        "vector_nonzero_fraction": 0.0
+      },
+      {
+        "name": "real_state_vectors",
+        "baseline_perp_m": 9868.311623615593,
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "/Users/eugene/prj/sar/results/r12_independent_implementation/work/out_real_state_vectors\n",
+        "arrays": [
+          "G_arc",
+          "Y",
+          "best_depth_m",
+          "identity_error",
+          "kz",
+          "modal_table",
+          "nuisance",
+          "offset",
+          "q_arc",
+          "reference",
+          "registration_score",
+          "score",
+          "z_m"
+        ],
+        "recurrence_depth_m": 50.06669697266774,
+        "realized_overlap": 0.05000000000002881,
+        "best_depth_m": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "depth_unique": 1,
+        "vector_values_unique": 1,
+        "vector_all_integers": true,
+        "vector_abs_max": 0.0,
+        "vector_nonzero_fraction": 0.0
+      }
+    ],
+    "crop": [
+      1024,
+      512
+    ],
+    "pair_count_k": 20,
+    "b_shift_hz": 404.0,
+    "lambda_s_m": 0.2405679137,
+    "real_baseline_span_m": 9868.311623615593,
+    "shipped_baseline_span_m": 1000.0,
+    "runtime_s": 16.186917304992676
+  },
+  "date": "2026-09-23"
+}

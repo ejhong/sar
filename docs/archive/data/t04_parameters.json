@@ -1,0 +1,60 @@
+{
+  "id": "t04_parameters",
+  "order": 4,
+  "tag": "artifact",
+  "eyebrow": "04 \u00b7 Processing choices",
+  "title": "Processing choices set the axis and change the patterns",
+  "question": "Do the 'depths' survive changes that a physical measurement would ignore?",
+  "finding": "Patch size changes spatial smoothness. The declared wavelength scales the model-depth axis, and the sub-aperture width changes its sampling and the resulting pattern. The wavelength panel illustrates an exact algebraic rescaling; a separate end-to-end test verifies that relation.",
+  "limitations": "One scene per sweep, with one parameter changed at a time. Sensitivity alone does not invalidate an inverse method; the relevant question is whether calibrated, independently validated targets remain correctly localized. No such validation is supplied by this experiment.",
+  "method": "Desert and pyramid transects with patch widths 16, 32, and 64 pixels and sub-aperture fractions 30%, 50%, and 70%. The wavelength panel relabels a single computed result at 0.24, 0.48, and 0.96 m. Band edges are snapped to FFT bins.",
+  "figures": [
+    {
+      "file": "results/t04_parameters/figs/t04_patch.png",
+      "caption": "<b>The patch size sets the shape of the 'structures'.</b> Empty desert, same transect, with 16, 32 and 64 pixel patches. Top: the replication-variant score. Bottom: the mean paper-variant spectrum; the dotted line marks the depth that a separation of one patch width would give. Small patches draw thin vertical shafts, large patches draw rounded chambers, and every patch size fills the same depth range, because scatterers far outside the patch contribute through the 80 m difference kernel and alias onto the axis (T3)."
+    },
+    {
+      "file": "results/t04_parameters/figs/t04_lambda.png",
+      "caption": "<b>An exact change of scale.</b> A single computed score image with its depth labels multiplied by the wavelength ratio. This illustrates the formula; it is not three independently simulated detections. Without an independently justified wavelength, the depth scale is unconstrained."
+    },
+    {
+      "file": "results/t04_parameters/figs/t04_bandwidth.png",
+      "caption": "<b>Different sub-aperture widths.</b> The same transect processed at 30%, 50%, and 70% bandwidth. Each panel uses its own Nyquist depth extent. A common-axis comparison and known targets would be needed to assess localization stability."
+    }
+  ],
+  "metrics": {
+    "patch": [
+      {
+        "patch_px": 16,
+        "patch_m": 4.0,
+        "blob_width_px_along_transect": 5.0,
+        "blob_height_depth_steps": 7.0,
+        "depth_of_patch_width_m": 35.44860428981232,
+        "spectrum_above_patch_cap_fraction": 0.744974387866681
+      },
+      {
+        "patch_px": 32,
+        "patch_m": 8.0,
+        "blob_width_px_along_transect": 8.0,
+        "blob_height_depth_steps": 7.0,
+        "depth_of_patch_width_m": 70.89720857962465,
+        "spectrum_above_patch_cap_fraction": 0.4905500857883041
+      },
+      {
+        "patch_px": 64,
+        "patch_m": 16.0,
+        "blob_width_px_along_transect": 12.0,
+        "blob_height_depth_steps": 7.0,
+        "depth_of_patch_width_m": 141.7944171592493,
+        "spectrum_above_patch_cap_fraction": 0.0
+      }
+    ],
+    "runtime_s": 53.11132597923279
+  },
+  "date": "2026-09-19",
+  "provenance": {
+    "python": "3.11.3",
+    "numpy": "2.4.6",
+    "source_sha256": "3980aa10645afc577481846f1d01df5f176d4aeda3b41e36322284a13291b901"
+  }
+}

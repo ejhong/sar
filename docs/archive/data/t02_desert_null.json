@@ -1,0 +1,42 @@
+{
+  "id": "t02_desert_null",
+  "order": 2,
+  "tag": "null",
+  "eyebrow": "02 \u00b7 Null control",
+  "title": "Empty desert produces a similar score distribution",
+  "question": "Is the output any different when there is no pyramid at all?",
+  "finding": "The mean best score is 0.306 on the pyramid footprint and 0.306 in the desert-only scene. Their empirical distribution distance is 0.0096. The absence of buried objects does not prevent structured output.",
+  "limitations": "One realization per scene; the 32-pixel patches overlap on a 4-pixel grid, so the samples are dependent. The saved conventional KS p-value is descriptive only here. Similar distributions do not establish statistical equivalence or validate a detector.",
+  "method": "Identical pipeline and grid as T1 on a scene containing only clutter and sparse rocks; scores compared pixel by pixel with T1's pyramid footprint.",
+  "figures": [
+    {
+      "file": "results/t02_desert_null/figs/t02_transect_az.png",
+      "caption": "<b>Desert only.</b> Flat ground with speckle and a few rocks, same transect, same pipeline. The 'tomogram' is as busy as the pyramid's."
+    },
+    {
+      "file": "results/t02_desert_null/figs/t02_histograms.png",
+      "caption": "<b>Overlapping distributions.</b> Best window-fit scores and their winning model depths for the pyramid and desert controls. Compare their effect sizes; the many overlapping patches are not independent experimental replicates."
+    },
+    {
+      "file": "results/t02_desert_null/figs/t02_maps.png",
+      "caption": "<b>Same scale, two scenes.</b> Best-fit score maps for a pyramid scene and a desert-only scene. Both inputs contain no buried objects. This comparison tests this score's specificity, rather than proving the two scenes identical."
+    }
+  ],
+  "metrics": {
+    "mean_best_adjR2_pyramid": 0.30645185708999634,
+    "mean_best_adjR2_desert_scene": 0.30577531456947327,
+    "frac_gt_0p5_pyramid": 0.013728078446162549,
+    "frac_gt_0p5_desert_scene": 0.013092592592592593,
+    "ks_statistic": 0.009612881597418688,
+    "ks_pvalue": 0.074280704560997,
+    "runtime_s": 262.3717818260193,
+    "trajectory_rms_px_desert": 0.006491091789105842,
+    "trajectory_rms_px_pyramid": 0.007339921294636644
+  },
+  "date": "2026-09-19",
+  "provenance": {
+    "python": "3.11.3",
+    "numpy": "2.4.6",
+    "source_sha256": "86578ebf9962547f59c204c7008397d14646103766f7abd70cc79a3339d177f4"
+  }
+}

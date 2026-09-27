@@ -23,6 +23,8 @@ interface Props {
   xDomain?: [number, number];
   yDomain?: [number, number];
   logY?: boolean;
+  logX?: boolean;
+  xFormat?: 'num' | 'duration';
   xTicks?: number[];
   yTicks?: number[];
   yFormat?: 'num' | 'pct' | 'exp';
@@ -31,18 +33,30 @@ interface Props {
   directLabels?: boolean;
 }
 const {
-  series,
+  series: raw,
   xLabel,
   yLabel,
   title,
   height = 200,
   logY = false,
+  logX = false,
+  xFormat = 'num',
   yFormat = 'num',
   zeroLine = false,
   caption,
   directLabels = true,
 } = Astro.props;
 
+// a log x axis is drawn in log10 space; ticks and the tooltip show the values themselves
+const tx = (v: number) => (logX ? Math.log10(v) : v);
+const series = raw.map((s) => ({ ...s, x: s.x.map(tx) }));
+const xfmt = (v: number) => {
+  if (xFormat === 'duration') {
+    const [d, u] = v < 60 ? [v, 's'] : v < 3600 ? [v / 60, 'min'] : v < 86400 ? [v / 3600, 'h'] : [v / 86400, 'd'];
+    return `${+d.toPrecision(2)} ${u}`;
+  }
+  return Math.abs(v) >= 1000 ? v.toLocaleString('en-US') : String(+v.toPrecision(4));
+};
 const W = 560;
 const H = height;
 const m = { l: 46, r: directLabels && series.length > 1 ? 86 : 14, t: 12, b: 34 };
@@ -50,7 +64,7 @@ const iw = W - m.l - m.r;
 const ih = H - m.t - m.b;
 const allX = series.flatMap((s) => s.x);
 const allY = series.flatMap((s) => s.y).filter((v) => !logY || v > 0);
-const xd = Astro.props.xDomain ?? [Math.min(...allX), Math.max(...allX)];
+const xd = Astro.props.xDomain ? Astro.props.xDomain.map(tx) : [Math.min(...allX), Math.max(...allX)];
 let yd = Astro.props.yDomain ?? [Math.min(...allY), Math.max(...allY)];
 if (!Astro.props.yDomain && !logY) {
   const pad = (yd[1] - yd[0]) * 0.08 || 1;
@@ -70,7 +84,7 @@ function nice(lo: number, hi: number, n = 5): number[] {
   for (let v = Math.ceil(lo / step) * step; v <= hi + step * 1e-9; v += step) out.push(+v.toPrecision(10));
   return out;
 }
-const xt = Astro.props.xTicks ?? nice(xd[0], xd[1], 6);
+const xt = Astro.props.xTicks?.map(tx) ?? nice(xd[0], xd[1], 6);
 const yt =
   Astro.props.yTicks ??
   (logY
@@ -96,6 +110,8 @@ const data = JSON.stringify({
   W,
   series: series.map((s) => ({ name: s.name, color: s.color, x: s.x, y: s.y })),
   yFormat,
+  logX,
+  xFormat,
 });
 const labelY = series.map((s) => sy(s.y[s.y.length - 1]));
 // keep direct labels apart
@@ -137,7 +153,7 @@ for (const [y, i] of order) {
             <g>
               <line x1={sx(v)} x2={sx(v)} y1={m.t + ih} y2={m.t + ih + 4} />
               <text x={sx(v)} y={m.t + ih + 15} text-anchor="middle">
-                {Math.abs(v) >= 1000 ? v.toLocaleString('en-US') : String(+v.toPrecision(4))}
+                {xfmt(logX ? Math.pow(10, v) : v)}
               </text>
             </g>
           ))
@@ -194,6 +210,13 @@ for (const [y, i] of order) {
     const tip = el.querySelector<HTMLElement>('.lc-tip')!;
     const hit = svg.querySelector<SVGRectElement>('.lc-hit')!;
     const paths = [...svg.querySelectorAll<SVGPathElement>('path')];
+    const xfmt = (v: number) => {
+      if (d.xFormat === 'duration') {
+        const [n, u] = v < 60 ? [v, 's'] : v < 3600 ? [v / 60, 'min'] : v < 86400 ? [v / 3600, 'h'] : [v / 86400, 'd'];
+        return `${+n.toPrecision(2)} ${u}`;
+      }
+      return (+v.toPrecision(4)).toString();
+    };
     const fmt = (v: number) =>
       d.yFormat === 'pct' ? `${v > 0 ? '+' : ''}${v.toFixed(2)}%` : d.yFormat === 'exp' ? v.toExponential(1) : (+v.toPrecision(3)).toString();
     hit.addEventListener('pointermove', (e) => {
@@ -227,7 +250,7 @@ for (const [y, i] of order) {
       cross.setAttribute('x2', String(cx));
       hover.setAttribute('visibility', 'visible');
       tip.hidden = false;
-      tip.innerHTML = `<div class="lc-tip-x">${(+xs.toPrecision(4)).toString()}</div>${rows.join('')}`;
+      tip.innerHTML = `<div class="lc-tip-x">${xfmt(d.logX ? Math.pow(10, xs) : xs)}</div>${rows.join('')}`;
       const left = (cx / d.W) * r.width;
       tip.style.left = `${Math.min(left + 12, r.width - tip.offsetWidth - 4)}px`;
     });

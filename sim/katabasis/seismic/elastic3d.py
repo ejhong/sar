@@ -330,7 +330,9 @@ class Result:
 class Simulation:
     def __init__(self, medium: Medium, dt: float | None = None, pml_width: int = 12,
                  faces: tuple[bool, ...] = (True, True, True, True, False, True), f0: float = 30.0,
-                 cfl: float = 0.42, second_order_near_air: bool = True):
+                 cfl: float = 0.42, second_order_near_air: bool = True, pml_vp: float | None = None):
+        """`pml_vp` tunes the absorbing layers (default: the medium's fastest speed); hold it fixed when
+        the medium changes between runs that must compare, as in an inversion."""
         self.m = medium
         g = medium.grid
         self.grid = g
@@ -340,10 +342,16 @@ class Simulation:
             raise ValueError(f'unstable: CFL {medium.vp_max * self.dt / h:.3f} > {CFL_LIMIT:.3f}')
         nx, ny, nz = g.shape
         self.shape = g.shape
+        if not faces[4] and medium.solid.any():
+            # the updates skip the outer two layers: the velocity just above the ground must be one they reach
+            top = np.argmax(medium.solid, axis=2)[medium.solid.any(axis=2)]
+            if top.min() < 3:
+                raise ValueError('the ground needs at least three layers of air cells above it')
         self.near = medium.near if second_order_near_air else np.zeros(g.shape, bool)
         self.pml = pml_width
         self.faces = tuple(faces)
-        prof = lambda n, lo, hi: PML.profile(n, pml_width, lo, hi, h, self.dt, medium.vp_max, f0)
+        vref = medium.vp_max if pml_vp is None else pml_vp
+        prof = lambda n, lo, hi: PML.profile(n, pml_width, lo, hi, h, self.dt, vref, f0)
         self.ax = prof(nx, faces[0], faces[1])
         self.ay = prof(ny, faces[2], faces[3])
         self.az = prof(nz, faces[4], faces[5])

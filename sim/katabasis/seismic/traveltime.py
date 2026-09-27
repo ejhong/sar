@@ -78,19 +78,24 @@ def _trace(T, gx, gy, gz, start, src, h, max_steps, lengths_idx, lengths_val):
                     lengths_val[n] = np.sqrt(r2) / steps * h
                     n += 1
             return n, True
-        i = min(max(int(p0 + 0.5), 1), nx - 2)
-        j = min(max(int(p1 + 0.5), 1), ny - 2)
-        k = min(max(int(p2 + 0.5), 1), nz - 2)
+        # the cell the ray is in (np.gradient is one-sided at the edges, so edge cells are valid)
+        i = min(max(int(p0 + 0.5), 0), nx - 1)
+        j = min(max(int(p1 + 0.5), 0), ny - 1)
+        k = min(max(int(p2 + 0.5), 0), nz - 1)
         a0, a1, a2 = gx[i, j, k], gy[i, j, k], gz[i, j, k]
         norm = np.sqrt(a0 * a0 + a1 * a1 + a2 * a2)
         if not np.isfinite(norm) or norm == 0:
             return n, False
-        p0 -= ds * a0 / norm
-        p1 -= ds * a1 / norm
-        p2 -= ds * a2 / norm
+        # stay inside the grid: a ray between two stations on the ground slides along the top cells,
+        # and only the distance actually moved counts toward its length
+        q0 = min(max(p0 - ds * a0 / norm, 0.0), nx - 1.0)
+        q1 = min(max(p1 - ds * a1 / norm, 0.0), ny - 1.0)
+        q2 = min(max(p2 - ds * a2 / norm, 0.0), nz - 1.0)
+        step = np.sqrt((q0 - p0) ** 2 + (q1 - p1) ** 2 + (q2 - p2) ** 2)
+        p0, p1, p2 = q0, q1, q2
         if n < lengths_idx.shape[0]:
             lengths_idx[n] = (i * ny + j) * nz + k
-            lengths_val[n] = ds * h
+            lengths_val[n] = step * h
             n += 1
     return n, False
 

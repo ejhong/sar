@@ -163,7 +163,7 @@ def main():
             t_obs = picks[pr[:, 0], pr[:, 1]]
             dist_all = np.linalg.norm(sv.sources[pr[:, 0]] - sv.receivers[pr[:, 1]], axis=1)
             n_before = int(np.isfinite(t_obs).sum())
-            t_obs = reject_outliers(t_obs, dist_all, 1.0 / sv.meta['f0_hz'])
+            t_obs = reject_outliers(t_obs, dist_all, 1.0 / sv.meta['f0_hz'], floor=0.0 if surf else 0.25)
             print(f'  {sv.name}: {n_before} picks, {int(np.isfinite(t_obs).sum())} kept after quality control')
             inv_grid = Grid.covering(BOX, BOX, (ZBOT, 0.0), H_INV)
             tg = TomoGrid(inv_grid, np.ones(inv_grid.shape, bool))

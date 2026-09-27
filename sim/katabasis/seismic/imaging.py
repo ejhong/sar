@@ -34,8 +34,12 @@ class BoxStore:
 
 
 def rtm_shot(sim: Simulation, source: Source, receivers: np.ndarray, scattered: np.ndarray, nt: int,
-             box: tuple[slice, slice, slice], every: int = 3) -> tuple[np.ndarray, np.ndarray]:
-    """Image and illumination for one shot. `scattered` is (nrec, 3, nt) in site axes (east, north, up)."""
+             box: tuple[slice, slice, slice], every: int = 3, data_scale: float | None = None) -> tuple[np.ndarray, np.ndarray]:
+    """Image and illumination for one shot. `scattered` is (nrec, 3, nt) in site axes (east, north, up).
+
+    The adjoint sources are the data times `data_scale` (by default, scaled so this shot's largest sample
+    is 1e9); pass one scale for every call whose images must add or compare linearly.
+    """
     sim.reset()
     store = BoxStore(box, nt, every)
     sim.run([source], Receivers(receivers[:1]), nt, on_step=store, on_step_every=every)
@@ -43,7 +47,7 @@ def rtm_shot(sim: Simulation, source: Source, receivers: np.ndarray, scattered: 
     # adjoint: time-reversed scattered records as forces at the receivers, one per component
     adj = []
     rev = scattered[:, :, ::-1].astype(np.float64)
-    scale = 1e9 / max(np.abs(rev).max(), 1e-30)
+    scale = data_scale if data_scale is not None else 1e9 / max(np.abs(rev).max(), 1e-30)
     for r, tr in zip(receivers, rev):
         for c, d in enumerate(((1, 0, 0), (0, 1, 0), (0, 0, 1))):
             adj.append(Source(tuple(r), np.ascontiguousarray(tr[c] * scale), 'force', d))

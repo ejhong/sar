@@ -67,7 +67,18 @@ The lab does it by simulation over ground whose contents are known, in two phase
   uses high frequencies.
 - Keep every station inside the travel-time inversion grid.
 - A vertical hammer's direct P along a free surface is some 30 dB below its surface wave: at 30 dB noise a picker times
-  the surface wave. Surface refraction picks use 16 stacked blows (50 dB), a low trigger and quality control whose
-  threshold never drops below a quarter period (so a real anomaly's delay is not thrown away).
+  the surface wave. Surface refraction picks use 16 stacked blows (50 dB) and a low trigger. Crosshole quality control
+  keeps a floor of a quarter period (so the chamber's real delay is not thrown away); the surface survey's must not,
+  because at short offsets the surface wave arrives within a quarter period of the P.
+- Rays between stations on the ground must stay inside the grid and be credited to the cells they pass through (the
+  top row), the same cells the predicted times come from. Until that was fixed the surface inversion never moved, and
+  its "nothing" was an accident; an intermediate version drew a false chamber from smoothing alone.
+- The solver's updates skip the outer two index layers: keep at least three air cells above the ground (the solver now
+  refuses fewer). With two, the free surface is wrong and reciprocity fails for surface stations.
+- Hold the absorbing layers' tuning (`pml_vp`) fixed across runs that must compare: otherwise raising a speed anywhere
+  retunes every boundary, and finite-difference gradient checks measure the boundary, not the model.
+- FWI kernels are densities: the derivative for a cell is the kernel times the cell volume.
+- Noise sources spread over the ground retrieve the wave as minus the lag derivative of the correlation, not the
+  correlation itself (Snieder 2004).
 - From the first investigation: never use the image row span as aperture time; `nyquist_depth` returns π/ΔKz; confine
   sub-aperture banks to the coherent window.

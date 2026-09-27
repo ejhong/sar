@@ -1,0 +1,128 @@
+{
+  "id": "r06_second_site",
+  "order": 16,
+  "tag": "null",
+  "eyebrow": "06 \u00b7 Second site",
+  "title": "Another satellite, another continent, the same undifferentiated output",
+  "question": "Does the result depend on Giza, on the ICEYE X33, or on the method?",
+  "finding": "On the method. An ICEYE X35 dwell of Sacsayhuaman, a descending left-looking pass over the Andes at 3.6 km altitude, gives cut-stone terrace walls a mean structure score of 0.283, an open hillside 0.281 and the dense street grid of Cusco 0.286. The Kolmogorov-Smirnov distance between walls and hillside is 0.014. The depth axis for this acquisition repeats every 13.3 m.",
+  "limitations": "Steep Andean terrain makes single-height RPC placement much less precise than at flat Giza, so each patch was checked against the image rather than trusted from coordinates. No claim is made about what lies under Sacsayhuaman; this is a control on the processing.",
+  "method": "Identical pipeline, bank and grid to the Giza controls, applied to four patches of one ICEYE X35 Spotlight Dwell Fine acquisition of 22 August 2025, with steering wavenumbers from that product's own state vectors.",
+  "figures": [
+    {
+      "file": "/Users/eugene/prj/sar/results/r06_second_site/figs/r06_panels.png",
+      "caption": "<b>A second site, the same outcome.</b> Top: the native image amplitude, where the zigzag terrace walls, the Rodadero outcrop, the Cusco street grid and an open hillside are all plainly distinguishable. Bottom: the best depth-fit score the same processing assigns to each pixel. The surface tells them apart at a glance; the depth output does not."
+    },
+    {
+      "file": "/Users/eugene/prj/sar/results/r06_second_site/figs/r06_distributions.png",
+      "caption": "<b>Cut stone, city and hillside overlap.</b> Score distributions and mean depth profiles for the four Sacsayhuaman patches. A dense modern city and a bare Andean slope are about as different as two radar scenes can be, and the depth output separates them no better than it separates either from megalithic walls."
+    }
+  ],
+  "metrics": {
+    "patches": [
+      {
+        "patch": "walls",
+        "label": "Sacsayhuaman terrace walls",
+        "kind": "monument",
+        "pixels": 47880,
+        "amplitude_median": 61.762123107910156,
+        "amplitude_p99": 393.65283203125,
+        "trajectory_rms_px": 0.004228051286190748,
+        "velocity_kind": "velocity_increment_over_pair_lag",
+        "velocity_rms_mm_s": 0.0028811837546527386,
+        "best_score_mean": 0.28683826327323914,
+        "best_score_p95": 0.4441707134246826,
+        "frac_score_gt_0p5": 0.025208855472013368,
+        "depth_median_m": 6.034948020076774,
+        "spectrum_peak_to_median": 2.2444183826446533,
+        "nyquist_depth_m": 13.269812583687974
+      },
+      {
+        "patch": "rodadero",
+        "label": "Rodadero outcrop",
+        "kind": "monument",
+        "pixels": 47880,
+        "amplitude_median": 59.92162322998047,
+        "amplitude_p99": 359.1748046875,
+        "trajectory_rms_px": 0.0035915535409003496,
+        "velocity_kind": "velocity_increment_over_pair_lag",
+        "velocity_rms_mm_s": 0.0024478849954903126,
+        "best_score_mean": 0.27954113483428955,
+        "best_score_p95": 0.41791462898254395,
+        "frac_score_gt_0p5": 0.011194653299916459,
+        "depth_median_m": 6.266037172759626,
+        "spectrum_peak_to_median": 1.7687184810638428,
+        "nyquist_depth_m": 13.248228589059948
+      },
+      {
+        "patch": "cusco",
+        "label": "Cusco street grid",
+        "kind": "urban",
+        "pixels": 47880,
+        "amplitude_median": 63.624637603759766,
+        "amplitude_p99": 616.8161010742188,
+        "trajectory_rms_px": 0.005676924716681242,
+        "velocity_kind": "velocity_increment_over_pair_lag",
+        "velocity_rms_mm_s": 0.003865347011014819,
+        "best_score_mean": 0.286198228597641,
+        "best_score_p95": 0.49640345573425293,
+        "frac_score_gt_0p5": 0.0485171261487051,
+        "depth_median_m": 2.582413747132273,
+        "spectrum_peak_to_median": 5.830118656158447,
+        "nyquist_depth_m": 13.301062060059326
+      },
+      {
+        "patch": "slope_north",
+        "label": "Open hillside, north",
+        "kind": "control",
+        "pixels": 47880,
+        "amplitude_median": 63.46825408935547,
+        "amplitude_p99": 226.4313507080078,
+        "trajectory_rms_px": 0.0028476098086684942,
+        "velocity_kind": "velocity_increment_over_pair_lag",
+        "velocity_rms_mm_s": 0.0019406991777941585,
+        "best_score_mean": 0.28098636865615845,
+        "best_score_p95": 0.4141315817832947,
+        "frac_score_gt_0p5": 0.007644110275689223,
+        "depth_median_m": 6.513653049563624,
+        "spectrum_peak_to_median": 1.4621012210845947,
+        "nyquist_depth_m": 13.261891443049109
+      }
+    ],
+    "monument_mean": 0.28318971395492554,
+    "control_mean": 0.28098636865615845,
+    "urban_mean": 0.286198228597641,
+    "ks_statistic_walls_vs_slope": 0.014275271512113719,
+    "ks_pvalue": 4.433152280904748e-06,
+    "nyquist_depth_m": 13.269812583687974,
+    "acquisition": {
+      "path": "/Users/eugene/tmp/sar/sacsayhuaman/ICEYE_X35_SLC_SLEDF_5907293_20250822T152433.h5",
+      "satellite": "ICEYE-X35",
+      "product_type": "SpotlightDwellFine",
+      "polarization": "VV",
+      "look_side": "left",
+      "orbit_direction": "DESCENDING",
+      "shape": [
+        114606,
+        11482
+      ],
+      "prf_hz": 164702.2477653252,
+      "azimuth_time_interval_s": 6.071562553443974e-06,
+      "bandwidth_hz": 143173.88976158987,
+      "wavelength_m": 0.031228381041666666,
+      "azimuth_spacing_m": 0.04362773327748982,
+      "range_spacing_m": 0.15235801066631458,
+      "slant_range_first_m": 493633.78065569734,
+      "incidence_center_deg": 20.479929352448668,
+      "scene_height_m": 3582.541748046875,
+      "collection_start": "2025-08-22T15:24:33.919422",
+      "collection_end": "2025-08-22T15:24:54.089412",
+      "zero_doppler_start": "2025-08-22T15:24:43.502522",
+      "zero_doppler_end": "2025-08-22T15:24:44.198360",
+      "collection_duration_s": 20.16999,
+      "image_span_s": 0.695838
+    },
+    "runtime_s": 1.5809729099273682
+  },
+  "date": "2026-09-23"
+}

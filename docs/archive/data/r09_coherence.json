@@ -1,0 +1,779 @@
+{
+  "id": "r09_coherence",
+  "order": 19,
+  "tag": "mechanism",
+  "eyebrow": "09 \u00b7 The obstruction",
+  "title": "In a dwell, time diversity and coherence are the same axis, and you cannot have both",
+  "question": "Could any sub-aperture design measure slow ground motion from one dwell?",
+  "finding": "No. Slow time and look angle are the same axis in a dwell product, so looks separated by seconds are separated by degrees, and natural ground decorrelates over a fraction of a degree. Measured on the real acquisition, coherence with the band-centre look falls to half by 0.98 s of separation and to a tenth by 1.76 s, identically on the pyramid and on open desert. Ground motion in the microseism band needs lags of about a second, by which point there is little coherence left to register. The published protocols avoid this by using lags of tens of milliseconds, which keeps them coherent and makes them blind to the motion they invoke.",
+  "limitations": "Coherence is measured over one patch of one acquisition at 8 per cent sub-aperture width; a wider sub-aperture averages more and decorrelates differently. Strong stable point scatterers, such as corner reflectors or some built structures, hold coherence far longer than the natural desert measured here, so this curve is the distributed-target case, not a universal limit.",
+  "method": "61 sub-apertures of 8 per cent bandwidth swept across the processed Doppler support of a real Khafre and a real desert crop; complex coherence computed against the band-centre look over the interior of each crop; separation converted to slow time through the product Doppler rate and to aspect angle through the carrier wavelength and platform speed.",
+  "figures": [
+    {
+      "file": "/Users/eugene/prj/sar/results/r09_coherence/figs/r09_coherence.png",
+      "caption": "<b>The constraint behind everything else.</b> Left: complex coherence between sub-aperture looks of the real Giza acquisition and the band-centre look, against their separation in slow time. Coherence is gone within a few seconds on the pyramid and on open desert alike. The shaded strip is the lag the published reference and offset bands actually use, which is why they stay coherent. Right: the same curve read the other way, as the coherence still available when the lag is long enough to sample a given period of ground motion. The microseism band sits where almost nothing is left."
+    }
+  ],
+  "metrics": {
+    "patches": [
+      {
+        "patch": "khafre",
+        "label": "Khafre pyramid",
+        "half_coherence_s": 0.9772773909051164,
+        "quarter_coherence_s": 1.4688212856694245,
+        "tenth_coherence_s": 1.7623256528598659,
+        "sub_aperture_s": 1.959993995701517
+      },
+      {
+        "patch": "desert_west",
+        "label": "Open plateau",
+        "half_coherence_s": 0.9769962884323595,
+        "quarter_coherence_s": 1.4679075312162226,
+        "tenth_coherence_s": 1.7620568372014052,
+        "sub_aperture_s": 1.9588425002034884
+      }
+    ],
+    "width_frac": 0.08,
+    "looks": 61,
+    "curves": {
+      "khafre": [
+        {
+          "delta_hz": -63074.833761841066,
+          "delta_s": 11.141018501882305,
+          "delta_aspect_deg": -7.385603979087204,
+          "coherence": 2.4417533950327197e-06
+        },
+        {
+          "delta_hz": -60972.33930311303,
+          "delta_s": 10.76965121848623,
+          "delta_aspect_deg": -7.138113024275547,
+          "coherence": 6.801796189392917e-06
+        },
+        {
+          "delta_hz": -58869.84484438499,
+          "delta_s": 10.398283935090152,
+          "delta_aspect_deg": -6.890755876966765,
+          "coherence": 4.554427050607046e-06
+        },
+        {
+          "delta_hz": -56767.35038565696,
+          "delta_s": 10.026916651694075,
+          "delta_aspect_deg": -6.643527717388986,
+          "coherence": 4.948090463585686e-06
+        },
+        {
+          "delta_hz": -54664.855926928925,
+          "delta_s": 9.655549368297999,
+          "delta_aspect_deg": -6.396423747923646,
+          "coherence": 4.446539151103934e-06
+        },
+        {
+          "delta_hz": -52562.361468200885,
+          "delta_s": 9.284182084901921,
+          "delta_aspect_deg": -6.149439192223688,
+          "coherence": 2.8934571218997007e-06
+        },
+        {
+          "delta_hz": -50459.86700947285,
+          "delta_s": 8.912814801505844,
+          "delta_aspect_deg": -5.90256929434204,
+          "coherence": 8.80979496287182e-06
+        },
+        {
+          "delta_hz": -48357.37255074482,
+          "delta_s": 8.541447518109768,
+          "delta_aspect_deg": -5.655809317869927,
+          "coherence": 2.2067193640396e-05
+        },
+        {
+          "delta_hz": -46254.878092016785,
+          "delta_s": 8.170080234713692,
+          "delta_aspect_deg": -5.409154545084593,
+          "coherence": 1.2351369150565006e-05
+        },
+        {
+          "delta_hz": -44152.383633288744,
+          "delta_s": 7.798712951317614,
+          "delta_aspect_deg": -5.162600276105946,
+          "coherence": 1.4171893781167455e-05
+        },
+        {
+          "delta_hz": -42049.88917456071,
+          "delta_s": 7.4273456679215375,
+          "delta_aspect_deg": -4.916141828061742,
+          "coherence": 2.0363568182801828e-05
+        },
+        {
+          "delta_hz": -39947.39471583267,
+          "delta_s": 7.05597838452546,
+          "delta_aspect_deg": -4.669774534260828,
+          "coherence": 1.4112824828771409e-05
+        },
+        {
+          "delta_hz": -37844.90025710464,
+          "delta_s": 6.684611101129383,
+          "delta_aspect_deg": -4.423493743374093,
+          "coherence": 2.4619368559797294e-05
+        },
+        {
+          "delta_hz": -35742.4057983766,
+          "delta_s": 6.313243817733307,
+          "delta_aspect_deg": -4.177294818622647,
+          "coherence": 1.3084183592582121e-05
+        },
+        {
+          "delta_hz": -33639.91133964857,
+          "delta_s": 5.94187653433723,
+          "delta_aspect_deg": -3.9311731369728826,
+          "coherence": 2.284867878188379e-05
+        },
+        {
+          "delta_hz": -31537.416880920537,
+          "delta_s": 5.570509250941154,
+          "delta_aspect_deg": -3.6851240883379863,
+          "coherence": 2.4640858100610785e-05
+        },
+        {
+          "delta_hz": -29434.922422192496,
+          "delta_s": 5.199141967545076,
+          "delta_aspect_deg": -3.4391430747855236,
+          "coherence": 3.222738087060861e-05
+        },
+        {
+          "delta_hz": -27332.427963464463,
+          "delta_s": 4.8277746841489995,
+          "delta_aspect_deg": -3.193225509750711,
+          "coherence": 3.707633004523814e-05
+        },
+        {
+          "delta_hz": -25229.933504736422,
+          "delta_s": 4.456407400752922,
+          "delta_aspect_deg": -2.94736681725499,
+          "coherence": 3.1179548386717215e-05
+        },
+        {
+          "delta_hz": -23127.43904600839,
+          "delta_s": 4.085040117356845,
+          "delta_aspect_deg": -2.7015624311295356,
+          "coherence": 2.436196336930152e-05
+        },
+        {
+          "delta_hz": -21024.944587280355,
+          "delta_s": 3.7136728339607687,
+          "delta_aspect_deg": -2.4558077942433205,
+          "coherence": 2.000039239646867e-05
+        },
+        {
+          "delta_hz": -18922.450128552315,
+          "delta_s": 3.342305550564691,
+          "delta_aspect_deg": -2.2100983577353728,
+          "coherence": 4.247574906912632e-05
+        },
+        {
+          "delta_hz": -16819.95566982428,
+          "delta_s": 2.9709382671686146,
+          "delta_aspect_deg": -1.9644295802508687,
+          "coherence": 4.2225816287100315e-05
+        },
+        {
+          "delta_hz": -14717.461211096248,
+          "delta_s": 2.599570983772538,
+          "delta_aspect_deg": -1.7187969271806907,
+          "coherence": 5.765947935287841e-05
+        },
+        {
+          "delta_hz": -12614.966752368207,
+          "delta_s": 2.22820370037646,
+          "delta_aspect_deg": -1.4731958699041028,
+          "coherence": 3.305151403765194e-05
+        },
+        {
+          "delta_hz": -10512.472293640174,
+          "delta_s": 1.8568364169803837,
+          "delta_aspect_deg": -1.2276218850341913,
+          "coherence": 0.051690224558115005
+        },
+        {
+          "delta_hz": -8409.97783491214,
+          "delta_s": 1.4854691335843073,
+          "delta_aspect_deg": -0.9820704536657113,
+          "coherence": 0.24151696264743805
+        },
+        {
+          "delta_hz": -6307.483376184107,
+          "delta_s": 1.1141018501882307,
+          "delta_aspect_deg": -0.7365370606249982,
+          "coherence": 0.4307499825954437
+        },
+        {
+          "delta_hz": -4204.988917456067,
+          "delta_s": 0.742734566792153,
+          "delta_aspect_deg": -0.4910171937215982,
+          "coherence": 0.618707537651062
+        },
+        {
+          "delta_hz": -2102.4944587280334,
+          "delta_s": 0.3713672833960765,
+          "delta_aspect_deg": -0.2455063430012685,
+          "coherence": 0.8082430362701416
+        },
+        {
+          "delta_hz": 0.0,
+          "delta_s": -0.0,
+          "delta_aspect_deg": 0.0,
+          "coherence": 1.0000001192092896
+        },
+        {
+          "delta_hz": 2102.4944587280406,
+          "delta_s": -0.3713672833960778,
+          "delta_aspect_deg": 0.2455063430012693,
+          "coherence": 0.8092557787895203
+        },
+        {
+          "delta_hz": 4204.988917456074,
+          "delta_s": -0.7427345667921542,
+          "delta_aspect_deg": 0.49101719372159897,
+          "coherence": 0.6178194284439087
+        },
+        {
+          "delta_hz": 6307.483376184107,
+          "delta_s": -1.1141018501882307,
+          "delta_aspect_deg": 0.7365370606249982,
+          "coherence": 0.4311182498931885
+        },
+        {
+          "delta_hz": 8409.97783491214,
+          "delta_s": -1.4854691335843073,
+          "delta_aspect_deg": 0.9820704536657113,
+          "coherence": 0.2428940236568451
+        },
+        {
+          "delta_hz": 10512.472293640174,
+          "delta_s": -1.8568364169803837,
+          "delta_aspect_deg": 1.2276218850341913,
+          "coherence": 0.0533921904861927
+        },
+        {
+          "delta_hz": 12614.966752368222,
+          "delta_s": -2.2282037003764628,
+          "delta_aspect_deg": 1.4731958699041043,
+          "coherence": 7.595313218189403e-05
+        },
+        {
+          "delta_hz": 14717.461211096255,
+          "delta_s": -2.5995709837725394,
+          "delta_aspect_deg": 1.7187969271806915,
+          "coherence": 9.03751642908901e-05
+        },
+        {
+          "delta_hz": 16819.95566982429,
+          "delta_s": -2.9709382671686155,
+          "delta_aspect_deg": 1.9644295802508693,
+          "coherence": 6.689915608149022e-05
+        },
+        {
+          "delta_hz": 18922.450128552322,
+          "delta_s": -3.342305550564692,
+          "delta_aspect_deg": 2.210098357735373,
+          "coherence": 2.7828418751596473e-05
+        },
+        {
+          "delta_hz": 21024.944587280355,
+          "delta_s": -3.7136728339607687,
+          "delta_aspect_deg": 2.4558077942433205,
+          "coherence": 1.917113877425436e-05
+        },
+        {
+          "delta_hz": 23127.43904600839,
+          "delta_s": -4.085040117356845,
+          "delta_aspect_deg": 2.7015624311295356,
+          "coherence": 8.583167982578743e-06
+        },
+        {
+          "delta_hz": 25229.933504736437,
+          "delta_s": -4.456407400752925,
+          "delta_aspect_deg": 2.947366817254992,
+          "coherence": 3.9287275285460055e-05
+        },
+        {
+          "delta_hz": 27332.42796346447,
+          "delta_s": -4.827774684149,
+          "delta_aspect_deg": 3.193225509750712,
+          "coherence": 3.317266600788571e-05
+        },
+        {
+          "delta_hz": 29434.922422192503,
+          "delta_s": -5.199141967545077,
+          "delta_aspect_deg": 3.439143074785524,
+          "coherence": 2.28229819185799e-05
+        },
+        {
+          "delta_hz": 31537.416880920537,
+          "delta_s": -5.570509250941154,
+          "delta_aspect_deg": 3.6851240883379863,
+          "coherence": 3.066505814786069e-05
+        },
+        {
+          "delta_hz": 33639.91133964857,
+          "delta_s": -5.94187653433723,
+          "delta_aspect_deg": 3.9311731369728826,
+          "coherence": 1.9659843019326217e-05
+        },
+        {
+          "delta_hz": 35742.4057983766,
+          "delta_s": -6.313243817733307,
+          "delta_aspect_deg": 4.177294818622647,
+          "coherence": 8.496352165821008e-06
+        },
+        {
+          "delta_hz": 37844.90025710465,
+          "delta_s": -6.684611101129386,
+          "delta_aspect_deg": 4.423493743374094,
+          "coherence": 6.131208465376403e-06
+        },
+        {
+          "delta_hz": 39947.394715832685,
+          "delta_s": -7.055978384525462,
+          "delta_aspect_deg": 4.66977453426083,
+          "coherence": 1.7779168047127314e-05
+        },
+        {
+          "delta_hz": 42049.88917456072,
+          "delta_s": -7.427345667921538,
+          "delta_aspect_deg": 4.916141828061742,
+          "coherence": 1.3976718037156388e-05
+        },
+        {
+          "delta_hz": 44152.38363328875,
+          "delta_s": -7.798712951317615,
+          "delta_aspect_deg": 5.162600276105948,
+          "coherence": 1.9822840840788558e-05
+        },
+        {
+          "delta_hz": 46254.878092016785,
+          "delta_s": -8.170080234713692,
+          "delta_aspect_deg": 5.409154545084593,
+          "coherence": 1.5552890545222908e-05
+        },
+        {
+          "delta_hz": 48357.37255074482,
+          "delta_s": -8.541447518109768,
+          "delta_aspect_deg": 5.655809317869927,
+          "coherence": 1.2685008186963387e-05
+        },
+        {
+          "delta_hz": 50459.86700947285,
+          "delta_s": -8.912814801505844,
+          "delta_aspect_deg": 5.90256929434204,
+          "coherence": 1.3440607290249318e-05
+        },
+        {
+          "delta_hz": 52562.3614682009,
+          "delta_s": -9.284182084901923,
+          "delta_aspect_deg": 6.1494391922236895,
+          "coherence": 5.415954547061119e-06
+        },
+        {
+          "delta_hz": 54664.85592692893,
+          "delta_s": -9.655549368298,
+          "delta_aspect_deg": 6.396423747923647,
+          "coherence": 6.298936114035314e-06
+        },
+        {
+          "delta_hz": 56767.350385656966,
+          "delta_s": -10.026916651694076,
+          "delta_aspect_deg": 6.643527717388986,
+          "coherence": 5.9987592067045625e-06
+        },
+        {
+          "delta_hz": 58869.844844385,
+          "delta_s": -10.398283935090154,
+          "delta_aspect_deg": 6.890755876966766,
+          "coherence": 7.442753030773019e-06
+        },
+        {
+          "delta_hz": 60972.33930311303,
+          "delta_s": -10.76965121848623,
+          "delta_aspect_deg": 7.138113024275547,
+          "coherence": 1.1161890142830089e-05
+        },
+        {
+          "delta_hz": 63074.833761841066,
+          "delta_s": -11.141018501882305,
+          "delta_aspect_deg": 7.385603979087204,
+          "coherence": 1.2420621715136804e-05
+        }
+      ],
+      "desert_west": [
+        {
+          "delta_hz": -63074.833761841066,
+          "delta_s": 11.134473159051408,
+          "delta_aspect_deg": -7.385603979087204,
+          "coherence": 4.195399014861323e-06
+        },
+        {
+          "delta_hz": -60972.33930311303,
+          "delta_s": 10.763324053749693,
+          "delta_aspect_deg": -7.138113024275547,
+          "coherence": 8.260934009740595e-06
+        },
+        {
+          "delta_hz": -58869.84484438499,
+          "delta_s": 10.39217494844798,
+          "delta_aspect_deg": -6.890755876966765,
+          "coherence": 1.4317832210508641e-05
+        },
+        {
+          "delta_hz": -56767.35038565696,
+          "delta_s": 10.021025843146267,
+          "delta_aspect_deg": -6.643527717388986,
+          "coherence": 1.4087051567912567e-05
+        },
+        {
+          "delta_hz": -54664.855926928925,
+          "delta_s": 9.649876737844554,
+          "delta_aspect_deg": -6.396423747923646,
+          "coherence": 1.8675809769774787e-05
+        },
+        {
+          "delta_hz": -52562.361468200885,
+          "delta_s": 9.27872763254284,
+          "delta_aspect_deg": -6.149439192223688,
+          "coherence": 1.4200441910361405e-05
+        },
+        {
+          "delta_hz": -50459.86700947285,
+          "delta_s": 8.907578527241126,
+          "delta_aspect_deg": -5.90256929434204,
+          "coherence": 6.686839242320275e-06
+        },
+        {
+          "delta_hz": -48357.37255074482,
+          "delta_s": 8.536429421939413,
+          "delta_aspect_deg": -5.655809317869927,
+          "coherence": 8.730406079848763e-06
+        },
+        {
+          "delta_hz": -46254.878092016785,
+          "delta_s": 8.1652803166377,
+          "delta_aspect_deg": -5.409154545084593,
+          "coherence": 6.232610758161172e-06
+        },
+        {
+          "delta_hz": -44152.383633288744,
+          "delta_s": 7.794131211335985,
+          "delta_aspect_deg": -5.162600276105946,
+          "coherence": 1.4313008250610437e-05
+        },
+        {
+          "delta_hz": -42049.88917456071,
+          "delta_s": 7.422982106034271,
+          "delta_aspect_deg": -4.916141828061742,
+          "coherence": 1.749726834532339e-05
+        },
+        {
+          "delta_hz": -39947.39471583267,
+          "delta_s": 7.051833000732557,
+          "delta_aspect_deg": -4.669774534260828,
+          "coherence": 1.4842232303635683e-05
+        },
+        {
+          "delta_hz": -37844.90025710464,
+          "delta_s": 6.680683895430844,
+          "delta_aspect_deg": -4.423493743374093,
+          "coherence": 2.1814632418681867e-05
+        },
+        {
+          "delta_hz": -35742.4057983766,
+          "delta_s": 6.309534790129131,
+          "delta_aspect_deg": -4.177294818622647,
+          "coherence": 3.89028646168299e-05
+        },
+        {
+          "delta_hz": -33639.91133964857,
+          "delta_s": 5.938385684827417,
+          "delta_aspect_deg": -3.9311731369728826,
+          "coherence": 3.5336142900632694e-05
+        },
+        {
+          "delta_hz": -31537.416880920537,
+          "delta_s": 5.567236579525704,
+          "delta_aspect_deg": -3.6851240883379863,
+          "coherence": 3.886920239892788e-05
+        },
+        {
+          "delta_hz": -29434.922422192496,
+          "delta_s": 5.19608747422399,
+          "delta_aspect_deg": -3.4391430747855236,
+          "coherence": 3.345525692566298e-05
+        },
+        {
+          "delta_hz": -27332.427963464463,
+          "delta_s": 4.824938368922277,
+          "delta_aspect_deg": -3.193225509750711,
+          "coherence": 3.1919556931825355e-05
+        },
+        {
+          "delta_hz": -25229.933504736422,
+          "delta_s": 4.453789263620562,
+          "delta_aspect_deg": -2.94736681725499,
+          "coherence": 2.517841858207248e-05
+        },
+        {
+          "delta_hz": -23127.43904600839,
+          "delta_s": 4.082640158318849,
+          "delta_aspect_deg": -2.7015624311295356,
+          "coherence": 1.2471833542804234e-05
+        },
+        {
+          "delta_hz": -21024.944587280355,
+          "delta_s": 3.7114910530171357,
+          "delta_aspect_deg": -2.4558077942433205,
+          "coherence": 1.2647364201257005e-05
+        },
+        {
+          "delta_hz": -18922.450128552315,
+          "delta_s": 3.3403419477154213,
+          "delta_aspect_deg": -2.2100983577353728,
+          "coherence": 9.724735718918964e-06
+        },
+        {
+          "delta_hz": -16819.95566982428,
+          "delta_s": 2.969192842413708,
+          "delta_aspect_deg": -1.9644295802508687,
+          "coherence": 5.1665814680745825e-05
+        },
+        {
+          "delta_hz": -14717.461211096248,
+          "delta_s": 2.598043737111995,
+          "delta_aspect_deg": -1.7187969271806907,
+          "coherence": 6.778715032851323e-05
+        },
+        {
+          "delta_hz": -12614.966752368207,
+          "delta_s": 2.2268946318102807,
+          "delta_aspect_deg": -1.4731958699041028,
+          "coherence": 7.362126052612439e-05
+        },
+        {
+          "delta_hz": -10512.472293640174,
+          "delta_s": 1.8557455265085674,
+          "delta_aspect_deg": -1.2276218850341913,
+          "coherence": 0.05222010985016823
+        },
+        {
+          "delta_hz": -8409.97783491214,
+          "delta_s": 1.484596421206854,
+          "delta_aspect_deg": -0.9820704536657113,
+          "coherence": 0.2415008395910263
+        },
+        {
+          "delta_hz": -6307.483376184107,
+          "delta_s": 1.1134473159051408,
+          "delta_aspect_deg": -0.7365370606249982,
+          "coherence": 0.43051615357398987
+        },
+        {
+          "delta_hz": -4204.988917456067,
+          "delta_s": 0.7422982106034264,
+          "delta_aspect_deg": -0.4910171937215982,
+          "coherence": 0.6195133924484253
+        },
+        {
+          "delta_hz": -2102.4944587280334,
+          "delta_s": 0.3711491053017132,
+          "delta_aspect_deg": -0.2455063430012685,
+          "coherence": 0.8109270334243774
+        },
+        {
+          "delta_hz": 0.0,
+          "delta_s": -0.0,
+          "delta_aspect_deg": 0.0,
+          "coherence": 1.0
+        },
+        {
+          "delta_hz": 2102.4944587280406,
+          "delta_s": -0.37114910530171447,
+          "delta_aspect_deg": 0.2455063430012693,
+          "coherence": 0.8116002678871155
+        },
+        {
+          "delta_hz": 4204.988917456074,
+          "delta_s": -0.7422982106034277,
+          "delta_aspect_deg": 0.49101719372159897,
+          "coherence": 0.6214284300804138
+        },
+        {
+          "delta_hz": 6307.483376184107,
+          "delta_s": -1.1134473159051408,
+          "delta_aspect_deg": 0.7365370606249982,
+          "coherence": 0.4321933686733246
+        },
+        {
+          "delta_hz": 8409.97783491214,
+          "delta_s": -1.484596421206854,
+          "delta_aspect_deg": 0.9820704536657113,
+          "coherence": 0.24147534370422363
+        },
+        {
+          "delta_hz": 10512.472293640174,
+          "delta_s": -1.8557455265085674,
+          "delta_aspect_deg": 1.2276218850341913,
+          "coherence": 0.052554886788129807
+        },
+        {
+          "delta_hz": 12614.966752368222,
+          "delta_s": -2.226894631810283,
+          "delta_aspect_deg": 1.4731958699041043,
+          "coherence": 1.0173174814553931e-05
+        },
+        {
+          "delta_hz": 14717.461211096255,
+          "delta_s": -2.5980437371119964,
+          "delta_aspect_deg": 1.7187969271806915,
+          "coherence": 5.429437806014903e-05
+        },
+        {
+          "delta_hz": 16819.95566982429,
+          "delta_s": -2.9691928424137095,
+          "delta_aspect_deg": 1.9644295802508693,
+          "coherence": 6.960763130337e-05
+        },
+        {
+          "delta_hz": 18922.450128552322,
+          "delta_s": -3.3403419477154226,
+          "delta_aspect_deg": 2.210098357735373,
+          "coherence": 7.304980681510642e-05
+        },
+        {
+          "delta_hz": 21024.944587280355,
+          "delta_s": -3.7114910530171357,
+          "delta_aspect_deg": 2.4558077942433205,
+          "coherence": 5.242530824034475e-05
+        },
+        {
+          "delta_hz": 23127.43904600839,
+          "delta_s": -4.082640158318849,
+          "delta_aspect_deg": 2.7015624311295356,
+          "coherence": 4.212493877275847e-05
+        },
+        {
+          "delta_hz": 25229.933504736437,
+          "delta_s": -4.453789263620565,
+          "delta_aspect_deg": 2.947366817254992,
+          "coherence": 2.9432494557113387e-05
+        },
+        {
+          "delta_hz": 27332.42796346447,
+          "delta_s": -4.824938368922278,
+          "delta_aspect_deg": 3.193225509750712,
+          "coherence": 3.1612511520506814e-05
+        },
+        {
+          "delta_hz": 29434.922422192503,
+          "delta_s": -5.196087474223991,
+          "delta_aspect_deg": 3.439143074785524,
+          "coherence": 2.4030086933635175e-05
+        },
+        {
+          "delta_hz": 31537.416880920537,
+          "delta_s": -5.567236579525704,
+          "delta_aspect_deg": 3.6851240883379863,
+          "coherence": 2.318975020898506e-05
+        },
+        {
+          "delta_hz": 33639.91133964857,
+          "delta_s": -5.938385684827417,
+          "delta_aspect_deg": 3.9311731369728826,
+          "coherence": 2.926621527876705e-05
+        },
+        {
+          "delta_hz": 35742.4057983766,
+          "delta_s": -6.309534790129131,
+          "delta_aspect_deg": 4.177294818622647,
+          "coherence": 1.770962444425095e-05
+        },
+        {
+          "delta_hz": 37844.90025710465,
+          "delta_s": -6.680683895430847,
+          "delta_aspect_deg": 4.423493743374094,
+          "coherence": 1.647679710004013e-05
+        },
+        {
+          "delta_hz": 39947.394715832685,
+          "delta_s": -7.05183300073256,
+          "delta_aspect_deg": 4.66977453426083,
+          "coherence": 1.4971963537391275e-05
+        },
+        {
+          "delta_hz": 42049.88917456072,
+          "delta_s": -7.422982106034273,
+          "delta_aspect_deg": 4.916141828061742,
+          "coherence": 7.739618013147265e-06
+        },
+        {
+          "delta_hz": 44152.38363328875,
+          "delta_s": -7.794131211335986,
+          "delta_aspect_deg": 5.162600276105948,
+          "coherence": 3.6301323689258425e-06
+        },
+        {
+          "delta_hz": 46254.878092016785,
+          "delta_s": -8.1652803166377,
+          "delta_aspect_deg": 5.409154545084593,
+          "coherence": 5.203461569180945e-06
+        },
+        {
+          "delta_hz": 48357.37255074482,
+          "delta_s": -8.536429421939413,
+          "delta_aspect_deg": 5.655809317869927,
+          "coherence": 5.336380581866251e-06
+        },
+        {
+          "delta_hz": 50459.86700947285,
+          "delta_s": -8.907578527241126,
+          "delta_aspect_deg": 5.90256929434204,
+          "coherence": 6.8052063397772145e-06
+        },
+        {
+          "delta_hz": 52562.3614682009,
+          "delta_s": -9.278727632542841,
+          "delta_aspect_deg": 6.1494391922236895,
+          "coherence": 1.3804125956085045e-05
+        },
+        {
+          "delta_hz": 54664.85592692893,
+          "delta_s": -9.649876737844554,
+          "delta_aspect_deg": 6.396423747923647,
+          "coherence": 1.2664826499531046e-05
+        },
+        {
+          "delta_hz": 56767.350385656966,
+          "delta_s": -10.021025843146267,
+          "delta_aspect_deg": 6.643527717388986,
+          "coherence": 3.976457264798228e-06
+        },
+        {
+          "delta_hz": 58869.844844385,
+          "delta_s": -10.39217494844798,
+          "delta_aspect_deg": 6.890755876966766,
+          "coherence": 3.4656379739317345e-06
+        },
+        {
+          "delta_hz": 60972.33930311303,
+          "delta_s": -10.763324053749693,
+          "delta_aspect_deg": 7.138113024275547,
+          "coherence": 7.3673804763529915e-06
+        },
+        {
+          "delta_hz": 63074.833761841066,
+          "delta_s": -11.134473159051408,
+          "delta_aspect_deg": 7.385603979087204,
+          "coherence": 9.661800504545681e-06
+        }
+      ]
+    },
+    "runtime_s": 7.233012914657593
+  },
+  "date": "2026-09-23"
+}

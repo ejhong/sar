@@ -1,0 +1,50 @@
+[
+ {
+  "id": "motion",
+  "label": "A hammer blow",
+  "caption": "the ground's vertical motion from the central shot",
+  "file": "wave-motion.u8",
+  "shape": [
+   89,
+   112,
+   112
+  ],
+  "origin": [
+   -27.75,
+   -27.75
+  ],
+  "spacing": 0.5,
+  "z": 0.0,
+  "dt_ms": 0.381818,
+  "kind": "motion",
+  "shot": [
+   0.25,
+   0.25,
+   -0.25
+  ]
+ },
+ {
+  "id": "echo",
+  "label": "The chamber's echo alone",
+  "caption": "with minus without the chamber, amplified 13\u00d7",
+  "file": "wave-echo.u8",
+  "shape": [
+   89,
+   112,
+   112
+  ],
+  "origin": [
+   -27.75,
+   -27.75
+  ],
+  "spacing": 0.5,
+  "z": 0.0,
+  "dt_ms": 0.381818,
+  "kind": "echo",
+  "shot": [
+   0.25,
+   0.25,
+   -0.25
+  ]
+ }
+]

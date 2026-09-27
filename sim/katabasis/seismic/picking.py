@@ -95,16 +95,18 @@ def pick_all(traces: np.ndarray, t0: float, dt: float, wavelet: np.ndarray, peri
     return np.array([pick(tr, dt, pulse, period, quiet, fraction, noise_factor) for tr in traces]) + t0
 
 
-def reject_outliers(times: np.ndarray, distances: np.ndarray, period: float, k: float = 3.5) -> np.ndarray:
+def reject_outliers(times: np.ndarray, distances: np.ndarray, period: float, k: float = 3.5,
+                    floor: float = 0.25) -> np.ndarray:
     """Quality control a processor would do, using the data alone: drop picks whose delay from the
     survey's own median apparent speed is more than k median absolute deviations from the rest and
-    more than a quarter period (so a real anomaly's delay is kept and only cycle skips and wrong
-    phases go)."""
+    more than `floor` periods (so a real anomaly's delay is kept and only cycle skips and wrong
+    phases go). Where the wrong phase arrives within a quarter period, as the surface wave does at
+    short offsets from a hammer, the floor must be lowered."""
     ok = np.isfinite(times) & (times > 0)
     v = np.nanmedian(distances[ok] / times[ok])
     r = times - distances / v
     med = np.nanmedian(r[ok])
     mad = np.nanmedian(np.abs(r[ok] - med)) * 1.4826 + 1e-9
     out = times.copy()
-    out[~ok | (np.abs(r - med) > max(k * mad, 0.25 * period))] = np.nan
+    out[~ok | (np.abs(r - med) > max(k * mad, floor * period))] = np.nan
     return out

@@ -1,0 +1,39 @@
+# Historical survey reference, NOT a SAR reconstruction
+# Units: metres; axes x=east y=north z=up; separate simplified volumes
+# Not georeferenced, not a watertight engineering model
+# https://giza.fas.harvard.edu/pubdocs/131/full/
+# 0 m = historical pit mouth. Pit-bottom and chamber-roof depths are distinct measurements.
+# Simplification: The full shaft is drawn at its measured bottom section, 1.30 m east–west by 1.14 m north–south. The wider mouth (2.37 × 1.75 m), narrowing, turns, stairs and offering niche are omitted.
+# Simplification: The rectangular room uses 2.72 m, the midpoint of the reported width range, and the measured 5.22 m southern extension. Its precise lateral offset is simplified.
+# Simplification: The chamber floor at 27.45 m is derived from the observed roof at 25.50 m and measured height of 1.95 m. The 3 cm difference from the reported pit bottom is retained, not forced into agreement.
+# Simplification: The report's conjectured original height of 3.16 m is not used. Masonry packing and contents are not modelled.
+o hetepheres_0_shaft
+v -0.650000 -0.570000 0.000000
+v 0.650000 -0.570000 0.000000
+v 0.650000 0.570000 0.000000
+v -0.650000 0.570000 0.000000
+v -0.650000 -0.570000 -27.420000
+v 0.650000 -0.570000 -27.420000
+v 0.650000 0.570000 -27.420000
+v -0.650000 0.570000 -27.420000
+f 1 2 3 4
+f 8 7 6 5
+f 1 2 6 5
+f 2 3 7 6
+f 3 4 8 7
+f 4 1 5 8
+o hetepheres_1_chamber
+v -1.360000 -5.790000 -25.500000
+v 1.360000 -5.790000 -25.500000
+v 1.360000 -0.570000 -25.500000
+v -1.360000 -0.570000 -25.500000
+v -1.360000 -5.790000 -27.450000
+v 1.360000 -5.790000 -27.450000
+v 1.360000 -0.570000 -27.450000
+v -1.360000 -0.570000 -27.450000
+f 9 10 11 12
+f 16 15 14 13
+f 9 10 14 13
+f 10 11 15 14
+f 11 12 16 15
+f 12 9 13 16

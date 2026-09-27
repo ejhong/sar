@@ -1,0 +1,79 @@
+{
+  "version": 1,
+  "role": "Historical survey references, independent of radar processing",
+  "coordinate_convention": "Local metres: x east, y north, z up. Each structure has its own historical vertical datum; no georeferenced target mask is assigned.",
+  "models": [
+    {
+      "id": "idu",
+      "name": "Idu",
+      "designation": "G 7102 C · Eastern Cemetery",
+      "source_title": "Simpson, The Mastabas of Qar and Idu (1976), p. 29, Fig. 13",
+      "source_url": "https://giza.fas.harvard.edu/pubdocs/141/full/",
+      "source_pdf_sha256": "d966a6206bc1c3db3c1a9dc44c4d17849311fc3773c6326c21a38b55d717de29",
+      "status": "Simplified survey model · not recovered from SAR",
+      "datum": "0 m = historical shaft mouth. Rock begins 2.34 m below the mouth; the modern ground datum is not established.",
+      "depth_m": 8.05,
+      "metrics": [
+        {"label": "Shaft depth", "value": "8.05 m"},
+        {"label": "Shaft width", "value": "1.72 m average"},
+        {"label": "Room height", "value": "2.16 m"},
+        {"label": "Room plan", "value": "2.88 × 3.31–3.73 m"}
+      ],
+      "parts": [
+        {"name": "Shaft", "polygon": [[0,0],[1.72,0],[1.72,1.72],[0,1.72]], "top_m": 0, "bottom_m": -8.05, "kind": "shaft"},
+        {"name": "Burial chamber", "polygon": [[-1.16,-3.31],[1.72,-3.31],[1.72,0],[-1.16,0.42]], "top_m": -5.89, "bottom_m": -8.05, "kind": "chamber"}
+      ],
+      "chamber_focus": [-0.2,-1.5,-6.97],
+      "assumptions": [
+        "The shaft is represented by its published average square width. Uneven walls are simplified.",
+        "The chamber opens south and extends west. The trapezoid uses the reported east/west lengths; its exact angles and junction are simplified from Fig. 13.",
+        "The model places the chamber floor at the shaft bottom. Its 5.89 m roof depth is derived from that alignment and the reported 2.16 m height, not independently surveyed here.",
+        "Sarcophagus, rubble, wall texture and minor irregularities are omitted. This is an envelope of the excavated spaces, not a watertight engineering survey."
+      ],
+      "acquisition_state": "Cover, access, fill and use on 27 August 2025 are unverified.",
+      "native_target_mask": null,
+      "field_detection": null
+    },
+    {
+      "id": "hetepheres",
+      "name": "Hetepheres I",
+      "designation": "G 7000 X · Eastern Cemetery",
+      "source_title": "Reisner & Smith, A History of the Giza Necropolis II (1955), pp. 13–15, Figs. 19 & 21",
+      "source_url": "https://giza.fas.harvard.edu/pubdocs/131/full/",
+      "source_pdf_sha256": "7bc04870ab103c82f60d5194aceba11cb685a997cc2ec389659ca2a5204fc44b",
+      "status": "Simplified survey model · not recovered from SAR",
+      "datum": "0 m = historical pit mouth. Pit-bottom and chamber-roof depths are distinct measurements.",
+      "depth_m": 27.45,
+      "metrics": [
+        {"label": "Pit depth", "value": "27.42 m"},
+        {"label": "Observed roof", "value": "25.50 m below mouth"},
+        {"label": "Room height", "value": "1.95 m measured"},
+        {"label": "Room plan", "value": "5.22 × 2.67–2.77 m"}
+      ],
+      "parts": [
+        {"name": "Shaft envelope", "polygon": [[-0.65,-0.57],[0.65,-0.57],[0.65,0.57],[-0.65,0.57]], "top_m": 0, "bottom_m": -27.42, "kind": "shaft"},
+        {"name": "Burial chamber", "polygon": [[-1.36,-5.79],[1.36,-5.79],[1.36,-0.57],[-1.36,-0.57]], "top_m": -25.50, "bottom_m": -27.45, "kind": "chamber"}
+      ],
+      "chamber_focus": [0,-2.5,-25.9],
+      "assumptions": [
+        "The full shaft is drawn at its measured bottom section, 1.30 m east–west by 1.14 m north–south. The wider mouth (2.37 × 1.75 m), narrowing, turns, stairs and offering niche are omitted.",
+        "The rectangular room uses 2.72 m, the midpoint of the reported width range, and the measured 5.22 m southern extension. Its precise lateral offset is simplified.",
+        "The chamber floor at 27.45 m is derived from the observed roof at 25.50 m and measured height of 1.95 m. The 3 cm difference from the reported pit bottom is retained, not forced into agreement.",
+        "The report's conjectured original height of 3.16 m is not used. Masonry packing and contents are not modelled."
+      ],
+      "acquisition_state": "The shaft was originally packed with masonry. Modern cover and fill on 27 August 2025 are unverified.",
+      "native_target_mask": null,
+      "field_detection": null
+    }
+  ],
+  "additional_references": [
+    {
+      "id": "osiris",
+      "name": "Osiris Shaft",
+      "source_title": "Hawass (2007), Fig. 2",
+      "source_url": "https://giza.fas.harvard.edu/pubdocs/476/full/",
+      "description": "Three connected levels below Khafre’s causeway. The published section places the lowest main floor about 33.45 m below its causeway datum; the trench extends to 35.45 m. Shaft lengths must not simply be added.",
+      "qualification": "A detailed 3D model needs digitized plans tied to the section. Lowest-level water and current fill also need qualification. No model or target mask is assigned yet."
+    }
+  ]
+}

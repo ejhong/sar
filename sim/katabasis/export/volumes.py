@@ -94,3 +94,59 @@ def export_p1_03(out: Path = DATA) -> list[dict]:
                       'shot': mv['shot']})
     (d / 'wavefields.json').write_text(json.dumps(waves, indent=1))
     return vols
+
+
+def export_p1_04(out: Path = DATA) -> list[dict]:
+    rid = 'p1_04_ambient'
+    summ = RESULTS / rid / 'summary.json'
+    if not summ.exists():
+        return []
+    s = json.loads(summ.read_text())
+    arrays = np.load(RESULTS / rid / 'volumes.npz')
+    site = s['manifest']['params']['site']
+    d = out / 'sites' / site
+    vols = json.loads((d / 'volumes.json').read_text()) if (d / 'volumes.json').exists() else []
+    vols = [v for v in vols if v['id'] != 'ambient-surface']
+    q = arrays['ambient']
+    (d / 'vol-ambient-surface.u8').write_bytes(np.ascontiguousarray(q.transpose(2, 1, 0)).tobytes())
+    v = s['volume']
+    sc = s['score']
+    vols.append({'id': 'ambient-surface', 'label': 'Ambient noise, passive', 'method': 'Noise correlations as virtual sources, echoes migrated',
+                 'survey': 'ambient', 'status': 'tomogram', 'quantity': v['quantity'], 'units': v['units'],
+                 'file': 'vol-ambient-surface.u8', 'shape': v['shape'], 'origin': v['origin'], 'spacing': v['spacing'],
+                 'range': [0, 1], 'run': f"{rid} · {s['manifest']['date']} · {s['manifest']['commit']}",
+                 'caption': f"best case, rock known, endless record · chamber {sc['image_contrast_ensemble']:.1f}× brighter than elsewhere"})
+    (d / 'volumes.json').write_text(json.dumps(vols, indent=1))
+    svp = d / 'surveys.json'
+    surveys = [x for x in (json.loads(svp.read_text()) if svp.exists() else []) if x['id'] != 'ambient']
+    st = s['stations']
+    surveys.append({'id': 'ambient', 'label': 'ambient', 'description': 'noise sources scattered over the ground, the surface geophone grid listening',
+                    'sources': st['noise_sources'], 'receivers': st['receivers']})
+    svp.write_text(json.dumps(surveys, separators=(',', ':')))
+    return vols
+
+
+def export_p1_05(out: Path = DATA) -> list[dict]:
+    rid = 'p1_05_fwi'
+    summ = RESULTS / rid / 'summary.json'
+    if not summ.exists():
+        return []
+    s = json.loads(summ.read_text())
+    arrays = np.load(RESULTS / rid / 'volumes.npz')
+    site = s['manifest']['params']['site']
+    d = out / 'sites' / site
+    vols = json.loads((d / 'volumes.json').read_text()) if (d / 'volumes.json').exists() else []
+    vols = [v for v in vols if not v['id'].startswith('fwi-')]
+    v = s['volume']
+    for name, label, quantity in (('vs', 'Full-waveform inversion, S speed', 'relative S-wave speed'),
+                                  ('vp', 'Full-waveform inversion, P speed', 'relative P-wave speed')):
+        vid = f'fwi-{name}'
+        (d / f'vol-{vid}.u8').write_bytes(np.ascontiguousarray(arrays[name].transpose(2, 1, 0)).tobytes())
+        sc = s['score'][name]
+        vols.append({'id': vid, 'label': label, 'method': "Whole records fitted from a practitioner's start, 60 Hz then 120 Hz",
+                     'survey': 'surface', 'status': 'tomogram', 'quantity': quantity, 'units': v['units'],
+                     'file': f'vol-{vid}.u8', 'shape': v['shape'], 'origin': v['origin'], 'spacing': v['spacing'],
+                     'range': v['range'], 'run': f"{rid} · {s['manifest']['date']} · {s['manifest']['commit']}",
+                     'caption': f"chamber recovered at {100 * sc['chamber_mean_rel']:+.1f}% · brightest = 12% slower than the rock or more"})
+    (d / 'volumes.json').write_text(json.dumps(vols, indent=1))
+    return vols

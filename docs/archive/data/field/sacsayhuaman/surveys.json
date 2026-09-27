@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "role": "Survey reference registry",
+  "coordinate_convention": "No surveyed underground geometry registered.",
+  "models": [],
+  "additional_references": [],
+  "status": "A real acquisition is available. An independently measured underground plan, vertical datum and acquisition-date cavity state are still needed before a known-void comparison."
+}
