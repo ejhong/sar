@@ -7,6 +7,8 @@ import m1 from '../../public/data/runs/m1_01_ambient_levels.json';
 import v01 from '../../public/data/runs/p1_01_forward_validation.json';
 import am from '../../public/data/runs/p1_04_ambient.json';
 import lib from '../../public/data/ambient.json';
+import pz from '../../public/data/runs/p2_00_ambient_giza.json';
+import PlanMap from '../components/PlanMap.astro';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 const z = m1.components.BHZ;
@@ -45,6 +47,7 @@ const sig = (v: number) => (v >= 10 ? v.toFixed(0) : v >= 1 ? v.toFixed(1) : v.t
     { id: 'giza', label: 'Giza’s frequencies' },
     { id: 'resolution', label: 'What each band sees' },
     { id: 'cultural', label: 'Near roads' },
+    { id: 'plateau', label: 'The plateau' },
     { id: 'radar', label: 'Against the radar' },
     { id: 'next', label: 'Next' },
   ]}
@@ -180,6 +183,46 @@ const sig = (v: number) => (v >= 10 ? v.toFixed(0) : v >= 1 ? v.toFixed(1) : v.t
     </div>
   </section>
 
+  <section id="plateau">
+    <h2>On the plateau, only a strip along the roads could ever shake as hard as the radar’s floor</h2>
+    <p class="sub">
+      Worst case by construction: every mapped road carries a truck at its point nearest each spot, with the manual’s
+      levels 15 m away, falling off as a surface wave does (Caltrans 2020, Eq. 6) between undamped rock and the most
+      damping rock-like ground in its tables. Roads from OpenStreetMap. A typical truck never reaches the floor; a truck
+      over a bump reaches it within {Math.round(pz.cases['bump · rock'].reach_m)} m of the road.
+    </p>
+    <div class="grid-2 charts">
+      <PlanMap
+        title="Fig. A3 · The Giza plateau: roads, and where traffic could reach the radar floor"
+        box={pz.plan.box}
+        roads={pz.plan.roads}
+        pyramids={pz.plan.pyramids}
+        reach={pz.cases['bump · rock'].reach_m}
+        caption="the site's extent, 1.6 × 1.4 km; the town of Nazlet el-Samman lies along the east edge"
+      />
+      <div>
+        <table class="data">
+          <thead><tr><th>A truck on the nearest road</th><th class="r">at 15 m, µm/s</th><th class="r">floor reached within</th><th class="r">of the plateau</th></tr></thead>
+          <tbody>
+            {
+              Object.entries(pz.cases).map(([k, c]) => (
+                <tr>
+                  <td>{k.replace('typical', 'typical truck').replace('bump', 'over a bump').replace('rock', 'undamped rock').replace('marly chalk', 'damping as marly chalk')}</td>
+                  <td class="num">{c.level_15m_um_s.toFixed(0)}</td>
+                  <td class="num">{c.reach_m > 0 ? `${c.reach_m.toFixed(0)} m` : 'never'}</td>
+                  <td class="num">{(100 * c.area_fraction_above_floor).toFixed(0)}%</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+        <p class="note">From each pyramid’s centre to the nearest mapped road: {Object.entries(pz.distance_to_nearest_road_m).map(([k, d]) => `${k[0].toUpperCase() + k.slice(1)} ${Math.round(d as number)} m`).join(' · ')}. Within 15 m of a road the level is held at its 15 m value: closer is louder, and unsourced.</p>
+      </div>
+    </div>
+    <p class="finding">{pz.finding}</p>
+    <RunDetails manifest={pz.manifest} extra={[['roads', `${pz.manifest.params.roads} · as of ${pz.manifest.params.osm_timestamp}`], ['levels', 'FTA (1995) Figure 7-3 at 15 m; Caltrans (2020) Eq. 6, Table 1 exponent 0.5, Table 2 marly chalk 0.1 per metre'], ['worst case', pz.manifest.params.worst_case]]} />
+  </section>
+
   <section id="radar">
     <h2>The radar’s floor is {Math.round(floor / nhnmMicro)}× above the noisiest microseisms and about {hund(floor / micro.all_p50)}× above Giza’s</h2>
     <p class="sub">
@@ -196,11 +239,11 @@ const sig = (v: number) => (v >= 10 ? v.toFixed(0) : v >= 1 ? v.toFixed(1) : v.t
     <div class="grid-3">
       <div class="note-card">
         <h3>Microseisms</h3>
-        <p>Surface waves from distant storms, arriving from every direction as plane waves at 0.1–1 Hz, their levels from this measurement. Too long for the 3-D grid; computed exactly for a layered ground.</p>
+        <p>Surface waves from distant storms, arriving from every direction as plane waves at 0.1–1 Hz: generated to the measured spectrum, with the Rayleigh ellipse for horizontal motion and the regional speed (about 3 km/s; Adam et al. 2025).</p>
       </div>
       <div class="note-card">
         <h3>Cultural noise</h3>
-        <p>Traffic on the roads round the plateau, visitors on its paths, the city beyond: sources with measured spectra, simulated on coarser grids over hundreds of metres. Their absolute level at Giza is the open question.</p>
+        <p>Traffic on the mapped roads is now a sourced worst case (above). Next: time series with the traffic spectrum (10–30 Hz, centred near 15 Hz) and vehicles that come and go, for the 24.5 s of a dwell; a measured level on the plateau would replace the manual’s.</p>
       </div>
       <div class="note-card">
         <h3>One field, three uses</h3>

@@ -194,5 +194,43 @@
    "threads": 4,
    "cpus": 4
   }
+ },
+ "p2_00_ambient_giza": {
+  "id": "p2_00_ambient_giza",
+  "title": "Ambient motion on the Giza plateau against the radar floor",
+  "date": "2026-09-27",
+  "started_utc": "2026-09-27T22:44:44+00:00",
+  "runtime_s": 1.5,
+  "commit": "b6f3f9c",
+  "params": {
+   "floor_m_s": 7.7e-05,
+   "box": [
+    -640.0,
+    960.0,
+    -760.0,
+    640.0
+   ],
+   "spacing_m": 2.0,
+   "roads": "OpenStreetMap contributors, via the Overpass API; data under the Open Database License (ODbL), www.openstreetmap.org/copyright",
+   "osm_timestamp": "2026-05-31T22:37:44Z",
+   "levels_15m_m_s": {
+    "typical": 3.6e-05,
+    "bump": 0.0001
+   },
+   "damping_per_m": {
+    "rock": 0.0,
+    "marly chalk": 0.1
+   },
+   "geometric_exponent": 0.5,
+   "microseism_m_s": 4.9e-08,
+   "worst_case": "a vehicle on every road at its point nearest each spot; held at the 15 m level within 15 m"
+  },
+  "environment": {
+   "python": "3.11.15",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 4,
+   "cpus": 4
+  }
  }
 }

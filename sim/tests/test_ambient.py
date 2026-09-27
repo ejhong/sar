@@ -39,3 +39,24 @@ def test_peterson_transcription_hits_the_published_end_points():
     assert np.isclose(peterson.acceleration_db(0.1, 'low')[0], -162.36 - 5.64)
     assert np.isclose(peterson.acceleration_db(0.1, 'high')[0], -108.73 + 17.23)
     assert np.isnan(peterson.acceleration_db(0.05, 'low')[0])
+
+
+def test_rayleigh_ellipse_of_a_poisson_solid():
+    from katabasis.ambient.field import rayleigh_hv
+    assert abs(rayleigh_hv(np.sqrt(3.0) * 1000, 1000.0) - 0.681) < 0.002
+
+
+def test_plane_wave_field_has_the_target_spectrum():
+    from scipy.signal import welch
+    from katabasis.ambient.field import microseisms
+    f = np.linspace(0.1, 0.5, 81)
+    target = 1e-15 * np.exp(-((f - 0.2) / 0.07) ** 2)          # (m/s)²/Hz, a microseism-like peak
+    fld = microseisms(f, target, np.random.default_rng(1), per_bin=6, hv=0.7)
+    fs, T = 4.0, 4000.0
+    t = np.arange(0, T, 1 / fs)
+    v = fld.velocity(np.array([[0.0, 0.0, 0.0]]), t)[0]
+    fw, pz = welch(v[2], fs=fs, nperseg=4096)
+    band = (fw > 0.12) & (fw < 0.4)
+    assert abs(np.trapezoid(pz[band], fw[band]) / np.trapezoid(target, f) - 1) < 0.15
+    h = np.sqrt((v[0] ** 2 + v[1] ** 2).mean() / (v[2] ** 2).mean())
+    assert abs(h - 0.7) < 0.05

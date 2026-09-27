@@ -1,0 +1,170 @@
+---
+/**
+ * A plan of the Giza plateau drawn at build time: the mapped roads, the strip
+ * along each road where a truck over a bump could shake the ground to the
+ * radar's floor, and the three pyramids. Site coordinates in metres (x east,
+ * y north), drawn north up.
+ */
+interface Road { kind: string; class: string; points: number[][] }
+interface Pyramid { id: string; centre: number[]; base: number }
+interface Props {
+  title: string;
+  box: number[];            // x0 x1 y0 y1
+  roads: Road[];
+  pyramids: Pyramid[];
+  reach: number;            // m: the strip half-width
+  caption?: string;
+}
+const { title, box, roads, pyramids, reach, caption } = Astro.props;
+const [x0, x1, y0, y1] = box;
+const W = x1 - x0;
+const Hh = y1 - y0;
+const path = (pts: number[][]) => pts.map(([x, y], i) => `${i ? 'L' : 'M'}${(x - x0).toFixed(1)},${(y1 - y).toFixed(1)}`).join('');
+const veh = roads.filter((r) => r.kind === 'vehicle');
+const foot = roads.filter((r) => r.kind === 'foot');
+const names: Record<string, string> = { khufu: 'Khufu', khafre: 'Khafre', menkaure: 'Menkaure' };
+const bar = 200;
+---
+<figure class="plan">
+  <figcaption class="pm-title">{title}</figcaption>
+  <svg viewBox={`0 0 ${W} ${Hh}`} role="img" aria-label="Plan of the Giza plateau with roads and the strips where traffic could reach the radar floor">
+    <rect width={W} height={Hh} class="ground" />
+    <g class="strip">{veh.map((r) => <path d={path(r.points)} stroke-width={2 * reach} />)}</g>
+    <g class="foot">{foot.map((r) => <path d={path(r.points)} />)}</g>
+    <g class="veh">{veh.map((r) => <path d={path(r.points)} />)}</g>
+    <g class="pyr">
+      {
+        pyramids.map((p) => (
+          <g>
+            <rect x={p.centre[0] - p.base / 2 - x0} y={y1 - p.centre[1] - p.base / 2} width={p.base} height={p.base} />
+            <line x1={p.centre[0] - p.base / 2 - x0} y1={y1 - p.centre[1] - p.base / 2} x2={p.centre[0] + p.base / 2 - x0} y2={y1 - p.centre[1] + p.base / 2} />
+            <line x1={p.centre[0] + p.base / 2 - x0} y1={y1 - p.centre[1] - p.base / 2} x2={p.centre[0] - p.base / 2 - x0} y2={y1 - p.centre[1] + p.base / 2} />
+            <text x={p.centre[0] - x0} y={y1 - p.centre[1] + p.base / 2 + 34}>{names[p.id] ?? p.id}</text>
+          </g>
+        ))
+      }
+    </g>
+    <g class="scale" transform={`translate(${W - bar - 40} ${Hh - 40})`}>
+      <line x1="0" x2={bar} y1="0" y2="0" />
+      <line x1="0" x2="0" y1="-10" y2="10" />
+      <line x1={bar} x2={bar} y1="-10" y2="10" />
+      <text x={bar / 2} y="-18">{bar} m</text>
+    </g>
+    <g class="north" transform="translate(50 70)">
+      <path d="M0 -40 L14 10 L0 0 L-14 10 Z" />
+      <text y="44">N</text>
+    </g>
+  </svg>
+  <div class="pm-key">
+    <span><i class="k-veh"></i>road for vehicles</span>
+    <span><i class="k-foot"></i>path</span>
+    <span><i class="k-strip"></i>within {Math.round(reach)} m: a truck over a bump could reach the floor</span>
+    <span><i class="k-pyr"></i>pyramid</span>
+  </div>
+  {caption && <p class="pm-caption">{caption}</p>}
+</figure>
+
+<style>
+  .plan {
+    margin: 0;
+    min-width: 0;
+  }
+  .pm-title {
+    font-size: 12.5px;
+    font-weight: 650;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+  .ground {
+    fill: #efe9dc;
+  }
+  .strip path {
+    fill: none;
+    stroke: var(--cinnabar);
+    stroke-opacity: 0.22;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .veh path {
+    fill: none;
+    stroke: #5d6b78;
+    stroke-width: 3;
+    stroke-linejoin: round;
+  }
+  .foot path {
+    fill: none;
+    stroke: #8e9aa5;
+    stroke-width: 2;
+    stroke-dasharray: 6 6;
+  }
+  .pyr rect {
+    fill: var(--lapis);
+    fill-opacity: 0.16;
+    stroke: var(--lapis);
+    stroke-width: 4;
+  }
+  .pyr line {
+    stroke: var(--lapis);
+    stroke-width: 2;
+    opacity: 0.6;
+  }
+  .pyr text,
+  .scale text,
+  .north text {
+    font: 600 30px var(--font-mono);
+    fill: #34495b;
+    text-anchor: middle;
+  }
+  .scale line {
+    stroke: #34495b;
+    stroke-width: 4;
+  }
+  .north path {
+    fill: #34495b;
+  }
+  .pm-key {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 14px;
+    font: 10.5px/1.5 var(--font-mono);
+    color: var(--muted);
+    margin-top: 6px;
+  }
+  .pm-key i {
+    display: inline-block;
+    width: 16px;
+    height: 8px;
+    margin-right: 5px;
+    vertical-align: middle;
+  }
+  .k-veh {
+    background: #5d6b78;
+    height: 3px !important;
+  }
+  .k-foot {
+    border-top: 2px dashed #8e9aa5;
+    height: 0 !important;
+  }
+  .k-strip {
+    background: var(--cinnabar);
+    opacity: 0.35;
+  }
+  .k-pyr {
+    background: rgba(44, 90, 160, 0.16);
+    border: 1.5px solid var(--lapis);
+  }
+  .pm-caption {
+    font-family: var(--font-serif);
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+</style>
