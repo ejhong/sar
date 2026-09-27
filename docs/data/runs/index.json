@@ -24,9 +24,9 @@
   "id": "p1_02_traveltime",
   "title": "First-arrival travel-time tomography over one chamber",
   "date": "2026-09-27",
-  "started_utc": "2026-09-27T19:26:05+00:00",
-  "runtime_s": 30.8,
-  "commit": "9d05145+",
+  "started_utc": "2026-09-27T19:54:16+00:00",
+  "runtime_s": 88.3,
+  "commit": "7489f48+",
   "params": {
    "site": "bench-void",
    "sim_spacing_m": 0.5,
@@ -94,6 +94,35 @@
     ]
    },
    "background": "exact (the site without its chamber)"
+  },
+  "environment": {
+   "python": "3.11.15",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 4,
+   "cpus": 4
+  }
+ },
+ "p1_04_ambient": {
+  "id": "p1_04_ambient",
+  "title": "Ambient noise over one chamber",
+  "date": "2026-09-27",
+  "started_utc": "2026-09-27T21:15:22+00:00",
+  "runtime_s": 2452.0,
+  "commit": "e563377",
+  "params": {
+   "site": "bench-void",
+   "sim_spacing_m": 0.5,
+   "noise_band_centre_hz": 100.0,
+   "response_length_s": 0.052,
+   "correlation_lags_s": 0.037,
+   "virtual_wavelet_delay_s": 0.015,
+   "noise_sources": 48,
+   "noise_source_area": "random over the ground within 24 m of the centre",
+   "geophones": 81,
+   "virtual_sources": 16,
+   "background": "exact (the site without its chamber)",
+   "fluctuation_reference_segments": 100
   },
   "environment": {
    "python": "3.11.15",

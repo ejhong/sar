@@ -4,7 +4,7 @@ import pytest
 
 from katabasis.compose import Grid
 from katabasis.seismic.elastic3d import Medium, Receivers, Simulation, Source, ricker
-from katabasis.seismic.fwi import Problem
+from katabasis.seismic.fwi import Problem, gaussian_sigma
 
 
 @pytest.fixture(scope='module')
@@ -50,3 +50,16 @@ def test_adjoint_gradient_matches_finite_differences(problem, which):
         fd = (p.evaluate(*pert(eps))[0] - p.evaluate(*pert(-eps))[0]) / (2 * eps)
         adj = float(np.sum(g * d))
         assert adj / fd == pytest.approx(1.0, abs=0.1), f'{which}: adjoint {adj:.4g} vs finite difference {fd:.4g}'
+
+
+def test_the_low_passed_misfit_has_the_right_gradient(problem):
+    """Synthetics and records filtered alike inside the misfit; the adjoint source filtered once more."""
+    p0, bump = problem
+    p = Problem(p0.grid, p0.rho, p0.air, p0.vp0, p0.vs0, p0.box, p0.dt, p0.sources, p0.receivers, p0.obs.copy(),
+                p0.wavelet, p0.f0, pml=p0.pml, every=2, sigma_s=gaussian_sigma(90.0))
+    zero = np.zeros_like(bump)
+    _, _, g, _ = p.evaluate(zero, zero)
+    for d in (g / np.abs(g).max(), bump):
+        eps = 0.01
+        fd = (p.evaluate(zero, eps * d)[0] - p.evaluate(zero, -eps * d)[0]) / (2 * eps)
+        assert float(np.sum(g * d)) / fd == pytest.approx(1.0, abs=0.1)

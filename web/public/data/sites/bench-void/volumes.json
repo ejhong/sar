@@ -23,7 +23,7 @@
    -0.12,
    0.0
   ],
-  "run": "p1_02_traveltime \u00b7 2026-09-27 \u00b7 9d05145+",
+  "run": "p1_02_traveltime \u00b7 2026-09-27 \u00b7 7489f48+",
   "caption": "chamber recovered at -11.3% \u00b7 brightest = 12% slower than the rock or more"
  },
  {
@@ -50,7 +50,7 @@
    -0.12,
    0.0
   ],
-  "run": "p1_02_traveltime \u00b7 2026-09-27 \u00b7 9d05145+",
+  "run": "p1_02_traveltime \u00b7 2026-09-27 \u00b7 7489f48+",
   "caption": "chamber recovered at +0.0% \u00b7 brightest = 12% slower than the rock or more"
  },
  {
@@ -79,5 +79,32 @@
   ],
   "run": "p1_03_scattered \u00b7 2026-09-27 \u00b7 0eff4a5+",
   "caption": "best case, rock known exactly \u00b7 chamber 6.0\u00d7 brighter than elsewhere"
+ },
+ {
+  "id": "ambient-surface",
+  "label": "Ambient noise, passive",
+  "method": "Noise correlations as virtual sources, echoes migrated",
+  "survey": "ambient",
+  "status": "tomogram",
+  "quantity": "migrated passive echo amplitude",
+  "units": "normalised",
+  "file": "vol-ambient-surface.u8",
+  "shape": [
+   57,
+   57,
+   59
+  ],
+  "origin": [
+   -13.75,
+   -13.75,
+   -1.25
+  ],
+  "spacing": 0.5,
+  "range": [
+   0,
+   1
+  ],
+  "run": "p1_04_ambient \u00b7 2026-09-27 \u00b7 e563377",
+  "caption": "best case, rock known, endless record \u00b7 chamber 2.2\u00d7 brighter than elsewhere"
  }
 ]

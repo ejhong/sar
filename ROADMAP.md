@@ -29,20 +29,29 @@ The lab does it by simulation over ground whose contents are known, in two phase
 - **3-D elastic solver** (`sim/katabasis/seismic/elastic3d.py`) — validated (P1-01): Stokes point force within 0.3%,
   Rayleigh speed within 0.5% at ten points per wavelength, reciprocity across a void, PML energy to 10⁻⁹.
 - **Travel-time tomography** (P1-02) on the one-chamber bench: crosshole recovers the chamber as a −11% shadow (3.5× the
-  scatter); the surface survey recovers nothing.
+  scatter); the surface survey recovers nothing (+0.0%): its first arrivals run along the top cells and never reach
+  12 m. (Corrected: until the ray fix the surface inversion did not move at all.)
 - **Echo imaging** (P1-03): the chamber's scattered wave, 21 dB below the records and 6 dB below their noise, migrated
   back through the exactly known rock images the chamber from the surface (6× the image elsewhere, brightest 2.8 m from
   its centre, on its top face). The hammer blow and the echo alone play in the viewer (Show: Waves).
+- **Ambient noise** (P1-04): 48 noise sources on the ground, the same geophones. Minus the lag derivative of the noise
+  correlation retrieves the wave between two geophones (0.90 against a real source). Used as virtual sources for echo
+  imaging with the rock known exactly and an unlimited record, the image is only 2.2× brighter around the chamber than
+  elsewhere (the hammer: 6×), its brightest point 7 m off; no record length reaches 3×. Fluctuations of a finite record
+  are imaged from one realisation and scaled as 1/√T.
+- **Full-waveform inversion** (`sim/katabasis/seismic/fwi.py`): adjoint-state gradients of P and S speed from stress
+  correlations, L-BFGS with an illumination preconditioner; the gradient is checked against finite differences.
 - **Giza from Petrie (1883)**: Khufu's chambers and passages placed from his summary of interior positions (sec. 64);
   Khafre's passage axis and Belzoni's Chamber's east-west span and size from ch. 9; the rest still approximate.
 
 ## Next, in order
 
-1. **Ambient-noise tomography** (P1-04): random surface sources, cross-correlation, Green's-function retrieval checked
-   against direct simulation by reciprocity; then imaging with virtual sources, and how record length and noise level
-   set what it can see. The seismic cousin of the radar claim.
-2. **Full-waveform inversion** beyond the first gradient: iterated, multiscale, starting from a model a practitioner
-   would have rather than the exact background.
+1. **Full-waveform inversion** (P1-05, running): the surface survey's noisy records fitted whole from a practitioner's
+   start (Vp from the surface travel times, Vs = Vp/√3, 3% fast), 60 Hz on a 1 m grid then 120 Hz on 0.5 m. The
+   full-band stage commits the inverse crime (same grid and solver as the data); say so wherever it is shown. Then the
+   ambient-noise dispersion inversion practitioners actually run (a 1-D shear profile), for completeness.
+2. **Make the near-air stencils symmetric**: surface-to-depth reciprocity is off by 1–2% with them (exact without), which
+   limits adjoint gradients near the free surface.
 3. **Detectability sweeps**: chamber size × depth × array aperture and spacing × frequency, per method.
 4. **The shaft field and Giza**: the positive control at cemetery scale; Khufu's and Khafre's chambers under realistic
    arrays (Khufu is placed from Petrie; Khafre's lower chamber and passages still need positions).

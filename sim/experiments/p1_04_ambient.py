@@ -213,6 +213,7 @@ def main():
         j = int(np.argmin(np.abs(ys - c[1])))
         q = np.round(np.clip(env / np.percentile(env, 99.9), 0, 1) * 255).astype(np.uint8)
         np.savez_compressed(run.dir / 'volumes.npz', ambient=q)
+        np.savez_compressed(run.dir / 'images.npz', ensemble=img_mean, fluctuation=img_fl, fluctuation_record_s=T_ref)
         e2 = env / np.percentile(env, 99.9)
         run.save({
             'stations': {'noise_sources': sources.round(2).tolist(), 'receivers': receivers.round(2).tolist(),
@@ -222,10 +223,12 @@ def main():
             'volume': {'shape': list(q.shape), 'origin': [float(xs[0]), float(ys[0]), float(zs[0])], 'spacing': H,
                        'quantity': 'migrated passive echo amplitude', 'units': 'normalised'},
             'finding': (f"Noise correlations reproduce the wave between two geophones (correlation {ncc:.2f} with a real source). "
-                        f"With the rock known exactly and an unlimited record, passive echo imaging lights the chamber at "
-                        f"{signal / systematic:.1f}x the image elsewhere; "
-                        + (f"reaching 3x takes about {need:,.0f} s of noise." if need else "3x is not reached at any record length, "
-                           "because surface noise sends too little energy down to the chamber and back.")),
+                        f"With the rock known exactly and an unlimited record, the passive echo image is {signal / systematic:.1f}x "
+                        f"brighter around the chamber than elsewhere, and its brightest point lies "
+                        f"{score['brightest_offset_from_chamber_m']:.0f} m from the chamber's centre. "
+                        + (f"Reaching 3x takes about {need:,.0f} s of noise." if need else
+                           f"No record length reaches 3x: even averaged forever, the chamber's part of the correlations "
+                           f"images away from it at {100 * systematic / signal:.0f}% of its brightness around it.")),
         })
 
 

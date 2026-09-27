@@ -7,6 +7,8 @@ import LineChart from '../components/LineChart.astro';
 import SectionMap from '../components/SectionMap.astro';
 import v01 from '../../public/data/runs/p1_01_forward_validation.json';
 import tt from '../../public/data/runs/p1_02_traveltime.json';
+import sc3 from '../../public/data/runs/p1_03_scattered.json';
+import am from '../../public/data/runs/p1_04_ambient.json';
 import type { TourStop } from '../viewer/Underworld';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -64,7 +66,7 @@ const holesXZ = (cx.stations.receivers as number[][]).filter((p) => Math.abs(p[1
     <section class="block">
       <div class="head">
         <p class="label">Latest results</p>
-        <h2>A validated wave solver, and the first chamber recovered</h2>
+        <h2>A validated wave solver, and one chamber looked for four ways</h2>
       </div>
       <div class="results">
         <a class="result card" href={`${base}/seismic/#forward`}>
@@ -99,6 +101,40 @@ const holesXZ = (cx.stations.receivers as number[][]).filter((p) => Math.abs(p[1
             width={320}
           /></div>
           <p>Crosshole travel-time tomography: the chamber comes back {(100 * cx.score.chamber_mean_rel).toFixed(0)}% slow, where air is 90% slow — travel times see the detour, not the emptiness.</p>
+        </a>
+        <a class="result card" href={`${base}/seismic/#echo`}>
+          <span class="tag simulated">simulated · P1-03</span>
+          <h3>The chamber's echo, below the noise on every record, images it from the surface</h3>
+          <div class="mini-map"><SectionMap
+            title=""
+            x={sc3.slices.x}
+            y={sc3.slices.z}
+            values={sc3.slices.xz_image}
+            domain={0.6}
+            scale="sequential"
+            outlines={[{ x0: -3, x1: 3, y0: -18, y1: -12 }]}
+            xLabel="east, m"
+            yLabel="height, m"
+            width={320}
+          /></div>
+          <p>Reverse-time migration of the scattered wave, with the rock known exactly: the image is {sc3.score.contrast.toFixed(0)}× brighter at the chamber than elsewhere, strongest on its top face.</p>
+        </a>
+        <a class="result card" href={`${base}/seismic/#ambient`}>
+          <span class="tag simulated">simulated · P1-04</span>
+          <h3>Ambient noise stands in for the hammer, but sees the chamber only faintly</h3>
+          <div class="mini-map"><SectionMap
+            title=""
+            x={am.slices.x}
+            y={am.slices.z}
+            values={am.slices.xz_image}
+            domain={0.6}
+            scale="sequential"
+            outlines={[{ x0: -3, x1: 3, y0: -18, y1: -12 }]}
+            xLabel="east, m"
+            yLabel="height, m"
+            width={320}
+          /></div>
+          <p>Footsteps and traffic, correlated between geophones, bring back the wave a hammer would send (correlation {am.retrieval.ncc.toFixed(2)}). Imaged with the rock known exactly, the chamber stands at {am.score.image_contrast_ensemble.toFixed(1)}× the rest, where the hammer reached {sc3.score.contrast.toFixed(0)}×, however long the noise is recorded.</p>
         </a>
       </div>
     </section>

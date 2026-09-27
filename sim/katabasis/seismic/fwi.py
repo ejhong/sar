@@ -17,9 +17,16 @@ speeds at fixed density:
 
     ∂J/∂Vp = 2ρVp ∂J/∂λ        ∂J/∂Vs = 2ρVs (∂J/∂μ − 2 ∂J/∂λ)
 
+Multiscale inversion filters the synthetics and the records alike inside
+the misfit (never the source, whose filtered tail would not fit the record):
+a symmetric Gaussian kernel with zero padding, so the adjoint source is the
+filtered residual filtered once more.
+
 The optimiser is limited-memory BFGS with the illumination of the forward
-wavefield as a fixed diagonal preconditioner, bounds by clipping, and a
-backtracking line search. Nothing here sees the true model: only records.
+wavefield as a fixed diagonal preconditioner, the gradient muted within a
+few metres of every station (where the kernels are singular), bounds by
+clipping, and a backtracking line search. Nothing here sees the true model:
+only records.
 """
 from __future__ import annotations
 
@@ -34,9 +41,21 @@ from .elastic3d import Medium, Receivers, Simulation, Source
 DIRS = ((1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0))     # east, north, up: the trace components
 
 
+def lowpass(x: np.ndarray, sigma_s: float, dt: float) -> np.ndarray:
+    """Gaussian smoothing in time (half amplitude at sqrt(ln 2 / 2) / (π sigma_s)); symmetric, so self-adjoint."""
+    from scipy.ndimage import gaussian_filter1d
+    return gaussian_filter1d(x, sigma_s / dt, axis=-1, mode='constant', cval=0.0, truncate=4.0)
+
+
+def gaussian_sigma(f_half: float) -> float:
+    """The Gaussian time width whose response is one half at f_half."""
+    return float(np.sqrt(np.log(2) / 2) / (np.pi * f_half))
+
+
 def shot_gradient(sim: Simulation, source: Source, receivers: np.ndarray, obs: np.ndarray,
-                  box: tuple[slice, slice, slice], every: int = 4):
-    """Misfit, ∂J/∂λ, ∂J/∂μ and forward illumination inside `box` for one shot; obs is (nrec, 3, nt)."""
+                  box: tuple[slice, slice, slice], every: int = 4, sigma_s: float = 0.0):
+    """Misfit, ∂J/∂λ, ∂J/∂μ and forward illumination inside `box` for one shot; obs is (nrec, 3, nt),
+    already filtered when sigma_s > 0."""
     nt = obs.shape[-1]
     dt = sim.dt
     frames: list[np.ndarray] = []
@@ -46,8 +65,10 @@ def shot_gradient(sim: Simulation, source: Source, receivers: np.ndarray, obs: n
 
     sim.reset()
     syn = sim.run([source], Receivers(receivers), nt, on_step=keep, on_step_every=every).traces
-    r = syn.astype(np.float64) - obs
+    filt = (lambda x: lowpass(x, sigma_s, dt)) if sigma_s > 0 else (lambda x: x)
+    r = filt(syn.astype(np.float64)) - obs
     J = 0.5 * float(np.sum(r ** 2)) * dt
+    r = filt(r)                                              # the filter's transpose (itself)
     f = np.gradient(r[:, :, ::-1], dt, axis=-1)              # −∂t r, reversed in time
     adj = [Source(tuple(p), np.ascontiguousarray(f[i, c]), 'force', d)
            for i, p in enumerate(receivers) for c, d in enumerate(DIRS)]
@@ -106,7 +127,22 @@ class Problem:
     vp_bounds: tuple[float, float] = (0.3, 1.12)     # relative to the start
     vs_bounds: tuple[float, float] = (0.2, 1.12)
     max_vp_vs: float = 1.3                           # keep the bulk modulus positive: Vs ≤ Vp / 1.3
+    sigma_s: float = 0.0                             # Gaussian low-pass of synthetics and records (0: none)
+    obs_filtered: bool = False                       # the records were low-passed already (before decimation)
+    mute_m: tuple[float, float] = (1.5, 3.0)         # gradient zero within the first radius of a station, whole beyond the second
     log: list = field(default_factory=list)
+
+    def __post_init__(self):
+        if self.sigma_s > 0 and not self.obs_filtered:
+            self.obs = lowpass(self.obs, self.sigma_s, self.dt)
+        g, b = self.grid, self.box
+        X, Y, Z = np.meshgrid(g.x[b[0]], g.y[b[1]], g.z[b[2]], indexing='ij')
+        d = np.full(X.shape, np.inf)
+        for p in np.concatenate([self.sources, self.receivers]):
+            d = np.minimum(d, np.sqrt((X - p[0]) ** 2 + (Y - p[1]) ** 2 + (Z - p[2]) ** 2))
+        r0, r1 = self.mute_m
+        self.mute = np.clip((d - r0) / (r1 - r0), 0, 1)
+        self.mute = 0.5 - 0.5 * np.cos(np.pi * self.mute)
 
     def speeds(self, dvp: np.ndarray, dvs: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
         vp, vs = self.vp0.copy(), self.vs0.copy()
@@ -126,7 +162,7 @@ class Problem:
         gl = gm = il = None
         for n, s in enumerate(self.sources):
             j, a, b, c, _ = shot_gradient(sim, Source(tuple(s), self.wavelet, 'force', (0, 0, -1)), self.receivers,
-                                          self.obs[n], self.box, self.every)
+                                          self.obs[n], self.box, self.every, self.sigma_s)
             J += j
             gl, gm, il = (a, b, c) if gl is None else (gl + a, gm + b, il + c)
         rho, vpb, vsb = self.rho[self.box], vp[self.box], vs[self.box]
@@ -152,6 +188,7 @@ def lbfgs(problem: Problem, iterations: int, first_step: float = 0.05, memory: i
         nonlocal P
         t0 = time.time()
         J, gp, gs, il = problem.evaluate(*split(v))
+        gp, gs = gp * problem.mute, gs * problem.mute
         if P is None:                                   # the preconditioner, fixed from the start
             ilm = gaussian_filter(il, 2.0)
             P = 1.0 / (ilm / ilm.max() + precondition_eps)

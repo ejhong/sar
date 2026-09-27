@@ -4,6 +4,7 @@ import LineChart from '../components/LineChart.astro';
 import v01 from '../../public/data/runs/p1_01_forward_validation.json';
 import tt from '../../public/data/runs/p1_02_traveltime.json';
 import sc3 from '../../public/data/runs/p1_03_scattered.json';
+import am from '../../public/data/runs/p1_04_ambient.json';
 import SectionMap from '../components/SectionMap.astro';
 import Scoreboard from '../components/Scoreboard.astro';
 import RunDetails from '../components/RunDetails.astro';
@@ -23,19 +24,25 @@ const surfXZ = (su.stations.receivers as number[][]).filter((p) => Math.abs(p[1]
 const pct = (v: number) => `${v > 0 ? '+' : ''}${(v * 100).toFixed(1)}%`;
 const e3 = sc3.score;
 const surfXY = (sc3.survey.stations.receivers as number[][]).map((p) => [p[0], p[1]] as [number, number]);
+const a4 = am.score;
+const rt = am.retrieval;
+const cvr = a4.contrast_vs_record;
+const needS = a4.record_for_contrast_3_s;
+const dur = (s: number) => (s < 60 ? `${s.toFixed(0)} s` : s < 3600 ? `${(s / 60).toFixed(0)} min` : s < 86400 ? `${(s / 3600).toFixed(s < 36000 ? 1 : 0)} h` : `${(s / 86400).toFixed(0)} days`);
 ---
 <Doc
   title="Seismic tomography, simulated"
   kicker="Phase 1 · the reference ceiling"
   current="seismic"
   lede="Before asking whether a satellite can see a chamber, ask what the instruments built for the job can see. Geophysicists image the shallow ground with arrays of geophones and a source, hammer blows or the ambient hum, and invert the records into a three-dimensional tomogram. This chapter does that in simulation, over ground whose contents are known."
-  state="status · solver validated · travel times and echo imaging done on the one-chamber bench · ambient noise next"
+  state="status · solver validated · travel times, echo imaging and ambient noise done on the one-chamber bench · full-waveform inversion running"
   index={[
     { id: 'chain', label: 'The chain' },
     { id: 'scoreboard', label: 'Scoreboard' },
     { id: 'forward', label: 'Forward model' },
     { id: 'traveltime', label: 'Travel times' },
     { id: 'echo', label: 'Echo imaging' },
+    { id: 'ambient', label: 'Ambient noise' },
     { id: 'arrays', label: 'Arrays' },
     { id: 'methods', label: 'Three methods' },
     { id: 'scoring', label: 'Scoring' },
@@ -199,7 +206,7 @@ const surfXY = (sc3.survey.stations.receivers as number[][]).map((p) => [p[0], p
       />
     </div>
     <p class="finding">{tt.finding}</p>
-    <RunDetails manifest={tt.manifest} extra={[['crosshole picks', `${cx.picked} of ${cx.pairs} pairs · 95th-percentile error ${cx.pick_minus_straight_ms.p95_abs.toFixed(2)} ms`], ['surface picks', `${su.picked} of ${su.pairs} pairs after quality control, noise 50 dB below each peak (16 stacked blows at a quiet site; at 30 dB the direct P is lost under the surface wave)`], ['inversion', `Gauss-Newton, ${cx.history.length - 1} iterations · smoothing 3 · damping 0.05 · 1 m cells`], ['picking', 'correlation with the leading lobe of the far-field P pulse'], ['viewer', 'the tomograms are in the underworld: bench-void, Show: Recovered']]} />
+    <RunDetails manifest={tt.manifest} extra={[['crosshole picks', `${cx.picked} of ${cx.pairs} pairs · 95th-percentile error ${cx.pick_minus_straight_ms.p95_abs.toFixed(2)} ms`], ['surface picks', `${su.picked} of ${su.pairs} pairs after quality control against the survey's own pick spread (at short offsets the surface wave arrives within a quarter period of the P) · noise 50 dB below each peak (16 stacked blows at a quiet site; at 30 dB the direct P is lost under the surface wave)`], ['inversion', `Gauss-Newton, ${cx.history.length - 1} iterations · smoothing 3 · damping 0.05 · 1 m cells`], ['picking', 'correlation with the leading lobe of the far-field P pulse'], ['viewer', 'the tomograms are in the underworld: bench-void, Show: Recovered']]} />
   </section>
 
   <section id="echo">
@@ -251,6 +258,71 @@ const surfXY = (sc3.survey.stations.receivers as number[][]).map((p) => [p[0], p
     <RunDetails manifest={sc3.manifest} extra={[['survey', sc3.survey.description], ['imaging', 'reverse-time migration, velocity cross-correlation, source-illumination compensation, Laplacian filter'], ['background', 'exact: the site without its chamber (the most favourable case)'], ['viewer', 'Show: Recovered (echo imaging) and Show: Waves (the hammer blow; the echo alone)']]} />
   </section>
 
+  <section id="ambient">
+    <h2>Noise stands in for the hammer, but its image of the chamber tops out at {a4.image_contrast_ensemble.toFixed(1)}×, however long it listens</h2>
+    <p class="sub">
+      No hammer: {am.manifest.params.noise_sources} noise sources scattered over the ground around the same geophone grid,
+      each a stream of random vertical pushes, like footsteps and traffic. Cross-correlating the noise at two geophones
+      gives the wave one would send the other (<Term k="ambient-noise">interferometry</Term>), so every geophone becomes a{' '}
+      <Term k="virtual-source">virtual source</Term>. {am.manifest.params.virtual_sources} of them are used as in echo
+      imaging: the gathers predicted without the chamber are subtracted and what remains is migrated. The rock is known
+      exactly and the noise field is averaged over an unlimited record, the most favourable passive case; a finite record
+      adds fluctuations whose image falls as one over the square root of its length.
+    </p>
+    <div class="stat-row">
+      <div class="stat"><span class="value">{rt.ncc.toFixed(2)}</span><span class="what">correlation of the wave retrieved from noise with a real source's, {rt.distance_m.toFixed(0)} m apart</span><span class="src">minus the lag derivative of the noise correlation</span></div>
+      <div class="stat"><span class="value">{a4.image_contrast_ensemble.toFixed(1)}<small>×</small></span><span class="what">the passive image at the chamber against the image elsewhere, with an unlimited record</span><span class="src">active echo imaging: {e3.contrast.toFixed(1)}×</span></div>
+      <div class="stat"><span class="value">{needS ? dur(needS) : 'never'}</span><span class="what">of noise for the chamber to stand at 3× the rest of the image</span><span class="src">fluctuations scaled from a {a4.reference_record_s.toFixed(0)} s realisation</span></div>
+      <div class="stat"><span class="value">{a4.brightest_offset_from_chamber_m.toFixed(1)}<small>m</small></span><span class="what">from the chamber's centre to the brightest point of the passive image</span><span class="src">image below 3 m</span></div>
+    </div>
+    <div class="charts wide">
+      <LineChart
+        title={`Fig. 7a · The wave between two geophones ${rt.distance_m.toFixed(0)} m apart`}
+        series={[
+          { name: 'real source', x: rt.t_ms, y: rt.direct, color: 'var(--text)', width: 1.5 },
+          { name: 'from noise', x: rt.t_ms, y: rt.correlation, color: 'var(--verdigris)', dash: '4 3' },
+        ]}
+        xLabel="time, ms"
+        yLabel="vertical velocity (scaled)"
+        height={160}
+        zeroLine
+        directLabels={false}
+        caption={`correlation ${rt.ncc.toFixed(2)} · the noise correlation's zero lag placed where the real source fires`}
+      />
+    </div>
+    <div class="grid-2 charts">
+      <SectionMap
+        title="Fig. 7b · Passive echo image: vertical section through the chamber"
+        x={am.slices.x}
+        y={am.slices.z}
+        values={am.slices.xz_image}
+        domain={0.6}
+        scale="sequential"
+        outlines={[{ x0: -3, x1: 3, y0: -18, y1: -12 }]}
+        xLabel="east, m"
+        yLabel="height, m"
+        width={330}
+        caption="migrated passive echo amplitude, normalised · unlimited record, rock known exactly"
+      />
+      <LineChart
+        title="Fig. 7c · Contrast against the length of the record"
+        series={[
+          { name: 'passive', x: cvr.map((r) => r.record_s), y: cvr.map((r) => r.contrast), color: 'var(--verdigris)', markers: true },
+          { name: '3×', x: [cvr[0].record_s, cvr[cvr.length - 1].record_s], y: [3, 3], color: 'var(--faint)', dash: '3 3', width: 1 },
+        ]}
+        xLabel="noise recorded"
+        yLabel="chamber / elsewhere"
+        logX
+        xFormat="duration"
+        xTicks={[1, 60, 3600, 86400]}
+        height={190}
+        caption="each image's fluctuations scaled from one realisation: migration is linear, their variance falls as 1/T"
+      />
+    </div>
+    <p class="finding">{am.finding}</p>
+    <RunDetails manifest={am.manifest} extra={[['noise', `${am.manifest.params.noise_sources} independent band-limited vertical force streams around ${am.manifest.params.noise_band_centre_hz} Hz, ${am.manifest.params.noise_source_area}`], ['retrieval', 'ensemble correlations computed exactly from each source\u2019s response; the virtual wave is minus their lag derivative (Snieder 2004)'], ['imaging', `${am.manifest.params.virtual_sources} virtual sources, reverse-time migration as in echo imaging, one data scale for every image so they add linearly`], ['record length', `a finite record modelled as random source phases over ${am.manifest.params.fluctuation_reference_segments} segments of ${(2 * am.manifest.params.response_length_s).toFixed(3)} s`], ['viewer', 'Show: Recovered (ambient noise, passive)']]} />
+  </section>
+
   <section id="arrays">
     <h2>The arrays are the ones near-surface surveys actually deploy</h2>
     <div class="grid-2">
@@ -274,7 +346,7 @@ const surfXY = (sc3.survey.stations.receivers as number[][]).map((p) => [p[0], p
       </div>
       <div class="note-card">
         <h3><Term k="ambient-noise">Ambient-noise tomography</Term></h3>
-        <p>Noise cross-correlated between sensor pairs becomes the wave that would travel between them; its dispersion is mapped and inverted for shear speed with depth.</p>
+        <p>Noise cross-correlated between sensor pairs becomes the wave that would travel between them. In practice its surface-wave dispersion is inverted for shear speed with depth; here the correlations serve as <Term k="virtual-source">virtual sources</Term> for echo imaging, the most a passive array can do.</p>
       </div>
       <div class="note-card">
         <h3><Term k="fwi">Full-waveform inversion</Term></h3>
@@ -298,6 +370,9 @@ const surfXY = (sc3.survey.stations.receivers as number[][]).map((p) => [p[0], p
   .charts {
     margin-top: 18px;
     gap: 22px 28px;
+  }
+  .charts.wide {
+    max-width: 620px;
   }
   .finding {
     font-family: var(--font-serif);

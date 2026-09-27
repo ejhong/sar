@@ -10,8 +10,9 @@ practitioner would have, uniform rock at the P speed the surface travel
 times gave (P1-02) and an S speed from the textbook ratio Vp/Vs = √3,
 which is 3% fast here. Density is held at its assumed value.
 
-Multiscale, as FWI is done: first the records low-passed to 60 Hz on a 1 m
-grid, then the full band on the 0.5 m grid the records were made on. The
+Multiscale, as FWI is done: first synthetics and records low-passed alike
+(half amplitude at 60 Hz) on a 1 m grid, then the full band on the 0.5 m
+grid the records were made on. The
 second stage computes the data with the same solver and grid that made
 them (the "inverse crime"); the noise and the wrong start soften it, and it
 is stated wherever the result is shown.
@@ -22,18 +23,19 @@ import time
 
 import numpy as np
 from scipy.ndimage import map_coordinates
-from scipy.signal import butter, sosfiltfilt
 
 from katabasis.compose import Grid, load_site, voxelise
 from katabasis.runs import RESULTS, Run
 from katabasis.seismic.arrays import snap_to_ground
-from katabasis.seismic.fwi import Problem, lbfgs
+from katabasis.seismic.fwi import Problem, gaussian_sigma, lbfgs, lowpass
 from katabasis.seismic.picking import add_noise
 
 sys.path.insert(0, str(__import__('pathlib').Path(__file__).parent))
 from p1_02_traveltime import CACHE as CACHE02, F0, SITE, SNR_DB, build, surveys  # noqa: E402
 
-BOX = ((-14.0, 14.0), (-14.0, 14.0), (-26.0, -1.0))
+# the whole survey footprint, from the first layer of rock down: the start is wrong everywhere the waves go,
+# so everywhere they go may change (the absorbing layers begin 20 m out on the fine grid)
+BOX = ((-19.0, 19.0), (-19.0, 19.0), (-30.0, -0.2))
 STAGES = [
     {'name': 'low', 'h': 1.0, 'lowpass_hz': 60.0, 'iterations': 12, 'extent': 34.5, 'pml': 12},   # nodes on whole metres
     {'name': 'full', 'h': 0.5, 'lowpass_hz': None, 'iterations': 6, 'extent': 28.0, 'pml': 16},
@@ -105,19 +107,19 @@ def main():
             g = Grid.covering((-e, e), (-e, e), (-42.0, 2.0 + h), h)       # at least three air cells at any spacing
             vp, vs, rho, air = start_model(site, g, vp0, vs0)
             dec = int(round(h / g_f.spacing))
-            obs, w = obs_f, w_f.astype(np.float64)
-            if st['lowpass_hz']:
-                sos = butter(4, st['lowpass_hz'], fs=1.0 / dt_f, output='sos')
-                obs = sosfiltfilt(sos, obs, axis=-1)
-                w = sosfiltfilt(sos, w)
-            obs, w = obs[..., ::dec], w[::dec]
+            sigma = gaussian_sigma(st['lowpass_hz']) if st['lowpass_hz'] else 0.0
+            # records low-passed before decimation (no aliased noise); synthetics are filtered inside the misfit
+            obs = (lowpass(obs_f, sigma, dt_f) if sigma else obs_f)[..., ::dec]
+            w = w_f.astype(np.float64)[::dec]
             box = index_box(g)
+            assert not air[box].any() and air[box[0], box[1], box[2].start - 1].all(), 'the box must start at the first rock layer'
             src = snap_to_ground(g, ~air, sv.sources[:, :2])
             rec = snap_to_ground(g, ~air, sv.receivers[:, :2])
             if smoke:
                 src, obs = src[:2], obs[:2]
             prob = Problem(g, rho, air, vp, vs, box, dt_f * dec, src, rec, obs, np.ascontiguousarray(w), F0, pml=st['pml'],
-                           vp_bounds=(0.35, 1.12), vs_bounds=(0.35, 1.12))
+                           vp_bounds=(0.35, 1.12), vs_bounds=(0.35, 1.12),
+                           sigma_s=sigma, obs_filtered=True)
             start = None
             if prev is not None:                       # carry the coarse result onto this grid
                 pg, pdvp, pdvs = prev
