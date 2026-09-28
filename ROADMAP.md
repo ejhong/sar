@@ -104,14 +104,21 @@ The lab does it by simulation over ground whose contents are known, in two phase
    resolution's period (the bands, read as spirals), and a constant offset in a trajectory focuses at zero depth and again
    at the axis's repeat depth, where the derivative protocol's grid ends (R12): the blocks. Reproduce them, render them
    beside the claim in the viewer's claimed-underworld site.
-2. **Optional confirmations on the real image**, none of which can change the result: the Khufu known-chamber
+2. **P2-10, Khufu's east face as the protocol's authors now run it** (`inputs/manu_09_28.txt`, 28 September): their
+   eleven lines (a south control at -35 m, the King's Chamber axis at -11 m, the centre, and 5 m steps north to the
+   Grotto at +35 m) placed on our X33 image, processed as they describe (317 R/O pairs over the central 12 s in six
+   sectors, 32-px patches, lambda 0.24 m, their six gates), with many control lines on Khafre, Menkaure and open plateau
+   and on P2-07's simulated speckle. Pre-stated test: do gated features line up with the surveyed chambers better than
+   with the same lines shifted, and better than on the controls? Note the lines lie on the face turned away from the
+   radar, its darkest part (local incidence about 72 degrees), where the signal is closest to the noise.
+3. **Optional confirmations on the real image**, none of which can change the result: the Khufu known-chamber
    positive control (metre-level registration on surveyed base corners, then the King's and Queen's Chambers and the
    Grand Gallery under the published chain); the derivative protocol v1.7 on a simulated dwell (desktop only).
-3. **Tidy the first investigation's record**: rerun or retire R7 (its script and results disagree); mark R9 and R10
+4. **Tidy the first investigation's record**: rerun or retire R7 (its script and results disagree); mark R9 and R10
    on the archive as identities of the looks rather than measurements of the ground.
-4. **A short findings note for the protocol's authors** (draft for the owner to send): P2-03's blindness of complex
+5. **A short findings note for the protocol's authors** (draft for the owner to send): P2-03's blindness of complex
    look registration and P2-06's depth-frequency identity, besides the earlier geometry points.
-5. Phase 1, if it continues for its own sake: full-waveform inversion beyond the inverse crime; the ambient field in
+6. Phase 1, if it continues for its own sake: full-waveform inversion beyond the inverse crime; the ambient field in
    every site; symmetric near-air stencils; detectability sweeps; the shaft field and Giza; the claimed underworld
    at low frequency. None bears on the radar question.
 
