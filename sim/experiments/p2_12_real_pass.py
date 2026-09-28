@@ -40,17 +40,25 @@ GEOID_M = 15.5              # ellipsoidal minus orthometric height at Giza (the 
 ORTHO_M = 1.0
 REG_M = 2.0
 PATCHES = [('khafre', 'monument'), ('khufu', 'monument'), ('menkaure', 'monument'),
-           ('desert_west', 'control'), ('desert_south', 'control')]
+           ('plateau_south', 'control'), ('desert_west', 'control'), ('desert_south', 'control')]
+# The first investigation's two open-plateau patches lie outside this site's block, so one more is placed inside it, on
+# open ground south of Khafre chosen from the image before the method was run there: (x, y) in the site frame.
+INSIDE_CONTROL = ('plateau_south', 'Open plateau, south of Khafre', -100.0, -640.0)
 CLAIM_REPEAT_M = 648.0
 NZ = 256
 VOXEL_M = 5.0
 KEEP_EVERY_ROW = 4          # the patch grids are 0.5 m apart in azimuth; the viewer's voxels are 5 m
 
 
-def legacy_patch(key):
+def legacy_patch(key, sc=None):
     sys.path.insert(0, str(LEGACY))
     rc = importlib.import_module('real_common')
     rc.CACHE = str(LEGACY_CACHE)
+    name, label, x, y = INSIDE_CONTROL
+    if key == name and not any(p[0] == name for p in rc.GIZA_PATCHES):
+        from sarsim.ortho import frame_to_lla
+        lat, lon = frame_to_lla(sc['frame']['origin'], x, y)
+        rc.GIZA_PATCHES.append((name, label, float(lat), float(lon), float(surface(sc, x, y)) + GEOID_M, 'control'))
     return rc.run_patch('giza', key, 'paper')
 
 
@@ -100,7 +108,7 @@ def main():
         patches, vols = [], {}
         profiles = {}
         for key, kind in PATCHES:
-            out = legacy_patch(key)
+            out = legacy_patch(key, sc)
             meta = out['meta']
             kz = out['kz']
             zrep = 2 * np.pi / np.median(np.abs(np.diff(kz)))
