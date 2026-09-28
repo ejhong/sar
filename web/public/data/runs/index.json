@@ -285,5 +285,186 @@
    "threads": 4,
    "cpus": 4
   }
+ },
+ "p2_01_geometry": {
+  "id": "p2_01_geometry",
+  "title": "The real dwell as the simulator's geometry",
+  "date": "2026-09-28",
+  "started_utc": "2026-09-28T05:09:10+00:00",
+  "runtime_s": 0.5,
+  "commit": "d9e33c2",
+  "params": {
+   "products": {
+    "giza-20250827": "ICEYE_X33_SLC_SLEDF_951562307_20250827T202654.h5",
+    "sacsayhuaman-20250822": "ICEYE_X35_SLC_SLEDF_5907293_20250822T152433.h5"
+   },
+   "reference_bank": {
+    "K": 50,
+    "width_frac": 0.1
+   },
+   "look_durations_s": [
+    0.25,
+    0.5,
+    1.0,
+    1.96,
+    4.0
+   ]
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  }
+ },
+ "p2_03_what_a_dwell_sees": {
+  "id": "p2_03_what_a_dwell_sees",
+  "title": "What one dwell can see of the ground's motion",
+  "date": "2026-09-28",
+  "started_utc": "2026-09-28T05:09:11+00:00",
+  "runtime_s": 53.9,
+  "commit": "d9e33c2",
+  "params": {
+   "geometry": "giza-20250827",
+   "look_s": 1.96,
+   "looks": 16,
+   "image_px": [
+    2048,
+    128
+   ],
+   "motion": {
+    "f_hz": 0.1,
+    "v_m_s": 0.002,
+    "block_half_m": 10.0
+   },
+   "bright_amplitude": 300.0,
+   "lowpass_hz": [
+    0.05,
+    0.1,
+    0.25,
+    0.5,
+    0.75,
+    1.0,
+    2.0,
+    3.0
+   ],
+   "real_crop": "desert_west (legacy R1/R9 patch)"
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  }
+ },
+ "p2_04_chamber_imprint": {
+  "id": "p2_04_chamber_imprint",
+  "title": "The chamber's imprint on the ground's own motion",
+  "date": "2026-09-28",
+  "started_utc": "2026-09-28T05:10:05+00:00",
+  "runtime_s": 363.3,
+  "commit": "d9e33c2",
+  "params": {
+   "site": "bench-void",
+   "rock": "limestone-mokattam",
+   "vp": 3300,
+   "vs": 1830,
+   "rho": 2400,
+   "poisson": 0.277957,
+   "chamber": {
+    "type": "box",
+    "centre": [
+     0,
+     0,
+     -15
+    ],
+    "size": [
+     6,
+     6,
+     6
+    ]
+   },
+   "stress_pa": 1000000.0,
+   "relaxation_s": 0.5,
+   "damping_per_s": 30.0,
+   "receivers": "80 m square at 2 m",
+   "line_of_sight": [
+    -0.348508,
+    -0.068573,
+    0.934794
+   ]
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  }
+ },
+ "p2_05_budget": {
+  "id": "p2_05_budget",
+  "title": "The smallest imprint one dwell could detect",
+  "date": "2026-09-28",
+  "started_utc": "2026-09-28T05:16:09+00:00",
+  "runtime_s": 41.1,
+  "commit": "d9e33c2",
+  "params": {
+   "look_s": 1.96,
+   "aperture_s": 24.485484,
+   "independent_looks": 12.492594,
+   "detection_sigma": 3.0,
+   "truck_pass_s": 4.0,
+   "reflector_gain_db": 20.0,
+   "check": {
+    "realisations": 24,
+    "f_hz": 0.2
+   }
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  }
+ },
+ "p2_06_depth_is_frequency": {
+  "id": "p2_06_depth_is_frequency",
+  "title": "The published depth is the frequency of the ground's motion",
+  "date": "2026-09-28",
+  "started_utc": "2026-09-28T05:16:50+00:00",
+  "runtime_s": 0.1,
+  "commit": "d9e33c2",
+  "params": {
+   "geometry": "giza-20250827",
+   "lam_s_m": 0.48,
+   "bank": {
+    "K": 50,
+    "sub_frac": 0.5,
+    "delta_hz": 88.0
+   },
+   "frequencies_hz": [
+    0.1,
+    0.2,
+    0.3,
+    0.45,
+    0.6,
+    1.0,
+    1.5,
+    1.9,
+    2.3,
+    3.0
+   ]
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  }
  }
 }
