@@ -74,6 +74,44 @@ class PlaneWaveField:
         return out
 
 
+    def centre_series(self, t: np.ndarray) -> dict:
+        """The motion at the origin as time series, for a site small against the wavelength: displacement
+        u (3, nt; east, north, up), its horizontal gradient g (3, 2, nt; d u_c / d east, d u_c / d north) and the
+        time derivatives of both (u_dot, g_dot). Across a site of size L the displacement is u + g x to within
+        (k L)^2, a few parts in a thousand for microseisms over 100 m. Wave by wave, with arg = -omega t + phase,
+        u_z = -A/omega sin(arg) and u_h = hv A/omega cos(arg) along the direction of travel, and d(arg)/dx_j = k_j."""
+        t = np.asarray(t, float)
+        u = np.zeros((3, len(t)))
+        g = np.zeros((3, 2, len(t)))
+        u_dot = np.zeros_like(u)
+        g_dot = np.zeros_like(g)
+        w = 2 * np.pi * self.freq
+        for n in range(len(self.freq)):
+            arg = -w[n] * t + self.phase[n]
+            s_, c_ = np.sin(arg), np.cos(arg)
+            a = self.amp[n] / w[n]
+            se, ce = np.sin(self.azimuth[n]), np.cos(self.azimuth[n])
+            k = w[n] / self.speed[n] * np.array([se, ce])
+            uz, uh = -a * s_, self.hv * a * c_                     # displacement
+            uz_d, uh_d = a * w[n] * c_, self.hv * a * w[n] * s_    # its time derivative (d arg / dt = -omega)
+            gz, gh = -a * c_, -self.hv * a * s_                    # d/d(arg) of the displacement
+            gz_d, gh_d = -a * w[n] * s_, self.hv * a * w[n] * c_
+            u[0] += uh * se
+            u[1] += uh * ce
+            u[2] += uz
+            u_dot[0] += uh_d * se
+            u_dot[1] += uh_d * ce
+            u_dot[2] += uz_d
+            for j in range(2):
+                g[0, j] += gh * se * k[j]
+                g[1, j] += gh * ce * k[j]
+                g[2, j] += gz * k[j]
+                g_dot[0, j] += gh_d * se * k[j]
+                g_dot[1, j] += gh_d * ce * k[j]
+                g_dot[2, j] += gz_d * k[j]
+        return {'u': u, 'g': g, 'u_dot': u_dot, 'g_dot': g_dot}
+
+
 def microseisms(freq: np.ndarray, psd_z: np.ndarray, rng: np.random.Generator, per_bin: int = 8,
                 speed: float | np.ndarray = 3000.0, hv: float = 0.681) -> PlaneWaveField:
     """A field whose vertical velocity has the one-sided PSD psd_z ((m/s)²/Hz) on the frequency grid

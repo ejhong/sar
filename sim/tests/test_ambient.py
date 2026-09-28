@@ -72,3 +72,21 @@ def test_displacement_is_the_integral_of_velocity():
     u = fld.displacement(pts, t)[0]
     dudt = np.gradient(u, t, axis=-1)
     assert np.abs(dudt[:, 5:-5] - v[:, 5:-5]).max() < 1e-3 * np.abs(v).max()
+
+
+def test_centre_series_are_the_field_and_its_derivatives():
+    from katabasis.ambient.field import microseisms
+    rng = np.random.default_rng(4)
+    f = np.linspace(0.1, 0.3, 11)
+    fld = microseisms(f, np.full(11, 1e-14), rng, per_bin=3, speed=2500.0)
+    t = np.linspace(-5, 5, 2001)
+    c = fld.centre_series(t)
+    h = 0.5                                             # m: finite differences across the origin
+    pts = np.array([[0.0, 0.0], [h, 0.0], [-h, 0.0], [0.0, h], [0.0, -h]])
+    d = fld.displacement(pts, t)
+    assert np.allclose(c['u'], d[0], atol=1e-6 * np.abs(d[0]).max())
+    grad = np.stack([(d[1] - d[2]) / (2 * h), (d[3] - d[4]) / (2 * h)], axis=1)     # (3, 2, nt)
+    assert np.allclose(c['g'], grad, atol=1e-4 * np.abs(grad).max())
+    assert np.allclose(c['u_dot'], fld.velocity(pts[:1], t)[0], atol=1e-6 * np.abs(c['u_dot']).max())
+    gd = np.gradient(c['g'], t, axis=2)
+    assert np.allclose(c['g_dot'][..., 5:-5], gd[..., 5:-5], atol=1e-3 * np.abs(gd).max())

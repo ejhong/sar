@@ -26,3 +26,16 @@ def test_no_motion_leaves_the_image_unchanged():
     still = synthesize(_scene(), g, (128, 128))
     zero = synthesize(_scene(), g, (128, 128), motion=lambda x, y, z, t: np.zeros((len(t), len(x))))
     assert np.array_equal(still, zero)
+
+
+def test_double_precision_keeps_a_billionth_of_a_radian():
+    g = Geometry()
+    shape = (128, 128)
+    lam = g.lam
+    d = 1e-9 * lam / (4 * np.pi)                     # a slant-range change worth 1e-9 rad of phase
+    still = synthesize(_scene(), g, shape, dtype=np.complex128)
+    moved = synthesize(_scene(), g, shape, dtype=np.complex128,
+                       motion=lambda x, y, z, t: d * np.ones((len(t), len(x))))
+    assert still.dtype == np.complex128
+    ratio = np.vdot(still, moved) / np.vdot(still, still)
+    assert abs(np.angle(ratio) + 1e-9) < 1e-12        # the phase change comes back to a thousandth of itself

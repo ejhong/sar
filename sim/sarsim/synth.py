@@ -26,10 +26,11 @@ def image_coords(scat, geom, x_centre=0.0, r_centre=0.0):
 
 
 def synthesize(scat, geom, shape, x_centre=0.0, r_centre=0.0, ground_intensity=0.0,
-               seed=0, chunk=4096, verbose=False, motion=None):
+               seed=0, chunk=4096, verbose=False, motion=None, dtype=np.complex64):
     """`motion(x, y, z, t)`, if given, returns each scatterer's increase in slant range (m) at slow times t:
     x, y, z are (n,) scatterer coordinates, t is (m,) seconds; the result is (m, n). It applies on top of any
-    sinusoidal vibration, so an ambient field or a simulated wavefield can move the ground."""
+    sinusoidal vibration, so an ambient field or a simulated wavefield can move the ground. `dtype`
+    complex128 keeps phase differences far below single precision's 1e-7 (a chamber's imprint is 1e-9 rad)."""
     Nx, Nr = shape
     nu = np.fft.fftfreq(Nx, d=geom.dx)
     kr = np.fft.fftfreq(Nr, d=geom.dr)
@@ -37,7 +38,7 @@ def synthesize(scat, geom, shape, x_centre=0.0, r_centre=0.0, ground_intensity=0
     in_r = np.abs(kr) <= geom.kr_band / 2
     nu_in = nu[in_x]
     kr_in = kr[in_r]
-    S = np.zeros((in_x.sum(), in_r.sum()), np.complex64)
+    S = np.zeros((in_x.sum(), in_r.sum()), dtype)
     if scat is not None and scat.n > 0:
         x_img, r_img = image_coords(scat, geom, x_centre, r_centre)
         x_img = x_img + (Nx // 2) * geom.dx
@@ -58,15 +59,15 @@ def synthesize(scat, geom, shape, x_centre=0.0, r_centre=0.0, ground_intensity=0
                 d = np.asarray(motion(scat.x[sl], scat.y[sl], scat.z[sl], t[:, 0]))
                 Ex *= np.exp(-4j * np.pi * d / geom.lam)
             Er = np.exp(-2j * np.pi * np.outer(r_img[sl], kr_in))
-            S += Ex.astype(np.complex64) @ Er.astype(np.complex64)
+            S += Ex.astype(dtype) @ Er.astype(dtype)
             if verbose and (i // chunk) % 10 == 0:
                 print(f"  synth {i}/{scat.n}", flush=True)
     if ground_intensity > 0:
         rng = np.random.default_rng(seed)
         sigma = np.sqrt(ground_intensity * Nx * Nr / geom.band_frac ** 2 / 2)
-        S += (rng.normal(0, sigma, S.shape) + 1j * rng.normal(0, sigma, S.shape)).astype(np.complex64)
-    full = np.zeros((Nx, Nr), np.complex64)
+        S += (rng.normal(0, sigma, S.shape) + 1j * rng.normal(0, sigma, S.shape)).astype(dtype)
+    full = np.zeros((Nx, Nr), dtype)
     ix = np.where(in_x)[0]
     ir = np.where(in_r)[0]
     full[np.ix_(ix, ir)] = S
-    return np.fft.ifft2(full).astype(np.complex64)
+    return np.fft.ifft2(full).astype(dtype)
