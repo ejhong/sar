@@ -50,12 +50,20 @@ def _resample(T3: np.ndarray, xr: np.ndarray, yr: np.ndarray, z: np.ndarray, g, 
     return V, [float(ax[0]), float(ax[0]), 0.0], [len(ax), len(ax), len(zz)]
 
 
-def _write_volume(d: Path, vid: str, V: np.ndarray, u8: np.ndarray, origin: list[float], h: float, info: dict) -> dict:
+def _write_volume(d: Path, vid: str, V: np.ndarray, u8: np.ndarray, origin: list[float], h: float, info: dict,
+                  ztop: float | None = None) -> dict:
     nx, ny, nz = V.shape
     (d / f'vol-{vid}.u8').write_bytes(np.ascontiguousarray(u8.transpose(2, 1, 0)).tobytes())
-    ztop = -h / 2                      # centre of the top layer, just below the ground at z = 0
+    ztop = -h / 2 if ztop is None else ztop      # centre of the top layer (just below the ground at z = 0 on a bench)
     return {'id': vid, 'status': 'radar', 'file': f'vol-{vid}.u8', 'shape': [nx, ny, nz],
             'origin': [origin[0], origin[1], ztop], 'spacing': h, **info}
+
+
+def _acquisition(g) -> dict:
+    return {'name': g.name, 'heading_deg': g.heading_deg, 'incidence_deg': g.theta_deg, 'los_enu': list(g.los_enu),
+            'aperture_s': g.aperture_time, 'track_km': g.source['baseline_span_m'] / 1e3, 'slant_range_km': g.R0 / 1e3,
+            'along_track_en': g.along_track_en.tolist(), 'ground_range_en': g.ground_range_en.tolist(),
+            'satellite': g.source['satellite'], 'date': g.source['collection_start'][:10]}
 
 
 def _merge_volumes(d: Path, new: list[dict]):
@@ -110,10 +118,7 @@ def export_bench(out: Path = DATA) -> dict | None:
     to_um = lambda a: np.round(a[keep] * 1e6, 1).tolist()
     radar = {
         'kind': 'bench',
-        'acquisition': {'name': 'giza-20250827', 'heading_deg': g.heading_deg, 'incidence_deg': g.theta_deg,
-                        'los_enu': list(g.los_enu), 'aperture_s': g.aperture_time, 'track_km': g.source['baseline_span_m'] / 1e3,
-                        'slant_range_km': g.R0 / 1e3, 'along_track_en': g.along_track_en.tolist(),
-                        'ground_range_en': g.ground_range_en.tolist()},
+        'acquisition': _acquisition(g),
         'image': {'file': 'radar-ground.jpg', 'centre': [0.0, 0.0], 'width_m': s7['geometry']['ground_range_m'],
                   'height_m': s7['geometry']['azimuth_m'], 'rotation_deg': float(np.rad2deg(np.arctan2(g.ground_range_en[1], g.ground_range_en[0])))},
         'sensors': {'east': np.round(sv['east'][keep], 2).tolist(), 'north': np.round(sv['north'][keep], 2).tolist(),
@@ -160,5 +165,81 @@ def export_claim(out: Path = DATA) -> dict | None:
     return {'site': 'bench-khafre-claim', 'volumes': [vol['id']]}
 
 
+def export_real(out: Path = DATA) -> dict | None:
+    """The real Giza pass (P2-12): the image on the ground, and the published method's volume at each patch inside the
+    site, on one brightness scale so that monuments and open plateau compare fairly. Depth is measured from the rock
+    surface and relabelled as the claim relabels it (the axis repeats at 648 m)."""
+    rid = 'p2_12_real_pass'
+    vpath = RESULTS / rid / 'volumes.npz'
+    if not vpath.exists():
+        return None
+    from ..compose import load_site
+    from .sites import scene as site_scene
+    from sarsim.acquisition import DwellGeometry
+    from sarsim.ortho import grid_height
+    s = load(rid)
+    sc = site_scene(load_site('giza'))
+    g = DwellGeometry.from_record(s['manifest']['params']['acquisition'])
+    v = np.load(vpath)
+    h = float(v['voxel_m'])
+    gx0, gy0 = float(v['grid_x0']), float(v['grid_y0'])
+    nz_axis = len(v['z_raw'])
+    per_index = float(s['manifest']['params']['claim_repeat_m']) / nz_axis
+    shown = [p for p in s['patches'] if p['cells_on_site'] > 0]
+    allT = np.concatenate([v[f"{p['key']}_T"].astype(np.float32).ravel() for p in shown])
+    med = float(np.median(allT))
+    A = np.log10(np.maximum(allT, 1e-30) / med)
+    lo, hi = float(np.percentile(A, 2)), float(np.percentile(A, 99.5))
+    d = out / 'sites' / 'giza'
+    d.mkdir(parents=True, exist_ok=True)
+    zbot = sc['extent']['z'][0]
+    run = f"{rid} · {s['manifest']['date']} · {s['manifest']['commit']}"
+    vols = []
+    for p in shown:
+        key = p['key']
+        idx = v[f'{key}_index']
+        T = v[f'{key}_T'].astype(np.float32)
+        iy, ix = np.nonzero(idx >= 0)
+        sub = idx[iy.min():iy.max() + 1, ix.min():ix.max() + 1]
+        xs = gx0 + h / 2 + h * np.arange(ix.min(), ix.max() + 1)
+        ys = gy0 + h / 2 + h * np.arange(iy.min(), iy.max() + 1)
+        X, Y = np.meshgrid(xs, ys)
+        ground = grid_height(sc['terrain'], X, Y) if sc['terrain']['kind'] == 'grid' else np.full(X.shape, sc['terrain']['z'])
+        ztop = float(np.ceil(ground.max() / h) * h)
+        nz = int((ztop - zbot) / h)
+        zc = ztop - h / 2 - h * np.arange(nz)
+        depth = ground[..., None] - zc[None, None, :]
+        k = np.round(depth / per_index).astype(int) % nz_axis
+        ok = (depth >= 0) & (sub[..., None] >= 0)
+        vals = np.where(ok, T[np.maximum(sub, 0)[..., None], k], np.nan)
+        a = np.log10(np.maximum(vals, 1e-30) / med)
+        u8 = np.where(ok, np.round(255 * np.clip((a - lo) / (hi - lo), 0, 1)), 0).astype(np.uint8)
+        u8 = u8.transpose(1, 0, 2)                                    # (x, y, z)
+        control = p['kind'] == 'control'
+        vols.append(_write_volume(d, f'radar-{key}', u8, u8, [float(xs[0]), float(ys[0])], h, {
+            'label': f"Satellite · the published method {'over' if control else 'at'} {p['label']}{' (control)' if control else ''}",
+            'method': 'The real 2025 ICEYE pass, the published pipeline (50 half-band pairs, 32 px, lambda_s 0.48 m), '
+                      'depth relabelled as the claim does (repeat at 648 m)',
+            'quantity': 'focused power, log scale', 'units': 'relative', 'range': [lo, hi], 'run': run,
+            'caption': ('the same kind of picture over empty plateau' if control else
+                        'columns where the registration wanders, as over empty plateau')}, ztop=ztop - h / 2))
+    _merge_volumes(d, vols)
+    src = RESULTS / rid / 'figs' / 'ground.jpg'
+    shutil.copyfile(src, d / 'radar-ground.jpg')
+    radar = {
+        'kind': 'real',
+        'acquisition': _acquisition(g),
+        'image': {'kind': 'ortho', 'file': 'radar-ground.jpg', 'extent': s['image']['extent']},
+        'reach_m': s['reach_m'],
+        'volumes': [x['id'] for x in vols],
+        'stats': {'monument_vs_control_profile_corr': s['monument_vs_control_profile_corr'],
+                  'patch_profile_corr_range': s['patch_profile_corr_range'],
+                  'pillar_power_vs_energy_min': min(x['pillar_power_vs_energy'] for x in s['patches'])},
+        'run': run,
+    }
+    (d / 'radar.json').write_text(json.dumps(radar, separators=(',', ':')))
+    return {'site': 'giza', 'volumes': [x['id'] for x in vols]}
+
+
 def export_radar(out: Path = DATA) -> list[dict]:
-    return [r for r in (export_bench(out), export_claim(out)) if r]
+    return [r for r in (export_bench(out), export_claim(out), export_real(out)) if r]

@@ -93,7 +93,7 @@ export class Underworld {
       const radar = this.block?.radar;
       if (radar && this.mode === 'satellite') {
         radar.tick(f.dt);
-        this.updateLookLabel();
+        if (radar.hasSensors) this.updateLookLabel();
         this.engine.poke();
       }
       if (++this.scaleTick % 6 === 0) this.updateScaleBar();
@@ -218,9 +218,17 @@ export class Underworld {
       const v = vols.find((x) => x.id === id);
       b.showSurvey(s.surveys?.find((sv) => sv.id === v?.survey) ?? null);
     } else if (mode === 'satellite' && s.radar) {
-      const which = item === 'with' || item === 'without' ? item : this.item.satellite ?? 'with';
-      this.item.satellite = which;
-      b.showVolume(s.radar.volumes[which as 'with' | 'without']);
+      const rv = s.radar.volumes;
+      if (Array.isArray(rv)) {
+        // a real site: one of the method's volumes, or none
+        const which = item === 'none' || rv.includes(item ?? '') ? item! : this.item.satellite && (this.item.satellite === 'none' || rv.includes(this.item.satellite)) ? this.item.satellite : rv[0];
+        this.item.satellite = which;
+        b.showVolume(which === 'none' ? null : which);
+      } else {
+        const which = item === 'with' || item === 'without' ? item : this.item.satellite === 'without' ? 'without' : 'with';
+        this.item.satellite = which;
+        b.showVolume(rv[which as 'with' | 'without']);
+      }
       b.showSurvey(null);
     } else {
       b.showVolume(null);
@@ -331,6 +339,7 @@ export class Underworld {
   /** The satellite's pass: what it is, the image's virtual sensors, and the method's picture with and without the chamber. */
   private renderSatelliteUI(ctx: HTMLElement, s: SiteScene) {
     const r = s.radar!;
+    if (!r.sensors) return this.renderRealPassUI(ctx, s);
     const a = r.acquisition;
     const sv = r.sensors;
     const pct = (g: number) => `${Math.round(g * 100)}%`;
@@ -375,6 +384,45 @@ export class Underworld {
       rd.playing = !rd.playing;
       play.textContent = rd.playing ? '❚❚' : '▶';
       play.setAttribute('aria-label', rd.playing ? 'Pause' : 'Play');
+    });
+    const th = ctx.querySelector<HTMLInputElement>('[data-uw=threshold]')!;
+    th.addEventListener('input', () => this.block?.setVolumeThreshold(Number(th.value)));
+    this.block?.setVolumeThreshold(Number(th.value));
+  }
+
+  /** A real product over a real site: the pass, the image on the ground, the wave's reach, the method's volumes. */
+  private renderRealPassUI(ctx: HTMLElement, s: SiteScene) {
+    const r = s.radar!;
+    const a = r.acquisition;
+    const vols = (Array.isArray(r.volumes) ? r.volumes : []).map((id) => s.volumes.find((v) => v.id === id)).filter(Boolean) as SiteScene['volumes'];
+    const which = this.item.satellite ?? vols[0]?.id ?? 'none';
+    const st = r.stats;
+    ctx.innerHTML = `
+      <p class="uw-ctx-note">The real ${esc(a.satellite ?? 'ICEYE')} pass of ${esc(a.date ?? '')}: ${a.aperture_s.toFixed(1)} s,
+        ${a.track_km.toFixed(1)} km of track, ${Math.round(a.slant_range_km)} km away, looking ${Math.round(a.incidence_deg)}° from straight
+        down (satellite and beam not to scale). On the ground lies the image it made, resampled onto the terrain: each
+        pyramid’s top lands on the ground in front of it, toward the radar, as the radar records it.</p>
+      <label class="uw-check"><input type="checkbox" data-uw="sat-image" checked /><span class="uw-dot radar"></span>Show the image</label>
+      <div class="uw-subhead">How far down it can see</div>
+      <p class="uw-ctx-note">About ${Math.round((r.reach_m ?? 0.3) * 100)} cm into the driest sand, less into rock: at this scale, thinner than the
+        line of the ground itself. Everything below the surface is out of its reach.</p>
+      <div class="uw-subhead">What the published method draws from it</div>
+      ${vols
+        .map(
+          (v) => `<label class="uw-radio"><input type="radio" name="sat-vol" value="${v.id}" ${v.id === which ? 'checked' : ''}/>
+        <span><span class="uw-opt-name">${esc(v.label.replace('Satellite · the published method ', ''))}</span><span class="uw-opt-sub">${esc(v.caption ?? '')}</span></span></label>`,
+        )
+        .join('')}
+      <label class="uw-radio"><input type="radio" name="sat-vol" value="none" ${which === 'none' ? 'checked' : ''}/><span><span class="uw-opt-name">None</span></span></label>
+      ${st ? `<p class="uw-ctx-note">Over the pyramids and over empty plateau its depth profiles correlate at ${st.monument_vs_control_profile_corr.toFixed(3)}; at every pixel its power follows how much the registration wandered (${st.pillar_power_vs_energy_min.toFixed(3)}).</p>` : ''}
+      <label class="uw-range"><span>Show power stronger than</span><input type="range" min="0.02" max="0.95" step="0.01" value="0.8" data-uw="threshold" /></label>`;
+    ctx.querySelectorAll<HTMLInputElement>('input[name=sat-vol]').forEach((el) =>
+      el.addEventListener('change', () => this.setMode('satellite', el.value)),
+    );
+    const img = ctx.querySelector<HTMLInputElement>('[data-uw=sat-image]')!;
+    img.addEventListener('change', () => {
+      this.block?.radar?.setImageVisible(img.checked);
+      this.engine.poke();
     });
     const th = ctx.querySelector<HTMLInputElement>('[data-uw=threshold]')!;
     th.addEventListener('input', () => this.block?.setVolumeThreshold(Number(th.value)));

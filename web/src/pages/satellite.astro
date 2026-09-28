@@ -14,6 +14,7 @@ import chain from '../../public/data/runs/p2_07_whole_chain.json';
 import pill from '../../public/data/runs/p2_08_pillars_and_boxes.json';
 import vsens from '../../public/data/runs/p2_09_virtual_sensors.json';
 import every from '../../public/data/runs/p2_11_every_way_in.json';
+import realpass from '../../public/data/runs/p2_12_real_pass.json';
 import Figure from '../components/Figure.astro';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
@@ -146,6 +147,7 @@ const dB = (v: number) => Math.round(v).toLocaleString('en-US');
     { id: 'pillars', label: 'Pillars and boxes' },
     { id: 'sensors', label: 'Virtual sensors' },
     { id: 'every', label: 'Every other route' },
+    { id: 'real', label: 'The real pass' },
     { id: 'rescue', label: 'What could rescue it' },
     { id: 'record', label: 'Corrections' },
   ]}
@@ -532,6 +534,36 @@ const dB = (v: number) => Math.round(v).toLocaleString('en-US');
       <ul>{Object.values(every.sources as Record<string, string>).map((s) => <li>{s}</li>)}</ul>
     </details>
     <RunDetails manifest={every.manifest} />
+  </section>
+
+  <section id="real">
+    <h2>The real pass, laid on the ground: what a viewer given radar data can honestly show</h2>
+    <p class="sub">
+      P2-12 takes the real 2025 image and puts it where it belongs: each metre of the Giza site is found in the image through
+      the product’s own geolocation over the terrain and the pyramids, with the residual offset fitted against the brightness the
+      surface predicts ({Math.abs(realpass.registration.shift_m[0]).toFixed(1)} m along the track,{' '}
+      {Math.abs(realpass.registration.shift_m[1]).toFixed(1)} m across). Each pyramid’s top lands on the ground in front of it,
+      toward the radar, as the radar records it. The wave reaches about {Math.round(realpass.reach_m * 100)} cm into dry sand at
+      most. Run on this image, the published method draws its columns wherever the registration wanders (its power follows each
+      pixel’s trajectory energy at {Math.min(...(realpass.patches as { pillar_power_vs_energy: number }[]).map((x) => x.pillar_power_vs_energy)).toFixed(4)}),
+      and a pyramid’s picture differs from open plateau’s ({realpass.profile_corr.across.map((v: number) => v).reduce((a: number, b: number) => Math.min(a, b)).toFixed(2)}–{realpass.profile_corr.across.reduce((a: number, b: number) => Math.max(a, b)).toFixed(2)})
+      by no more than two stretches of open plateau differ from each other
+      ({realpass.profile_corr.within_controls.reduce((a: number, b: number) => Math.min(a, b)).toFixed(2)}–{realpass.profile_corr.within_controls.reduce((a: number, b: number) => Math.max(a, b)).toFixed(2)}).
+    </p>
+    <div class="grid-2">
+      <Figure src={`${base}/data/sites/giza/radar-ground.jpg`} alt="The real radar image of the Giza plateau, resampled onto the ground" label="The 2025 pass on the ground" caption="north up; the bright wedges west of each pyramid are its top, laid over toward the radar" aspect="1600 / 1400" widthM={1600} bar={200} />
+      <div class="note-card">
+        <span class="tag measured">real image · P2-12</span>
+        <h3>In the 3-D view</h3>
+        <p>The <a href={`${base}/underworld/#giza/satellite`}>Giza site’s satellite mode</a> shows the pass over the plateau, this
+        image draped on the terrain, and the method’s volume at Khafre, Khufu, Menkaure and open plateau, side by side with the
+        chambers surveyed inside the pyramids.</p>
+        <p>The same steps take any product: its geolocation and orbit give the pass and the image on the ground, and its band gives
+        the reach. For X band that reach is a skin; long wavelengths over dry sand reach a few metres, which is where a radar image
+        can show something underground.</p>
+      </div>
+    </div>
+    <RunDetails manifest={realpass.manifest} />
   </section>
 
   <section id="rescue">

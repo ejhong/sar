@@ -83,8 +83,21 @@ export interface VolumeInfo {
   caption?: string;
 }
 
+export interface RadarSensors {
+  east: number[];
+  north: number[];
+  looks_s: number[];
+  truth_um_s: number[][];
+  complex_um_s: number[][];
+  magnitude_um_s: number[][];
+  test_wave: { wavelength_m: number; f_hz: number; v_m_s: number; azimuth_deg: number };
+  gains: { complex: number; magnitude: number };
+  run: string;
+}
+
 export interface RadarInfo {
-  kind: string;
+  /** 'bench': a simulated image on flat ground; 'real': a real product resampled onto the site's terrain. */
+  kind: 'bench' | 'real';
   acquisition: {
     name: string;
     heading_deg: number;
@@ -95,20 +108,18 @@ export interface RadarInfo {
     slant_range_km: number;
     along_track_en: [number, number];
     ground_range_en: [number, number];
+    satellite?: string;
+    date?: string;
   };
-  image: { file: string; centre: [number, number]; width_m: number; height_m: number; rotation_deg: number };
-  sensors: {
-    east: number[];
-    north: number[];
-    looks_s: number[];
-    truth_um_s: number[][];
-    complex_um_s: number[][];
-    magnitude_um_s: number[][];
-    test_wave: { wavelength_m: number; f_hz: number; v_m_s: number; azimuth_deg: number };
-    gains: { complex: number; magnitude: number };
-    run: string;
-  };
-  volumes: { with: string; without: string };
+  image:
+    | { kind?: 'plane'; file: string; centre: [number, number]; width_m: number; height_m: number; rotation_deg: number }
+    | { kind: 'ortho'; file: string; extent: { x: [number, number]; y: [number, number] } };
+  sensors?: RadarSensors;
+  /** A bench's volumes with and without its chamber, or a real site's list of the method's volumes. */
+  volumes: { with: string; without: string } | string[];
+  reach_m?: number;
+  stats?: { monument_vs_control_profile_corr: number; patch_profile_corr_range: [number, number]; pillar_power_vs_energy_min: number };
+  run?: string;
 }
 
 export interface Extent {

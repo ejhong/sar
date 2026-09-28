@@ -180,7 +180,7 @@ export class Block {
   addRadar() {
     const info = this.scene.radar;
     if (!info) return;
-    this.radar = new Radar(info, this.scene.id, this.size, this.zTop, this.clip, this.theme);
+    this.radar = new Radar(info, this.scene.id, this.size, (x, y) => terrainHeight(this.scene, x, y), this.clip, this.theme);
     this.layers.radar.add(this.radar.group);
     this.layers.radar.visible = false;
   }
