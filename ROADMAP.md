@@ -42,6 +42,13 @@ Since then (still 28 September):
 - **A third product**: the owner supplied ICEYE X13's 2022 Spotlight Dwell over Khufu (`~/tmp/sar/giza2/`, record
   `sites/acquisitions/giza-20220715.json`: 35.0 degrees incidence, 24.56 s, looking east-north-east, so Khufu's east face
   is at 86 degrees local incidence, nearly edge-on and mostly shadowed step by step).
+- **P2-13** runs a public gated reconstruction of the method unchanged (its source hashed) on the 2022 image along
+  seven loops round Khafre's faces: 5 positions pass on the real image, 13 and 8 on two motionless twins, none over open
+  desert, 9 with 2 mm/s vibrations planted (none at a planted frequency). Its pairs' images are 6 s slices sharing
+  98.75% of their spectrum, its modes stand for 1.07 to 10.7 Hz where such an image keeps at most 4.7%, a vibration's
+  trace is at least 3,000 times as long as it is wide where the gate accepts at most 10, and 31 of 35 passing depths are
+  the mode times 6.17 m or its mirror. On `/satellite/#gates`, in general terms. It needs the implementation's frozen geometry file (not public)
+  to run on its exact lines.
 - **The viewer's satellite data** is exported (`sim/katabasis/export/radar.py`: the track, the draped image, the
   virtual sensors, the method's volumes with and without the chamber over one whole period of its depth axis, and the
   Khafre volume); the viewer's Satellite mode that draws them is next.

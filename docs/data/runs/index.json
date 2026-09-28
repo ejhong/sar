@@ -707,5 +707,64 @@
    "threads": 16,
    "cpus": 16
   }
+ },
+ "p2_13_gates": {
+  "id": "p2_13_gates",
+  "title": "Stricter gates: motionless images pass them; a planted vibration is not recovered",
+  "date": "2026-09-28",
+  "started_utc": "2026-09-28T21:31:57+00:00",
+  "runtime_s": 2610.5,
+  "commit": "cbf806b",
+  "params": {
+   "acquisition": "giza-20220715",
+   "gated_module_sha256": "3e1154c11274b896b91e262198576ffd750732709ad08ac00c6892c4ea5e1b1d",
+   "gated_profile_sha256": "ae84cade31f7e5ffa9b4daa0eba152649d2afc7f1655415bad38553f4f4d69aa",
+   "profile": "ICEYE X13 Khafre four side W50 Track10 profile",
+   "face_height_m": 70.5,
+   "geoid_m": 15.5,
+   "fit_window_m": 80.0,
+   "planted": [
+    [
+     "North",
+     0.26
+    ],
+    [
+     "South",
+     3.66
+    ]
+   ],
+   "planted_v_m_s": 0.002,
+   "twin_seeds": [
+    101,
+    102
+   ],
+   "heights_m": [
+    20.0,
+    35.0,
+    50.0,
+    60.0,
+    70.5,
+    80.0,
+    95.0
+   ],
+   "desert_centre_m": [
+    -100.0,
+    -640.0
+   ],
+   "bank": {
+    "support_hz": 64660.272674,
+    "mask_width_hz": 32330.136337,
+    "bshift_hz": 404.053866,
+    "k_leap_hz": 101.031907,
+    "pair_count": 317
+   }
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  }
  }
 }

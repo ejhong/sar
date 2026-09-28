@@ -375,6 +375,29 @@ investigation's record, and what it leaves open follow.
    product's RPC over terrain and pyramids, the residual offset fitted against predicted brightness (1.0 m and 2.6 m;
    the fit's correlation is low, 0.03, and the alignment was checked by eye against the pyramids' bases).
 
+10. **Stricter gates pass motionless images, and no vibration can pass them on its own trace (P2-13).** A public
+    implementation of a gated reconstruction (317 pairs of 32,330 Hz masks 404 Hz apart over the central 12 s,
+    registration rounded to 0.01 px, arcs subtracted; a window of 50 pairs kept only if its two shift components fit an
+    ellipse at modes 1 to 10 with adjusted R² ≥ 0.25, a minor semi-axis ≥ 0.005 px and an axis ratio ≥ 0.1; ten same-mode
+    windows among the central starts; four or five contiguous positions at one start; the depth focus only there) is run
+    unchanged with its frozen X13 profile, its source hashed. Along seven loops round Khafre's faces, 20 to 95 m above
+    the base (2,828 positions), it passes 5 positions (one feature) on the real 2022 image, 13 and 8 (three and two) on
+    two motionless twins, none on the same loops over open desert in the same image, and 9 with vibrations of 2 mm/s
+    along the line of sight planted in the image at 0.26 Hz and 3.66 Hz: the real image's feature again, and one new
+    feature on the 0.26 Hz stretch at mode 3, which stands for 3.2 Hz. Each image of its pairs spans 6.0 s and the two
+    share 98.75% of their spectrum: 36% of the shifts are exactly zero and 75% within one step, and the planted
+    vibrations move them by 0.006 and 0.002 px rms where a full tracker would see 0.063 and 0.016 px. A mode is m cycles
+    in 50 pairs (0.935 s), so the modes stand for 1.07 to 10.7 Hz, where a 6.0 s image keeps at most 4.7% of a motion
+    and under 10⁻⁵ at modes 5 and 10. A vibrating point moves in each image along azimuth by its line-of-sight velocity
+    times 84 s and in range by its displacement, so its trace is at least 3,000 times as long as it is wide; the gate
+    keeps ellipses at most 10 times, so what passes is shaped by the registration's noise. 31 of the 35 passing
+    positions have their best depth within half a cycle of the mode times 6.17 m or of its mirror (308.7 m less),
+    against 4% by chance. At the first gate the real image passes 2.5 times the twins' windows and open desert 1.9
+    times (36% of shifts exactly zero against 41%); planting changes that count by 0.7%, and passing early does not
+    predict passing at the end. The implementation's frozen geometry file is not public: the lines are the lab's,
+    placed through the product's RPC over the site's surface (offset (44, 4) px from predicted brightness, correlation
+    0.03), and seven heights stand in for exact placement.
+
 Any one of 1, 3 and 4 is sufficient on its own; they fail for independent reasons (the estimator, the
 physics of the signal, and the algebra of the depth axis). R16's resolution bound, which rests on the
 same trade between a look's duration and its resolution (1.10 m s at Giza, P2-01), is a fourth. 8 extends
@@ -454,5 +477,9 @@ corner-reflector threshold P2-05 computes, so P2-05's thresholds are generous to
   Kottamya, 67 km east (M1-01), bracketed by Peterson's global models.
 - The known-chamber test at Khufu on two real passes (2022 and 2025) is run locally and not yet published. Given 1
   and 4 it could only confirm, not change, the result.
+- P2-13 runs its gated implementation on the lab's own lines round Khafre, not on the implementation's frozen
+  geometry, which is not public; seven loops from 20 to 95 m stand in for exact placement. Its motionless twin keeps the
+  image's smoothed brightness and mean spectra, not its fine texture, and registers a little more steadily (41% of
+  shifts exactly zero against 36%).
 - P2-11's penetration bounds use dry sand's measured penetration as an upper bound for limestone, and a limestone
   conductivity from the standard GPR table; no microwave loss measurement of Mokattam limestone itself is used.

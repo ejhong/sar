@@ -12,8 +12,14 @@ import bud from '../../public/data/runs/p2_05_budget.json';
 import dep from '../../public/data/runs/p2_06_depth_is_frequency.json';
 import lib from '../../public/data/ambient.json';
 import vsens from '../../public/data/runs/p2_09_virtual_sensors.json';
+import gates from '../../public/data/runs/p2_13_gates.json';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const gc = gates.counts as { real: number; twins: number[]; planted: number; desert: number; positions_per_image: number };
+const gNew = gates.planted_new as unknown as { modes: number[]; planted_hz: number | null }[];
+const gFound = gNew.length
+  ? `one new patch passed, but at a rhythm ${Math.round(gNew[0].modes[0] / (gates.gate.window_s as number) / (gNew[0].planted_hz ?? 1))} times faster than the shaking planted there`
+  : 'nothing new passed';
 const fig = (f: string) => `${base}/data/runs/p2_07_whole_chain/${f.replace(/\.png$/, f.includes('ground') || f.includes('speckle') ? '.jpg' : '.png')}`;
 const um = (v: number) => v * 1e6;
 const round = (v: number, n = 2) => Number(v.toPrecision(n)).toLocaleString('en-US');
@@ -369,6 +375,10 @@ const roomY = (100 * 12) / zmax;
         <div class="q">
           <h3>Then why do the published pictures look so convincing?</h3>
           <p>Because the method draws such pictures from any image: over our flat simulated ground, with and without a room; over open desert on the real image; over hundreds of surveyed tombs at Giza, where it found none. Its tall columns are pixels whose reading wanders, drawn bright at every depth; the blocks at their feet sit where its depth scale repeats itself. <a href={`${base}/satellite/#pillars`}>How the pillars and boxes are made</a>.</p>
+        </div>
+        <div class="q">
+          <h3>What about stricter versions that filter out the noise?</h3>
+          <p>Later versions of the method keep only readings that pass a row of tests: they must circle in a clean ellipse, ten stretches in a row must agree, and neighbouring points must pass together. We ran one, unchanged, round Khafre’s faces in the real image: {gc.real} of {gc.positions_per_image.toLocaleString('en-US')} points passed. In copies of the image in which nothing moves, {gc.twins.join(' and ')} passed; over open desert in the same image, {gc.desert ? gc.desert : 'none'}. When we made the faces shake 40,000 times harder than the ground does, the tests did not find it: {gFound}. Each picture the tests compare lasts six seconds and averages such shaking away, and shaking draws a thin line in the readings, never the round ellipse the tests ask for. What passes is noise, and its “depth” is only the rhythm the tests picked. <a href={`${base}/satellite/#gates`}>The gates, measured</a>.</p>
         </div>
         <div class="q">
           <h3>Hasn’t vibration been measured from space?</h3>

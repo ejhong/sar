@@ -15,6 +15,7 @@ import pill from '../../public/data/runs/p2_08_pillars_and_boxes.json';
 import vsens from '../../public/data/runs/p2_09_virtual_sensors.json';
 import every from '../../public/data/runs/p2_11_every_way_in.json';
 import realpass from '../../public/data/runs/p2_12_real_pass.json';
+import gates from '../../public/data/runs/p2_13_gates.json';
 import passive from '../../public/data/runs/p1_04_ambient.json';
 import echo from '../../public/data/runs/p1_03_scattered.json';
 import Figure from '../components/Figure.astro';
@@ -132,6 +133,59 @@ const heatBench = eC.rooms.bench.heat;
 const smallLoads = ['tide', 'air', 'water'].map((k) => (eC.rooms.bench as Record<string, { imprint_m: number }>)[k].imprint_m);
 const dB = (v: number) => Math.round(v).toLocaleString('en-US');
 const sig2 = (v: number) => Number(v.toPrecision(2)).toLocaleString('en-US');
+
+// ---- P2-13
+type GSide = { exact_zero: number; within_one_step: number };
+type GFeat = { case: string; mode: number; best_depth_m: number };
+type GNew = { side: string; modes: number[]; planted_hz: number | null };
+const gc = gates.counts as { real: number; twins: number[]; planted: number; desert: number; positions_per_image: number };
+const gRuns = gates.runs as { real: number; twins: number[]; planted: number; desert: number };
+const gg = gates.gate;
+const gSpan = gates.pair_span_s as number;
+const gModeHz = gg.mode_hz as number[];
+const gGain = gg.look_gain as number[];
+const gNull = gModeHz.filter((_, i) => gGain[i] < 1e-5); // a whole number of cycles in the image: under a hundred-thousandth
+const gLong = 1 / Math.max(...(gg.trace_width_ratio as number[]));
+const gUnit = 10 ** (Math.floor(Math.log10(gLong)) - 1);
+const gThin = Math.floor(gLong / gUnit) * gUnit; // rounded down: "at least"
+const gSets = gates.sets as unknown as { cases: Record<string, { sides: Record<string, GSide> }> }[];
+const gMean = (pick: (c: string) => boolean, key: keyof GSide) => {
+  const v = gSets.flatMap((st) => Object.entries(st.cases).filter(([c]) => pick(c)).flatMap(([, r]) => Object.values(r.sides)));
+  return v.reduce((a, x) => a + x[key], 0) / v.length;
+};
+const gZero = gMean((c) => c === 'real', 'exact_zero');
+const gStep = gMean((c) => c === 'real', 'within_one_step');
+const gZeroTwin = gMean((c) => c.startsWith('twin'), 'exact_zero');
+const gFirst = gates.first_gate_windows as Record<string, number>;
+const gFirstTwin = gc.twins.reduce((a, _, i) => a + gFirst[`twin${gates.manifest.params.twin_seeds[i]}`], 0) / gc.twins.length;
+const gFeats = gates.features as unknown as GFeat[];
+const gNew = gates.planted_new as unknown as GNew[];
+const gZc = gates.depth_per_cycle_m as number;
+const gRep = gates.repeat_m as number;
+const gW = Math.round((gg.window_s as number) / (gg.pair_s as number));
+const gAxis = Array.from({ length: gModeHz.length }, (_, i) => i + 1);
+// set a little apart by case so that coincident positions stay visible; the real image drawn last, on top
+const gGroups: [string, (c: string) => boolean, string, number][] = [
+  ['motionless twins', (c) => c.startsWith('twin'), 'var(--lapis)', -0.18],
+  ['open desert', (c) => c === 'desert', 'var(--ochre)', -0.06],
+  ['planted vibrations', (c) => c === 'planted', 'var(--verdigris)', 0.06],
+  ['the real image', (c) => c === 'real', 'var(--cinnabar)', 0.18],
+];
+const gDots = gGroups
+  .map(([name, pick, color, dx]) => {
+    const f = gFeats.filter((x) => pick(x.case)).sort((a, b) => a.mode - b.mode);
+    return { name, x: f.map((x) => x.mode + dx), y: f.map((x) => x.best_depth_m), color, markers: true, width: 0 };
+  })
+  .filter((d) => d.x.length);
+const gF = Array.from({ length: 1001 }, (_, i) => 0.9 + i * 0.01);
+const gPlural = (n: number, one: string, many = `${one}s`) => `${n.toLocaleString('en-US')} ${n === 1 ? one : many}`;
+const gatesVerdict =
+  `With nothing moving and nothing inside, the two twins pass ${gc.twins.join(' and ')} positions (${gRuns.twins.join(' and ')} features); ` +
+  `the real image passes ${gc.real} (${gPlural(gRuns.real, 'feature')}), and open desert in the same image ${gc.desert ? `${gc.desert} (${gPlural(gRuns.desert, 'feature')})` : 'none'}. ` +
+  `With the vibrations planted, ${gates.planted_kept === gRuns.real ? 'the real image’s ' + (gRuns.real === 1 ? 'feature passes' : 'features pass') + ' again' : `${gates.planted_kept} of the real image’s features pass again`}` +
+  (gNew.length
+    ? `, and ${gNew.length === 1 ? 'one new feature' : `${gNew.length} new features`}: ${gNew.map((r) => `on the ${r.side.toLowerCase()} face${r.planted_hz ? `, where ${r.planted_hz} Hz was planted` : ''}, at mode ${r.modes.join(', ')}, which stands for ${r.modes.map((m) => (m / gg.window_s).toFixed(1)).join(', ')} Hz`).join('; ')}.`
+    : ', and nothing new.');
 ---
 <Doc
   title="The satellite over the same ground"
@@ -149,6 +203,7 @@ const sig2 = (v: number) => Number(v.toPrecision(2)).toLocaleString('en-US');
     { id: 'depth', label: 'Depth is frequency' },
     { id: 'chain', label: 'The whole chain' },
     { id: 'pillars', label: 'Pillars and boxes' },
+    { id: 'gates', label: 'Stricter gates' },
     { id: 'sensors', label: 'Virtual sensors' },
     { id: 'every', label: 'Every other route' },
     { id: 'real', label: 'The real pass' },
@@ -504,6 +559,85 @@ const sig2 = (v: number) => Number(v.toPrecision(2)).toLocaleString('en-US');
     <RunDetails manifest={pill.manifest} />
   </section>
 
+  <section id="gates">
+    <h2>Stricter gates keep noise: motionless images pass them, and no vibration draws the shape they require</h2>
+    <p class="sub">
+      Later versions of the method put selection gates between the shifts and the depth focus. Pairs of images are cut from
+      the pass, each a {gSpan.toFixed(1)} s slice of it, and registered to 0.01 px. A window of {gW} successive pairs
+      is kept only if the two components of its shifts trace an ellipse at one of ten modes, fitted well,
+      with a narrow semi-axis of at least {gg.minor_min_px} px and at least a tenth as wide as it is long; ten windows in a row must
+      agree on the mode, and four or five neighbouring positions must pass together. The depth focus runs only where all of
+      that passed. P2-13 runs such a gated pipeline unchanged on the 2022 image of Khafre, along {gates.heights_m.length} loops
+      round its faces from {gates.heights_m[0]} to {gates.heights_m[gates.heights_m.length - 1]} m up
+      ({gc.positions_per_image.toLocaleString('en-US')} positions); on two motionless twins of that image, with its brightness
+      and spectrum and fresh speckle; on the same loops laid over open desert in the same image; and on the real image with
+      two stretches of the faces made to vibrate at 2 mm/s along the line of sight, some 40,000 times Giza’s microseisms, at
+      0.26 Hz and 3.66 Hz, resonances proposed for a 648 m column of air and for the Grand Gallery.
+    </p>
+    <div class="grid-2">
+      <div class="note-card">
+        <span class="tag measured">real image · P2-13</span>
+        <h3>Positions that pass every gate</h3>
+        <table class="data compact">
+          <thead><tr><th></th><th class="num">positions</th><th class="num">features</th></tr></thead>
+          <tbody>
+            <tr><td>the real image</td><td class="num">{gc.real}</td><td class="num">{gRuns.real}</td></tr>
+            {gc.twins.map((n, i) => <tr><td>a motionless twin{i ? ', other speckle' : ''}</td><td class="num">{n}</td><td class="num">{gRuns.twins[i]}</td></tr>)}
+            <tr><td>open desert, the same image</td><td class="num">{gc.desert}</td><td class="num">{gRuns.desert}</td></tr>
+            <tr><td>the real image, vibrations planted</td><td class="num">{gc.planted}</td><td class="num">{gRuns.planted}</td></tr>
+          </tbody>
+        </table>
+        <p>{gatesVerdict}</p>
+        <p>Earlier in the chain the order is reversed. At the first gate the real image passes {(gFirst.real / gFirstTwin).toFixed(1)} times as
+        many windows as the twins, and over open desert {(gFirst.desert / gFirstTwin).toFixed(1)} times: its shifts are a little less
+        steady ({pct(gZero)} exactly zero, against {pct(gZeroTwin)}), and planting the vibrations changes that count by
+        {' '}{((gFirst.planted / gFirst.real - 1) * 100).toFixed(1)}%. Passing early does not predict passing at the end.</p>
+      </div>
+      <div class="note-card">
+        <span class="tag measured">why · P2-13</span>
+        <h3>The shifts barely move, and the gate asks for a shape vibration cannot make</h3>
+        <p>The two images of a pair share {(gates.pair_shared_fraction * 100).toFixed(2)}% of their spectrum, so correlating
+        them locks near zero, as it does for looks: {pct(gZero)} of the shifts are exactly zero and {pct(gStep)} within one
+        0.01 px step. The planted vibrations move them by {gates.planted_rms_px['0.26'].toFixed(3)} px at 0.26 Hz and
+        {' '}{gates.planted_rms_px['3.66'].toFixed(3)} px at 3.66 Hz, where a tracker following them fully would see
+        {' '}{gates.full_tracker_rms_px['0.26'].toFixed(3)} and {gates.full_tracker_rms_px['3.66'].toFixed(3)} px.</p>
+        <p>A mode is a number of cycles in a window, so the gate listens at {gModeHz[0].toFixed(2)} to
+        {' '}{gModeHz[gModeHz.length - 1].toFixed(1)} Hz, where a {gSpan.toFixed(1)} s image keeps at most
+        {' '}{(Math.max(...gGain) * 100).toFixed(1)}% of a motion (Fig. S9). And a vibrating patch of ground moves in each image
+        along the track by its velocity times {gg.azimuth_m_per_m_s.toFixed(0)} s, and toward the radar only by its displacement,
+        so its shifts trace an ellipse at least {gThin.toLocaleString('en-US')} times as long as it is wide; the gate keeps only
+        ellipses at most {Math.round(1 / gg.axis_ratio_min)} times. What passes is drawn by the registration’s noise.</p>
+      </div>
+    </div>
+    <div class="grid-2 charts">
+      <LineChart
+        directLabels={false}
+        title="Fig. S8 · Where anything passes, its depth is its mode"
+        series={[
+          { name: `mode × ${gZc.toFixed(2)} m`, x: gAxis, y: gAxis.map((m) => m * gZc), color: 'var(--muted)', width: 1.4 },
+          { name: `its mirror, ${gRep.toFixed(1)} m less`, x: gAxis, y: gAxis.map((m) => gRep - m * gZc), color: 'var(--muted)', dash: '4 3', width: 1.4 },
+          ...gDots,
+        ]}
+        xLabel="the window's winning mode"
+        yLabel="best depth, m"
+        xTicks={gAxis}
+        caption={`Every position that passed every gate, in all five cases${gc.desert ? '' : ' (none over open desert)'}, set a little apart by case. ${gates.depth_within_half_cycle} of ${gFeats.length} lie within half a cycle (${(gZc / 2).toFixed(1)} m) of one of the two lines, where ${pct(gates.depth_chance_fraction as number)} would by chance: a window whose shifts follow m cycles is steered best by the depth whose phase turns m times across it. The depth is the frequency the gate chose, as the published focusing’s is (above).`}
+      />
+      <LineChart
+        directLabels={false}
+        title={`Fig. S9 · What a ${gSpan.toFixed(1)} s image keeps of a motion, at the gate's modes`}
+        series={[
+          { name: `a ${gSpan.toFixed(1)} s image`, x: gF, y: gF.map((f) => Math.abs(sinc(f * gSpan)) * 100), color: 'var(--muted)', width: 1.4 },
+          { name: 'the ten modes', x: gModeHz, y: gGain.map((v) => v * 100), color: 'var(--porphyry)', markers: true, width: 0 },
+        ]}
+        xLabel="frequency of the motion, Hz"
+        yLabel="share kept, %"
+        caption={`Mode m is m cycles in ${gW} pairs, ${gg.window_s.toFixed(3)} s of the pass. Each image of a pair averages the motion over its ${gSpan.toFixed(1)} s; at the gate's frequencies that keeps at most ${(Math.max(...gGain) * 100).toFixed(1)}%, and under a hundred-thousandth at ${gNull.map((f) => f.toFixed(1)).join(' and ')} Hz, where a whole number of cycles fits in it.`}
+      />
+    </div>
+    <RunDetails manifest={gates.manifest} />
+  </section>
+
   <section id="sensors">
     <h2>A radar image is not a dense seismic array</h2>
     <p class="sub">
@@ -522,7 +656,7 @@ const sig2 = (v: number) => Number(v.toPrecision(2)).toLocaleString('en-US');
     </div>
     <div class="grid-2 charts">
       <LineChart
-        title="Fig. S9 · Stacking still sensors: the scatter falls as more are averaged"
+        title="Fig. S10 · Stacking still sensors: the scatter falls as more are averaged"
         logX
         logY
         series={[
@@ -607,7 +741,7 @@ const sig2 = (v: number) => Number(v.toPrecision(2)).toLocaleString('en-US');
       {Math.abs(realpass.registration.shift_m[1]).toFixed(1)} m across). Each pyramid’s top lands on the ground in front of it,
       toward the radar, as the radar records it. The wave reaches about {Math.round(realpass.reach_m * 100)} cm into dry sand at
       most. Run on this image, the published method draws its columns wherever the registration wanders (its power follows each
-      pixel’s trajectory energy at {Math.min(...(realpass.patches as { pillar_power_vs_energy: number }[]).map((x) => x.pillar_power_vs_energy)).toFixed(4)}),
+      pixel’s trajectory energy at {Math.min(...(realpass.patches as { pillar_power_vs_energy: number }[]).map((x) => x.pillar_power_vs_energy)).toFixed(4)}).
       Every patch draws columns: the pyramids, whose surfaces are busier, draw more of the strongest
       ({Math.round(Math.min(...(realpass.patches as { kind: string; share_in_top5: number }[]).filter((x) => x.kind === 'monument').map((x) => x.share_in_top5)) * 100)}–{Math.round(Math.max(...(realpass.patches as { kind: string; share_in_top5: number }[]).filter((x) => x.kind === 'monument').map((x) => x.share_in_top5)) * 100)}% of their
       pixels are among the noisiest 5%, against {(Math.min(...(realpass.patches as { kind: string; share_in_top5: number }[]).filter((x) => x.kind === 'control').map((x) => x.share_in_top5)) * 100).toFixed(1)}–{(Math.max(...(realpass.patches as { kind: string; share_in_top5: number }[]).filter((x) => x.kind === 'control').map((x) => x.share_in_top5)) * 100).toFixed(1)}% on open
@@ -638,6 +772,7 @@ const sig2 = (v: number) => Number(v.toPrecision(2)).toLocaleString('en-US');
       <div class="note-card"><h3>Brighter targets</h3><p>Magnitude tracking follows an isolated bright scatterer in full (P2-03), so the best case is a stone or a placed corner reflector above the chamber: short by {order(brightShort)} and {order(reflShort)} under Giza’s microseisms, {order(noisyRefl)} for the reflector at the noisiest stations.</p></div>
       <div class="note-card"><h3>Other structures</h3><p>The imprint scales as volume over depth squared (checked against the solver, P2-04); the claimed deep structure scales to {(imp.claimed[0].relative_to_bench as number).toFixed(2)} of the bench chamber. Independently of any structure, Giza’s whole microseism motion is {wholeMotion.toLocaleString('en-US')} times below the plateau’s detection threshold.</p></div>
       <div class="note-card"><h3>A better estimator</h3><p>For fully developed speckle the Doppler bins are independent circular Gaussians, so a phase history shared by a patch leaves the image’s distribution unchanged: no estimator recovers it. What survives is point-like content (magnitudes, above) and the apparent brightness a displacement gradient makes, of order 10<sup>−11</sup> here.</p></div>
+      <div class="note-card"><h3>Stricter selection</h3><p>Gates can only discard readings, never add what the image does not hold. Run unchanged on the real image, a gated version passes motionless copies of it as readily as the real one, and cannot pass a vibration’s own trace at any strength (<a href="#gates">above</a>).</p></div>
       <div class="note-card"><h3>The published images</h3><p>The pipeline draws structured sections from any input: identical with and without the chamber (P2-07), the same over monuments and open desert (R1, R6), no signal over hundreds of surveyed shafts (R13), and the published appearance everywhere (R8).</p></div>
       <div class="note-card"><h3>Vibration measured from orbit, 2026</h3><p>The method’s authors first applied this kind of tracking to bridges in Italy and to the Mosul Dam in 2020, without instruments on the structures at the same time. Two 2026 papers (Vattulainen et al., IEEE Access; Lotti et al., Structural Control and Health Monitoring) measure vibration from single spaceborne images against ground truth: corner reflectors on shakers in open fields, and a steel footbridge chosen because it is bright. They track isolated bright targets moving at 0.7 mm/s and up, with errors near 1 mm/s: what P2-03 says works. Their smallest motion is {Math.round(eB.measured_over_trembling).toLocaleString('en-US')} times Giza’s whole microseism motion and <Sci v={eB.measured_over_imprint} p={0} /> times the chamber’s imprint.</p></div>
       <div class="note-card"><h3>Only simulation?</h3><p>The coherence identity holds on the real crop to 10<sup>−9</sup>; the blindness is measured on real texture (1 ± 1%); the geometry is read from the product and reproduces its declared numbers; and the first investigation’s real-data controls found nothing at Giza or Sacsayhuamán.</p></div>
