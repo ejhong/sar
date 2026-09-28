@@ -10,7 +10,7 @@ from, on three inputs:
   the 2022 bank of 50 half-band pairs 88 Hz apart, 32-pixel patches, a target every 12 x 8 pixels; cached on the desktop);
 * P2-07's simulated flat desert with nothing below it, through the same pipeline.
 
-The depth grid runs past the steering's repeat depth z_rep = 2 pi / dKz, as the derivative protocol's own grid does (R12),
+The depth grid runs past the steering's repeat depth z_rep = 2 pi / dKz, as a replication's own grid does (R12),
 and the axis is relabelled, as any lambda_s relabels it (P2-06), so that z_rep falls at 648 m, the depth of the published
 shafts. Nothing is reprocessed by the relabelling.
 

@@ -72,7 +72,7 @@ class Geometry:
         return np.rad2deg(np.asarray(nu, float) * self.lam / 2)
 
     def kz(self, nu, lam_s):
-        """Biondi/Seyfzadeh steering wavenumber for the sub-aperture centred at nu.
+        """The published steering wavenumber for the sub-aperture centred at nu.
 
         Kz = 4 pi B_perp / (lam_s R0 sin theta), with B_perp the along-track platform
         offset and lam_s the declared "sound" wavelength (0.48 m in the 2022 paper).

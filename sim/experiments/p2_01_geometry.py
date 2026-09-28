@@ -3,8 +3,8 @@
     uv run python experiments/p2_01_geometry.py
 
 Reads the ICEYE Spotlight Dwell products' metadata (no imagery): Giza 2025 (X33) and Sacsayhuaman
-2025 (X35), both Dwell Fine, and Giza 2022 (X13), the image the BiondiProtocol group's Khufu tomograms
-use. It writes their acquisition records to sites/acquisitions/, from which `sarsim.acquisition.DwellGeometry` builds
+2025 (X35), both Dwell Fine, and Giza 2022 (X13), a second pass over Giza at a steeper angle. It writes
+their acquisition records to sites/acquisitions/, from which `sarsim.acquisition.DwellGeometry` builds
 the simulator's geometry anywhere, without the products. Where the products are absent (the
 cloud), the committed records are used and only the synthetic checks run again.
 

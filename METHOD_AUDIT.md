@@ -7,10 +7,8 @@ settles the existence of underground columns.
 Three methods must remain distinguishable:
 
 1. Biondi and coauthors' published descriptions and original implementation.
-2. The public **derivative** protocol v1.5, inspected at revision
-   `81451263db5a5ab4624b74d64ee65cb1b611b453` of
-   [Replication and Verification](https://github.com/BiondiProtocol/Replication-and-Verification-Biondi-Protocol/tree/81451263db5a5ab4624b74d64ee65cb1b611b453).
-   Its README acknowledges missing original details and added empirical choices.
+2. Public **reconstructions** of the method (a derivative protocol, v1.5, inspected at a fixed revision), which
+   acknowledge missing original details and add empirical choices of their own.
 3. This repository's specified simulation and processing choices.
 
 ## Corrected selection and focusing
@@ -236,7 +234,7 @@ volume-rendering assertions when the browser has no WebGL2, so it needs Chrome s
 
 ### Correction of scope, 23 September 2026: "you need minutes"
 
-Manu Seyfzadeh objected that the micro-motion literature, including long-standing work from the
+It was objected that the micro-motion literature, including long-standing work from the
 University of Zurich, establishes SAR sensitivity in the hundreds of micrometres from a single
 pass, and that measuring phase evolution precisely does not take minutes. Both points are
 correct, and the site previously stated the time requirement too broadly.
@@ -430,8 +428,7 @@ corner-reflector threshold P2-05 computes, so P2-05's thresholds are generous to
   the apparent brightness a displacement gradient produces, which for this imprint is of order 10⁻¹¹.
 - Giza's own ambient level is unmeasured in the open literature; the microseism level is from
   Kottamya, 67 km east (M1-01), bracketed by Peterson's global models.
-- The Khufu east-face test on the real images (X13 2022 and X33 2025, P2-10) follows a configuration communicated
-  privately by the BiondiProtocol group and is kept out of the public record until cleared. Given 1 and 4 it could
-  only confirm, not change, the result.
+- The known-chamber test at Khufu on two real passes (2022 and 2025) is run locally and not yet published. Given 1
+  and 4 it could only confirm, not change, the result.
 - P2-11's penetration bounds use dry sand's measured penetration as an upper bound for limestone, and a limestone
   conductivity from the standard GPR table; no microwave loss measurement of Mokattam limestone itself is used.
