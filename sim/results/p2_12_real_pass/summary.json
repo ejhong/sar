@@ -3,9 +3,9 @@
   "id": "p2_12_real_pass",
   "title": "The real pass over Giza, laid on the ground",
   "date": "2026-09-28",
-  "started_utc": "2026-09-28T15:17:11+00:00",
-  "runtime_s": 5.4,
-  "commit": "e523482",
+  "started_utc": "2026-09-28T16:59:37+00:00",
+  "runtime_s": 8.5,
+  "commit": "51697f0",
   "params": {
    "acquisition": "giza-20250827",
    "site": "giza",
@@ -111,7 +111,10 @@
    "repeat_depth_raw_m": 27.353671,
    "pillar_power_vs_energy": 1.0,
    "cells_on_site": 3730,
-   "mean_energy": 1.924e-07
+   "mean_energy": 1.924e-07,
+   "median_energy": 1.752e-07,
+   "share_in_top5": 0.048967,
+   "max_energy": 1.718e-06
   },
   {
    "key": "khufu",
@@ -125,7 +128,10 @@
    "repeat_depth_raw_m": 27.40044,
    "pillar_power_vs_energy": 1.0,
    "cells_on_site": 3730,
-   "mean_energy": 1.996e-07
+   "mean_energy": 1.996e-07,
+   "median_energy": 1.77e-07,
+   "share_in_top5": 0.078448,
+   "max_energy": 1.52e-06
   },
   {
    "key": "menkaure",
@@ -139,7 +145,10 @@
    "repeat_depth_raw_m": 27.314828,
    "pillar_power_vs_energy": 1.0,
    "cells_on_site": 3504,
-   "mean_energy": 1.998e-07
+   "mean_energy": 1.998e-07,
+   "median_energy": 1.762e-07,
+   "share_in_top5": 0.088941,
+   "max_energy": 1.067e-06
   },
   {
    "key": "plateau_south",
@@ -153,7 +162,10 @@
    "repeat_depth_raw_m": 27.322579,
    "pillar_power_vs_energy": 1.0,
    "cells_on_site": 3399,
-   "mean_energy": 1.818e-07
+   "mean_energy": 1.818e-07,
+   "median_energy": 1.695e-07,
+   "share_in_top5": 0.031063,
+   "max_energy": 6.507e-07
   },
   {
    "key": "desert_west",
@@ -167,7 +179,10 @@
    "repeat_depth_raw_m": 27.202798,
    "pillar_power_vs_energy": 1.0,
    "cells_on_site": 0,
-   "mean_energy": 1.9e-07
+   "mean_energy": 1.9e-07,
+   "median_energy": 1.786e-07,
+   "share_in_top5": 0.036226,
+   "max_energy": 1.538e-06
   },
   {
    "key": "desert_south",
@@ -181,7 +196,10 @@
    "repeat_depth_raw_m": 27.271464,
    "pillar_power_vs_energy": 1.0,
    "cells_on_site": 0,
-   "mean_energy": 1.756e-07
+   "mean_energy": 1.756e-07,
+   "median_energy": 1.669e-07,
+   "share_in_top5": 0.016406,
+   "max_energy": 7.385e-07
   }
  ],
  "monument_vs_control_profile_corr": 0.904011,
@@ -676,5 +694,5 @@
   625.9,
   636.0
  ],
- "finding": "The real pass lays onto the ground to within its fitted offset of 1.0 m along track and 2.6 m across (image against predicted brightness, correlation 0.03); the image covers 100% of the site. Its wave reaches at most about 0.3 m into dry sand and less into rock. The published method, run on this image over three pyramids and three stretches of open plateau, draws its columns wherever the registration wanders: on every patch the power at a pixel follows that pixel's trajectory energy (1.0000 or better). Its mean depth profiles are alike over the three pyramids (0.88 to 0.91), whose surfaces are alike, and a pyramid's differs from open plateau's (0.61 to 0.83) by no more than two stretches of open plateau differ from each other (0.44 to 0.72)."
+ "finding": "The real pass lays onto the ground to within its fitted offset of 1.0 m along track and 2.6 m across (image against predicted brightness, correlation 0.03); the image covers 100% of the site. Its wave reaches at most about 0.3 m into dry sand and less into rock. The published method, run on this image over three pyramids and three stretches of open plateau, draws its columns wherever the registration wanders: on every patch the power at a pixel follows that pixel's trajectory energy (1.0000 or better). Every patch draws columns; the pyramids, whose surfaces are busier, draw more of the strongest (5 to 9% of their pixels are among the noisiest 5% of all, against 1.6 to 3.6% on open plateau), while their typical pixel wanders as much as open plateau's (medians within 7%). Its mean depth profiles are alike over the three pyramids (0.88 to 0.91), whose surfaces are alike, and a pyramid's differs from open plateau's (0.61 to 0.83) by no more than two stretches of open plateau differ from each other (0.44 to 0.72)."
 }

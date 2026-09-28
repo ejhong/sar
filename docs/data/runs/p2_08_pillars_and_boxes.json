@@ -3,9 +3,9 @@
   "id": "p2_08_pillars_and_boxes",
   "title": "How the method draws pillars and boxes",
   "date": "2026-09-28",
-  "started_utc": "2026-09-28T11:58:59+00:00",
-  "runtime_s": 56.9,
-  "commit": "5cd8a43",
+  "started_utc": "2026-09-28T16:58:46+00:00",
+  "runtime_s": 51.0,
+  "commit": "51697f0",
   "params": {
    "inputs": {
     "khafre": "legacy cache real_giza_khafre_paper_6d230513af04.npz",
@@ -2091,5 +2091,5 @@
    "corr_along_box": 0.981601
   }
  },
- "finding": "The method's pillars and boxes are its own arithmetic. Averaged over a period of its depth axis, the power it draws at a pixel is that pixel's trajectory energy (correlation 1.000): a pixel whose registration wanders is bright at every depth and, averaged over a thick slab as any rendering does, stands as a column. On the real image such pixels lie where the surface is darker or changes brightness (noise against brightness, correlation -0.24 at Khafre and -0.56 on open plateau), and open plateau with no monument draws the tallest pillars of all; perfectly uniform simulated ground draws none. Along a column the power rises and falls every 13 m of the relabelled axis, its resolution: the bands. At the surface and again at each repeat depth, 648 m and 1296 m relabelled, every steering phase is the same, so the power there is each pixel's average offset (ratio 0.994, correlation 0.996): the blocks. Below 648 m the picture repeats (correlation 0.968)."
+ "finding": "The method's pillars and boxes are its own arithmetic. Averaged over a period of its depth axis, the power it draws at a pixel is that pixel's trajectory energy (correlation 1.000): a pixel whose registration wanders is bright at every depth and, averaged over a thick slab as any rendering does, stands as a column. On the real image such pixels lie where the surface is darker or changes brightness (noise against brightness, correlation -0.24 at Khafre and -0.56 on open plateau), and open plateau with no monument draws them too (P2-12 counts them over all six patches); perfectly uniform simulated ground draws none. Along a column the power rises and falls every 13 m of the relabelled axis, its resolution: the bands. At the surface and again at each repeat depth, 648 m and 1296 m relabelled, every steering phase is the same, so the power there is each pixel's average offset (ratio 0.994, correlation 0.996): the blocks. Below 648 m the picture repeats (correlation 0.968)."
 }

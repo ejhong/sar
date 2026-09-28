@@ -517,9 +517,9 @@
   "id": "p2_08_pillars_and_boxes",
   "title": "How the method draws pillars and boxes",
   "date": "2026-09-28",
-  "started_utc": "2026-09-28T11:58:59+00:00",
-  "runtime_s": 56.9,
-  "commit": "5cd8a43",
+  "started_utc": "2026-09-28T16:58:46+00:00",
+  "runtime_s": 51.0,
+  "commit": "51697f0",
   "params": {
    "inputs": {
     "khafre": "legacy cache real_giza_khafre_paper_6d230513af04.npz",
@@ -661,9 +661,9 @@
   "id": "p2_12_real_pass",
   "title": "The real pass over Giza, laid on the ground",
   "date": "2026-09-28",
-  "started_utc": "2026-09-28T15:17:11+00:00",
-  "runtime_s": 5.4,
-  "commit": "e523482",
+  "started_utc": "2026-09-28T16:59:37+00:00",
+  "runtime_s": 8.5,
+  "commit": "51697f0",
   "params": {
    "acquisition": "giza-20250827",
    "site": "giza",

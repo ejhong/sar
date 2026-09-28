@@ -330,7 +330,7 @@ investigation's record, and what it leaves open follow.
    period of the depth axis, the power drawn at a pixel equals that pixel's trajectory energy (Parseval; correlation
    1.000 on the real Khafre image), so a pixel whose registration wanders is bright at every depth and stands as a
    column in any thick-slab rendering; such pixels lie where the surface is darker or changes brightness, and open
-   plateau with no monument draws the tallest columns. Along a column the power rises and falls at the axis's
+   plateau with no monument draws them too (P2-12 counts them). Along a column the power rises and falls at the axis's
    resolution (13 m relabelled): the bands. At z = 0 and at every repeat depth (648 m and 1,296 m relabelled) all
    steering phases coincide and the power is the pixel's mean offset squared (ratio 0.994): the blocks. Below 648 m
    the picture repeats.
@@ -357,7 +357,10 @@ investigation's record, and what it leaves open follow.
 
 9. **On the real image, the method's picture is the surface's (P2-12).** Run on the 2025 pass over Khafre, Khufu,
    Menkaure and three stretches of open plateau, the published pipeline's power at every pixel follows that pixel's
-   trajectory energy (1.0000 on every patch); its mean depth profiles are alike over the three pyramids (0.88 to 0.91),
+   trajectory energy (1.0000 on every patch). Every patch draws columns; the pyramids, whose surfaces are busier, draw
+   more of the strongest (5 to 9% of their pixels are among the noisiest 5% of all six patches, against 1.6 to 3.6% on
+   open plateau), while their typical pixel wanders as much (medians within 7%). Its mean depth profiles are alike over
+   the three pyramids (0.88 to 0.91),
    whose surfaces are alike, and a pyramid's differs from open plateau's (0.61 to 0.83) by no more than two stretches
    of open plateau differ from each other (0.44 to 0.72). The image itself is resampled onto the ground through the
    product's RPC over terrain and pyramids, the residual offset fitted against predicted brightness (1.0 m and 2.6 m;

@@ -26,7 +26,7 @@ const rungs: { n: number; name: string; where: string; distance: string; verdict
   { n: 4, name: 'Ambient noise', where: 'the same geophones listening to footsteps and traffic, no hammer', distance: '12 m', verdict: `retrieves the wave (correlation ${am.retrieval.ncc.toFixed(2)}), but the image tops out at ${am.score.image_contrast_ensemble.toFixed(1)}× at any record length`, status: 'faint', href: '/seismic/#ambient' },
   { n: 5, name: 'Satellite radar', where: 'an ICEYE dwell, 24.5 s of aperture, 600 km up', distance: '607 km', verdict: `blind to the ground moving (${(sees.real.block.gain_complex * 100).toFixed(0)}% recovered), and the chamber’s imprint lies ${shortText} times below what it could detect`, status: 'nothing', href: '/satellite/' },
 ];
-const label: Record<Status, string> = { found: 'recovered', faint: 'faint', nothing: 'sees nothing', next: 'next', planned: 'planned', measured: 'phase 2' };
+const label: Record<Status, string> = { found: 'recovered', faint: 'faint', nothing: 'sees nothing', next: 'next', planned: 'planned', measured: 'measured' };
 ---
 <figure class="ladder">
   <svg viewBox="0 0 680 350" role="img" aria-label="The instruments, from a borehole beside a buried chamber to a satellite in orbit">

@@ -10,15 +10,23 @@ interface Props {
 }
 const { current = '' } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
-const links = [
-  { id: 'home', href: `${base}/`, label: 'Overview' },
-  { id: 'pictures', href: `${base}/pictures/`, label: 'In pictures' },
-  { id: 'underworld', href: `${base}/underworld/`, label: '3-D' },
-  { id: 'satellite', href: `${base}/satellite/`, label: 'Satellite' },
-  { id: 'seismic', href: `${base}/seismic/`, label: 'Seismic' },
-  { id: 'ambient', href: `${base}/ambient/`, label: 'Ambient' },
-  { id: 'claim', href: `${base}/claim/`, label: 'Claim' },
-  { id: 'method', href: `${base}/method/`, label: 'Method' },
+// Three groups, read left to right: the story; the evidence, what works from the ground before why the satellite
+// cannot; and the reference pages.
+const groups = [
+  [
+    { id: 'home', href: `${base}/`, label: 'Overview' },
+    { id: 'pictures', href: `${base}/pictures/`, label: 'In pictures' },
+    { id: 'underworld', href: `${base}/underworld/`, label: '3-D' },
+  ],
+  [
+    { id: 'seismic', href: `${base}/seismic/`, label: 'Seismic' },
+    { id: 'ambient', href: `${base}/ambient/`, label: 'Ambient' },
+    { id: 'satellite', href: `${base}/satellite/`, label: 'Satellite' },
+  ],
+  [
+    { id: 'claim', href: `${base}/claim/`, label: 'Claim' },
+    { id: 'method', href: `${base}/method/`, label: 'Method' },
+  ],
 ];
 ---
 <header class="top-bar">
@@ -31,10 +39,15 @@ const links = [
   </div>
   <nav aria-label="Primary">
     {
-      links.map((l) => (
-        <a href={l.href} aria-current={current === l.id ? 'page' : undefined}>
-          {l.label}
-        </a>
+      groups.map((g, i) => (
+        <>
+          {i > 0 && <span class="sep" aria-hidden="true" />}
+          {g.map((l) => (
+            <a href={l.href} aria-current={current === l.id ? 'page' : undefined}>
+              {l.label}
+            </a>
+          ))}
+        </>
       ))
     }
   </nav>
@@ -102,6 +115,14 @@ const links = [
     border-bottom: 2px solid transparent;
     transition: color 0.15s, border-color 0.15s;
   }
+  .sep {
+    flex: none;
+    align-self: center;
+    width: 1px;
+    height: 13px;
+    margin: 0 -6px;
+    background: rgba(223, 230, 236, 0.22);
+  }
   nav a:hover {
     color: var(--panel-text);
     border-bottom-color: var(--panel-line);
@@ -131,6 +152,9 @@ const links = [
     nav a {
       font-size: 12px;
       letter-spacing: 0;
+    }
+    .sep {
+      display: none;
     }
   }
 </style>

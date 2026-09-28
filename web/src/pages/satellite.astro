@@ -132,9 +132,9 @@ const dB = (v: number) => Math.round(v).toLocaleString('en-US');
 ---
 <Doc
   title="The satellite over the same ground"
-  kicker="Phase 2 · simulated on the real geometry"
+  kicker="From orbit · why one radar image cannot"
   current="satellite"
-  lede="Phase 2 simulates the real ICEYE dwell over Giza, pixel by pixel, over ground whose chambers and motion are known, and checks it on the real image. The answer is no, for three reasons that do not depend on one another: one image cannot see ordinary ground move, a chamber barely changes how the ground moves, and the published depth is only the frequency of the motion. Every other route from a buried room to a radar is closed as well."
+  lede="Here the real ICEYE pass over Giza is simulated, pixel by pixel, over ground whose chambers and motion are known, and checked on its real image. The answer is no, for three reasons that do not depend on one another: one image cannot see ordinary ground move, a chamber barely changes how the ground moves, and the published depth is only the frequency of the motion. Every other route from a buried room to a radar is closed as well."
   state="status · answered · 28 September 2026 · simulated on the real Giza geometry, checked on its real image"
   index={[
     { id: 'verdict', label: 'The verdict' },
@@ -422,7 +422,7 @@ const dB = (v: number) => Math.round(v).toLocaleString('en-US');
       a period of its depth axis, the power the method draws at a pixel is that pixel’s trajectory energy (correlation{' '}
       {pk.pillar_corr_mean_power_vs_energy.toFixed(3)}), so a pixel whose registration wanders is bright at every depth and a
       thick-slab rendering stands it up as a column. Such pixels lie where the surface is darker or changes brightness; open
-      plateau with no monument draws the tallest columns, and uniform simulated ground draws none. <b>Bands:</b> along a
+      plateau with no monument draws them too, and uniform simulated ground draws none. <b>Bands:</b> along a
       column the power rises and falls every {pk.resolution_m_shown.toFixed(0)} m of the relabelled axis, its resolution.{' '}
       <b>Blocks:</b> at the surface and at each repeat depth, {rep1.toLocaleString('en-US')} m and {(2 * rep1).toLocaleString('en-US')} m relabelled,
       every steering phase is the same, so the power there is the pixel’s average offset (ratio{' '}
@@ -430,7 +430,7 @@ const dB = (v: number) => Math.round(v).toLocaleString('en-US');
     </p>
     <div class="grid-3">
       <Figure compact src={pfig('khafre_section.png')} alt="The published method's depth section at Khafre" label="Khafre, the real image" caption="columns where the registration wanders" aspect="5 / 7" yTop="0 m" yBottom={`${pk.depth_shown_m.toFixed(0)} m`} />
-      <Figure compact src={pfig('plateau_section.png')} alt="The same section over open plateau" label="Open plateau, no monument" caption="the tallest columns of all" aspect="5 / 7" yTop="0 m" yBottom={`${pk.depth_shown_m.toFixed(0)} m`} />
+      <Figure compact src={pfig('plateau_section.png')} alt="The same section over open plateau" label="Open plateau, no monument" caption="columns here too, with no monument" aspect="5 / 7" yTop="0 m" yBottom={`${pk.depth_shown_m.toFixed(0)} m`} />
       <Figure compact src={pfig('simulated_section.png')} alt="The same section over uniform simulated ground" label="Uniform simulated ground" caption="no columns: nothing wanders more than anything else" aspect="5 / 7" yTop="0 m" yBottom="" />
     </div>
     <p class="note">
@@ -546,7 +546,10 @@ const dB = (v: number) => Math.round(v).toLocaleString('en-US');
       toward the radar, as the radar records it. The wave reaches about {Math.round(realpass.reach_m * 100)} cm into dry sand at
       most. Run on this image, the published method draws its columns wherever the registration wanders (its power follows each
       pixel’s trajectory energy at {Math.min(...(realpass.patches as { pillar_power_vs_energy: number }[]).map((x) => x.pillar_power_vs_energy)).toFixed(4)}),
-      and a pyramid’s picture differs from open plateau’s ({realpass.profile_corr.across.map((v: number) => v).reduce((a: number, b: number) => Math.min(a, b)).toFixed(2)}–{realpass.profile_corr.across.reduce((a: number, b: number) => Math.max(a, b)).toFixed(2)})
+      Every patch draws columns: the pyramids, whose surfaces are busier, draw more of the strongest
+      ({Math.round(Math.min(...(realpass.patches as { kind: string; share_in_top5: number }[]).filter((x) => x.kind === 'monument').map((x) => x.share_in_top5)) * 100)}–{Math.round(Math.max(...(realpass.patches as { kind: string; share_in_top5: number }[]).filter((x) => x.kind === 'monument').map((x) => x.share_in_top5)) * 100)}% of their
+      pixels are among the noisiest 5%, against {(Math.min(...(realpass.patches as { kind: string; share_in_top5: number }[]).filter((x) => x.kind === 'control').map((x) => x.share_in_top5)) * 100).toFixed(1)}–{(Math.max(...(realpass.patches as { kind: string; share_in_top5: number }[]).filter((x) => x.kind === 'control').map((x) => x.share_in_top5)) * 100).toFixed(1)}% on open
+      plateau), while their typical pixel wanders as much as open plateau’s. A pyramid’s picture differs from open plateau’s ({realpass.profile_corr.across.map((v: number) => v).reduce((a: number, b: number) => Math.min(a, b)).toFixed(2)}–{realpass.profile_corr.across.reduce((a: number, b: number) => Math.max(a, b)).toFixed(2)})
       by no more than two stretches of open plateau differ from each other
       ({realpass.profile_corr.within_controls.reduce((a: number, b: number) => Math.min(a, b)).toFixed(2)}–{realpass.profile_corr.within_controls.reduce((a: number, b: number) => Math.max(a, b)).toFixed(2)}).
     </p>
@@ -580,7 +583,7 @@ const dB = (v: number) => Math.round(v).toLocaleString('en-US');
   </section>
 
   <section id="record">
-    <h2>What Phase 2 corrects in the first investigation, and what still stands</h2>
+    <h2>What this corrects in the first investigation, and what still stands</h2>
     <div class="grid-2">
       <div class="note-card">
         <span class="tag measured">R9 · corrected</span>
