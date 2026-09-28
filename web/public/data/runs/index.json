@@ -656,5 +656,56 @@
    "threads": 16,
    "cpus": 16
   }
+ },
+ "p2_12_real_pass": {
+  "id": "p2_12_real_pass",
+  "title": "The real pass over Giza, laid on the ground",
+  "date": "2026-09-28",
+  "started_utc": "2026-09-28T15:17:11+00:00",
+  "runtime_s": 5.4,
+  "commit": "e523482",
+  "params": {
+   "acquisition": "giza-20250827",
+   "site": "giza",
+   "geoid_m": 15.5,
+   "ortho_m": 1.0,
+   "registration_m": 2.0,
+   "patches": [
+    [
+     "khafre",
+     "monument"
+    ],
+    [
+     "khufu",
+     "monument"
+    ],
+    [
+     "menkaure",
+     "monument"
+    ],
+    [
+     "plateau_south",
+     "control"
+    ],
+    [
+     "desert_west",
+     "control"
+    ],
+    [
+     "desert_south",
+     "control"
+    ]
+   ],
+   "bank": "paper (K 50, half band, 88 Hz, 32 px, lambda_s 0.48 m)",
+   "claim_repeat_m": 648.0,
+   "voxel_m": 5.0
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  }
  }
 }
