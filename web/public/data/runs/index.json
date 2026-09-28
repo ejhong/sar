@@ -466,5 +466,50 @@
    "threads": 16,
    "cpus": 16
   }
+ },
+ "p2_07_whole_chain": {
+  "id": "p2_07_whole_chain",
+  "title": "The whole chain: a satellite image of shaking ground over a chamber",
+  "date": "2026-09-28",
+  "started_utc": "2026-09-28T05:57:50+00:00",
+  "runtime_s": 316.2,
+  "commit": "b0bde9a",
+  "params": {
+   "geometry": "giza-20250827",
+   "image_px": [
+    2304,
+    256
+   ],
+   "scatterers": 401669,
+   "bright_stones": 40,
+   "microseisms_m_s": 4.9e-08,
+   "band_hz": [
+    0.1,
+    0.3
+   ],
+   "phase_speed_m_s": 3000,
+   "lam_s_m": 0.48,
+   "bank": {
+    "K": 50,
+    "sub_frac": 0.5,
+    "delta_hz": 88.0
+   },
+   "patch_px": 32,
+   "targets": 3312,
+   "gains": [
+    1000000.0,
+    100000000.0,
+    1000000000.0,
+    10000000000.0,
+    100000000000.0
+   ]
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  }
  }
 }

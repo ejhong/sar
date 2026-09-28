@@ -10,6 +10,8 @@ import sees from '../../public/data/runs/p2_03_what_a_dwell_sees.json';
 import imp from '../../public/data/runs/p2_04_chamber_imprint.json';
 import bud from '../../public/data/runs/p2_05_budget.json';
 import dep from '../../public/data/runs/p2_06_depth_is_frequency.json';
+import chain from '../../public/data/runs/p2_07_whole_chain.json';
+import Figure from '../components/Figure.astro';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 // ---- formatting
@@ -84,6 +86,21 @@ const fold = (f: number) => mph * Math.abs(f - fsamp * Math.round(f / fsamp));
 const prof6 = dep.profiles as Record<string, { depth_m: number; tomogram: number[] }>;
 const zax = dep.depth_axis_m as number[];
 const tones = dep.site_tones_m as Record<string, { label: string; f_hz: number; depth_m: number }>;
+
+// ---- P2-07
+const cfig = (f: string) => `${base}/data/runs/p2_07_whole_chain/${f}`;
+const cg = chain.geometry;
+const czmax = cg.depth_m[1] as number;
+const [csx0, csx1] = cg.section_azimuth_m as number[];
+const croom = { x: (100 * (-3 - csx0)) / (csx1 - csx0), w: (100 * 6) / (csx1 - csx0), y: (100 * 12) / czmax };
+const sweep = chain.sweep as { gain: number; imprint_phase_rad: number; method_relative_difference: number; over_chamber: number; elsewhere: number }[];
+const ccmp = chain.compare;
+const noisyGround = cell(caseNames[1], targets[1]).shortfall as number;
+const truckGround = cell(caseNames[3], targets[1]).shortfall as number;
+const noisyRefl = cell(caseNames[1], targets[3]).shortfall as number;
+const brightShort = bright.shortfall as number;
+const reflShort = refl.shortfall as number;
+const wholeMotion = Math.round((ground.a_min_m_s as number) / imp.cases[0].vertical_velocity_m_s);
 ---
 <Doc
   title="The satellite over the same ground"
@@ -98,6 +115,8 @@ const tones = dep.site_tones_m as Record<string, { label: string; f_hz: number; 
     { id: 'imprint', label: 'The chamber’s imprint' },
     { id: 'budget', label: 'The budget' },
     { id: 'depth', label: 'Depth is frequency' },
+    { id: 'chain', label: 'The whole chain' },
+    { id: 'rescue', label: 'What could rescue it' },
     { id: 'record', label: 'Corrections' },
   ]}
 >
@@ -318,6 +337,63 @@ const tones = dep.site_tones_m as Record<string, { label: string; f_hz: number; 
     <RunDetails manifest={dep.manifest} />
   </section>
 
+  <section id="chain">
+    <h2>Run whole, the chain cannot tell the chamber is there</h2>
+    <p class="sub">
+      P2-07 runs the claim as it would have it: simulated desert over the one-chamber bench, shaking at Giza’s measured
+      microseism level with the chamber’s imprint from P2-04, imaged on the real dwell in double precision, and put through
+      the published pipeline unchanged (50 half-band pairs 88 Hz apart, 32-pixel patches, λ<sub>s</sub> = 0.48 m). The
+      chamber changes the image by <Sci v={chain.A_vs_B.image_relative_difference} p={0} /> of itself (its imprint is{' '}
+      <Sci v={chain.A_vs_B.imprint_phase_rad} p={0} /> rad of phase) and the depth section by{' '}
+      <Sci v={chain.A_vs_B.method_relative_difference} p={0} />. The dashed outline is the chamber; with the published
+      λ<sub>s</sub> the axis ends at {czmax.toFixed(1)} m, and any other λ<sub>s</sub> relabels the same pixels (P2-06).
+    </p>
+    <div class="grid-4">
+      <Figure compact src={cfig('method_A.png')} alt="Depth section with the chamber" label="With the chamber" caption="" aspect="4 / 5" yTop="0 m" yBottom={`${czmax.toFixed(1)} m`}><svg viewBox="0 0 100 100" preserveAspectRatio="none"><rect x={croom.x} y={croom.y} width={croom.w} height={102 - croom.y} fill="none" stroke="#82b3ff" stroke-width="0.5" stroke-dasharray="1.6 1.1" vector-effect="non-scaling-stroke" /></svg></Figure>
+      <Figure compact src={cfig('method_B.png')} alt="Depth section without the chamber" label="Without" caption="" aspect="4 / 5" yTop="0 m" yBottom={`${czmax.toFixed(1)} m`}><svg viewBox="0 0 100 100" preserveAspectRatio="none"><rect x={croom.x} y={croom.y} width={croom.w} height={102 - croom.y} fill="none" stroke="#82b3ff" stroke-width="0.5" stroke-dasharray="1.6 1.1" vector-effect="non-scaling-stroke" /></svg></Figure>
+      <Figure compact src={cfig('method_difference.png')} alt="Their difference" label="Difference" caption="" aspect="4 / 5" yTop="0 m" yBottom={`${czmax.toFixed(1)} m`}><svg viewBox="0 0 100 100" preserveAspectRatio="none"><rect x={croom.x} y={croom.y} width={croom.w} height={102 - croom.y} fill="none" stroke="#82b3ff" stroke-width="0.5" stroke-dasharray="1.6 1.1" vector-effect="non-scaling-stroke" /></svg></Figure>
+      <Figure compact src={cfig('method_boosted.png')} alt="Depth section with the imprint boosted" label={`Imprint × 10${String(Math.round(Math.log10(chain.shown_gain as number))).replace(/\d/g, (d) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[+d])}`} caption="" aspect="4 / 5" yTop="0 m" yBottom={`${czmax.toFixed(1)} m`}><svg viewBox="0 0 100 100" preserveAspectRatio="none"><rect x={croom.x} y={croom.y} width={croom.w} height={102 - croom.y} fill="none" stroke="#82b3ff" stroke-width="0.5" stroke-dasharray="1.6 1.1" vector-effect="non-scaling-stroke" /></svg></Figure>
+    </div>
+    <div class="grid-2 charts">
+      <div class="note-card">
+        <span class="tag simulated">simulated · P2-07</span>
+        <h3>Boosting the imprint until the method responds</h3>
+        <table class="data compact">
+          <thead><tr><th>imprint ×</th><th>phase, rad</th><th>section change</th><th>over the chamber</th><th>elsewhere</th></tr></thead>
+          <tbody>
+            {sweep.map((r) => <tr><td class="num"><Sci v={r.gain} p={0} /></td><td class="num"><Sci v={r.imprint_phase_rad} /></td><td class="num">{pct(r.method_relative_difference)}</td><td class="num">{pct(r.over_chamber)}</td><td class="num">{pct(r.elsewhere)}</td></tr>)}
+          </tbody>
+        </table>
+        <p>Visible change needs the imprint multiplied by <Sci v={chain.shown_gain as number} p={0} />, tens of radians of phase, and even then it is spread over every depth ({(chain.boosted_change_spread as number[])[0].toFixed(2)}–{(chain.boosted_change_spread as number[])[1].toFixed(2)} of its mean): the texture is reshuffled, nothing is drawn at the chamber.</p>
+      </div>
+      <LineChart
+        directLabels={false}
+        title="Fig. S7 · Over the chamber: a seismometer against the dwell’s velocity series (R4’s reading)"
+        series={[
+          { name: 'seismometer', x: ccmp.seismometer_t_s as number[], y: (ccmp.seismometer_m_s as number[]).map(um), color: 'var(--ochre)', width: 2 },
+          { name: 'the dwell', x: ccmp.look_times_s as number[], y: (ccmp.satellite_m_s as number[]).map(um), color: 'var(--cinnabar)', markers: true },
+        ]}
+        xLabel="s"
+        yLabel="line-of-sight velocity, µm/s"
+        zeroLine
+        caption={`The ground moves ${um(ccmp.seismometer_rms_m_s).toFixed(3)} µm/s; the series wanders ${Math.round(um(ccmp.satellite_rms_m_s))} µm/s, ${Math.round(ccmp.satellite_rms_m_s / ccmp.seismometer_rms_m_s).toLocaleString('en-US')} times more, and not with it.`}
+      />
+    </div>
+    <RunDetails manifest={chain.manifest} />
+  </section>
+
+  <section id="rescue">
+    <h2>What could rescue it, and why it does not</h2>
+    <div class="grid-3">
+      <div class="note-card"><h3>More motion</h3><p>Peterson’s high-noise model, 71 times Giza’s microseisms, leaves the plateau short by {order(noisyGround)}. Traffic exceeds 77 µm/s within 25 m of a road (P2-00), but at 10–30 Hz, where a look must be under 33 ms and resolves 33 m; short by {order(truckGround)} on ground. Khafre is 199 m from the nearest road.</p></div>
+      <div class="note-card"><h3>Brighter targets</h3><p>Magnitude tracking follows an isolated bright scatterer in full (P2-03), so the best case is a stone or a placed corner reflector above the chamber: short by {order(brightShort)} and {order(reflShort)} under Giza’s microseisms, {order(noisyRefl)} for the reflector at the noisiest stations.</p></div>
+      <div class="note-card"><h3>Other structures</h3><p>The imprint scales as volume over depth squared (checked against the solver, P2-04); the claimed deep structure scales to {(imp.claimed[0].relative_to_bench as number).toFixed(2)} of the bench chamber. Independently of any structure, Giza’s whole microseism motion is {wholeMotion.toLocaleString('en-US')} times below the plateau’s detection threshold.</p></div>
+      <div class="note-card"><h3>A better estimator</h3><p>For fully developed speckle the Doppler bins are independent circular Gaussians, so a phase history shared by a patch leaves the image’s distribution unchanged: no estimator recovers it. What survives is point-like content (magnitudes, above) and the apparent brightness a displacement gradient makes, of order 10<sup>−11</sup> here.</p></div>
+      <div class="note-card"><h3>The published images</h3><p>The pipeline draws structured sections from any input: identical with and without the chamber (P2-07), the same over monuments and open desert (R1, R6), no signal over hundreds of surveyed shafts (R13), and the published appearance everywhere (R8).</p></div>
+      <div class="note-card"><h3>Only simulation?</h3><p>The coherence identity holds on the real crop to 10<sup>−9</sup>; the blindness is measured on real texture (1 ± 1%); the geometry is read from the product and reproduces its declared numbers; and the first investigation’s real-data controls found nothing at Giza or Sacsayhuamán.</p></div>
+    </div>
+  </section>
+
   <section id="record">
     <h2>What Phase 2 corrects in the first investigation, and what still stands</h2>
     <div class="grid-2">
@@ -360,6 +436,12 @@ const tones = dep.site_tones_m as Record<string, { label: string; f_hz: number; 
     font-size: 0.82rem;
     color: var(--muted);
     max-width: 90ch;
+  }
+  .grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 18px;
   }
   table.compact td,
   table.compact th {

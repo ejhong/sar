@@ -23,13 +23,13 @@ interface Props {
 }
 const {
   title,
-  description = 'Katabasis: a simulation lab for imaging the underworld. Seismic tomography and satellite radar, simulated over ground whose contents are known, then applied to Giza, to test whether one radar image can map what lies beneath.',
+  description = 'Underworld: can one satellite radar image see what lies beneath the ground? Ground whose contents are known, the real satellite flown over it in simulation, the published method run on it, and why the answer is no, shown step by step.',
   app = false,
   current = '',
   noindex = false,
 } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
-const fullTitle = title ? `${title} · Katabasis` : 'Katabasis · a simulation lab for the underworld';
+const fullTitle = title ? `${title} · Underworld` : 'Underworld · can a satellite see beneath the ground?';
 const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
 <!doctype html>
@@ -50,7 +50,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:image" content={new URL(`${base}/og.jpg`, Astro.site)} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="A block of limestone with burial shafts glowing inside it, from the Katabasis underworld viewer." />
+    <meta property="og:image:alt" content="A block of limestone with burial shafts glowing inside it, from the Underworld viewer." />
     <meta name="twitter:card" content="summary_large_image" />
   </head>
   <body class:list={[{ app }]}>
@@ -63,7 +63,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
       !app && (
         <footer class="page-footer">
           <Seal size={22} />
-          <p class="mono">Katabasis · © 2026 Eugene Jhong</p>
+          <p class="mono">Underworld · © 2026 Eugene Jhong</p>
           <p class="mono links">
             <a href="https://github.com/ejhong/sar">source</a>
             <a href={`${base}/method/`}>method</a>

@@ -1,0 +1,158 @@
+---
+/**
+ * An image the lab rendered (a radar image, a look, the method's depth picture), shown on an instrument panel with
+ * its scale and caption. Overlays (a chamber's outline, labels) go in the default slot, positioned in percent of the
+ * image. The image itself carries no axes: they are drawn here, in the site's type.
+ */
+interface Props {
+  src: string;
+  alt: string;
+  label?: string;
+  caption?: string;
+  tag?: string;
+  /** Metres across the image's width, for a scale bar; `bar` is the bar's length in metres. */
+  widthM?: number;
+  bar?: number;
+  aspect?: string;
+  /** Axis words for images that are sections: the vertical axis runs downward. */
+  x?: string;
+  y?: string;
+  yTop?: string;
+  yBottom?: string;
+  compact?: boolean;
+}
+const { src, alt, label, caption, tag, widthM, bar, aspect, x, y, yTop, yBottom, compact = false } = Astro.props;
+const barPct = widthM && bar ? (100 * bar) / widthM : 0;
+---
+<figure class:list={['lab-fig', { compact }]}>
+  {tag && <span class="tag simulated on-deep">{tag}</span>}
+  <div class="plate">
+    {y && <span class="y-word">{y}</span>}
+    <div class="frame" style={aspect ? `aspect-ratio: ${aspect}` : undefined}>
+      <img src={src} alt={alt} loading="lazy" decoding="async" />
+      <div class="overlay"><slot /></div>
+      {yTop && <span class="y-tick top">{yTop}</span>}
+      {yBottom && <span class="y-tick bottom">{yBottom}</span>}
+      {
+        barPct > 0 && (
+          <div class="scalebar" style={`width: ${barPct}%`}>
+            <span>{bar} m</span>
+          </div>
+        )
+      }
+    </div>
+    {x && <span class="x-word">{x}</span>}
+  </div>
+  {
+    (label || caption) && (
+      <figcaption>
+        {label && <b>{label}</b>}
+        {label && caption && ' · '}
+        {caption}
+      </figcaption>
+    )
+  }
+</figure>
+
+<style>
+  .lab-fig {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .lab-fig > .tag {
+    align-self: flex-start;
+  }
+  .plate {
+    position: relative;
+    background: var(--night);
+    border: 1px solid #0b131c;
+    border-radius: 10px;
+    padding: 10px 10px 10px 10px;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 12px 30px -18px rgba(8, 16, 26, 0.55);
+  }
+  .frame {
+    position: relative;
+    overflow: hidden;
+    border-radius: 6px;
+    background: #0b131c;
+  }
+  .frame img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .overlay :global(svg) {
+    width: 100%;
+    height: 100%;
+  }
+  .scalebar {
+    position: absolute;
+    left: 12px;
+    bottom: 12px;
+    height: 3px;
+    background: #eef3f7;
+    box-shadow: 0 0 0 1px rgba(11, 19, 28, 0.6);
+  }
+  .scalebar span {
+    position: absolute;
+    left: 0;
+    bottom: 7px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: #eef3f7;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    white-space: nowrap;
+  }
+  .y-tick {
+    position: absolute;
+    right: 8px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--panel-muted);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+  }
+  .y-tick.top {
+    top: 6px;
+  }
+  .y-tick.bottom {
+    bottom: 6px;
+  }
+  .x-word,
+  .y-word {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    color: var(--panel-faint);
+  }
+  .x-word {
+    text-align: center;
+    margin-top: 6px;
+  }
+  .y-word {
+    margin-bottom: 6px;
+  }
+  figcaption {
+    font-family: var(--font-serif);
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--body);
+  }
+  figcaption b {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 12.5px;
+    color: var(--text);
+  }
+  .compact figcaption {
+    font-size: 12.5px;
+  }
+</style>

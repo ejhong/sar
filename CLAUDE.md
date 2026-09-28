@@ -1,7 +1,7 @@
-# Katabasis — notes for working in this repo
+# Underworld — notes for working in this repo
 
-A simulation lab for imaging the underworld: can seismic arrays, and then a single satellite radar image, see chambers
-under the ground? Phase 1 simulates seismic tomography over known ground; Phase 2 flies the ICEYE dwell over the same
+A simulation lab for imaging the underworld (the site is "Underworld"; the Python package keeps its first name,
+`katabasis`): can seismic arrays, and a single satellite radar image, see chambers under the ground? Phase 1 simulates seismic tomography over known ground; Phase 2 flies the ICEYE dwell over the same
 ground. Owner: Eugene Jhong. Read `ROADMAP.md` (state and next steps) and `web/DESIGN.md` (the look) first.
 
 ## Principles
@@ -22,7 +22,8 @@ ground. Owner: Eugene Jhong. Read `ROADMAP.md` (state and next steps) and `web/D
 - `sim/katabasis/seismic` — `elastic3d` (the solver), `analytic`, `arrays`, `picking`, `traveltime`, `imaging`.
 - `sim/katabasis/export` — sites, runs, volumes and wavefields for the viewer.
 - `sim/experiments/p1_*.py` — the published runs. `sim/legacy/` — the first investigation, intact.
-- `web/` — Astro + Three.js; `src/viewer/` the underworld (engine, scene: Block, Volume, Wavefield, sections), `src/pages/`.
+- `web/` — Astro + Three.js; `src/viewer/` the underworld (engine, scene: Block, Volume, Wavefield, sections), `src/pages/`
+  (the front page leads with the answer; `pictures` is the plain-language walk-through; `satellite` the evidence).
 - `docs/` — the built site (committed; Pages serves it from `main`).
 
 ## Conventions

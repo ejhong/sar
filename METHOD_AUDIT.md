@@ -319,6 +319,15 @@ investigation's record, and what it leaves open follow.
    motion at every pair, it draws the same microseism at the same 1.3 m over a chamber 15 m down, one
    30 m down, and open ground (profiles identical to 10⁻¹⁵).
 
+5. **Run whole, the chain cannot tell the chamber is there (P2-07).** Simulated desert over the one-chamber bench,
+   shaking at Giza's measured microseism level with the chamber's imprint (P2-04's kernels), imaged on the real dwell in
+   double precision and put through the published pipeline unchanged: the chamber changes the image by 1e-10 and the
+   depth section by 1e-8. Its imprint must be multiplied by 1e10 (tens of radians of phase) before the section changes
+   visibly, and then the change is spread over every depth (0.68 to 1.25 of its mean): the texture is reshuffled, nothing
+   is drawn at the chamber. Over the chamber the dwell's velocity series (R4's reading) wanders 10,000 times more than a
+   seismometer there records. With the published lambda_s the axis ends at 13.4 m, above the chamber; lambda_s only
+   relabels the same pixels (P2-06).
+
 Any one of 1, 3 and 4 is sufficient on its own; they fail for independent reasons (the estimator, the
 physics of the signal, and the algebra of the depth axis). R16's resolution bound, which rests on the
 same trade between a look's duration and its resolution (1.10 m s at Giza, P2-01), is a fourth.

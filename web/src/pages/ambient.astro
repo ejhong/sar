@@ -9,6 +9,7 @@ import am from '../../public/data/runs/p1_04_ambient.json';
 import lib from '../../public/data/ambient.json';
 import pz from '../../public/data/runs/p2_00_ambient_giza.json';
 import PlanMap from '../components/PlanMap.astro';
+import bud from '../../public/data/runs/p2_05_budget.json';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 const z = m1.components.BHZ;
@@ -21,7 +22,14 @@ const bands = Object.entries(z.band_rms_um_s as Record<string, Record<string, nu
 const micro = z.band_rms_um_s['0.1-0.3 Hz'];
 const cult = z.band_rms_um_s['1.0-3.0 Hz'];
 const nhnmMicro = pet.band_rms_um_s['0.1-0.3 Hz'].high;
-const floor = 77; // µm/s: the velocity floor measured on the real Giza dwell (legacy R4/R14)
+const floor = 77; // µm/s: the first investigation's velocity floor (legacy R4); Phase 2 showed it is the scatter of a blind reading
+// the smallest motion one dwell could detect, every advantage allowed (P2-05), µm/s
+type BRow = { case: string; target: string; a_min_m_s: number | null };
+const bRows = bud.rows as BRow[];
+const reach = (c: number, t: number) => ((bRows.find((r) => r.case === bRows[0 + 4 * c].case && r.target === bRows[t].target)?.a_min_m_s ?? 0) as number) * 1e6;
+const plainReach = reach(0, 1);
+const brightReach = reach(0, 2);
+const truckGroundReach = reach(3, 1);
 const cR = v01.rayleigh.exact_m_s as number;
 const fFor = (size: number) => cR / (2 * size); // half a wavelength across the target
 const lamFreq = [0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100, 200];
@@ -40,7 +48,7 @@ const sig = (v: number) => (v >= 10 ? v.toFixed(0) : v >= 1 ? v.toFixed(1) : v.t
   kicker="Ambient · measured"
   current="ambient"
   lede="Without a hammer the ground still moves: ocean swell felt as microseisms, wind, traffic, footsteps. It is what ambient-noise seismology listens to and what the radar claim says it reads. How much it moves near Giza, and at what frequencies, sets what either can see. Here it is measured, not assumed."
-  state="status · measured near Giza · the ambient-field model for the simulations is next"
+  state="status · measured near Giza · used by Phase 2 as the ground’s motion"
   index={[
     { id: 'levels', label: 'Levels' },
     { id: 'spectrum', label: 'Spectrum' },
@@ -178,22 +186,24 @@ const sig = (v: number) => (v >= 10 ? v.toFixed(0) : v >= 1 ? v.toFixed(1) : v.t
       <div class="note-card">
         <h3>Local, brief, and above 8 Hz</h3>
         <p>Traffic is the strongest ambient source a site like Giza has, and it is local: it falls off within tens of metres of the road, comes and goes with each vehicle, and lives above 8 Hz, “for all practical purposes the frequency range of interest to ground-borne vibration” in the manual’s words.</p>
-        <p>A truck over a bump reaches about {sig(culRows[3].um)} µm/s, above the radar’s {floor} µm/s floor. Whether a dwell’s looks can follow motion that fast is a question for Phase 2; the microseisms, slow enough to follow, are {hund(floor / micro.all_p50)} times too weak.</p>
+        <p>A truck over a bump reaches about {sig(culRows[3].um)} µm/s. Phase 2 answered whether a dwell can follow motion that fast: a look short enough to follow 15 Hz lasts 33 ms and blurs the ground over 33 m, and at that speed the smallest motion one pass could detect on plain ground is about {Math.round(truckGroundReach / 1000).toLocaleString('en-US')},000 µm/s (<a href={`${base}/satellite/#budget`}>P2-05</a>).</p>
       </div>
     </div>
   </section>
 
   <section id="plateau">
-    <h2>On the plateau, only a strip along the roads could ever shake as hard as the radar’s floor</h2>
+    <h2>Near the roads the ground shakes hardest, and still out of the satellite’s reach</h2>
     <p class="sub">
       Worst case by construction: every mapped road carries a truck at its point nearest each spot, with the manual’s
       levels 15 m away, falling off as a surface wave does (Caltrans 2020, Eq. 6) between undamped rock and the most
-      damping rock-like ground in its tables. Roads from OpenStreetMap. A typical truck never reaches the floor; a truck
-      over a bump reaches it within {Math.round(pz.cases['bump · rock'].reach_m)} m of the road.
+      damping rock-like ground in its tables. Roads from OpenStreetMap. The map marks where a truck would shake the ground
+      faster than {floor} µm/s, the first investigation’s velocity floor, which Phase 2 showed is the scatter of a reading
+      blind to ground motion (<a href={`${base}/satellite/#record`}>R4, corrected</a>). A typical truck never does; a truck
+      over a bump does within {Math.round(pz.cases['bump · rock'].reach_m)} m of the road.
     </p>
     <div class="grid-2 charts">
       <PlanMap
-        title="Fig. A3 · The Giza plateau: roads, and where traffic could reach the radar floor"
+        title="Fig. A3 · The Giza plateau: roads, and where traffic would shake the ground faster than 77 µm/s"
         box={pz.plan.box}
         roads={pz.plan.roads}
         pyramids={pz.plan.pyramids}
@@ -202,7 +212,7 @@ const sig = (v: number) => (v >= 10 ? v.toFixed(0) : v >= 1 ? v.toFixed(1) : v.t
       />
       <div>
         <table class="data">
-          <thead><tr><th>A truck on the nearest road</th><th class="r">at 15 m, µm/s</th><th class="r">floor reached within</th><th class="r">of the plateau</th></tr></thead>
+          <thead><tr><th>A truck on the nearest road</th><th class="r">at 15 m, µm/s</th><th class="r">above 77 µm/s within</th><th class="r">of the plateau</th></tr></thead>
           <tbody>
             {
               Object.entries(pz.cases).map(([k, c]) => (
@@ -224,18 +234,20 @@ const sig = (v: number) => (v >= 10 ? v.toFixed(0) : v >= 1 ? v.toFixed(1) : v.t
   </section>
 
   <section id="radar">
-    <h2>The radar’s floor is {Math.round(floor / nhnmMicro)}× above the noisiest microseisms and about {hund(floor / micro.all_p50)}× above Giza’s</h2>
+    <h2>What one satellite pass could detect is {hund(brightReach / micro.all_p50)} to {hund(plainReach / micro.all_p50)} times Giza’s microseisms</h2>
     <p class="sub">
-      On the real ICEYE dwell over Giza, the line-of-sight velocity floor on the brightest targets is {floor} µm/s, the same
-      on monuments as on open desert (<a href={`${base}/satellite/#measured`}>R4</a>). The microseisms near Giza move the
-      ground {micro.all_p50.toFixed(3)} µm/s; even Peterson’s high-noise model, the world’s noisiest stations, reaches
-      {' '}{nhnmMicro.toFixed(1)} µm/s. The first investigation set ambient motion at 0.1–10 µm/s, an unsourced range that made the
-      shortfall look like 8×; measured, it is at least {Math.round(floor / nhnmMicro)}×.
+      The microseisms near Giza move the ground {micro.all_p50.toFixed(3)} µm/s; even Peterson’s high-noise model, the
+      world’s noisiest stations, reaches {nhnmMicro.toFixed(1)} µm/s. Allowing every advantage, the smallest motion one ICEYE
+      dwell could detect is about {Math.round(brightReach)} µm/s on a bright stone and {hund(plainReach)} µm/s on plain ground
+      (<a href={`${base}/satellite/#budget`}>P2-05</a>), and a chamber changes the ground’s motion by only a
+      ten-thousandth of it (<a href={`${base}/satellite/#imprint`}>P2-04</a>). The first investigation’s {floor} µm/s
+      “floor” (R4) was the scatter of a reading that recovers 1% of real ground motion, and its 0.1–10 µm/s for ambient
+      motion had no source; both are replaced here by measurement.
     </p>
   </section>
 
   <section id="next">
-    <h2>Next: the ambient field as part of every site</h2>
+    <h2>If the seismic lab continues: the ambient field in every site</h2>
     <div class="grid-3">
       <div class="note-card">
         <h3>Microseisms</h3>

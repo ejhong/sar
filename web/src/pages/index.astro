@@ -4,10 +4,8 @@ import Hero from '../components/Hero.astro';
 import Ladder from '../components/Ladder.astro';
 import Timeline from '../components/Timeline.astro';
 import LineChart from '../components/LineChart.astro';
-import SectionMap from '../components/SectionMap.astro';
-import tt from '../../public/data/runs/p1_02_traveltime.json';
-import sc3 from '../../public/data/runs/p1_03_scattered.json';
-import am from '../../public/data/runs/p1_04_ambient.json';
+import Figure from '../components/Figure.astro';
+import chain from '../../public/data/runs/p2_07_whole_chain.json';
 import m1 from '../../public/data/runs/m1_01_ambient_levels.json';
 import sees from '../../public/data/runs/p2_03_what_a_dwell_sees.json';
 import imp from '../../public/data/runs/p2_04_chamber_imprint.json';
@@ -18,7 +16,7 @@ import type { TourStop } from '../viewer/Underworld';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 const stops: TourStop[] = [
-  { site: 'bench-shafts', caption: '<b>Test bench</b>Twelve burial shafts, 8 to 30 m deep, in fractured limestone: the scale of Giza’s cemeteries.' },
+  { site: 'bench-shafts', caption: '<b>Test bench</b>Twelve burial shafts, 5 to 30 m deep, in fractured limestone: the scale of Giza’s cemeteries.' },
   { site: 'bench-void', mode: 'recovered', item: 'tt-crosshole', caption: '<b>Test bench · recovered</b>One chamber, and what four boreholes recover of it: a shadow, 11% slower than the rock.' },
   { site: 'bench-void', mode: 'waves', item: 'echo', seconds: 8, caption: '<b>Test bench · the echo</b>A hammer blow at the surface, and what comes back from the chamber: too faint to see on any single record.' },
   { site: 'bench-khafre-claim', caption: '<b>The claim, placed as stated</b>Eight shafts to 640 m beneath Khafre, and a deeper structure near 1,220 m.' },
@@ -38,22 +36,105 @@ const budget = [
   { value: (dep.metres_per_hz as number).toFixed(2), unit: 'm/Hz', what: 'of published depth per hertz of ground motion, whatever lies below: the depth axis is a frequency axis', src: 'P2-06 · the published focusing' },
 ];
 
-const cx = tt.surveys.crosshole;
-const holesXZ = (cx.stations.receivers as number[][]).filter((p) => Math.abs(p[1]) < 0.3).map((p) => [p[0], p[2]] as [number, number]);
+// the answer, in pictures from the whole chain (P2-07)
+const fig = (f: string) => `${base}/data/runs/p2_07_whole_chain/${f}`;
+const g = chain.geometry;
+const zmax = g.depth_m[1] as number;
+const [sx0, sx1] = g.section_azimuth_m as number[];
+const room = { x: (100 * (-3 - sx0)) / (sx1 - sx0), w: (100 * 6) / (sx1 - sx0), y: (100 * 12) / zmax };
+const mph = dep.metres_per_hz as number;
+const fs = dep.pair_sampling_hz as number;
+const fline = Array.from({ length: 201 }, (_, i) => i * 0.01);
+const fold = (f: number) => mph * Math.abs(f - fs * Math.round(f / fs));
+const signal = imp.cases[0].imprint_los_velocity_m_s * 1e6;
+const reach = { plain: plateau[1].a_min_m_s! * 1e6, stone: plateau[2].a_min_m_s! * 1e6 };
+// a compact log scale, 10^-6 to 10^4 µm/s
+const lx = (v: number) => 20 + ((Math.log10(v) + 6) / 10) * 300;
+const explore = [
+  { site: 'bench-void', name: 'One chamber', text: 'The test ground: a 6 m room, 15 m down in limestone. Every instrument on this site was scored against it.' },
+  { site: 'bench-shafts', name: 'A field of shaft tombs', text: 'Twelve burial shafts, 5 to 30 m deep: the scale of Giza’s cemeteries, where the method, run on the real image, found none of the hundreds surveyed.' },
+  { site: 'bench-khafre-claim', name: 'The claimed underworld', text: 'Eight shafts to 640 m and a structure near 1,220 m, placed exactly as announced in 2025, beside what physics lets anything see.' },
+  { site: 'giza', name: 'Giza plateau', text: 'The real ground: Copernicus terrain, the three pyramids, and the chambers actually surveyed inside and beneath them.' },
+];
 ---
 <Base current="home">
   <Hero stops={stops} />
 
   <div class="home">
+    <section class="answer">
+      <div class="head">
+        <p class="label">The answer</p>
+        <h2>With the chamber and without it, the method draws the same picture</h2>
+        <p class="sub">
+          We built ground with a room in it, 6 m wide and 15 m down, flew the real satellite over it in simulation while the
+          ground trembled as it does at Giza, and ran the published method on the image it took. These are its pictures of
+          a slice straight down through the room. The dashed outline is the room.
+        </p>
+      </div>
+      <div class="trio">
+        {[['method_A.png', 'With the room'], ['method_B.png', 'Without the room'], ['method_difference.png', 'The difference: nothing']].map(([f, l]) => (
+          <Figure compact src={fig(f)} alt={l} label={l} caption="" aspect="4 / 5" yTop="0 m" yBottom={`${zmax.toFixed(1)} m`}>
+            <svg viewBox="0 0 100 100" preserveAspectRatio="none"><rect x={room.x} y={room.y} width={room.w} height={102 - room.y} fill="none" stroke="#82b3ff" stroke-width="0.5" stroke-dasharray="1.6 1.1" vector-effect="non-scaling-stroke" /></svg>
+          </Figure>
+        ))}
+      </div>
+      <div class="reasons">
+        <a class="reason" href={`${base}/pictures/#looks`}>
+          <p class="n mono">1</p>
+          <h3>It compares a picture with itself</h3>
+          <div class="looks">
+            <img src={fig('look_near_a.png')} alt="" /><img src={fig('look_near_b.png')} alt="" />
+            <img src={fig('look_early.png')} alt="" /><img src={fig('look_late.png')} alt="" />
+          </div>
+          <p class="cap mono">⅛ s apart: the same data · 2 s apart: unrelated</p>
+          <p>The method cuts one image into slices and looks for the ground shifting between them. But the slices come from one recording: where they overlap they are identical, and where they don’t, nothing lines up. A patch of the real image made to sway comes back at {(blk.gain_complex * 100).toFixed(0)}%.</p>
+        </a>
+        <a class="reason" href={`${base}/pictures/#scale`}>
+          <p class="n mono">2</p>
+          <h3>The chamber’s signal is far too faint</h3>
+          <svg class="scale" viewBox="0 0 340 92" role="img" aria-label="The chamber's signal against what the satellite can detect, on a logarithmic scale">
+            <line x1="20" x2="320" y1="50" y2="50" class="axis" />
+            {[-6, -4, -2, 0, 2, 4].map((e) => (<g><line x1={lx(10 ** e)} x2={lx(10 ** e)} y1="46" y2="54" class="axis" /><text x={lx(10 ** e)} y="70" text-anchor="middle" class="tk">10<tspan dy="-4" font-size="7">{String(e).replace('-', '−')}</tspan></text></g>))}
+            <rect x={lx(signal)} y="44" width={lx(reach.stone) - lx(signal)} height="12" class="gap" />
+            <circle cx={lx(signal)} cy="50" r="5" class="chamber" />
+            <text x={lx(signal)} y="30" class="lab chamber-t">the chamber’s signal</text>
+            <path d={`M${lx(reach.stone)},${44} l5,6 l-5,6 l-5,-6 z`} class="radar" />
+            <path d={`M${lx(reach.plain)},${44} l5,6 l-5,6 l-5,-6 z`} class="radar" />
+            <text x={lx(reach.plain)} y="30" text-anchor="end" class="lab radar-t">what it can see</text>
+            <text x="170" y="88" text-anchor="middle" class="tk">micrometres per second</text>
+          </svg>
+          <p class="cap mono">{order(plateau[1].shortfall!)} times too faint on plain ground, {order(plateau[2].shortfall!)} on a bright stone</p>
+          <p>A room changes the ground’s own trembling by one part in {(Math.round(1 / imp.cases[0].imprint_over_motion / 1000) * 1000).toLocaleString('en-US')}. Even the whole trembling at Giza is far below what one satellite pass can detect.</p>
+        </a>
+        <a class="reason" href={`${base}/pictures/#frequency`}>
+          <p class="n mono">3</p>
+          <h3>Its “depth” is really a frequency</h3>
+          <LineChart
+            series={[{ name: 'depth', x: fline, y: fline.map(fold), color: 'var(--porphyry)', width: 2 }]}
+            xLabel="wobbles per second"
+            yLabel="m"
+            height={120}
+            directLabels={false}
+          />
+          <p class="cap mono">{mph.toFixed(1)} m of “depth” per wobble a second</p>
+          <p>Its depth scale is a frequency scale in disguise: slow wobbles come out shallow, fast ones deep, whatever lies below. Given perfect data it would still draw the same depths over rock and over a room.</p>
+        </a>
+      </div>
+      <div class="cta-row">
+        <a class="cta primary" href={`${base}/pictures/`}>See it step by step, in pictures →</a>
+        <a class="cta" href={`${base}/satellite/`}>The evidence, for specialists</a>
+      </div>
+    </section>
+
     <section class="claim">
       <div class="claim-text">
         <p class="label">The claim</p>
         <h2>One radar image, reprocessed, said to show a city 600 m underground</h2>
         <p class="prose">
-          The idea is that a single satellite radar image holds the faint vibration of the ground, and that splitting it into
-          sub-apertures turns that vibration into a picture of what lies hundreds of metres below. It was published in
-          2022, announced beneath Khafre in 2025, and retracted in 2026. No one has shown it working on ground whose contents
-          are known. That is what this lab does. <a href={`${base}/claim/`}>The claim in full</a>
+          The idea is that a single satellite radar image holds the faint vibration of the ground, and that splitting it
+          into sub-apertures turns that vibration into a picture of what lies hundreds of metres below. It was published in
+          2022, announced beneath Khafre in 2025, and retracted in 2026. Nobody had shown it working on ground whose
+          contents are known. <a href={`${base}/claim/`}>The claim in full</a>
         </p>
       </div>
       <Timeline />
@@ -62,88 +143,30 @@ const holesXZ = (cx.stations.receivers as number[][]).filter((p) => Math.abs(p[1
     <section class="block">
       <div class="head">
         <p class="label">The ladder of instruments</p>
-        <h2>The further an instrument sits from a chamber, the harder the chamber is to see</h2>
+        <h2>Instruments that touch the ground find the chamber; the satellite cannot</h2>
         <p class="sub">
           One chamber, 6 m across and 12 m down in limestone. Every way of looking for it, from a borehole beside it to a
-          satellite 600 km away, is simulated over the same ground and scored against the truth.
+          satellite 600 km away, is simulated over the same ground and scored against the truth. The lab’s tools find it
+          when the physics allows, so the satellite’s failure is the satellite’s.
         </p>
       </div>
       <Ladder />
     </section>
 
-    <section class="block">
+    <section class="block explore">
       <div class="head">
-        <p class="label">Latest results</p>
-        <h2>From orbit the chamber is out of reach; from the ground, some instruments find it</h2>
+        <p class="label">Explore</p>
+        <h2>The underworld in 3-D</h2>
+        <p class="sub">Every site in the lab as a block diagram you can turn, cut and play waves through.</p>
       </div>
-      <div class="results">
-        <a class="result card" href={`${base}/satellite/`}>
-          <span class="tag simulated">simulated and real · P2-03</span>
-          <h3>One radar image cannot see the ground move</h3>
-          <LineChart
-            series={[
-              { name: 'put in', x: (sees.motion.look_times_s as number[]).map((t, _, a) => t - a[Math.floor(a.length / 2)]), y: (blk.injected_relative as number[]).map((v) => v * 1e6), color: 'var(--text)', width: 1.5 },
-              { name: 'read from the image', x: (sees.motion.look_times_s as number[]).map((t, _, a) => t - a[Math.floor(a.length / 2)]), y: (blk.complex as number[]).map((v) => v * 1e6), color: 'var(--cinnabar)', markers: true },
-            ]}
-            xLabel="look time, s"
-            yLabel="µm/s"
-            height={150}
-            zeroLine
-            directLabels={false}
-          />
-          <p>A block of the real Giza image made to sway at 2 mm/s: the published way of reading motion recovers {(blk.gain_complex * 100).toFixed(0)}% of it. A chamber changes the ground’s motion by one part in {(Math.round(1 / imp.cases[0].imprint_over_motion / 1000) * 1000).toLocaleString('en-US')}, and the published depth is only the motion’s frequency.</p>
-        </a>
-        <a class="result card" href={`${base}/seismic/#traveltime`}>
-          <span class="tag simulated">simulated · P1-02</span>
-          <h3>Four boreholes recover the chamber's shadow; the surface sees nothing</h3>
-          <div class="mini-map"><SectionMap
-            title=""
-            x={cx.slices.x}
-            y={cx.slices.z}
-            values={cx.slices.xz_rel}
-            domain={0.08}
-            outlines={[{ x0: -3, x1: 3, y0: -18, y1: -12 }]}
-            points={holesXZ}
-            xLabel="east, m"
-            yLabel="height, m"
-            width={320}
-          /></div>
-          <p>Crosshole travel-time tomography: the chamber comes back {(100 * cx.score.chamber_mean_rel).toFixed(0)}% slow, where air is 90% slow — travel times see the detour, not the emptiness.</p>
-        </a>
-        <a class="result card" href={`${base}/seismic/#echo`}>
-          <span class="tag simulated">simulated · P1-03</span>
-          <h3>The chamber's echo, below the noise on every record, images it from the surface</h3>
-          <div class="mini-map"><SectionMap
-            title=""
-            x={sc3.slices.x}
-            y={sc3.slices.z}
-            values={sc3.slices.xz_image}
-            domain={0.6}
-            scale="sequential"
-            outlines={[{ x0: -3, x1: 3, y0: -18, y1: -12 }]}
-            xLabel="east, m"
-            yLabel="height, m"
-            width={320}
-          /></div>
-          <p>Reverse-time migration of the scattered wave, with the rock known exactly: the image is {sc3.score.contrast.toFixed(0)}× brighter at the chamber than elsewhere, strongest on its top face.</p>
-        </a>
-        <a class="result card" href={`${base}/seismic/#ambient`}>
-          <span class="tag simulated">simulated · P1-04</span>
-          <h3>Ambient noise stands in for the hammer, but sees the chamber only faintly</h3>
-          <div class="mini-map"><SectionMap
-            title=""
-            x={am.slices.x}
-            y={am.slices.z}
-            values={am.slices.xz_image}
-            domain={0.6}
-            scale="sequential"
-            outlines={[{ x0: -3, x1: 3, y0: -18, y1: -12 }]}
-            xLabel="east, m"
-            yLabel="height, m"
-            width={320}
-          /></div>
-          <p>Footsteps and traffic, correlated between geophones, bring back the wave a hammer would send (correlation {am.retrieval.ncc.toFixed(2)}). Imaged with the rock known exactly, the chamber stands at {am.score.image_contrast_ensemble.toFixed(1)}× the rest, where the hammer reached {sc3.score.contrast.toFixed(0)}×, however long the noise is recorded.</p>
-        </a>
+      <div class="gallery">
+        {explore.map((e) => (
+          <a class="tile" href={`${base}/underworld/#${e.site}`}>
+            <img src={`${base}/img/explore/${e.site}.jpg`} alt={`${e.name}, in the underworld viewer`} loading="lazy" />
+            <span class="tile-name">{e.name}</span>
+            <span class="tile-text">{e.text}</span>
+          </a>
+        ))}
       </div>
     </section>
   </div>
@@ -154,7 +177,7 @@ const holesXZ = (cx.stations.receivers as number[][]).filter((p) => Math.abs(p[1
         <span class="tag simulated on-deep">simulated on the real geometry, checked on the real image</span>
         <h2>One radar image misses the chamber three independent ways</h2>
         <p class="sub">
-          Phase 2: the estimator cannot see ground move, the chamber barely changes how it moves, and the depth axis is a
+          The estimator cannot see ground move, the chamber barely changes how it moves, and the depth axis is a
           frequency axis. Each is sufficient alone.{' '}
           <a href={`${base}/satellite/`}>The satellite →</a>
         </p>
@@ -178,6 +201,174 @@ const holesXZ = (cx.stations.receivers as number[][]).filter((p) => Math.abs(p[1
 </Base>
 
 <style>
+  .answer {
+    padding: 48px 0 40px;
+    border-bottom: 1px solid var(--border);
+  }
+  .trio {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    max-width: 900px;
+  }
+  .reasons {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    margin-top: 30px;
+  }
+  .reason {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: var(--sheet);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px 20px;
+    color: inherit;
+    text-decoration: none;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+  }
+  .reason:hover {
+    border-color: var(--border-strong);
+    box-shadow: 0 6px 22px -12px rgba(28, 40, 51, 0.35);
+    transform: translateY(-1px);
+  }
+  .reason .n {
+    font-size: 11px;
+    color: var(--faint);
+    margin: 0;
+  }
+  .reason h3 {
+    font-family: var(--font-serif);
+    font-size: 19px;
+    font-weight: 500;
+    margin: 0 0 4px;
+    color: var(--text);
+  }
+  .reason p {
+    font-family: var(--font-serif);
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--body);
+    margin: 0;
+  }
+  .reason .cap {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--muted);
+  }
+  .looks {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    background: var(--night);
+    padding: 8px;
+    border-radius: 8px;
+  }
+  .looks img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 3px;
+  }
+  .scale {
+    width: 100%;
+    height: auto;
+    background: var(--night);
+    border-radius: 8px;
+  }
+  .scale .axis {
+    stroke: var(--panel-faint);
+  }
+  .scale .tk {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    fill: var(--panel-faint);
+  }
+  .scale .gap {
+    fill: rgba(212, 110, 80, 0.14);
+  }
+  .scale .chamber {
+    fill: var(--lapis-night);
+  }
+  .scale .radar {
+    fill: var(--cinnabar-night);
+  }
+  .scale .lab {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .scale .chamber-t {
+    fill: var(--lapis-night);
+  }
+  .scale .radar-t {
+    fill: var(--cinnabar-night);
+  }
+  .cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 26px;
+  }
+  .cta {
+    display: inline-block;
+    padding: 10px 18px;
+    border-radius: 999px;
+    border: 1px solid var(--border-strong);
+    color: var(--text);
+    text-decoration: none;
+    font-size: 14px;
+  }
+  .cta.primary {
+    background: var(--deep);
+    border-color: var(--deep);
+    color: #eef3f7;
+  }
+  .cta:hover {
+    border-color: var(--accent);
+  }
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .tile {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    text-decoration: none;
+    color: inherit;
+  }
+  .tile img {
+    width: 100%;
+    aspect-ratio: 720 / 487;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid #0b131c;
+    background: var(--night);
+    transition: transform 0.25s, box-shadow 0.25s;
+  }
+  .tile:hover img {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 26px -14px rgba(8, 16, 26, 0.6);
+  }
+  .tile-name {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--text);
+  }
+  .tile-text {
+    font-family: var(--font-serif);
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--body);
+  }
+  .explore {
+    padding-bottom: 20px;
+  }
   .home {
     max-width: 1320px;
     margin: 0 auto;
@@ -264,6 +455,8 @@ const holesXZ = (cx.stations.receivers as number[][]).filter((p) => Math.abs(p[1
   .tag.on-deep {
     color: var(--panel-muted);
     border-color: var(--panel-line);
+    white-space: normal;
+    max-width: 100%;
   }
   .stat-row.deep {
     background: var(--panel-line);
@@ -287,8 +480,12 @@ const holesXZ = (cx.stations.receivers as number[][]).filter((p) => Math.abs(p[1
       padding: 0 16px;
     }
     .claim,
-    .results {
+    .results,
+    .reasons {
       grid-template-columns: 1fr;
+    }
+    .gallery {
+      grid-template-columns: 1fr 1fr;
     }
   }
 </style>

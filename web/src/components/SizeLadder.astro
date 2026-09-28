@@ -1,0 +1,168 @@
+---
+/**
+ * The size ladder: how fast things move, on one logarithmic scale, from the chamber's imprint to the smallest motion a
+ * satellite dwell could detect. Left of the scale, motion there is (the ground, the chamber, a person's senses); right,
+ * what the satellite can detect. Every value is read from the published runs by the page that uses it.
+ */
+interface Rung {
+  value: number; // µm/s
+  label: string;
+  note?: string;
+  side: 'ground' | 'radar';
+  role: 'chamber' | 'ground' | 'human' | 'radar';
+}
+interface Props {
+  rungs: Rung[];
+  from?: number; // decade exponents
+  to?: number;
+  dark?: boolean;
+  height?: number;
+  gapLabel?: string;
+}
+const { rungs, from = -6, to = 4, dark = true, height = 560, gapLabel } = Astro.props;
+const W = 760;
+const H = height;
+const top = 28;
+const bottom = H - 28;
+const axisX = W / 2;
+const y = (v: number) => bottom - ((Math.log10(v) - from) / (to - from)) * (bottom - top);
+const decades = Array.from({ length: to - from + 1 }, (_, i) => from + i);
+const sup = (n: number) => String(n).replace('-', '−');
+const colour: Record<Rung['role'], string> = dark
+  ? { chamber: 'var(--lapis-night)', ground: 'var(--ochre-night)', human: 'var(--panel-text)', radar: 'var(--cinnabar-night, #f0906f)' }
+  : { chamber: 'var(--lapis)', ground: 'var(--ochre)', human: 'var(--text)', radar: 'var(--cinnabar)' };
+// spread labels on each side so they never collide
+const place = (side: Rung['side']) => {
+  const items = rungs.filter((r) => r.side === side).map((r) => ({ r, y: y(r.value), ly: y(r.value) }));
+  items.sort((a, b) => b.y - a.y);
+  for (let i = 1; i < items.length; i++) if (items[i - 1].ly - items[i].ly < 34) items[i].ly = items[i - 1].ly - 34;
+  return items;
+};
+const left = place('ground');
+const right = place('radar');
+const parts = (v: number) => {
+  const e = Math.floor(Math.log10(v));
+  if (e >= -3 && e <= 3) return { m: Number(v.toPrecision(2)).toLocaleString('en-US', { maximumSignificantDigits: 2 }), e: null };
+  return { m: `${(v / 10 ** e).toFixed(1)} × 10`, e: sup(e) };
+};
+const lowRadar = Math.min(...rungs.filter((r) => r.side === 'radar').map((r) => r.value));
+const highChamber = Math.max(...rungs.filter((r) => r.role === 'chamber').map((r) => r.value));
+---
+<svg class:list={['ladder', { dark }]} viewBox={`0 0 ${W} ${H}`} role="img" aria-label="How fast things move, on one scale">
+  <defs>
+    <linearGradient id="ladder-gap" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#d46e50" stop-opacity="0.18" />
+      <stop offset="1" stop-color="#5b8fe0" stop-opacity="0.18" />
+    </linearGradient>
+  </defs>
+  <rect x={axisX - 16} y={y(lowRadar)} width="32" height={y(highChamber) - y(lowRadar)} fill="url(#ladder-gap)" rx="4" />
+  <line x1={axisX} x2={axisX} y1={top} y2={bottom} class="axis" />
+  {
+    decades.map((e) => (
+      <g>
+        <line x1={axisX - 6} x2={axisX + 6} y1={y(10 ** e)} y2={y(10 ** e)} class="tick" />
+        <text x={axisX + 12} y={y(10 ** e) + 3.5} class="dec">
+          10
+          <tspan dy="-5" class="sup">{sup(e)}</tspan>
+        </text>
+      </g>
+    ))
+  }
+  <text x={axisX} y={top - 12} text-anchor="middle" class="unit">micrometres per second</text>
+  {
+    left.map(({ r, y: yy, ly }) => (
+      <g>
+        <circle cx={axisX} cy={yy} r="4.5" fill={colour[r.role]} />
+        <path d={`M${axisX - 8},${yy} L${axisX - 40},${ly} L${axisX - 56},${ly}`} class="lead" />
+        <text x={axisX - 62} y={ly - 2} text-anchor="end" class="lab" fill={colour[r.role]}>{r.label}</text>
+        <text x={axisX - 62} y={ly + 12} text-anchor="end" class="val">
+          {parts(r.value).m}
+          {parts(r.value).e && <tspan dy="-4" class="sup">{parts(r.value).e}</tspan>}
+          <tspan dy={parts(r.value).e ? 4 : 0}> µm/s{r.note ? ` · ${r.note}` : ''}</tspan>
+        </text>
+      </g>
+    ))
+  }
+  {
+    right.map(({ r, y: yy, ly }) => (
+      <g>
+        <rect x={axisX - 4.5} y={yy - 4.5} width="9" height="9" fill={colour[r.role]} transform={`rotate(45 ${axisX} ${yy})`} />
+        <path d={`M${axisX + 8},${yy} L${axisX + 40},${ly} L${axisX + 56},${ly}`} class="lead" />
+        <text x={axisX + 62} y={ly - 2} class="lab" fill={colour[r.role]}>{r.label}</text>
+        <text x={axisX + 62} y={ly + 12} class="val">
+          {parts(r.value).m}
+          {parts(r.value).e && <tspan dy="-4" class="sup">{parts(r.value).e}</tspan>}
+          <tspan dy={parts(r.value).e ? 4 : 0}> µm/s{r.note ? ` · ${r.note}` : ''}</tspan>
+        </text>
+      </g>
+    ))
+  }
+  {
+    gapLabel && (
+      <text x={axisX - 24} y={(y(lowRadar) + y(highChamber)) / 2} text-anchor="end" class="gap" transform={`rotate(-90 ${axisX - 24} ${(y(lowRadar) + y(highChamber)) / 2})`}>
+        {gapLabel}
+      </text>
+    )
+  }
+</svg>
+
+<style>
+  .ladder {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .axis {
+    stroke: var(--border-strong);
+    stroke-width: 1.2;
+  }
+  .dark .axis {
+    stroke: var(--panel-line);
+  }
+  .tick {
+    stroke: var(--border-strong);
+  }
+  .dark .tick {
+    stroke: var(--panel-faint);
+  }
+  .dec,
+  .unit {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    fill: var(--muted);
+  }
+  .dark .dec,
+  .dark .unit {
+    fill: var(--panel-faint);
+  }
+  .sup {
+    font-size: 8.5px;
+  }
+  .lead {
+    fill: none;
+    stroke: var(--faint);
+    stroke-width: 1;
+  }
+  .dark .lead {
+    stroke: var(--panel-faint);
+  }
+  .lab {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .val {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    fill: var(--muted);
+  }
+  .dark .val {
+    fill: var(--panel-muted);
+  }
+  .gap {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    fill: var(--panel-muted);
+  }
+</style>

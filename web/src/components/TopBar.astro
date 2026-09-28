@@ -12,17 +12,18 @@ const { current = '' } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const links = [
   { id: 'home', href: `${base}/`, label: 'Overview' },
-  { id: 'underworld', href: `${base}/underworld/`, label: 'Underworld' },
+  { id: 'pictures', href: `${base}/pictures/`, label: 'In pictures' },
+  { id: 'satellite', href: `${base}/satellite/`, label: 'Satellite' },
   { id: 'seismic', href: `${base}/seismic/`, label: 'Seismic' },
   { id: 'ambient', href: `${base}/ambient/`, label: 'Ambient' },
-  { id: 'satellite', href: `${base}/satellite/`, label: 'Satellite' },
+  { id: 'underworld', href: `${base}/underworld/`, label: '3-D' },
   { id: 'claim', href: `${base}/claim/`, label: 'Claim' },
   { id: 'method', href: `${base}/method/`, label: 'Method' },
 ];
 ---
 <header class="top-bar">
   <div class="titles">
-    <a class="title" href={`${base}/`}><Seal />Katabasis</a>
+    <a class="title" href={`${base}/`}><Seal />Underworld</a>
     <p class="subtitle-quote">
       “The descent to Avernus is easy … but to retrace the step and come out to the upper air, this is the task, this
       the labour.” <span class="attribution">— Virgil, Aeneid VI.126–129</span>

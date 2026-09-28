@@ -341,3 +341,20 @@ details.more > :not(summary) {
     animation: none !important;
   }
 }
+
+/* wide data tables scroll within themselves on small screens rather than widening the page */
+@media (max-width: 760px) {
+  table.data {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* grid children may shrink below their content, so a wide table scrolls instead of stretching its card */
+.grid-2 > *,
+.grid-3 > *,
+.grid-4 > * {
+  min-width: 0;
+}

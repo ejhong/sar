@@ -1,7 +1,8 @@
-# Katabasis — a simulation lab for the underworld
+# Underworld — can a satellite see beneath the ground?
 
-Code and data behind **[Katabasis](https://ejhong.github.io/sar/)**, which asks what can see beneath the ground, and
-how far down, by building ground whose contents are known and simulating the instruments over it.
+Code and data behind **[Underworld](https://ejhong.github.io/sar/)**, which asks what can see beneath the ground, and
+how far down, by building ground whose contents are known and simulating the instruments over it. Its answer for the
+satellite claim is shown step by step at [/sar/pictures/](https://ejhong.github.io/sar/pictures/).
 
 The claim under test is the single-image SAR "Doppler tomography" of Biondi & Malanga (2022, retracted 2026) and the
 2025 Khafre "underground city" announcement. The lab answers it in two phases:
@@ -16,9 +17,11 @@ The claim under test is the single-image SAR "Doppler tomography" of Biondi & Ma
 against each other, as every single-image method does, is blind to ordinary ground moving: the looks share their
 spectrum sample for sample (P2-03). A chamber changes the ground's own motion by 6.6 × 10⁻⁵ of it, 10⁴ to 10⁸ below
 what one dwell could detect (P2-04, P2-05). And the published depth is the frequency of the ground's motion, 6.76 m per
-hertz on the real geometry, whatever is underground (P2-06).
+hertz on the real geometry, whatever is underground (P2-06). Run whole, over simulated shaking ground, the published
+method draws the same picture with and without the chamber (P2-07).
 
-The first investigation (the published pipeline reimplemented and run on two real ICEYE dwells) is kept intact in
+The lab's Python package keeps its first name, `katabasis`. The first investigation (the published pipeline
+reimplemented and run on two real ICEYE dwells) is kept intact in
 `sim/legacy/` and its site at [/sar/archive/](https://ejhong.github.io/sar/archive/).
 
 ## Layout

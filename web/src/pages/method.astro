@@ -14,14 +14,42 @@ const mark = (s: string) => (s === 'sourced' || s === 'definition' ? '' : s === 
   title="Method and sources"
   kicker="Reproducibility"
   current="method"
-  lede="Everything on this site is generated from the repository by code anyone can run: the compositions from their JSON, the simulations from their scripts, the figures and volumes from the runs that made them. Nothing is edited by hand, and every number carries its source or is marked as assumed."
+  lede="How the answer is known, and how to check it. Everything on this site is generated from the repository by code anyone can run: the compositions from their JSON, the simulations from their scripts, the figures and volumes from the runs that made them. Nothing is edited by hand, and every number carries its source or is marked as assumed."
   index={[
+    { id: 'proof', label: 'How we know' },
     { id: 'materials', label: 'Materials' },
     { id: 'glossary', label: 'Glossary' },
     { id: 'run', label: 'Run it' },
     { id: 'layout', label: 'Layout' },
   ]}
 >
+  <section id="proof">
+    <h2>Three independent reasons, each checked against something it could have failed</h2>
+    <div class="grid-3">
+      <div class="note-card">
+        <span class="tag measured">P2-03 · real and simulated</span>
+        <h3>One image’s looks cannot see ground move</h3>
+        <p>Looks cut from one image share their overlapping spectrum sample for sample, so correlating them locks at zero; for speckle, motion shared by a patch leaves the image’s distribution unchanged.</p>
+        <p class="check">Checked: the same block motion is recovered in full against a motionless twin, so the motion is in the data; a lone bright point’s envelope follows its motion (100 ± 2%); the real crop’s spectrum reproduces its own coherence to 10<sup>−9</sup>.</p>
+      </div>
+      <div class="note-card">
+        <span class="tag simulated">P2-04, P2-05 · simulated</span>
+        <h3>The chamber’s imprint is far below the reach</h3>
+        <p>Static relaxation with the lab’s elastic solver gives the chamber’s imprint on the ground’s motion (6.6 × 10<sup>−5</sup> of it); the budget combines it with what P2-03 measured, allowing every advantage.</p>
+        <p class="check">Checked: intact rock stays exactly still; the result changes 3.5% from a 1 m to a 0.5 m grid and not at all with domain size; Eshelby’s void with Okada’s point sources agrees within 40%; the detection threshold is confirmed by simulation (24 of 24 detected).</p>
+      </div>
+      <div class="note-card">
+        <span class="tag simulated">P2-06, P2-07 · simulated</span>
+        <h3>The depth axis is a frequency axis</h3>
+        <p>The steering wavenumber grows linearly with slow time, so the published focusing is a Fourier transform over time: 6.76 m of depth per hertz on the real geometry, whatever lies below.</p>
+        <p class="check">Checked: the pipeline’s own code reproduces the rule to the grid, folds where predicted, and draws identical profiles over a chamber at 15 m, at 30 m and over rock; run whole (P2-07), its sections with and without the chamber differ by 10<sup>−8</sup>.</p>
+      </div>
+    </div>
+    <p class="sub">
+      The full audit, with what is not established, is <a href="https://github.com/ejhong/sar/blob/main/METHOD_AUDIT.md">METHOD_AUDIT.md</a>;
+      every run’s parameters, code and data are linked from its details panel on the <a href={`${base}/satellite/`}>satellite page</a>.
+    </p>
+  </section>
   <section id="materials">
     <h2>Every material property is sourced, derived from a source, or marked assumed</h2>
     <p class="sub">P and S wave speeds in m/s; ′ derived from a source by a stated ratio; * assumed. Densities are assumed throughout until an open source is found.</p>
@@ -70,9 +98,11 @@ const mark = (s: string) => (s === 'sourced' || s === 'definition' ? '' : s === 
 
   <section id="run">
     <h2>Three commands rebuild everything</h2>
-    <pre><code>cd sim && uv sync && uv run pytest      # the simulation and its checks
-uv run python -m katabasis.export        # everything the site reads
-cd ../web && npm ci && npm run build     # the site, into docs/</code></pre>
+    <pre><code>cd sim && uv sync && uv run pytest                     # the simulation and its checks (~40 s)
+uv run python experiments/p2_07_whole_chain.py         # any run, e.g. the whole chain (~5 min)
+uv run python -m katabasis.export                      # everything the site reads
+cd ../web && npm ci && npm run build                   # the site, into docs/</code></pre>
+    <p class="sub">The lab’s Python package keeps its first name, <span class="mono">katabasis</span>. Real-image steps need the ICEYE products, which are not in the repository; their acquisition records are, so everything else reruns anywhere.</p>
   </section>
 
   <section id="layout">
@@ -120,6 +150,13 @@ cd ../web && npm ci && npm run build     # the site, into docs/</code></pre>
     .glossary {
       grid-template-columns: 1fr;
     }
+  }
+  .check {
+    font-size: 12.5px !important;
+    color: var(--muted) !important;
+    border-top: 1px solid var(--border);
+    padding-top: 8px;
+    margin-top: 8px;
   }
   .sources {
     margin-top: 14px;

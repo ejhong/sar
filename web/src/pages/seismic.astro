@@ -37,9 +37,9 @@ const dur = (s: number) => (s < 60 ? `${s.toFixed(0)} s` : s < 3600 ? `${(s / 60
 ---
 <Doc
   title="Seismic tomography, simulated"
-  kicker="Phase 1 · the reference ceiling"
+  kicker="From the ground · what the right instruments see"
   current="seismic"
-  lede="Before asking whether a satellite can see a chamber, ask what the instruments built for the job can see. Geophysicists image the shallow ground with arrays of geophones and a source, hammer blows or the ambient hum, and invert the records into a three-dimensional tomogram. This chapter does that in simulation, over ground whose contents are known."
+  lede="Before judging a satellite, ask what the instruments built for the job can see. Geophysicists image the shallow ground with arrays of geophones and a source, hammer blows or the ambient hum, and invert the records into a three-dimensional tomogram. Here that is done in simulation, over the same ground the satellite was flown over. Boreholes, echo imaging and full-waveform inversion find the chamber; the lab’s tools find it when the physics allows, so the satellite’s failure is the satellite’s."
   state="status · solver validated · travel times, echo imaging, ambient noise and full-waveform inversion done on the one-chamber bench"
   index={[
     { id: 'chain', label: 'The chain' },
@@ -426,8 +426,8 @@ const dur = (s: number) => (s < 60 ? `${s.toFixed(0)} s` : s < 3600 ? `${(s / 60
     <p class="sub">
       For each method and each chamber: the contrast recovered at the chamber against the spread of the background, the
       error in position and size, and the false chambers drawn elsewhere. Swept over chamber size, depth, array aperture,
-      spacing and frequency, the result is a map of where seismology succeeds and where it stops, the ceiling against which
-      the satellite is judged in Phase 2.
+      spacing and frequency, the result would be a map of where seismology succeeds and where it stops. The satellite, judged
+      on the same ground, is beyond that map’s edge (<a href={`${base}/satellite/`}>the satellite</a>).
     </p>
   </section>
 </Doc>

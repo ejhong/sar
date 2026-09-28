@@ -1,4 +1,4 @@
-# Where Katabasis is, and what comes next
+# Where Underworld is, and what comes next
 
 Written so the work can be picked up cold. The look is `web/DESIGN.md`; what is and is not established is
 `METHOD_AUDIT.md`; the first investigation's record is `sim/legacy/ROADMAP.md` (its measured findings stand).
@@ -16,6 +16,11 @@ for three independent reasons, each sufficient on its own (METHOD_AUDIT.md, "Pha
    900 um/s on the plateau's texture and 62 um/s on a bright scatterer directly above the chamber.
 3. **The published depth is the frequency of the ground's motion (P2-06):** 6.76 m per hertz on this geometry,
    whatever is underground.
+
+Run whole (P2-07), over simulated desert shaking at Giza's level with the chamber's imprint, imaged on the real dwell
+and put through the published pipeline unchanged, the depth sections with and without the chamber differ by 1e-8.
+The site is now **Underworld**: the front page leads with the answer, `/pictures/` walks through it for anyone,
+`/satellite/` holds the evidence.
 
 P2-03 also corrects the first investigation's record: R9's coherence curve is an identity of the looks, R4's floor is
 the scatter of an estimator that does not respond to ground motion, and R7 never recovered its injected motion.
@@ -88,18 +93,25 @@ The lab does it by simulation over ground whose contents are known, in two phase
   `sim/katabasis/seismic/static.py`): P2-01 the dwell's geometry from its products (three speeds, the product's
   slow-time sign, virtual baselines from the state vectors); P2-02 arbitrary motion in the synthesizer; P2-03 what one
   dwell can see of motion; P2-04 the chamber's imprint by static relaxation, checked against Eshelby and Okada;
-  P2-05 the budget; P2-06 the depth-frequency identity.
+  P2-05 the budget; P2-06 the depth-frequency identity; P2-07 the whole chain end to end (its figures are rendered by
+  the run into `figs/` and exported with it).
 
 ## Next, in order
 
-1. **Optional confirmations on the real image**, none of which can change the result: the Khufu known-chamber
+1. **P2-08, how the method draws pillars and boxes.** The published Khafre renderings show helical shafts with blocks
+   at their feet. Hypothesis to test on the real Khafre crop: each column is a pixel's trajectory spectrum relabelled as
+   depth (P2-06), bright or unstable surface pixels give tall columns, the fluctuations along a column have the depth
+   resolution's period (the bands, read as spirals), and a constant offset in a trajectory focuses at zero depth and again
+   at the axis's repeat depth, where the derivative protocol's grid ends (R12): the blocks. Reproduce them, render them
+   beside the claim in the viewer's claimed-underworld site.
+2. **Optional confirmations on the real image**, none of which can change the result: the Khufu known-chamber
    positive control (metre-level registration on surveyed base corners, then the King's and Queen's Chambers and the
    Grand Gallery under the published chain); the derivative protocol v1.7 on a simulated dwell (desktop only).
-2. **Tidy the first investigation's record**: rerun or retire R7 (its script and results disagree); mark R9 and R10
+3. **Tidy the first investigation's record**: rerun or retire R7 (its script and results disagree); mark R9 and R10
    on the archive as identities of the looks rather than measurements of the ground.
-3. **A short findings note for the protocol's authors** (draft for the owner to send): P2-03's blindness of complex
+4. **A short findings note for the protocol's authors** (draft for the owner to send): P2-03's blindness of complex
    look registration and P2-06's depth-frequency identity, besides the earlier geometry points.
-4. Phase 1, if it continues for its own sake: full-waveform inversion beyond the inverse crime; the ambient field in
+5. Phase 1, if it continues for its own sake: full-waveform inversion beyond the inverse crime; the ambient field in
    every site; symmetric near-air stencils; detectability sweeps; the shaft field and Giza; the claimed underworld
    at low frequency. None bears on the radar question.
 

@@ -11,22 +11,23 @@ interface Props {
 const { stops } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
-<section class="hero" aria-label="Katabasis">
+<section class="hero" aria-label="Underworld">
   <div class="hero-stage uw" data-tour={JSON.stringify(stops)} data-theme="night">
     <canvas aria-hidden="true"></canvas>
     <div class="hero-shade"></div>
   </div>
   <div class="hero-copy">
-    <p class="hero-kicker">A simulation lab for the underworld</p>
-    <h1>What can see beneath the ground, and how far down</h1>
+    <p class="hero-kicker">Can a satellite see beneath the ground?</p>
+    <h1>One radar image cannot see what lies below</h1>
     <p class="hero-lede">
       In 2025 a team announced an underground city beneath Khafre's pyramid, mapped from a single satellite radar image.
-      Katabasis tests that idea the way physics can: build ground whose contents are known, send the instruments over
-      it, and measure what each one recovers — the seismic arrays geophysicists trust first, then the satellite.
+      We built ground whose contents we know, flew the real satellite over it in simulation, and ran the published method.
+      It cannot see the chamber, for three reasons that do not depend on one another, and each can be shown.
     </p>
     <div class="hero-cta">
-      <a class="cta primary" href={`${base}/underworld/`}>Enter the underworld →</a>
-      <a class="cta" href={`${base}/seismic/`}>The seismic chapter</a>
+      <a class="cta primary" href={`${base}/pictures/`}>See why, in pictures →</a>
+      <a class="cta" href={`${base}/satellite/`}>The evidence</a>
+      <a class="cta" href={`${base}/underworld/`}>Explore in 3-D</a>
     </div>
   </div>
   <div class="hero-caption" data-uw="caption" aria-live="polite"></div>
