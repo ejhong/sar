@@ -15,6 +15,8 @@ import pill from '../../public/data/runs/p2_08_pillars_and_boxes.json';
 import vsens from '../../public/data/runs/p2_09_virtual_sensors.json';
 import every from '../../public/data/runs/p2_11_every_way_in.json';
 import realpass from '../../public/data/runs/p2_12_real_pass.json';
+import passive from '../../public/data/runs/p1_04_ambient.json';
+import echo from '../../public/data/runs/p1_03_scattered.json';
 import Figure from '../components/Figure.astro';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
@@ -129,6 +131,7 @@ const eBands = eA.bands as { id: string; name: string; sand_penetration_m: numbe
 const heatBench = eC.rooms.bench.heat;
 const smallLoads = ['tide', 'air', 'water'].map((k) => (eC.rooms.bench as Record<string, { imprint_m: number }>)[k].imprint_m);
 const dB = (v: number) => Math.round(v).toLocaleString('en-US');
+const sig2 = (v: number) => Number(v.toPrecision(2)).toLocaleString('en-US');
 ---
 <Doc
   title="The satellite over the same ground"
@@ -138,6 +141,7 @@ const dB = (v: number) => Math.round(v).toLocaleString('en-US');
   state="status · answered · 28 September 2026 · simulated on the real Giza geometry, checked on its real image"
   index={[
     { id: 'verdict', label: 'The verdict' },
+    { id: 'questions', label: 'Four questions' },
     { id: 'geometry', label: 'The real geometry' },
     { id: 'blind', label: 'What one dwell sees' },
     { id: 'imprint', label: 'The chamber’s imprint' },
@@ -168,6 +172,54 @@ const dB = (v: number) => Math.round(v).toLocaleString('en-US');
       acquisitions (<a href={`${base}/archive/`}>the first investigation</a>) agrees, and three of its readings are corrected
       below.
     </p>
+  </section>
+
+  <section id="questions">
+    <h2>A satellite can measure a bright target shaking, not the ground trembling, and perfect measurements would not show a chamber</h2>
+    <div class="grid-2">
+      <div class="note-card">
+        <span class="tag measured">measured · 2026 papers, P2-03</span>
+        <h3>Can a satellite measure vibration from one pass?</h3>
+        <p>Yes, for bright, isolated targets that move a lot: in 2026, corner reflectors on shakers and a steel footbridge
+        were measured from orbit at {(eB.smallest_measured_m_s * 1e3).toFixed(2)} mm/s and up, to about 1 mm/s. Not for ordinary
+        ground. In one image, a patch of ground’s motion is nearly invisible to the looks ({pct(blk.gain_complex)} recovered on the
+        real Giza image), and Giza’s trembling is {sig2(eB.measured_over_trembling)} times below the
+        smallest motion ever measured from orbit. The 77 µm/s once quoted here was the scatter of a reading that does not respond
+        to the ground’s motion, not a sensitivity.</p>
+      </div>
+      <div class="note-card">
+        <span class="tag simulated">simulated · P2-06, P1-04</span>
+        <h3>If every pixel’s vibration were known perfectly, would it show a chamber?</h3>
+        <p>Not by the published method: its depth is the frequency of the motion, so given the exact motion at every pixel it
+        draws the same picture over rock and over a chamber. Not by proper seismic imaging in one pass either: the ground’s
+        trembling comes in waves kilometres long, too coarse to outline a room, and a pass lasts {gz.aperture_s.toFixed(1)} s.
+        Even with short waves, perfect instruments on the ground and the rock known exactly, passive imaging shows the chamber
+        no brighter than its surroundings after a minute of recording
+        ({(passive.score.contrast_vs_record as { record_s: number; contrast: number }[]).find((r) => r.record_s === 60)!.contrast.toFixed(1)}×),{' '}
+        {(passive.score.contrast_vs_record as { record_s: number; contrast: number }[]).find((r) => r.record_s === 3600)!.contrast.toFixed(1)}× after
+        an hour, and never 3×.</p>
+      </div>
+      <div class="note-card">
+        <span class="tag simulated">simulated · P2-09, P2-07</span>
+        <h3>Isn’t a million virtual seismometers better than a few real ones?</h3>
+        <p>Only if they hear. Made into {vsens.sensors.n.toLocaleString('en-US')} virtual sensors and shaken by a wave put into the
+        image, they recover {pct(vsens.gains.complex)} of it read the published way. Averaging deaf sensors gives a precise zero.
+        Where magnitudes hear a fifth, the chamber would need <Sci v={vsens.count.needed_for_chamber} p={0} /> sensors over it; the
+        whole image holds <Sci v={vsens.count.in_image} p={0} />. Over the chamber, one pass’s reading wanders
+        {' '}{sig2(ccmp.satellite_rms_m_s / ccmp.seismometer_rms_m_s)} times more than a real seismometer
+        records there.</p>
+      </div>
+      <div class="note-card">
+        <span class="tag simulated">simulated · P1-02 to P1-05, P2-03</span>
+        <h3>Seismic instruments find the chamber; why can’t the satellite?</h3>
+        <p>The ones that find it make their own waves. A hammer blow sends a sharp wave about {Math.round((imp.manifest.params.vs as number) / (echo.manifest.params.f0_hz as number))} m long,
+        timed exactly, and instruments pressed against the ground record its echo within {Math.round((echo.manifest.params.record_s as number) * 1000)} ms: the
+        chamber comes back {echo.score.contrast.toFixed(0)}× brighter than its surroundings. Listening to the ground’s own trembling instead works
+        only weakly, even with perfect instruments ({passive.score.image_contrast_ensemble.toFixed(1)}× with unlimited listening). A satellite has no hammer,
+        listens for {gz.aperture_s.toFixed(1)} s, cannot hear ordinary ground tremble, and its looks follow only motion slower than about a third of a hertz,
+        whose waves are kilometres long.</p>
+      </div>
+    </div>
   </section>
 
   <section id="geometry">
@@ -437,7 +489,10 @@ const dB = (v: number) => Math.round(v).toLocaleString('en-US');
       Rendered as the published pictures are: a thick slab, a log scale and a rainbow palette. The claimed chambers near
       1,220 m sit close to the second repeat, {(2 * rep1).toLocaleString('en-US')} m relabelled; that is suggestive only, since the
       published relabelling is not known exactly. In the <a href={`${base}/underworld/#bench-khafre-claim/recovered`}>3-D view</a>{' '}
-      the method’s Khafre volume stands beside the claim.
+      the method’s Khafre volume stands beside the claim. A published slice along a line is a row of pixels, each focused from its
+      own shifts alone, so a volume is every row; the costly step is the sub-pixel registration, which the lab refines only around
+      each correlation peak (Guizar-Sicairos and others, 2008) instead of upsampling whole patches: the Khafre patch’s
+      {pk.grid[0] * pk.grid[1] >= 1000 ? (pk.grid[0] * pk.grid[1]).toLocaleString('en-US') : pk.grid[0] * pk.grid[1]} pixels, 50 pairs each, took minutes.
     </p>
     <RunDetails manifest={pill.manifest} />
   </section>

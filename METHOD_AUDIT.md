@@ -244,6 +244,15 @@ dwell is 77 µm/s over a two-second series, about 13 times better than the rough
 reported for single-pass micro-motion on bridges. Phase precision is not what fails here, and
 the argument never depended on it failing.
 
+**Superseded in part, 28 September.** The agreement holds for bright, isolated targets, which is what
+the literature measures (the 2026 papers: corner reflectors and a steel footbridge at 0.7 mm/s and up).
+It does not hold for ordinary ground: P2-03 shows R4's 77 µm/s is the scatter of an estimator that
+recovers about 1% of a patch of ground's motion, not a sensitivity to it, and Giza's trembling is some
+13,000 times below the smallest motion measured from orbit. Even perfectly measured motion would not
+show a chamber: the published depth is the motion's frequency (P2-06), the ground's trembling comes in
+waves kilometres long, and passive imaging with perfect instruments and the rock known exactly reaches
+only 2.2× with unlimited listening (P1-04).
+
 The "minutes" requirement applies to one specific route: using the image as a dense seismometer
 array and reconstructing structure from wave propagation, which is the strongest form of the
 claim and the one R11 tests. Ambient-noise tomography converges only after many wave periods,

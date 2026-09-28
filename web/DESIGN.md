@@ -8,6 +8,8 @@ underworld. Cool and muted: mist for reading, deep slate-blue where the drama an
 - **Deep water (drama).** The top band and footer `#132030` with a faint lapis glow; the front-page hero and the
   viewer ground `#0f1822` with a lamp-lit vignette; instrument panels `#16222e`/`#1b2836` with text `#dfe6ec`; full-bleed
   feature bands (the measured budget) in deep water with light type.
+- **The seal.** The golden bough, Aeneas's passage into the underworld and back (the Virgil in the top band): gold on
+  lapis, drawn in `src/components/Seal.astro` and `public/favicon.svg`.
 - **Type.** IBM Plex Sans (UI, section headings), IBM Plex Mono (data, labels, captions), Newsreader (display titles and
   prose), all self-hosted through fontsource so every reader sees the same page. Headings are statements.
 - **Colour roles — one each, everywhere, 2-D and 3-D.** lapis = voids and chambers; verdigris = what an instrument
