@@ -138,7 +138,8 @@ def main():
             tree = cKDTree(np.column_stack([prow * sa, pcol * sr]))
             d, idx = tree.query(np.column_stack([er.ravel() * sa, ec.ravel() * sr]))
             idx = np.where(d < 4.0, idx, -1).reshape(EX.shape)
-            vols[key] = {'T': T.astype(np.float16), 'index': idx.astype(np.int32)}
+            vols[key] = {'T': T.astype(np.float16), 'index': idx.astype(np.int32),
+                         'grid': np.array([len(gr[::KEEP_EVERY_ROW]), len(gc)])}
             patches.append({'key': key, 'label': meta['label'], 'kind': kind, 'pixels': int(keep.sum()),
                             'crop_origin': meta['crop_origin'], 'repeat_depth_raw_m': float(zrep),
                             'pillar_power_vs_energy': pillar, 'cells_on_site': int((idx >= 0).sum()),
@@ -167,6 +168,7 @@ def main():
         across = [cc(a, b) for a in mons for b in cons]
         np.savez_compressed(run.dir / 'volumes.npz', **{f'{k}_T': v['T'] for k, v in vols.items()},
                             **{f'{k}_index': v['index'] for k, v in vols.items()},
+                            **{f'{k}_grid': v['grid'] for k, v in vols.items()},
                             z_raw=z_raw, voxel_m=VOXEL_M, grid_x0=x0, grid_y0=y0)
         finding = (
             f"The real pass lays onto the ground to within its fitted offset of {abs(shift[0]) * g.dx:.1f} m along track "

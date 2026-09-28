@@ -186,7 +186,14 @@ def export_real(out: Path = DATA) -> dict | None:
     nz_axis = len(v['z_raw'])
     per_index = float(s['manifest']['params']['claim_repeat_m']) / nz_axis
     shown = [p for p in s['patches'] if p['cells_on_site'] > 0]
-    allT = np.concatenate([v[f"{p['key']}_T"].astype(np.float32).ravel() for p in shown])
+    # smoothed as the claim's volume is (export_claim): a pixel or so across, a step and a half in depth, the depth axis
+    # wrapping round, since it covers one whole period
+    def smoothed(key):
+        T = v[f'{key}_T'].astype(np.float32)
+        nr, nc = (int(n) for n in v[f'{key}_grid'])
+        return gaussian_filter(T.reshape(nr, nc, -1), (1.0, 1.0, 1.5), mode=('nearest', 'nearest', 'wrap')).reshape(nr * nc, -1)
+    Ts = {p['key']: smoothed(p['key']) for p in shown}
+    allT = np.concatenate([Ts[p['key']].ravel() for p in shown])
     med = float(np.median(allT))
     A = np.log10(np.maximum(allT, 1e-30) / med)
     lo, hi = float(np.percentile(A, 2)), float(np.percentile(A, 99.5))
@@ -198,7 +205,7 @@ def export_real(out: Path = DATA) -> dict | None:
     for p in shown:
         key = p['key']
         idx = v[f'{key}_index']
-        T = v[f'{key}_T'].astype(np.float32)
+        T = Ts[key]
         iy, ix = np.nonzero(idx >= 0)
         sub = idx[iy.min():iy.max() + 1, ix.min():ix.max() + 1]
         xs = gx0 + h / 2 + h * np.arange(ix.min(), ix.max() + 1)
