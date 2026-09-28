@@ -154,8 +154,8 @@ def export_claim(out: Path = DATA) -> dict | None:
         'method': 'The first investigation’s trajectories on the ICEYE Giza dwell, focused past the repeat depth and relabelled',
         'quantity': 'focused power, log scale', 'units': 'relative', 'range': rng,
         'run': f"{rid} · {s8['manifest']['date']} · {s8['manifest']['commit']}",
-        'caption': f"pillars where the surface reading is noisiest; blocks at {k['repeat_depth_m_shown']:.0f} m and "
-                   f"{2 * k['repeat_depth_m_shown']:.0f} m, where the depth axis repeats"})
+        'caption': f"pillars where the surface reading is noisiest; blocks at {k['repeat_depth_m_shown']:,.0f} m and "
+                   f"{2 * k['repeat_depth_m_shown']:,.0f} m, where the depth axis repeats"})
     _merge_volumes(d, [vol])
     return {'site': 'bench-khafre-claim', 'volumes': [vol['id']]}
 

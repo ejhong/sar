@@ -11,6 +11,9 @@ import imp from '../../public/data/runs/p2_04_chamber_imprint.json';
 import bud from '../../public/data/runs/p2_05_budget.json';
 import dep from '../../public/data/runs/p2_06_depth_is_frequency.json';
 import chain from '../../public/data/runs/p2_07_whole_chain.json';
+import pill from '../../public/data/runs/p2_08_pillars_and_boxes.json';
+import vsens from '../../public/data/runs/p2_09_virtual_sensors.json';
+import every from '../../public/data/runs/p2_11_every_way_in.json';
 import Figure from '../components/Figure.astro';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
@@ -101,12 +104,36 @@ const noisyRefl = cell(caseNames[1], targets[3]).shortfall as number;
 const brightShort = bright.shortfall as number;
 const reflShort = refl.shortfall as number;
 const wholeMotion = Math.round((ground.a_min_m_s as number) / imp.cases[0].vertical_velocity_m_s);
+
+// ---- P2-08
+const pk = pill.sets.khafre;
+const pfig = (f: string) => `${base}/data/runs/p2_08_pillars_and_boxes/${f}`;
+const rep1 = pk.repeat_depth_m_shown as number;
+
+// ---- P2-09
+const vfig = (f: string) => `${base}/data/runs/p2_09_virtual_sensors/${f}`;
+const vc = vsens.count;
+const vst = vsens.stack as Record<'complex' | 'magnitude', { n: number[]; scatter_m_s: number[]; slope: number }>;
+const vmap = vsens.maps.truth;
+const vaspect = `${vmap.aspect_m[0].toFixed(0)} / ${vmap.aspect_m[1].toFixed(0)}`;
+const halfLine = vst.magnitude.n.map((n) => um(vst.magnitude.scatter_m_s[0]) / Math.sqrt(n));
+
+// ---- P2-11
+const eA = every.A_penetration;
+const eB = every.B_vibration;
+const eC = every.C_between_passes;
+const eBench = eA.rows[0];
+const eClaim = eA.rows[2];
+const eBands = eA.bands as { id: string; name: string; sand_penetration_m: number }[];
+const heatBench = eC.rooms.bench.heat;
+const smallLoads = ['tide', 'air', 'water'].map((k) => (eC.rooms.bench as Record<string, { imprint_m: number }>)[k].imprint_m);
+const dB = (v: number) => Math.round(v).toLocaleString('en-US');
 ---
 <Doc
   title="The satellite over the same ground"
   kicker="Phase 2 · simulated on the real geometry"
   current="satellite"
-  lede="Phase 2 simulates the real ICEYE dwell over Giza, pixel by pixel, over ground whose chambers and motion are known, and checks it on the real image. The answer is no, for three reasons that do not depend on one another: one image cannot see ordinary ground move, a chamber barely changes how the ground moves, and the published depth is only the frequency of the motion."
+  lede="Phase 2 simulates the real ICEYE dwell over Giza, pixel by pixel, over ground whose chambers and motion are known, and checks it on the real image. The answer is no, for three reasons that do not depend on one another: one image cannot see ordinary ground move, a chamber barely changes how the ground moves, and the published depth is only the frequency of the motion. Every other route from a buried room to a radar is closed as well."
   state="status · answered · 28 September 2026 · simulated on the real Giza geometry, checked on its real image"
   index={[
     { id: 'verdict', label: 'The verdict' },
@@ -116,6 +143,9 @@ const wholeMotion = Math.round((ground.a_min_m_s as number) / imp.cases[0].verti
     { id: 'budget', label: 'The budget' },
     { id: 'depth', label: 'Depth is frequency' },
     { id: 'chain', label: 'The whole chain' },
+    { id: 'pillars', label: 'Pillars and boxes' },
+    { id: 'sensors', label: 'Virtual sensors' },
+    { id: 'every', label: 'Every other route' },
     { id: 'rescue', label: 'What could rescue it' },
     { id: 'record', label: 'Corrections' },
   ]}
@@ -382,6 +412,128 @@ const wholeMotion = Math.round((ground.a_min_m_s as number) / imp.cases[0].verti
     <RunDetails manifest={chain.manifest} />
   </section>
 
+  <section id="pillars">
+    <h2>The published pictures’ pillars and boxes are the method’s own arithmetic</h2>
+    <p class="sub">
+      The published Khafre renderings show tall columns, banded like spirals, with blocks at their feet. P2-08 draws the same
+      shapes from the real Khafre image with the published focusing, and each has a plain cause. <b>Pillars:</b> averaged over
+      a period of its depth axis, the power the method draws at a pixel is that pixel’s trajectory energy (correlation{' '}
+      {pk.pillar_corr_mean_power_vs_energy.toFixed(3)}), so a pixel whose registration wanders is bright at every depth and a
+      thick-slab rendering stands it up as a column. Such pixels lie where the surface is darker or changes brightness; open
+      plateau with no monument draws the tallest columns, and uniform simulated ground draws none. <b>Bands:</b> along a
+      column the power rises and falls every {pk.resolution_m_shown.toFixed(0)} m of the relabelled axis, its resolution.{' '}
+      <b>Blocks:</b> at the surface and at each repeat depth, {rep1.toLocaleString('en-US')} m and {(2 * rep1).toLocaleString('en-US')} m relabelled,
+      every steering phase is the same, so the power there is the pixel’s average offset (ratio{' '}
+      {pk.box_power_over_mean_offset.toFixed(3)}); below {rep1.toFixed(0)} m the picture repeats.
+    </p>
+    <div class="grid-3">
+      <Figure compact src={pfig('khafre_section.png')} alt="The published method's depth section at Khafre" label="Khafre, the real image" caption="columns where the registration wanders" aspect="5 / 7" yTop="0 m" yBottom={`${pk.depth_shown_m.toFixed(0)} m`} />
+      <Figure compact src={pfig('plateau_section.png')} alt="The same section over open plateau" label="Open plateau, no monument" caption="the tallest columns of all" aspect="5 / 7" yTop="0 m" yBottom={`${pk.depth_shown_m.toFixed(0)} m`} />
+      <Figure compact src={pfig('simulated_section.png')} alt="The same section over uniform simulated ground" label="Uniform simulated ground" caption="no columns: nothing wanders more than anything else" aspect="5 / 7" yTop="0 m" yBottom="" />
+    </div>
+    <p class="note">
+      Rendered as the published pictures are: a thick slab, a log scale and a rainbow palette. The claimed chambers near
+      1,220 m sit close to the second repeat, {(2 * rep1).toLocaleString('en-US')} m relabelled; that is suggestive only, since the
+      published relabelling is not known exactly. In the <a href={`${base}/underworld/#bench-khafre-claim/recovered`}>3-D view</a>{' '}
+      the method’s Khafre volume stands beside the claim.
+    </p>
+    <RunDetails manifest={pill.manifest} />
+  </section>
+
+  <section id="sensors">
+    <h2>A radar image is not a dense seismic array</h2>
+    <p class="sub">
+      Every patch of an image can be read as a virtual seismometer, and there are millions of them, far denser than any real
+      array; stacking many sensors does shrink their noise. P2-09 asks the prior question: do they hear? A test wave (60 m long,
+      0.15 Hz, 2 mm/s: forty thousand times Giza’s microseisms, and slow enough that neighbouring sensors move differently)
+      is put into the simulated image itself, and {vsens.sensors.n.toLocaleString('en-US')} sensors are read the way the first
+      investigation read its velocity series. Read by complex correlation, as the published trackers read them, they recover{' '}
+      {pct(vsens.gains.complex)} of the motion under them; by magnitudes, {pct(vsens.gains.magnitude)}. The first investigation’s
+      array test (R11) had added its wave to the readings after tracking, so it never asked this.
+    </p>
+    <div class="grid-3">
+      <Figure compact fill pixelated src={vfig('sensors_truth.png')} alt="The true motion under each sensor" label="The true motion" caption="the wave, under each sensor" aspect={vaspect} />
+      <Figure compact fill pixelated src={vfig('sensors_complex.png')} alt="What complex correlation reports" label="Complex correlation" caption={`the published way: ${pct(vsens.gains.complex)}`} aspect={vaspect} />
+      <Figure compact fill pixelated src={vfig('sensors_magnitude.png')} alt="What magnitudes report" label="Magnitudes" caption={`the best tracker: ${pct(vsens.gains.magnitude)}`} aspect={vaspect} />
+    </div>
+    <div class="grid-2 charts">
+      <LineChart
+        title="Fig. S9 · Stacking still sensors: the scatter falls as more are averaged"
+        logX
+        logY
+        series={[
+          { name: 'magnitudes', x: vst.magnitude.n, y: vst.magnitude.scatter_m_s.map(um), color: 'var(--cinnabar)', markers: true },
+          { name: 'complex', x: vst.complex.n, y: vst.complex.scatter_m_s.map(um), color: 'var(--ochre)', markers: true },
+          { name: 'n^−½', x: vst.magnitude.n, y: halfLine, color: 'var(--muted)', dash: '3 3', width: 1 },
+        ]}
+        xLabel="sensors averaged"
+        yLabel="scatter, µm/s"
+        caption={`Slope ${vst.magnitude.slope.toFixed(2)} for magnitudes: independent, as hoped. But averaging deaf sensors gives a precise zero, not the motion.`}
+      />
+      <div class="note-card">
+        <span class="tag simulated">simulated · P2-09</span>
+        <h3>How many sensors the chamber would need</h3>
+        <table class="data compact">
+          <tbody>
+            <tr><td>needed over the chamber, where magnitudes hear a fifth</td><td class="num"><Sci v={vc.needed_for_chamber} p={0} /></td></tr>
+            <tr><td>independent sensors over the chamber</td><td class="num">{Math.round(vc.in_footprint).toLocaleString('en-US')}</td></tr>
+            <tr><td>in the whole image</td><td class="num"><Sci v={vc.in_image} p={0} /></td></tr>
+            <tr><td>on all of Earth’s land</td><td class="num"><Sci v={vc.on_earth_land} p={0} /></td></tr>
+            <tr><td>needed for the ground’s whole trembling, no chamber</td><td class="num"><Sci v={vc.needed_for_trembling} p={0} /></td></tr>
+          </tbody>
+        </table>
+        <p>Even the trembling itself would need {Math.round(vc.needed_for_trembling / vc.in_image).toLocaleString('en-US')} times more sensors than the image holds. In the <a href={`${base}/underworld/#bench-void/satellite`}>3-D view</a> the sensors bob with the true motion beside what each reports.</p>
+      </div>
+    </div>
+    <RunDetails manifest={vsens.manifest} />
+  </section>
+
+  <section id="every">
+    <h2>Every other route from a buried room to a radar is closed too</h2>
+    <p class="sub">
+      A radar records echoes, and an echo depends on two things only: how strongly each scatterer returns the wave, and where
+      each scatterer is while it is watched. A buried room can therefore reach the record in four ways and no others. P2-11
+      bounds each, generously to the room, for the bench chamber (6 m, 15 m down), a large hall (20 m, 30 m down) and the claimed
+      deep structure (80 m, 1,220 m down).
+    </p>
+    <table class="data">
+      <thead><tr><th>Route</th><th>Best case</th><th>What it would take</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><b>The wave reaches the room</b><br /><span class="muted">penetration</span></td>
+          <td>X band gets about {(eBands[0].sand_penetration_m * 100).toFixed(0)} cm into the driest sand, L band {eBands[1].sand_penetration_m.toFixed(0)} m, P band {eBands[2].sand_penetration_m.toFixed(0)} m; limestone conducts 50–200 times more than dry sand</td>
+          <td>the bench chamber’s roof lies at least {dB(eBench.bands.X.two_way_loss_db_if_sand)} dB down at X band, the claimed structure {dB(eClaim.bands.X.two_way_loss_db_if_sand)} dB, against about 30 dB an image spans; only P band could reach a shallow room, inside its {Math.round(eA.biomass_slant_resolution_m)} m resolution cell with the surface</td>
+        </tr>
+        <tr>
+          <td><b>The ground moves while the image is taken</b><br /><span class="muted">vibration</span></td>
+          <td>the smallest motion ever measured from orbit, {(eB.smallest_measured_m_s * 1e3).toFixed(2)} mm/s on a corner reflector (2026), is <Sci v={eB.measured_over_imprint} p={0} /> times the chamber’s imprint</td>
+          <td>shaking of {eB.shaking_needed_bench_m_s.toFixed(1)} m/s during the 25 s pass, over reflectors placed there in advance</td>
+        </tr>
+        <tr>
+          <td><b>The ground deforms between images</b><br /><span class="muted">interferometry under varying loads</span></td>
+          <td>the year’s heat wave moves the ground over the chamber by {(heatBench.imprint_m * 1e6).toFixed(1)} µm; tides, air pressure and the water table {(Math.min(...smallLoads) * 1e6).toFixed(2)}–{(Math.max(...smallLoads) * 1e6).toFixed(1)} µm</td>
+          <td><Sci v={heatBench.passes_needed} p={0} /> passes at {eC.insar_mm} mm each, and the ground’s own seasonal breathing ({(eC.surface_breathing_m * 1e3).toFixed(2)} mm) is {Math.round(heatBench.breathing_over_imprint)} times larger</td>
+        </tr>
+        <tr>
+          <td><b>The surface itself changes</b><br /><span class="muted">temperature, moisture</span></td>
+          <td>{(every.D_surface.bench.surface_anomaly_k * 1e3).toFixed(1)} mK at the surface</td>
+          <td>no radar responds to it</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="sub">
+      Any processing, gates, stacking, tomography or machine learning included, is a function of the record and cannot restore
+      what these routes do not carry. Where radar does see underground is long wavelengths in very dry ground: the Shuttle’s L band
+      found buried river valleys under the Sahara in 1981, and ESA’s Biomass showed ancient riverbeds under the sand of Chad in 2025.
+      A viewer that looks underground from radar data is possible there, for the top few metres, and not from an X-band image.
+    </p>
+    <details class="sources">
+      <summary>Sources for the outside numbers</summary>
+      <ul>{Object.values(every.sources as Record<string, string>).map((s) => <li>{s}</li>)}</ul>
+    </details>
+    <RunDetails manifest={every.manifest} />
+  </section>
+
   <section id="rescue">
     <h2>What could rescue it, and why it does not</h2>
     <div class="grid-3">
@@ -390,6 +542,7 @@ const wholeMotion = Math.round((ground.a_min_m_s as number) / imp.cases[0].verti
       <div class="note-card"><h3>Other structures</h3><p>The imprint scales as volume over depth squared (checked against the solver, P2-04); the claimed deep structure scales to {(imp.claimed[0].relative_to_bench as number).toFixed(2)} of the bench chamber. Independently of any structure, Giza’s whole microseism motion is {wholeMotion.toLocaleString('en-US')} times below the plateau’s detection threshold.</p></div>
       <div class="note-card"><h3>A better estimator</h3><p>For fully developed speckle the Doppler bins are independent circular Gaussians, so a phase history shared by a patch leaves the image’s distribution unchanged: no estimator recovers it. What survives is point-like content (magnitudes, above) and the apparent brightness a displacement gradient makes, of order 10<sup>−11</sup> here.</p></div>
       <div class="note-card"><h3>The published images</h3><p>The pipeline draws structured sections from any input: identical with and without the chamber (P2-07), the same over monuments and open desert (R1, R6), no signal over hundreds of surveyed shafts (R13), and the published appearance everywhere (R8).</p></div>
+      <div class="note-card"><h3>Vibration measured from orbit, 2026</h3><p>Two 2026 papers (Vattulainen et al., IEEE Access; Lotti et al., Structural Control and Health Monitoring) measure vibration from single spaceborne images against ground truth: corner reflectors on shakers in open fields, and a steel footbridge chosen because it is bright. They track isolated bright targets moving at 0.7 mm/s and up, with errors near 1 mm/s: what P2-03 says works. Their smallest motion is {Math.round(eB.measured_over_trembling).toLocaleString('en-US')} times Giza’s whole microseism motion and <Sci v={eB.measured_over_imprint} p={0} /> times the chamber’s imprint.</p></div>
       <div class="note-card"><h3>Only simulation?</h3><p>The coherence identity holds on the real crop to 10<sup>−9</sup>; the blindness is measured on real texture (1 ± 1%); the geometry is read from the product and reproduces its declared numbers; and the first investigation’s real-data controls found nothing at Giza or Sacsayhuamán.</p></div>
     </div>
   </section>

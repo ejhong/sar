@@ -20,8 +20,12 @@ interface Props {
   yTop?: string;
   yBottom?: string;
   compact?: boolean;
+  /** Stretch the image to the frame (a map whose pixels are not square) instead of cropping it. */
+  fill?: boolean;
+  /** Show each pixel as a sharp block (small maps of sensor readings). */
+  pixelated?: boolean;
 }
-const { src, alt, label, caption, tag, widthM, bar, aspect, x, y, yTop, yBottom, compact = false } = Astro.props;
+const { src, alt, label, caption, tag, widthM, bar, aspect, x, y, yTop, yBottom, compact = false, fill = false, pixelated = false } = Astro.props;
 const barPct = widthM && bar ? (100 * bar) / widthM : 0;
 ---
 <figure class:list={['lab-fig', { compact }]}>
@@ -29,7 +33,7 @@ const barPct = widthM && bar ? (100 * bar) / widthM : 0;
   <div class="plate">
     {y && <span class="y-word">{y}</span>}
     <div class="frame" style={aspect ? `aspect-ratio: ${aspect}` : undefined}>
-      <img src={src} alt={alt} loading="lazy" decoding="async" />
+      <img src={src} alt={alt} loading="lazy" decoding="async" class:list={{ fill, pixelated }} />
       <div class="overlay"><slot /></div>
       {yTop && <span class="y-tick top">{yTop}</span>}
       {yBottom && <span class="y-tick bottom">{yBottom}</span>}
@@ -83,6 +87,12 @@ const barPct = widthM && bar ? (100 * bar) / widthM : 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+  .frame img.fill {
+    object-fit: fill;
+  }
+  .frame img.pixelated {
+    image-rendering: pixelated;
   }
   .overlay {
     position: absolute;

@@ -30,6 +30,7 @@ const { mode = 'full', initial } = Astro.props;
           <button type="button" data-mode="truth" aria-pressed="true"><span class="uw-dot surveyed"></span>Truth</button>
           <button type="button" data-mode="recovered" aria-pressed="false"><span class="uw-dot recovered"></span>Recovered</button>
           <button type="button" data-mode="waves" aria-pressed="false"><span class="uw-dot wave"></span>Waves</button>
+          <button type="button" data-mode="satellite" aria-pressed="false"><span class="uw-dot radar"></span>Satellite</button>
         </div>
         <div class="uw-mode-context" data-uw="mode-context"></div>
       </section>
@@ -59,7 +60,7 @@ const { mode = 'full', initial } = Astro.props;
         <summary class="uw-label">Notes</summary>
         <div class="uw-notes" data-uw="notes"></div>
       </details>
-      <p class="uw-keys">keys · 1–4 site · t truth · v recovered · w waves · space play · r reset · esc unpin</p>
+      <p class="uw-keys">keys · 1–4 site · t truth · v recovered · w waves · s satellite · space play · r reset · esc unpin</p>
     </div>
   </aside>
   <div class="uw-stage">
@@ -74,6 +75,7 @@ const { mode = 'full', initial } = Astro.props;
         <span><span class="uw-dot surveyed"></span>chamber or void</span>
         <span><span class="uw-dot claimed"></span>claimed</span>
         <span><span class="uw-dot recovered"></span>recovered</span>
+        <span><span class="uw-dot radar"></span>radar</span>
         <span><span class="uw-dot sensor"></span>sensor</span>
       </span>
       <span class="uw-scalebar" data-uw="scalebar"><i></i><span></span></span>
@@ -255,7 +257,7 @@ const { mode = 'full', initial } = Astro.props;
   }
   .uw-modes {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 4px;
     background: var(--panel-head);
     border: 1px solid var(--panel-line);
@@ -288,6 +290,16 @@ const { mode = 'full', initial } = Astro.props;
   }
   .uw-mode-context {
     margin-top: 10px;
+  }
+  .uw-subhead {
+    font: 600 9.5px/1.3 var(--font-mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--panel-faint);
+    margin: 14px 0 6px;
+  }
+  .uw-subhead:first-child {
+    margin-top: 2px;
   }
   .uw-ctx-note {
     font-family: var(--font-serif);
@@ -414,6 +426,10 @@ const { mode = 'full', initial } = Astro.props;
   .uw-dot.recovered {
     background: var(--verdigris-night);
     box-shadow: 0 0 6px rgba(116, 216, 188, 0.5);
+  }
+  .uw-dot.radar {
+    background: var(--cinnabar-night);
+    box-shadow: 0 0 6px rgba(240, 144, 111, 0.5);
   }
   .uw-dot.wave {
     background: radial-gradient(circle, #f3ead6 0 30%, transparent 32% 55%, #f3ead6 57% 72%, transparent 74%);

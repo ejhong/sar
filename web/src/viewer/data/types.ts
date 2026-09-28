@@ -83,6 +83,34 @@ export interface VolumeInfo {
   caption?: string;
 }
 
+export interface RadarInfo {
+  kind: string;
+  acquisition: {
+    name: string;
+    heading_deg: number;
+    incidence_deg: number;
+    los_enu: [number, number, number];
+    aperture_s: number;
+    track_km: number;
+    slant_range_km: number;
+    along_track_en: [number, number];
+    ground_range_en: [number, number];
+  };
+  image: { file: string; centre: [number, number]; width_m: number; height_m: number; rotation_deg: number };
+  sensors: {
+    east: number[];
+    north: number[];
+    looks_s: number[];
+    truth_um_s: number[][];
+    complex_um_s: number[][];
+    magnitude_um_s: number[][];
+    test_wave: { wavelength_m: number; f_hz: number; v_m_s: number; azimuth_deg: number };
+    gains: { complex: number; magnitude: number };
+    run: string;
+  };
+  volumes: { with: string; without: string };
+}
+
 export interface Extent {
   x: [number, number];
   y: [number, number];
@@ -109,6 +137,7 @@ export interface SiteScene {
   volumes: VolumeInfo[];
   surveys?: SurveyInfo[];
   wavefields?: import('../scene/Wavefield').WavefieldInfo[];
+  radar?: RadarInfo;
 }
 
 export interface SiteIndexEntry {

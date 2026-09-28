@@ -36,6 +36,7 @@ import type { SceneTheme } from '../engine/theme';
 import { terrainHeight } from '../data/sample';
 import type { Feature, Shape, SiteScene, Structure, SurveyInfo, VolumeInfo } from '../data/types';
 import { drawSection, faceSpecs, type SectionSpec } from './sections';
+import { Radar } from './Radar';
 import { Volume } from './Volume';
 import { Wavefield, type WavefieldInfo } from './Wavefield';
 
@@ -59,9 +60,11 @@ export class Block {
     volumes: new Group(),
     stations: new Group(),
     waves: new Group(),
+    radar: new Group(),
   };
   readonly volumes = new Map<string, Volume>();
   readonly wavefields = new Map<string, Wavefield>();
+  radar?: Radar;
   readonly pickables: Mesh[] = [];
   private emphasis = 1;
   private featureFills: { mat: MeshBasicMaterial; claimed: boolean }[] = [];
@@ -171,6 +174,19 @@ export class Block {
     w.mesh.visible = false;
     this.wavefields.set(info.id, w);
     this.layers.waves.add(w.mesh);
+  }
+
+  /** The satellite's pass over the site (P2-07, P2-09), hidden until the Satellite mode shows it. */
+  addRadar() {
+    const info = this.scene.radar;
+    if (!info) return;
+    this.radar = new Radar(info, this.scene.id, this.size, this.zTop, this.clip, this.theme);
+    this.layers.radar.add(this.radar.group);
+    this.layers.radar.visible = false;
+  }
+
+  showRadar(on: boolean) {
+    this.layers.radar.visible = on && !!this.radar;
   }
 
   showWavefield(id: string | null): Wavefield | undefined {
@@ -605,6 +621,7 @@ export class Block {
     for (const th of this.themed) th.apply(t);
     for (const v of this.volumes.values()) v.setTheme(t);
     for (const w of this.wavefields.values()) w.setTheme(t);
+    this.radar?.setTheme(t);
     this.buildWalls();
     this.buildSection();
   }
@@ -616,6 +633,7 @@ export class Block {
   dispose() {
     for (const v of this.volumes.values()) v.dispose();
     for (const w of this.wavefields.values()) w.dispose();
+    this.radar?.dispose();
     disposeTree(this.root);
   }
 }

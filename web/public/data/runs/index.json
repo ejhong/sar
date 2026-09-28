@@ -512,5 +512,149 @@
    "threads": 16,
    "cpus": 16
   }
+ },
+ "p2_08_pillars_and_boxes": {
+  "id": "p2_08_pillars_and_boxes",
+  "title": "How the method draws pillars and boxes",
+  "date": "2026-09-28",
+  "started_utc": "2026-09-28T11:58:59+00:00",
+  "runtime_s": 56.9,
+  "commit": "5cd8a43",
+  "params": {
+   "inputs": {
+    "khafre": "legacy cache real_giza_khafre_paper_6d230513af04.npz",
+    "plateau": "legacy cache real_giza_desert_west_paper_f0a750ee4bb4.npz",
+    "simulated": "P2-07 scene B (no chamber)"
+   },
+   "bank": {
+    "K": 50,
+    "sub_frac": 0.5,
+    "delta_hz": 88.0
+   },
+   "lam_s_m": 0.48,
+   "repeat_depth_shown_m": 648.0,
+   "periods": 2.2
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  }
+ },
+ "p2_09_virtual_sensors": {
+  "id": "p2_09_virtual_sensors",
+  "title": "A million virtual sensors: can the image act as a dense seismic array?",
+  "date": "2026-09-28",
+  "started_utc": "2026-09-28T12:18:16+00:00",
+  "runtime_s": 72.0,
+  "commit": "b4d6776",
+  "params": {
+   "geometry": "giza-20250827",
+   "sensor_stride_px": [
+    16,
+    8
+   ],
+   "patch_px": 32,
+   "looks": 16,
+   "look_s": 1.96,
+   "test_wave": {
+    "wavelength_m": 60.0,
+    "f_hz": 0.15,
+    "v_m_s": 0.002,
+    "azimuth_deg": 30.0
+   },
+   "sensors": 3264
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  }
+ },
+ "p2_11_every_way_in": {
+  "id": "p2_11_every_way_in",
+  "title": "Every way a buried room could reach a radar",
+  "date": "2026-09-28",
+  "started_utc": "2026-09-28T12:42:25+00:00",
+  "runtime_s": 0.1,
+  "commit": "a32c15f",
+  "params": {
+   "rooms": [
+    {
+     "id": "bench",
+     "name": "the bench chamber",
+     "size_m": 6.0,
+     "centre_m": 15.0
+    },
+    {
+     "id": "hall",
+     "name": "a large hall",
+     "size_m": 20.0,
+     "centre_m": 30.0
+    },
+    {
+     "id": "claim",
+     "name": "the claimed deep structure",
+     "size_m": 80.0,
+     "centre_m": 1220.0
+    }
+   ],
+   "bands": [
+    {
+     "id": "X",
+     "name": "X band (ICEYE, TerraSAR-X)",
+     "wavelength_m": 0.031,
+     "sand_penetration_m": 0.3,
+     "source": "martone2014",
+     "note": "about 20 to 30 cm into dry desert soil; the larger value is used"
+    },
+    {
+     "id": "L",
+     "name": "L band (ALOS-2, NISAR)",
+     "wavelength_m": 0.24,
+     "sand_penetration_m": 2.0,
+     "source": "mccauley1982",
+     "note": "buried river valleys seen under 1 to 2 m of sand; the larger value is used"
+    },
+    {
+     "id": "P",
+     "name": "P band (Biomass)",
+     "wavelength_m": 0.69,
+     "sand_penetration_m": 5.0,
+     "source": "esa2025",
+     "note": "up to 5 m below the desert surface; used as the penetration depth itself, which is more than the observation implies"
+    }
+   ],
+   "loss_budget_db": 30.0,
+   "limestone": {
+    "sigma_s_m": 0.0005,
+    "eps_r": 8.0
+   },
+   "earthquake_f_hz": 2.0,
+   "strongest_pgv_m_s": 3.0,
+   "smallest_measured_m_s": 0.00066,
+   "loads": {
+    "tidal_strain": 5e-08,
+    "air_pa": 3000.0,
+    "water_pa": 10000.0,
+    "year_t_k": 12.0,
+    "alpha_per_k": 8e-06,
+    "kappa_m2_s": 1.3e-06
+   },
+   "insar_mm": 0.5,
+   "sigma_k": 3.0,
+   "geometry": "giza-20250827"
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  }
  }
 }

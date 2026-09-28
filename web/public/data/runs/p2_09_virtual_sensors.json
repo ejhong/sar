@@ -1,0 +1,150 @@
+{
+ "manifest": {
+  "id": "p2_09_virtual_sensors",
+  "title": "A million virtual sensors: can the image act as a dense seismic array?",
+  "date": "2026-09-28",
+  "started_utc": "2026-09-28T12:18:16+00:00",
+  "runtime_s": 72.0,
+  "commit": "b4d6776",
+  "params": {
+   "geometry": "giza-20250827",
+   "sensor_stride_px": [
+    16,
+    8
+   ],
+   "patch_px": 32,
+   "looks": 16,
+   "look_s": 1.96,
+   "test_wave": {
+    "wavelength_m": 60.0,
+    "f_hz": 0.15,
+    "v_m_s": 0.002,
+    "azimuth_deg": 30.0
+   },
+   "sensors": 3264
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  }
+ },
+ "sensors": {
+  "n": 3264,
+  "rows": 136,
+  "cols": 24
+ },
+ "gains": {
+  "complex": 0.0009525,
+  "magnitude": -0.063551
+ },
+ "noise_um_s": {
+  "complex": 75.295101,
+  "magnitude": 1450.510485
+ },
+ "stack": {
+  "complex": {
+   "n": [
+    1,
+    2,
+    4,
+    8,
+    16,
+    32,
+    64,
+    408
+   ],
+   "scatter_m_s": [
+    4.834e-05,
+    4.294e-05,
+    2.482e-05,
+    1.769e-05,
+    1.493e-05,
+    9.209e-06,
+    8.148e-06,
+    3.885e-06
+   ],
+   "slope": -0.434244
+  },
+  "magnitude": {
+   "n": [
+    1,
+    2,
+    4,
+    8,
+    16,
+    32,
+    64,
+    408
+   ],
+   "scatter_m_s": [
+    0.001261,
+    0.0009204,
+    0.0006528,
+    0.0004867,
+    0.000338,
+    0.000221,
+    0.000154,
+    6.745e-05
+   ],
+   "slope": -0.496597
+  }
+ },
+ "count": {
+  "independent_cell_m2": 0.3489175006785109,
+  "in_footprint": 3601.5306168141165,
+  "in_image": 71649582.79264413,
+  "on_earth_land": 427035043270263.2,
+  "looks_in_dwell": 12.492594,
+  "per_cell_noise_m_s": 0.01083667997223898,
+  "magnitude_gain_real": 0.214649,
+  "needed_for_chamber": 1.9351630563118383e+19,
+  "needed_for_trembling": 84974766843.66187,
+  "complex_gain": 0.0009525
+ },
+ "maps": {
+  "truth": {
+   "file": "sensors_truth.png",
+   "shape": [
+    136,
+    24
+   ],
+   "lo": -0.001109,
+   "hi": 0.001109,
+   "aspect_m": [
+    83.0299312179925,
+    95.697147
+   ]
+  },
+  "complex": {
+   "file": "sensors_complex.png",
+   "shape": [
+    136,
+    24
+   ],
+   "lo": -0.001109,
+   "hi": 0.001109,
+   "aspect_m": [
+    83.0299312179925,
+    95.697147
+   ]
+  },
+  "magnitude": {
+   "file": "sensors_magnitude.png",
+   "shape": [
+    136,
+    24
+   ],
+   "lo": -0.001109,
+   "hi": 0.001109,
+   "aspect_m": [
+    83.0299312179925,
+    95.697147
+   ]
+  }
+ },
+ "map_look_s": -0.682,
+ "finding": "A radar image is not a dense seismic array. Made into 3,264 virtual sensors and shaken by a wave put into the image itself, the sensors read by complex correlation, as the published method reads them, recover 0% of the motion under them, and read by magnitudes -6% (P2-03 found magnitudes catch up to about a fifth over large stretches of real, point-like ground). Stacking still sensors does shrink their scatter as n^-0.50, close to the n^-0.5 of independent sensors, but stacking a deaf sensor gives a precise zero. Where they do hear, the chamber's imprint (3.2e-06 um/s) would need about 2e+19 independent sensors over it; there are about 3,602 over the chamber, 7e+07 in the whole image and 4e+14 on all of Earth's land. Even the ground's own trembling, with no chamber in it, would need 8e+10, 1,186 times more than the whole image holds."
+}

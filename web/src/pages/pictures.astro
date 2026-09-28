@@ -11,6 +11,7 @@ import imp from '../../public/data/runs/p2_04_chamber_imprint.json';
 import bud from '../../public/data/runs/p2_05_budget.json';
 import dep from '../../public/data/runs/p2_06_depth_is_frequency.json';
 import lib from '../../public/data/ambient.json';
+import vsens from '../../public/data/runs/p2_09_virtual_sensors.json';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const fig = (f: string) => `${base}/data/runs/p2_07_whole_chain/${f.replace(/\.png$/, f.includes('ground') || f.includes('speckle') ? '.jpg' : '.png')}`;
@@ -362,8 +363,20 @@ const roomY = (100 * 12) / zmax;
           <p>For natural ground the information is not in the picture. Motion shared by a stretch of ground leaves the radar texture’s statistics exactly unchanged; that is a property of speckle, not a shortcoming of one method. Only isolated bright points carry motion, and they are covered above.</p>
         </div>
         <div class="q">
+          <h3>What about millions of virtual sensors?</h3>
+          <p>Every patch of a radar image can be read as a sensor, millions of them, far more than any real array, and averaging many sensors does shrink noise. So we put a wave into the image itself and read three thousand sensors: read the published way, they heard none of it. Averaging deaf sensors gives a precise zero. Where a better reading hears a little, the chamber would need <Sci v={vsens.count.needed_for_chamber} p={0} /> sensors over it; the whole image holds <Sci v={vsens.count.in_image} p={0} />.</p>
+        </div>
+        <div class="q">
           <h3>Then why do the published pictures look so convincing?</h3>
-          <p>Because the method draws such pictures from any image: over our flat simulated ground, with and without a room; over open desert on the real image; over hundreds of surveyed tombs at Giza, where it found none. Streaks and columns are its own texture.</p>
+          <p>Because the method draws such pictures from any image: over our flat simulated ground, with and without a room; over open desert on the real image; over hundreds of surveyed tombs at Giza, where it found none. Its tall columns are pixels whose reading wanders, drawn bright at every depth; the blocks at their feet sit where its depth scale repeats itself. <a href={`${base}/satellite/#pillars`}>How the pillars and boxes are made</a>.</p>
+        </div>
+        <div class="q">
+          <h3>Hasn’t vibration been measured from space?</h3>
+          <p>Yes: in 2026, two teams measured metal reflectors on shakers and a steel footbridge moving about a millimetre per second, checked against instruments on the ground. That is what radar does well, a bright point moving a lot. The chamber’s signal under Giza’s trembling is two hundred million times smaller.</p>
+        </div>
+        <div class="q">
+          <h3>Could the radar see down some other way?</h3>
+          <p>A radar echo depends on only two things: how bright each spot is, and where it is while it is watched. This radar’s wave gets about 30 centimetres into the driest sand and less into rock; between passes, the year’s heat and the tides move the ground over a room by a few millionths of a metre, hundreds of times less than the ground’s own seasonal swelling. Only long-wavelength radar sees underground, a few metres into very dry sand. <a href={`${base}/satellite/#every`}>Every route, measured</a>.</p>
         </div>
         <div class="q">
           <h3>Isn’t this only a simulation?</h3>

@@ -20,7 +20,8 @@ import type { VolumeInfo } from '../data/types';
  * A voxel volume (a tomogram) ray-marched inside its box, in site
  * coordinates. Values are 0..255: 0 is background, 255 the strongest
  * anomaly the exporter mapped. What an instrument recovered glows in
- * verdigris; the section plane cuts it like everything else.
+ * verdigris, what the published radar method draws in cinnabar; the section
+ * plane cuts it like everything else.
  */
 export class Volume {
   readonly mesh: Mesh;
@@ -50,7 +51,7 @@ export class Volume {
         uTex: { value: tex },
         uLo: { value: lo },
         uHi: { value: hi },
-        uColor: { value: new Color(theme.recovered) },
+        uColor: { value: new Color(info.status === 'radar' ? theme.radar : theme.recovered) },
         uThreshold: { value: 0.18 },
         uDensity: { value: 1.6 },
         uCutY: { value: -1e9 },
@@ -75,7 +76,7 @@ export class Volume {
   }
 
   setTheme(t: SceneTheme) {
-    this.mat.uniforms.uColor.value.set(t.recovered);
+    this.mat.uniforms.uColor.value.set(this.info.status === 'radar' ? t.radar : t.recovered);
     this.mat.uniforms.uDay.value = t.name === 'day' ? 1 : 0;
     this.mat.blending = t.name === 'day' ? NormalBlending : AdditiveBlending;
     this.mat.needsUpdate = true;

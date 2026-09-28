@@ -7,7 +7,8 @@ import { Block } from './scene/Block';
 import type { Wavefield } from './scene/Wavefield';
 import { featureDepth, fmtM } from './ui/format';
 
-export type Mode = 'truth' | 'recovered' | 'waves';
+export type Mode = 'truth' | 'recovered' | 'waves' | 'satellite';
+const MODES: Mode[] = ['truth', 'recovered', 'waves', 'satellite'];
 
 export interface TourStop {
   site: string;
@@ -89,6 +90,12 @@ export class Underworld {
         this.wave.tick(f.dt);
         this.updateTimeline();
       }
+      const radar = this.block?.radar;
+      if (radar && this.mode === 'satellite') {
+        radar.tick(f.dt);
+        this.updateLookLabel();
+        this.engine.poke();
+      }
       if (++this.scaleTick % 6 === 0) this.updateScaleBar();
     });
     if (!opts.tour) this.bindControls();
@@ -168,6 +175,7 @@ export class Underworld {
       ...scene.volumes.map(async (v) => block.addVolume(v, await loadVolume(scene.id, v.file))),
       ...(scene.wavefields ?? []).map(async (w) => block.addWavefield(w, await loadVolume(scene.id, w.file))),
     ]);
+    block.addRadar();
     this.pin(undefined);
     this.applyLayerToggles();
     const cut = this.$<HTMLInputElement>('[data-uw=cut]');
@@ -188,6 +196,7 @@ export class Underworld {
     const m: Mode[] = ['truth'];
     if (s.volumes.length) m.push('recovered');
     if (s.wavefields?.length) m.push('waves');
+    if (s.radar) m.push('satellite');
     return m;
   }
 
@@ -198,6 +207,7 @@ export class Underworld {
     const s = this.scene;
     if (!b || !s) return;
     if (!this.availableModes().includes(mode)) mode = 'truth';
+    const refit = (mode === 'satellite') !== (this.mode === 'satellite') && !!b.radar;
     this.mode = mode;
     const vols = s.volumes;
     const waves = s.wavefields ?? [];
@@ -207,6 +217,11 @@ export class Underworld {
       b.showVolume(id);
       const v = vols.find((x) => x.id === id);
       b.showSurvey(s.surveys?.find((sv) => sv.id === v?.survey) ?? null);
+    } else if (mode === 'satellite' && s.radar) {
+      const which = item === 'with' || item === 'without' ? item : this.item.satellite ?? 'with';
+      this.item.satellite = which;
+      b.showVolume(s.radar.volumes[which as 'with' | 'without']);
+      b.showSurvey(null);
     } else {
       b.showVolume(null);
       b.showSurvey(null);
@@ -221,9 +236,11 @@ export class Underworld {
       b.showWavefield(null);
       this.wave = undefined;
     }
-    b.setFeatureEmphasis(mode === 'truth' ? 1 : 0.35);
+    b.showRadar(mode === 'satellite');
+    b.setFeatureEmphasis(mode === 'truth' || mode === 'satellite' ? 1 : 0.35);
     this.renderModeUI();
     this.writeHash();
+    if (refit && !this.opts.tour) this.frame(true);
     this.engine.poke();
   }
 
@@ -246,12 +263,27 @@ export class Underworld {
         .join(' ')}. Click one to pin its details.</p>`;
       return;
     }
+    if (this.mode === 'satellite' && s.radar) {
+      this.renderSatelliteUI(ctx, s);
+      return;
+    }
     if (this.mode === 'recovered') {
+      const groups: [string, typeof s.volumes][] = [
+        ['Instruments on the ground', s.volumes.filter((v) => v.status !== 'radar')],
+        ['The satellite, read by the published method', s.volumes.filter((v) => v.status === 'radar')],
+      ];
+      const shown = groups.filter(([, g]) => g.length);
       ctx.innerHTML =
-        s.volumes
+        shown
           .map(
-            (v) => `<label class="uw-radio"><input type="radio" name="vol" value="${v.id}" ${v.id === this.item.recovered ? 'checked' : ''}/>
+            ([label, g]) =>
+              (shown.length > 1 ? `<div class="uw-subhead">${label}</div>` : '') +
+              g
+                .map(
+                  (v) => `<label class="uw-radio"><input type="radio" name="vol" value="${v.id}" ${v.id === this.item.recovered ? 'checked' : ''}/>
           <span><span class="uw-opt-name">${esc(v.label)}</span><span class="uw-opt-sub">${esc(v.caption ?? v.method)}</span></span></label>`,
+                )
+                .join(''),
           )
           .join('') +
         `<label class="uw-range"><span>Show anomalies stronger than</span><input type="range" min="0.02" max="0.9" step="0.01" value="0.18" data-uw="threshold" /></label>`;
@@ -296,6 +328,67 @@ export class Underworld {
     });
   }
 
+  /** The satellite's pass: what it is, the image's virtual sensors, and the method's picture with and without the chamber. */
+  private renderSatelliteUI(ctx: HTMLElement, s: SiteScene) {
+    const r = s.radar!;
+    const a = r.acquisition;
+    const sv = r.sensors;
+    const pct = (g: number) => `${Math.round(g * 100)}%`;
+    const reading = this.block?.radar?.reading ?? 'complex';
+    const which = this.item.satellite ?? 'with';
+    ctx.innerHTML = `
+      <p class="uw-ctx-note">An ICEYE dwell on the real Giza geometry: ${a.aperture_s.toFixed(1)} s, ${a.track_km.toFixed(1)} km
+        of track, ${Math.round(a.slant_range_km)} km away, looking ${Math.round(a.incidence_deg)}° from straight down. The satellite
+        and its beam are not to scale. On the ground lies the image it makes of this shaking desert.</p>
+      <div class="uw-subhead">The image's virtual sensors</div>
+      <p class="uw-ctx-note"><span class="uw-inline"><span class="uw-dot sensor"></span>the true motion</span> under each sensor
+        (a test wave ${sv.test_wave.wavelength_m} m long, put into the image itself) beside
+        <span class="uw-inline"><span class="uw-dot radar"></span>what the image reports</span> there, read by</p>
+      <label class="uw-radio"><input type="radio" name="reading" value="complex" ${reading === 'complex' ? 'checked' : ''}/>
+        <span><span class="uw-opt-name">Complex correlation</span><span class="uw-opt-sub">the published way: recovers ${pct(sv.gains.complex)} of the motion</span></span></label>
+      <label class="uw-radio"><input type="radio" name="reading" value="magnitude" ${reading === 'magnitude' ? 'checked' : ''}/>
+        <span><span class="uw-opt-name">Magnitudes</span><span class="uw-opt-sub">the best tracker tried: ${pct(sv.gains.magnitude)} on this ground</span></span></label>
+      <div class="uw-timeline">
+        <button type="button" class="uw-play" data-uw="look-play" aria-label="Pause">❚❚</button>
+        <span class="uw-time" data-uw="look">look 1 of ${sv.looks_s.length}</span>
+        <span></span>
+      </div>
+      <div class="uw-subhead">What the published method draws</div>
+      <label class="uw-radio"><input type="radio" name="sat-vol" value="with" ${which === 'with' ? 'checked' : ''}/>
+        <span><span class="uw-opt-name">With the chamber</span><span class="uw-opt-sub">pillars and streaks everywhere, the chamber nowhere</span></span></label>
+      <label class="uw-radio"><input type="radio" name="sat-vol" value="without" ${which === 'without' ? 'checked' : ''}/>
+        <span><span class="uw-opt-name">Without it</span><span class="uw-opt-sub">the same picture, to one part in a hundred million</span></span></label>
+      <label class="uw-range"><span>Show power stronger than</span><input type="range" min="0.02" max="0.95" step="0.01" value="0.6" data-uw="threshold" /></label>`;
+    ctx.querySelectorAll<HTMLInputElement>('input[name=reading]').forEach((el) =>
+      el.addEventListener('change', () => {
+        this.block?.radar?.setReading(el.value as 'complex' | 'magnitude');
+        this.engine.poke();
+      }),
+    );
+    ctx.querySelectorAll<HTMLInputElement>('input[name=sat-vol]').forEach((el) =>
+      el.addEventListener('change', () => this.setMode('satellite', el.value)),
+    );
+    const play = ctx.querySelector<HTMLButtonElement>('[data-uw=look-play]')!;
+    play.addEventListener('click', () => {
+      const rd = this.block?.radar;
+      if (!rd) return;
+      rd.playing = !rd.playing;
+      play.textContent = rd.playing ? '❚❚' : '▶';
+      play.setAttribute('aria-label', rd.playing ? 'Pause' : 'Play');
+    });
+    const th = ctx.querySelector<HTMLInputElement>('[data-uw=threshold]')!;
+    th.addEventListener('input', () => this.block?.setVolumeThreshold(Number(th.value)));
+    this.block?.setVolumeThreshold(Number(th.value));
+  }
+
+  private updateLookLabel() {
+    const rd = this.block?.radar;
+    const el = this.$('[data-uw=look]');
+    if (!rd || !el) return;
+    const l = rd.look;
+    el.textContent = `look ${Math.floor(l.index) + 1} of ${rd.looks} · ${l.time_s >= 0 ? '+' : '−'}${Math.abs(l.time_s).toFixed(2)} s`;
+  }
+
   private updateTimeline() {
     const w = this.wave;
     if (!w) return;
@@ -333,12 +426,15 @@ export class Underworld {
   private frame(animate: boolean) {
     const b = this.block!;
     const h = b.worldHeight;
-    const r = (this.opts.tour ? 5.0 : 5.5) + h * 1.25;
+    // with the satellite shown, stand further back and look higher, so its beam and the block both fit
+    const sat = this.mode === 'satellite' && !!b.radar;
+    const r = ((this.opts.tour ? 5.0 : 5.5) + h * 1.25) * (sat ? 1.55 : 1);
     const az = (38 * Math.PI) / 180; // from the south, toward the east
-    const el = (21 * Math.PI) / 180;
+    const el = ((sat ? 16 : 21) * Math.PI) / 180;
+    const lift = sat ? 0.55 : -h * 0.1;
     const pose = {
-      position: [r * Math.cos(el) * Math.sin(az), r * Math.sin(el) - h * 0.1, r * Math.cos(el) * Math.cos(az)] as [number, number, number],
-      target: [0, -h * 0.1, 0] as [number, number, number],
+      position: [r * Math.cos(el) * Math.sin(az), r * Math.sin(el) + lift, r * Math.cos(el) * Math.cos(az)] as [number, number, number],
+      target: [0, lift, 0] as [number, number, number],
       fov: 28,
     };
     if (animate) void this.engine.flyTo(pose, 1.3);
@@ -410,11 +506,12 @@ export class Underworld {
     else if (e.key === 't') this.setMode('truth');
     else if (e.key === 'v') this.setMode('recovered');
     else if (e.key === 'w') this.setMode('waves');
+    else if (e.key === 's') this.setMode('satellite');
     else if (e.key === 'r') this.frame(true);
     else if (e.key === 'Escape') this.pin(undefined);
-    else if (e.key === ' ' && this.wave) {
+    else if (e.key === ' ' && (this.wave || this.mode === 'satellite')) {
       e.preventDefault();
-      this.$<HTMLButtonElement>('[data-uw=play]')?.click();
+      this.$<HTMLButtonElement>(this.mode === 'satellite' ? '[data-uw=look-play]' : '[data-uw=play]')?.click();
     } else return;
   }
 
@@ -581,7 +678,7 @@ function parseHash(): { site: string; mode?: Mode; item?: string } | null {
   const h = decodeURIComponent(location.hash.slice(1));
   if (!h) return null;
   const [site, mode, item] = h.split('/');
-  return { site, mode: (['truth', 'recovered', 'waves'] as Mode[]).includes(mode as Mode) ? (mode as Mode) : undefined, item };
+  return { site, mode: MODES.includes(mode as Mode) ? (mode as Mode) : undefined, item };
 }
 
 function isVisible(o: { visible: boolean; parent: any }): boolean {
