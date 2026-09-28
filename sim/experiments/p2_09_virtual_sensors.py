@@ -145,6 +145,10 @@ def main():
                  'per_cell_noise_m_s': sigma1, 'magnitude_gain_real': r_real,
                  'needed_for_chamber': need(signal, r_real), 'needed_for_trembling': need(trembling, r_real),
                  'complex_gain': res['complex']['gain']}
+        # every sensor's position, the true motion under it and what each way of reading reports, for the viewer
+        np.savez_compressed(run.dir / 'sensors.npz', east=east, north=north, rows=R, cols=Cc, looks_s=CENTRES,
+                            truth=truth_rel, complex=res['complex']['moving_minus_still'],
+                            magnitude=res['magnitude']['moving_minus_still'], grid=np.array([len(rows), len(cols)]))
         # maps for the site: the true motion under each sensor at one look, and what each way of reading reports
         k = 2
         grid = lambda v: v.reshape(nr, nc)
