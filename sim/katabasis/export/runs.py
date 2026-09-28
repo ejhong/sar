@@ -25,7 +25,11 @@ def export_runs(out: Path = DATA) -> list[str]:
             if figs.is_dir():                      # images a run renders for the site (P2-07)
                 (d / rid).mkdir(exist_ok=True)
                 for f in figs.glob('*.png'):
-                    shutil.copyfile(f, d / rid / f.name)
+                    if f.stat().st_size > 250_000:     # photographic images (radar texture) travel as JPEG
+                        from PIL import Image
+                        Image.open(f).convert('RGB').save(d / rid / f'{f.stem}.jpg', quality=90, optimize=True)
+                    else:
+                        shutil.copyfile(f, d / rid / f.name)
             done.append(rid)
     (d / 'index.json').write_text(json.dumps(
         {rid: json.loads((d / f'{rid}.json').read_text())['manifest'] for rid in done}, indent=1))
