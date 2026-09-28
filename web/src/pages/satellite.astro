@@ -490,9 +490,12 @@ const sig2 = (v: number) => Number(v.toPrecision(2)).toLocaleString('en-US');
       1,220 m sit close to the second repeat, {(2 * rep1).toLocaleString('en-US')} m relabelled; that is suggestive only, since the
       published relabelling is not known exactly. In the <a href={`${base}/underworld/#bench-khafre-claim/recovered`}>3-D view</a>{' '}
       the method’s Khafre volume stands beside the claim. A published slice along a line is a row of pixels, each focused from its
-      own shifts alone, so a volume is every row; the costly step is the sub-pixel registration, which the lab refines only around
-      each correlation peak (Guizar-Sicairos and others, 2008) instead of upsampling whole patches: the Khafre patch’s
-      {pk.grid[0] * pk.grid[1] >= 1000 ? (pk.grid[0] * pk.grid[1]).toLocaleString('en-US') : pk.grid[0] * pk.grid[1]} pixels, 50 pairs each, took minutes.
+      own shifts alone, so a volume is every row. The method’s “inversion” is only a Fourier transform of each pixel’s own shifts,
+      with no waves modelled through the ground: for the Khafre patch’s
+      {(pk.grid[0] * pk.grid[1]).toLocaleString('en-US')} pixels it takes a twentieth of a second, where a real seismic inversion of one
+      small block takes hours (full-waveform inversion, above on the seismic page). The costly step is measuring the shifts, which
+      grows with the number of pixels; the lab refines each correlation peak locally (Guizar-Sicairos and others, 2008) instead of
+      upsampling whole patches, so that patch took minutes, where every pixel of the whole image would take about two months.
     </p>
     <RunDetails manifest={pill.manifest} />
   </section>
