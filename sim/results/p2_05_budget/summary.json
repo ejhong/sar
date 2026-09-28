@@ -1,0 +1,285 @@
+{
+ "manifest": {
+  "id": "p2_05_budget",
+  "title": "The smallest imprint one dwell could detect",
+  "date": "2026-09-28",
+  "started_utc": "2026-09-28T04:48:36+00:00",
+  "runtime_s": 37.4,
+  "commit": "431b62c",
+  "params": {
+   "look_s": 1.96,
+   "aperture_s": 24.485484,
+   "independent_looks": 12.492594,
+   "detection_sigma": 3.0,
+   "truck_pass_s": 4.0,
+   "reflector_gain_db": 20.0,
+   "check": {
+    "realisations": 24,
+    "f_hz": 0.2
+   }
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  }
+ },
+ "targets": [
+  {
+   "target": "ordinary ground, complex registration (published protocols, R4)",
+   "sigma_m_s": 1.502e-05,
+   "response": 0.013456,
+   "response_se": 0.005757,
+   "source": "P2-03, real Giza texture"
+  },
+  {
+   "target": "ordinary ground, magnitudes",
+   "sigma_m_s": 0.0001743,
+   "response": 0.214649,
+   "response_se": 0.066778,
+   "source": "P2-03, real Giza texture"
+  },
+  {
+   "target": "a lone bright scatterer",
+   "sigma_m_s": 5.553e-05,
+   "response": 0.997826,
+   "response_se": 0.02128,
+   "signal_to_clutter_db": 37.742443064633854,
+   "source": "P2-03, simulated on the real geometry"
+  },
+  {
+   "target": "a corner reflector 20 dB brighter (designed; in no archive image)",
+   "sigma_m_s": 5.553e-06,
+   "response": 1.0,
+   "response_se": 0.0,
+   "signal_to_clutter_db": 57.742443064633854,
+   "source": "the bright scatterer, sigma scaled as 1 / sqrt(signal-to-clutter)"
+  }
+ ],
+ "rows": [
+  {
+   "case": "Giza microseisms, measured",
+   "target": "ordinary ground, complex registration (published protocols, R4)",
+   "imprint_m_s": 3.247e-12,
+   "motion_m_s": 4.9e-08,
+   "a_min_m_s": 0.0012376076087106322,
+   "shortfall": 381154175.7655165,
+   "shake_needed_m_s": 18.67655461251031,
+   "note": "1.96 s looks, 12.5 of them"
+  },
+  {
+   "case": "Giza microseisms, measured",
+   "target": "ordinary ground, magnitudes",
+   "imprint_m_s": 3.247e-12,
+   "motion_m_s": 4.9e-08,
+   "a_min_m_s": 0.0008998840884657091,
+   "shortfall": 277143236.36147493,
+   "shake_needed_m_s": 13.580018581712272,
+   "note": "1.96 s looks, 12.5 of them"
+  },
+  {
+   "case": "Giza microseisms, measured",
+   "target": "a lone bright scatterer",
+   "imprint_m_s": 3.247e-12,
+   "motion_m_s": 4.9e-08,
+   "a_min_m_s": 6.168821922757725e-05,
+   "shortfall": 18998527.633993607,
+   "shake_needed_m_s": 0.9309278540656868,
+   "note": "1.96 s looks, 12.5 of them"
+  },
+  {
+   "case": "Giza microseisms, measured",
+   "target": "a corner reflector 20 dB brighter (designed; in no archive image)",
+   "imprint_m_s": 3.247e-12,
+   "motion_m_s": 4.9e-08,
+   "a_min_m_s": 6.155410903897652e-06,
+   "shortfall": 1895722.4834917313,
+   "shake_needed_m_s": 0.09289040169109485,
+   "note": "1.96 s looks, 12.5 of them"
+  },
+  {
+   "case": "The world's noisiest stations",
+   "target": "ordinary ground, complex registration (published protocols, R4)",
+   "imprint_m_s": 2.336e-10,
+   "motion_m_s": 3.525e-06,
+   "a_min_m_s": 0.0012376076087106322,
+   "shortfall": 5297977.777014692,
+   "shake_needed_m_s": 18.67537166397679,
+   "note": "1.96 s looks, 12.5 of them"
+  },
+  {
+   "case": "The world's noisiest stations",
+   "target": "ordinary ground, magnitudes",
+   "imprint_m_s": 2.336e-10,
+   "motion_m_s": 3.525e-06,
+   "a_min_m_s": 0.0008998840884657091,
+   "shortfall": 3852243.529390878,
+   "shake_needed_m_s": 13.579158441102846,
+   "note": "1.96 s looks, 12.5 of them"
+  },
+  {
+   "case": "The world's noisiest stations",
+   "target": "a lone bright scatterer",
+   "imprint_m_s": 2.336e-10,
+   "motion_m_s": 3.525e-06,
+   "a_min_m_s": 6.168821922757725e-05,
+   "shortfall": 264076.2809399711,
+   "shake_needed_m_s": 0.9308688903133981,
+   "note": "1.96 s looks, 12.5 of them"
+  },
+  {
+   "case": "The world's noisiest stations",
+   "target": "a corner reflector 20 dB brighter (designed; in no archive image)",
+   "imprint_m_s": 2.336e-10,
+   "motion_m_s": 3.525e-06,
+   "a_min_m_s": 6.155410903897652e-06,
+   "shortfall": 26350.217910520772,
+   "shake_needed_m_s": 0.09288451813458573,
+   "note": "1.96 s looks, 12.5 of them"
+  },
+  {
+   "case": "Giza 1-3 Hz, measured",
+   "target": "ordinary ground, complex registration (published protocols, R4)",
+   "imprint_m_s": 3.409e-11,
+   "motion_m_s": 2.9e-08,
+   "a_min_m_s": 0.004168043793439734,
+   "shortfall": 122265878.3643219,
+   "shake_needed_m_s": 3.545710472565335,
+   "note": "250 ms looks (resolving 4 m), 98 of them"
+  },
+  {
+   "case": "Giza 1-3 Hz, measured",
+   "target": "ordinary ground, magnitudes",
+   "imprint_m_s": 3.409e-11,
+   "motion_m_s": 2.9e-08,
+   "a_min_m_s": 0.0030306506386562166,
+   "shortfall": 88901456.1060785,
+   "shake_needed_m_s": 2.578142227076277,
+   "note": "250 ms looks (resolving 4 m), 98 of them"
+  },
+  {
+   "case": "Giza 1-3 Hz, measured",
+   "target": "a lone bright scatterer",
+   "imprint_m_s": 3.409e-11,
+   "motion_m_s": 2.9e-08,
+   "a_min_m_s": 0.00020775502467031994,
+   "shortfall": 6094309.905260191,
+   "shake_needed_m_s": 0.17673498725254558,
+   "note": "250 ms looks (resolving 4 m), 98 of them"
+  },
+  {
+   "case": "Giza 1-3 Hz, measured",
+   "target": "a corner reflector 20 dB brighter (designed; in no archive image)",
+   "imprint_m_s": 3.409e-11,
+   "motion_m_s": 2.9e-08,
+   "a_min_m_s": 2.0730336524668666e-05,
+   "shortfall": 608106.0875526156,
+   "shake_needed_m_s": 0.01763507653902585,
+   "note": "250 ms looks (resolving 4 m), 98 of them"
+  },
+  {
+   "case": "A truck over a bump 15 m away",
+   "target": "ordinary ground, complex registration (published protocols, R4)",
+   "imprint_m_s": 8.817e-07,
+   "motion_m_s": 0.0001,
+   "a_min_m_s": 0.02824146723677961,
+   "shortfall": 32030.698918883532,
+   "shake_needed_m_s": 3.203069891888353,
+   "note": "33 ms looks (resolving 33 m), 120 of them during a truck's pass"
+  },
+  {
+   "case": "A truck over a bump 15 m away",
+   "target": "ordinary ground, magnitudes",
+   "imprint_m_s": 8.817e-07,
+   "motion_m_s": 0.0001,
+   "a_min_m_s": 0.02053481800082058,
+   "shortfall": 23290.028355246206,
+   "shake_needed_m_s": 2.3290028355246206,
+   "note": "33 ms looks (resolving 33 m), 120 of them during a truck's pass"
+  },
+  {
+   "case": "A truck over a bump 15 m away",
+   "target": "a lone bright scatterer",
+   "imprint_m_s": 8.817e-07,
+   "motion_m_s": 0.0001,
+   "a_min_m_s": 0.0014076883577226298,
+   "shortfall": 1596.5615943321195,
+   "shake_needed_m_s": 0.15965615943321196,
+   "note": "33 ms looks (resolving 33 m), 120 of them during a truck's pass"
+  },
+  {
+   "case": "A truck over a bump 15 m away",
+   "target": "a corner reflector 20 dB brighter (designed; in no archive image)",
+   "imprint_m_s": 8.817e-07,
+   "motion_m_s": 0.0001,
+   "a_min_m_s": 0.0001404628043232941,
+   "shortfall": 159.3090669426042,
+   "shake_needed_m_s": 0.01593090669426042,
+   "note": "33 ms looks (resolving 33 m), 120 of them during a truck's pass"
+  }
+ ],
+ "check": {
+  "amplitude_m_s": 6.168821922757725e-05,
+  "looks": 12,
+  "null_fits_m_s": [
+   1.589e-05,
+   2.234e-05,
+   2.13e-05,
+   2.779e-05,
+   3.602e-05,
+   1.489e-05,
+   1.766e-05,
+   2.901e-05,
+   2.014e-05,
+   1.886e-05,
+   3.304e-05,
+   2.181e-05,
+   1.179e-05,
+   2.176e-05,
+   3.319e-05,
+   2.372e-05,
+   1.718e-05,
+   1.835e-05,
+   2.31e-05,
+   1.487e-05,
+   2.009e-05,
+   2.366e-05,
+   1.612e-05,
+   3.017e-05
+  ],
+  "signal_fits_m_s": [
+   3.779e-05,
+   4.782e-05,
+   7.293e-05,
+   7.613e-05,
+   3.535e-05,
+   3.881e-05,
+   4.004e-05,
+   5.524e-05,
+   4.469e-05,
+   3.481e-05,
+   8.344e-05,
+   5.365e-05,
+   6.086e-05,
+   7.152e-05,
+   6.114e-05,
+   6.959e-05,
+   5.298e-05,
+   6.942e-05,
+   5.647e-05,
+   3.803e-05,
+   7.176e-05,
+   6.215e-05,
+   4.563e-05,
+   7.505e-05
+  ],
+  "null_rms_m_s": 1.631e-05,
+  "null_95th_m_s": 3.316e-05,
+  "detected_fraction": 1.0,
+  "signal_over_null_rms": 2.447653,
+  "predicted_sigma_m_s": 2.056273974252575e-05
+ },
+ "finding": "One dwell falls short of the chamber by a factor of 3e+08 on ordinary ground and 2e+07 even on a bright scatterer directly above it. Under Giza's microseisms the chamber's imprint is 3.2e-06 um/s; the smallest a dwell could detect, allowing every look, a 3-sigma threshold and the best tracker, is 900 um/s on the plateau's own texture and 62 um/s on a bright point (6 um/s on a corner reflector no archive image contains); the published protocols' complex registration responds to about 1% of the motion. For the plateau the ground would have to shake at 14 m/s, beyond the strongest earthquakes recorded, and keep shaking for the whole dwell. The threshold is checked by simulation: without motion the bright point's fitted sway scatters by 16 um/s against the 21 um/s the formula uses, and a sway at the threshold is found in 100% of 24 realisations at a 5% false-alarm rate."
+}
