@@ -3,9 +3,9 @@
   "id": "p2_09_virtual_sensors",
   "title": "A million virtual sensors: can the image act as a dense seismic array?",
   "date": "2026-09-28",
-  "started_utc": "2026-09-28T12:03:38+00:00",
-  "runtime_s": 79.9,
-  "commit": "177fda9",
+  "started_utc": "2026-09-28T12:18:16+00:00",
+  "runtime_s": 72.0,
+  "commit": "b4d6776",
   "params": {
    "geometry": "giza-20250827",
    "sensor_stride_px": [

@@ -3,9 +3,9 @@
   "id": "p2_07_whole_chain",
   "title": "The whole chain: a satellite image of shaking ground over a chamber",
   "date": "2026-09-28",
-  "started_utc": "2026-09-28T05:57:50+00:00",
-  "runtime_s": 316.2,
-  "commit": "b0bde9a",
+  "started_utc": "2026-09-28T12:08:01+00:00",
+  "runtime_s": 317.0,
+  "commit": "b4d6776",
   "params": {
    "geometry": "giza-20250827",
    "image_px": [
