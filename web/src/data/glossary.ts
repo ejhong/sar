@@ -36,4 +36,7 @@ export const GLOSSARY: Record<string, Entry> = {
   los: { term: 'line of sight', field: 'radar', text: 'The direction from the satellite to the ground; radar measures motion only along it.' },
   xband: { term: 'X-band', field: 'radar', text: 'Radar near 9.6 GHz (3.1 cm wavelength). It enters dry limestone by centimetres, not metres.' },
   'doppler-tomography': { term: 'Doppler tomography', field: 'radar', text: 'The claimed method: reading ground vibration from the differences between sub-apertures of one image and focusing it into depth. Published 2022, retracted 2026.' },
+  look: { term: 'look', field: 'radar', text: 'An image formed from part of the Doppler band. In a dwell the band is time, so a look sees the ground as it was during a few seconds, and averages any motion over them.' },
+  speckle: { term: 'speckle', field: 'radar', text: 'The grainy texture of radar images of natural ground: many small scatterers in each cell interfering. Each Doppler bin holds an independent speckle pattern.' },
+  imprint: { term: 'imprint', field: 'both', text: 'The difference a buried chamber makes to how the surface moves as a wave passes: what any passive method would have to detect.' },
 };

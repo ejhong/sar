@@ -1,0 +1,27 @@
+---
+/**
+ * A number in scientific notation with a real superscript and a true minus sign (3.2 × 10<sup>−6</sup>): the
+ * reading fonts lack the Unicode superscript minus. Numbers within a thousandth to a thousand print plainly.
+ */
+interface Props {
+  v: number;
+  p?: number;
+}
+const { v, p = 1 } = Astro.props;
+const e = v === 0 ? 0 : Math.floor(Math.log10(Math.abs(v)));
+const plain = Math.abs(e) < 3;
+const text = plain ? Number(v.toPrecision(p + 1)).toLocaleString('en-US', { maximumSignificantDigits: p + 1 }) : (v / 10 ** e).toFixed(p);
+const exp = e < 0 ? `−${-e}` : String(e);
+---
+{plain ? <span class="sci">{text}</span> : <span class="sci">{text} × 10<sup>{exp}</sup></span>}
+
+<style>
+  .sci {
+    white-space: nowrap;
+  }
+  sup {
+    font-size: 0.72em;
+    line-height: 0;
+    vertical-align: 0.45em;
+  }
+</style>

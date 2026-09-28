@@ -1,23 +1,17 @@
 ---
 /**
- * The ICEYE Spotlight Dwell over Giza, drawn from the product's own numbers:
- * 168 km of track in 24.49 s, a slant range near 607 km, so the look
- * direction sweeps about 16° across the aperture. Beside it, the measured
- * coherence between looks against their separation in time (R9).
+ * The ICEYE Spotlight Dwell over Giza, drawn from the product's own numbers (P2-01): the platform's travel over the
+ * processed aperture, the slant range, and the look direction's sweep. Beside it, the spectrum two looks of one image
+ * share, 1 - delta/W, which is their coherence whatever the ground does (P2-03): the curve R9 measured.
  */
-const trackKm = 168;
-const rangeKm = 606.9;
+import geo from '../../public/data/runs/p2_01_geometry.json';
+const gz = geo.sites['giza-20250827'];
+const trackKm = gz.baseline_span_m / 1e3;
+const rangeKm = gz.slant_range_m / 1e3;
+const apertureS = gz.aperture_s;
 const halfDeg = (Math.atan(trackKm / 2 / rangeKm) * 180) / Math.PI;
-// R9: coherence with the band-centre look, halves by 0.98 s, a quarter by 1.47 s, a tenth by 1.76 s
-const coh: [number, number][] = [
-  [0, 1],
-  [0.5, 0.82],
-  [0.98, 0.5],
-  [1.47, 0.25],
-  [1.76, 0.1],
-  [2.4, 0.03],
-  [3, 0.02],
-];
+const LOOK = 1.96;           // s: the first investigation's looks, 8% of the band
+const coh: [number, number][] = [[0, 1], [LOOK, 0], [3, 0]];
 const X0 = 470,
   X1 = 680,
   Y0 = 60,
@@ -25,16 +19,16 @@ const X0 = 470,
 const cxp = (t: number) => X0 + (t / 3) * (X1 - X0);
 const cyp = (c: number) => Y1 - c * (Y1 - Y0);
 const path = coh.map(([t, c], i) => `${i ? 'L' : 'M'}${cxp(t).toFixed(1)},${cyp(c).toFixed(1)}`).join('');
-// the track: 360 px for 168 km; the coherent 8 % sub-aperture = 1.96 s of 24.49 s
+// the track, and one look (8% of the band) to scale
 const TX0 = 50,
   TX1 = 410,
   TY = 46,
   SX = 230,
   SY = 250;
-const sub = ((TX1 - TX0) * 1.96) / 24.49;
+const sub = ((TX1 - TX0) * LOOK) / apertureS;
 ---
 <figure class="dwell">
-  <svg viewBox="0 0 700 300" role="img" aria-label="Dwell geometry and measured coherence">
+  <svg viewBox="0 0 700 300" role="img" aria-label="Dwell geometry, and the spectrum two looks share">
     <!-- track and satellite positions -->
     <line x1={TX0} x2={TX1} y1={TY} y2={TY} stroke="#34495b" stroke-width="1.2" />
     <rect x={SX - sub / 2} y={TY - 5} width={sub} height="10" fill="var(--cinnabar)" opacity="0.28" />
@@ -59,10 +53,10 @@ const sub = ((TX1 - TX0) * 1.96) / 24.49;
     <text x={TX0} y={TY - 14} class="t" text-anchor="middle">−12.2 s</text>
     <text x={SX} y={TY - 14} class="t" text-anchor="middle">aperture centre</text>
     <text x={TX1} y={TY - 14} class="t" text-anchor="middle">+12.2 s</text>
-    <text x={SX + 10} y={TY + 30} class="t strong">{trackKm} km of track in 24.49 s</text>
+    <text x={SX + 10} y={TY + 30} class="t strong">{trackKm.toFixed(1)} km of track in {apertureS.toFixed(2)} s</text>
     <text x={SX + 8} y={150} class="t">{rangeKm.toFixed(0)} km slant range</text>
     <text x={SX} y={SY - 70} class="t strong" text-anchor="middle">look sweeps {(2 * halfDeg).toFixed(0)}°</text>
-    <text x={SX - sub / 2 - 8} y={TY + 16} class="t c" text-anchor="end">coherent look: 1.96 s (8%)</text>
+    <text x={SX - sub / 2 - 8} y={TY + 16} class="t c" text-anchor="end">one look: {LOOK} s (8%)</text>
     <text x={SX} y={SY + 20} class="t" text-anchor="middle">Giza · incidence 20.8°</text>
 
     <!-- coherence panel -->
@@ -77,19 +71,19 @@ const sub = ((TX1 - TX0) * 1.96) / 24.49;
       ))}
       <line class="grid" x1={X0} x2={X1} y1={cyp(0.5)} y2={cyp(0.5)} />
       <text x={(X0 + X1) / 2} y={Y1 + 30} text-anchor="middle">separation between looks, s</text>
-      <text x={X0} y={Y0 - 16}>coherence with the centre look, measured</text>
+      <text x={X0} y={Y0 - 16}>spectrum two {LOOK} s looks share</text>
     </g>
     <path d={path} fill="none" stroke="var(--cinnabar)" stroke-width="2" stroke-linejoin="round" />
-    <circle cx={cxp(0.98)} cy={cyp(0.5)} r="4" fill="var(--cinnabar)" stroke="var(--sheet)" stroke-width="2" />
-    <text x={cxp(0.98) + 8} y={cyp(0.5) - 6} class="t strong">half by 0.98 s</text>
-    <circle cx={cxp(1.76)} cy={cyp(0.1)} r="4" fill="var(--cinnabar)" stroke="var(--sheet)" stroke-width="2" />
-    <text x={cxp(1.76) + 10} y={cyp(0.1) - 14} class="t">tenth by 1.76 s</text>
+    <circle cx={cxp(LOOK / 2)} cy={cyp(0.5)} r="4" fill="var(--cinnabar)" stroke="var(--sheet)" stroke-width="2" />
+    <text x={cxp(LOOK / 2) + 8} y={cyp(0.5) - 6} class="t strong">1 − Δ/W: half by {(LOOK / 2).toFixed(2)} s</text>
+    <text x={X1} y={cyp(0) - 10} class="t" text-anchor="end">none beyond {LOOK} s</text>
   </svg>
   <figcaption>
-    Fig. 1 · The dwell's look direction sweeps about {(2 * halfDeg).toFixed(0)}° (derived from the track length and slant
-    range), so looks seconds apart are degrees apart, and natural ground decorrelates across a fraction of a degree:
-    coherence with the centre look halves by 0.98 s on the pyramid and on open desert alike (R9, measured). A bank of
-    sub-apertures spread over the whole aperture folds the claimed depth axis back at 6.8 m and repeats it at 13.6 m (R2).
+    Fig. 1 · Over its {apertureS.toFixed(1)} s the platform travels {trackKm.toFixed(1)} km and the look direction sweeps
+    about {(2 * halfDeg).toFixed(0)}°, so looks seconds apart are degrees apart. Two looks cut from one image share only the
+    spectrum they overlap, so their coherence is 1 − Δ/W whatever the ground does: the curve the first investigation
+    measured (R9), which describes the looks, not the ground (P2-03). A bank spread over the whole aperture folds the
+    published depth axis back at 6.8 m and repeats it at 13.6 m (R2).
   </figcaption>
 </figure>
 

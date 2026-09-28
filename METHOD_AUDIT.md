@@ -269,3 +269,101 @@ bound, so this test does not rule it out and must not be cited as if it did. It 
 instead by the depth axis, which repeats every 27.4 m and therefore cannot place anything at
 648 m. Every chamber actually surveyed at Giza is far below the bound: the Subterranean Chamber
 by 43 times, the King's Chamber by 101, a mastaba shaft by 1,209.
+
+## Phase 2: the satellite over simulated ground — 28 September 2026
+
+Phase 2 simulates the real Giza dwell over ground whose contents and motion are known
+(`sim/experiments/p2_0*.py`, `sim/sarsim/acquisition.py`, `sim/sarsim/looks.py`,
+`sim/katabasis/seismic/static.py`). What it establishes, what it corrects in the first
+investigation's record, and what it leaves open follow.
+
+### What is validated
+
+- **Geometry (P2-01).** `DwellGeometry` is read from each product's metadata into
+  `sites/acquisitions/`. It keeps the three speeds a dwell has (platform 7,662 m/s, ground sweep of
+  the rows 7,014 m/s, 7,330 m/s from the Doppler rate); the effective speed is their geometric mean
+  to 9 ppm, and the incidence it implies matches the product's to 0.001°. On this geometry the
+  synthesizer's point response is 4.48 × 22.1 cm as predicted, and a target receding at 2 mm/s moves
+  −0.159 m in azimuth and is recovered as 2.000 mm/s.
+- **Static relaxation (P2-04).** Intact rock under a horizontal stress stays exactly still; with the
+  chamber open the result changes by 3.5% (epicentre) and 10% (ring) between 1 m and 0.5 m grids and
+  not at all between 100 and 180 m domains. Eshelby's void with Okada's point sources, checked exactly
+  against Mogi's source, agrees within the 40% expected of a point sphere against a 6 m cube whose roof
+  is 12 m down.
+- **The detection threshold (P2-05).** The formula's per-look scatter for a bright scatterer (21 µm/s)
+  is checked by simulation (16 µm/s), and a sway at the computed threshold is found in 24 of 24
+  realisations at a 5% false-alarm rate.
+
+### What is established
+
+1. **Complex registration of one image's looks is blind to the ground's motion (P2-03).** Two looks
+   cut from one image share their overlapping spectrum sample for sample, so their cross-spectrum is
+   |Y|² H_A H_B, real and non-negative, and their correlation locks at zero lag whatever the ground
+   does. A 20 m block of ground swaying at 2 mm/s comes back at 3 ± 1% on simulated desert and 1 ± 1%
+   on real Giza texture, though it is in the data (102% and 101% read against a motionless twin, which
+   no real dwell has). For fully developed speckle this is exact in distribution: every Doppler bin is
+   an independent circular Gaussian, so a phase history common to a patch changes nothing. Magnitude
+   registration catches what is point-like in the ground (10 ± 2% simulated, 21 ± 7% real), and a lone
+   bright scatterer's envelope follows its motion in full (100 ± 2%).
+2. **The chamber's imprint on the ground's motion is 6.6 × 10⁻⁵ of that motion (P2-04).** A Rayleigh
+   wave strains the ground by hv V / c whatever its frequency; the imprint on the line-of-sight
+   velocity over the one-chamber bench is 3.2 × 10⁻⁶ µm/s under Giza's measured microseisms and
+   2.3 × 10⁻⁴ µm/s at the noisiest stations on Earth.
+3. **One dwell falls short of that imprint by 10⁴ to 10⁸ (P2-05).** Allowing every look, a 3-sigma
+   threshold and the best tracker: 3 × 10⁸ on the plateau's own texture, 2 × 10⁷ on a bright scatterer
+   directly above the chamber, 2 × 10⁶ on a corner reflector no archive image contains; 4 × 10⁶,
+   3 × 10⁵ and 3 × 10⁴ at the noisiest stations on Earth.
+4. **The published depth is the frequency of the ground's motion (P2-06).** Kz grows linearly with
+   slow time on a dwell, so the focusing is a Fourier transform over slow time and puts motion at
+   z = f λ_s R sin θ / (2 V_s): 6.76 m per hertz on this geometry with λ_s = 0.48 m. Given the exact
+   motion at every pair, it draws the same microseism at the same 1.3 m over a chamber 15 m down, one
+   30 m down, and open ground (profiles identical to 10⁻¹⁵).
+
+Any one of 1, 3 and 4 is sufficient on its own; they fail for independent reasons (the estimator, the
+physics of the signal, and the algebra of the depth axis). R16's resolution bound, which rests on the
+same trade between a look's duration and its resolution (1.10 m s at Giza, P2-01), is a fourth.
+
+### Corrections to the first investigation's record
+
+- **R9 measured the looks, not the ground.** Its coherence between looks of one image is a function
+  of the image's power spectrum alone: 1 − Δ/W for looks W wide and a flat spectrum. With its 1.96 s
+  looks that is 0.98 s to half and 1.76 s to a tenth, which is what it reported, identically on the
+  pyramid and on desert. Simulated desert with no decorrelation of any kind reproduces its curve to
+  ±0.005, and the real crop's own power spectrum reproduces its coherence to 10⁻⁹. The "coherent
+  window" is the look width one chooses; no experiment here has measured how stable the ground itself
+  is across a dwell. The obstruction the first investigation drew from R9 still holds, for a deeper
+  reason: overlapping looks share their data and disjoint looks share no speckle.
+- **R4's 77 µm/s is the scatter of an estimator that does not respond to the ground's motion**, not a
+  sensitivity to it: its complex common-reference registration recovers 1 ± 1% of real motion on real
+  texture (P2-03). For bright point-like targets a magnitude tracker does follow motion, with a
+  per-look scatter of the same order, which is what the micro-motion literature measures on bridges.
+- **R7 never recovered its injected motion.** Its committed run (23 September: the full-band bank, 0.2,
+  0.5 and 1 Hz, amplitudes up to 1 cm) has recovery gains within about ±0.1 of zero at every amplitude
+  above the smallest, so its finding's "it works" is not what its numbers show. That is what P2-03
+  predicts: the motion was common to the whole crop, which for speckle is undetectable in principle, and
+  complex registration of one image's looks locks at zero. The script has since been changed to the
+  coherent bank and to 1, 2 and 3 Hz without being rerun; those frequencies sit on the nulls of its
+  1.96 s looks, which return 10, 4 and 1% even for a bright point (P2-03). R7 should not be cited as a
+  positive control.
+- **R10 inherits R9's identity.** It graded pixels by brightness and computed the same complex
+  coherence between looks, which is set by the spectrum whatever the pixels are. "Bright targets
+  decorrelate as fast as desert" is therefore not established by it; a lone bright scatterer's
+  envelope in fact follows its motion across the whole dwell (P2-03).
+- **The platform moves 187.6 km over the processed aperture**, not 168 km; 168.8 km is the span
+  between the reference bank's first and last sub-aperture centres (P2-01).
+- **The flat-earth simulator of the first chapter put the Doppler rate 8% off** for this geometry.
+  Its experiments used generic parameters and none of their conclusions rest on the real rate.
+
+### What is not established
+
+- The imprint is computed for one chamber in uniform bare rock, quasi-statically. Layering, the sand
+  cover and the plateau's 0.6 Hz resonance are not modelled; site amplification of a few times would
+  not change the shortfall's order of magnitude. The traffic case is only a guide, since at 15 Hz the
+  waves are not long compared with the depth.
+- The magnitude tracker is the best of those tried, not a proven optimum. The argument that nothing
+  can do much better for ordinary ground is the distributional one in 1: what survives in speckle is
+  the apparent brightness a displacement gradient produces, which for this imprint is of order 10⁻¹¹.
+- Giza's own ambient level is unmeasured in the open literature; the microseism level is from
+  Kottamya, 67 km east (M1-01), bracketed by Peterson's global models.
+- The Khufu known-chamber positive control on the real image has not been run. Given 1 and 4 it could
+  only confirm, not change, the result.

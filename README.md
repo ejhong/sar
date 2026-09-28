@@ -9,8 +9,14 @@ The claim under test is the single-image SAR "Doppler tomography" of Biondi & Ma
 1. **Seismic tomography, simulated.** Full 3-D elastic waves through composed test sites and Giza, recorded by the arrays
    near-surface surveys deploy, inverted by travel-time, ambient-noise and full-waveform tomography, and scored against the
    truth. The reference ceiling.
-2. **The satellite over the same ground.** An ICEYE Spotlight Dwell with the real Giza and Sacsayhuamán parameters,
-   simulated over the same shaking ground and compared pixel by pixel with the geophones; then the real products.
+2. **The satellite over the same ground.** An ICEYE Spotlight Dwell with the real Giza parameters, simulated over
+   ground whose contents and motion are known, and checked against the real product.
+
+**The answer is no, for three independent reasons** (`METHOD_AUDIT.md`, "Phase 2"). Registering one image's looks
+against each other, as every single-image method does, is blind to ordinary ground moving: the looks share their
+spectrum sample for sample (P2-03). A chamber changes the ground's own motion by 6.6 × 10⁻⁵ of it, 10⁴ to 10⁸ below
+what one dwell could detect (P2-04, P2-05). And the published depth is the frequency of the ground's motion, 6.76 m per
+hertz on the real geometry, whatever is underground (P2-06).
 
 The first investigation (the published pipeline reimplemented and run on two real ICEYE dwells) is kept intact in
 `sim/legacy/` and its site at [/sar/archive/](https://ejhong.github.io/sar/archive/).

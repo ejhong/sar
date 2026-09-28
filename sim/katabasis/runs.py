@@ -26,7 +26,8 @@ RESULTS = ROOT / 'sim' / 'results'
 def _commit() -> str:
     try:
         sha = subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD'], cwd=ROOT, text=True).strip()
-        dirty = subprocess.call(['git', 'diff', '--quiet', '--', 'sim/katabasis'], cwd=ROOT) != 0
+        dirty = subprocess.call(['git', 'diff', '--quiet', 'HEAD', '--', 'sim/katabasis', 'sim/sarsim', 'sim/experiments'],
+                                cwd=ROOT) != 0
         return sha + ('+' if dirty else '')
     except Exception:
         return 'unknown'

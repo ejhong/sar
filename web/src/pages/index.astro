@@ -5,11 +5,14 @@ import Ladder from '../components/Ladder.astro';
 import Timeline from '../components/Timeline.astro';
 import LineChart from '../components/LineChart.astro';
 import SectionMap from '../components/SectionMap.astro';
-import v01 from '../../public/data/runs/p1_01_forward_validation.json';
 import tt from '../../public/data/runs/p1_02_traveltime.json';
 import sc3 from '../../public/data/runs/p1_03_scattered.json';
 import am from '../../public/data/runs/p1_04_ambient.json';
 import m1 from '../../public/data/runs/m1_01_ambient_levels.json';
+import sees from '../../public/data/runs/p2_03_what_a_dwell_sees.json';
+import imp from '../../public/data/runs/p2_04_chamber_imprint.json';
+import bud from '../../public/data/runs/p2_05_budget.json';
+import dep from '../../public/data/runs/p2_06_depth_is_frequency.json';
 import type { TourStop } from '../viewer/Underworld';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -22,15 +25,19 @@ const stops: TourStop[] = [
   { site: 'giza', caption: '<b>Real site</b>Giza on Copernicus terrain, with the chambers already surveyed inside and beneath the pyramids.' },
 ];
 
-// Measured on the real ICEYE dwell over Giza in the first investigation (sim/legacy/results/r14_budget).
+// Phase 2, simulated on the real Giza geometry and checked on its real image (sim/results/p2_0*).
+const SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+const order = (v: number) => `10${String(Math.round(Math.log10(v))).replace('-', '⁻').replace(/\d/g, (d) => SUP[+d])}`;
+const blk = sees.real.block;
+const plateau = (bud.rows as { case: string; target: string; shortfall: number | null; a_min_m_s: number | null }[])
+  .filter((r) => r.case === imp.cases[0].case);
 const budget = [
-  { value: '1,277', unit: '×', what: 'short of radar reach: X-band enters 11–51 cm of dry limestone; the claim needs 648 m', src: 'R14 · radar reach' },
-  { value: '81', unit: '×', what: 'short of record length: the coherent window allows 1.86 s; the microseism band needs about 150 s', src: 'R14 · record length' },
-  { value: String(Math.round(77 / m1.peterson.band_rms_um_s['0.1-0.3 Hz'].high)), unit: '×', what: `short of motion sensitivity, at best: the measured floor is 77 µm/s; microseisms move the ground ${m1.components.BHZ.band_rms_um_s['0.1-0.3 Hz'].all_p50.toFixed(2)} µm/s near Giza, ${m1.peterson.band_rms_um_s['0.1-0.3 Hz'].high.toFixed(1)} µm/s at the noisiest stations`, src: 'R4 floor · M1-01 · Peterson 1993' },
-  { value: '97', unit: '×', what: 'short of lateral resolution: waves that reach 648 m resolve about 970 m, against wells said to be 10 m across', src: 'R14 · resolution' },
+  { value: `${(blk.gain_complex * 100).toFixed(0)}`, unit: '%', what: 'of a stretch of real ground’s motion recovered by registering one image’s looks against each other, as the published method does: the looks share their spectrum', src: 'P2-03 · the real Giza image' },
+  { value: `${(imp.cases[0].imprint_over_motion * 1e5).toFixed(1)}`, unit: '× 10⁻⁵', what: 'of the ground’s own motion is all a 6 m chamber 15 m down changes as a microseism passes', src: 'P2-04 · the lab’s solver' },
+  { value: order(plateau[1].shortfall!), unit: '×', what: `short of that imprint on the plateau, ${order(plateau[2].shortfall!)} on a bright scatterer above it, allowing every look and a 3-sigma threshold`, src: 'P2-05 · the budget' },
+  { value: (dep.metres_per_hz as number).toFixed(2), unit: 'm/Hz', what: 'of published depth per hertz of ground motion, whatever lies below: the depth axis is a frequency axis', src: 'P2-06 · the published focusing' },
 ];
 
-const st = v01.stokes.panels[0];
 const cx = tt.surveys.crosshole;
 const holesXZ = (cx.stations.receivers as number[][]).filter((p) => Math.abs(p[1]) < 0.3).map((p) => [p[0], p[2]] as [number, number]);
 ---
@@ -67,24 +74,24 @@ const holesXZ = (cx.stations.receivers as number[][]).filter((p) => Math.abs(p[1
     <section class="block">
       <div class="head">
         <p class="label">Latest results</p>
-        <h2>A validated wave solver, and one chamber looked for four ways</h2>
+        <h2>From orbit the chamber is out of reach; from the ground, some instruments find it</h2>
       </div>
       <div class="results">
-        <a class="result card" href={`${base}/seismic/#forward`}>
-          <span class="tag simulated">simulated · P1-01</span>
-          <h3>The solver matches exact solutions to within {(100 * v01.stokes.worst_amplitude_error).toFixed(1)}%</h3>
+        <a class="result card" href={`${base}/satellite/`}>
+          <span class="tag simulated">simulated and real · P2-03</span>
+          <h3>One radar image cannot see the ground move</h3>
           <LineChart
             series={[
-              { name: 'exact', x: st.t_ms, y: st.exact, color: 'var(--text)', width: 1.5 },
-              { name: 'simulated', x: st.t_ms, y: st.simulated, color: 'var(--verdigris)', dash: '4 3' },
+              { name: 'put in', x: (sees.motion.look_times_s as number[]).map((t, _, a) => t - a[Math.floor(a.length / 2)]), y: (blk.injected_relative as number[]).map((v) => v * 1e6), color: 'var(--text)', width: 1.5 },
+              { name: 'read from the image', x: (sees.motion.look_times_s as number[]).map((t, _, a) => t - a[Math.floor(a.length / 2)]), y: (blk.complex as number[]).map((v) => v * 1e6), color: 'var(--cinnabar)', markers: true },
             ]}
-            xLabel="time, ms"
-            yLabel="velocity"
+            xLabel="look time, s"
+            yLabel="µm/s"
             height={150}
             zeroLine
             directLabels={false}
           />
-          <p>A point force in Mokattam limestone against the Stokes solution; the Rayleigh wave within 0.5% of its exact speed.</p>
+          <p>A block of the real Giza image made to sway at 2 mm/s: the published way of reading motion recovers {(blk.gain_complex * 100).toFixed(0)}% of it. A chamber changes the ground’s motion by one part in {(Math.round(1 / imp.cases[0].imprint_over_motion / 1000) * 1000).toLocaleString('en-US')}, and the published depth is only the motion’s frequency.</p>
         </a>
         <a class="result card" href={`${base}/seismic/#traveltime`}>
           <span class="tag simulated">simulated · P1-02</span>
@@ -144,11 +151,12 @@ const holesXZ = (cx.stations.receivers as number[][]).filter((p) => Math.abs(p[1
   <section class="deep-band">
     <div class="home">
       <div class="head">
-        <span class="tag measured on-deep">measured on the real acquisition</span>
-        <h2>Radar from orbit misses four independent requirements, each by a wide margin</h2>
+        <span class="tag simulated on-deep">simulated on the real geometry, checked on the real image</span>
+        <h2>One radar image misses the chamber three independent ways</h2>
         <p class="sub">
-          From the first investigation, on a real ICEYE dwell over Giza. Repairing any one leaves the other three.{' '}
-          <a href={`${base}/archive/`}>The first investigation →</a>
+          Phase 2: the estimator cannot see ground move, the chamber barely changes how it moves, and the depth axis is a
+          frequency axis. Each is sufficient alone.{' '}
+          <a href={`${base}/satellite/`}>The satellite →</a>
         </p>
       </div>
       <div class="stat-row deep">

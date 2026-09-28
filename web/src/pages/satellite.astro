@@ -1,112 +1,369 @@
 ---
 import Doc from '../layouts/Doc.astro';
 import DwellDiagram from '../components/DwellDiagram.astro';
+import LineChart from '../components/LineChart.astro';
+import RunDetails from '../components/RunDetails.astro';
 import Term from '../components/Term.astro';
+import Sci from '../components/Sci.astro';
+import geo from '../../public/data/runs/p2_01_geometry.json';
+import sees from '../../public/data/runs/p2_03_what_a_dwell_sees.json';
+import imp from '../../public/data/runs/p2_04_chamber_imprint.json';
+import bud from '../../public/data/runs/p2_05_budget.json';
+import dep from '../../public/data/runs/p2_06_depth_is_frequency.json';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
-const acquisitions = [
-  ['Satellite', 'ICEYE X33', 'ICEYE X35'],
-  ['Date', '27 Aug 2025', '22 Aug 2025'],
-  ['Mode', 'Spotlight Dwell Fine', 'Spotlight Dwell Fine'],
-  ['Synthetic aperture', '24.49 s', '19.9 s'],
-  ['Incidence', '20.8°', '20.5°'],
-  ['Wavelength', '3.12 cm (9.6 GHz)', '3.12 cm'],
-  ['Pixel (azimuth × slant range)', '0.044 × 0.154 m', '0.044 × 0.152 m'],
-  ['Look and pass', 'right, ascending', 'left, descending'],
-  ['Platform travel during the dwell', '168 km', '—'],
+// ---- formatting
+const SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+const sup = (n: number) => String(n).replace('-', '⁻').replace(/\d/g, (d) => SUP[+d]);
+const sci = (v: number, p = 1) => {
+  const e = Math.floor(Math.log10(Math.abs(v)));
+  const m = v / 10 ** e;
+  return Math.abs(e) < 3 ? v.toPrecision(p + 1) : `${m.toFixed(p)} × 10${sup(e)}`;
+};
+const order = (v: number) => `10${sup(Math.round(Math.log10(v)))}`;
+const um = (v: number) => v * 1e6;
+const kms = (v: number) => v.toLocaleString('en-US', { maximumFractionDigits: 0 });
+const pct = (v: number) => `${(v * 100).toFixed(0)}%`;
+
+// ---- P2-01
+const gz = geo.sites['giza-20250827'];
+const sq = geo.sites['sacsayhuaman-20250822'];
+const acquisitions: [string, string, string][] = [
+  ['Satellite', gz.satellite, sq.satellite],
+  ['Date', gz.collection_start.slice(0, 10), sq.collection_start.slice(0, 10)],
+  ['Processed aperture', `${gz.aperture_s.toFixed(2)} s`, `${sq.aperture_s.toFixed(2)} s`],
+  ['Incidence', `${gz.incidence_deg.toFixed(1)}°`, `${sq.incidence_deg.toFixed(1)}°`],
+  ['Wavelength', `${(gz.wavelength_m * 100).toFixed(2)} cm`, `${(sq.wavelength_m * 100).toFixed(2)} cm`],
+  ['Resolution, azimuth × slant', `${(gz.azimuth_resolution_m * 100).toFixed(1)} × ${(gz.slant_resolution_m * 100).toFixed(0)} cm`, `${(sq.azimuth_resolution_m * 100).toFixed(1)} × ${(sq.slant_resolution_m * 100).toFixed(0)} cm`],
+  ['Platform, ground sweep, effective speed', `${kms(gz.speeds_m_s.platform)} · ${kms(gz.speeds_m_s.ground_sweep)} · ${kms(gz.speeds_m_s.effective)} m/s`, `${kms(sq.speeds_m_s.platform)} · ${kms(sq.speeds_m_s.ground_sweep)} · ${kms(sq.speeds_m_s.effective)} m/s`],
+  ['Platform travel over the aperture', `${(gz.baseline_span_m / 1e3).toFixed(1)} km`, `${(sq.baseline_span_m / 1e3).toFixed(1)} km`],
+  ['A look’s resolution × duration', `${(0.886 * gz.time_space_m_s).toFixed(2)} m s`, `${(0.886 * sq.time_space_m_s).toFixed(2)} m s`],
 ];
-const findings = [
-  { id: 'R9', title: 'Time diversity and coherence are the same axis in a dwell', body: 'Coherence with the band-centre look halves by 0.98 s of separation and falls to a tenth by 1.76 s, on the pyramid and on open desert alike.' },
-  { id: 'R4', title: 'One dwell measures a two-second velocity series with a 77 µm/s floor', body: 'Looks kept inside the coherent window give a line-of-sight velocity series for every pixel. Its floor on the brightest targets is the same on monuments and desert.' },
-  { id: 'R13', title: 'Hundreds of surveyed burial shafts give no signal at their depths', body: 'Over the Eastern and Western Cemeteries, shafts 5 to 30 m deep, the depth profiles match bare plateau: standardised difference +0.022, and +0.031 after matching surface brightness.' },
-  { id: 'R2', title: 'The depth axis is set by the processing, not by the ground', body: 'The platform moves 168 km during the aperture, so a bank over the whole aperture folds depth back at 6.8 m and repeats it at 13.6 m. Hundreds of metres need about one percent of the aperture.' },
-  { id: 'R15', title: 'The modal gate picks which pixels get a depth, not which depth is right', body: 'The steering model repeats exactly every 27.4 m by an algebraic identity. The gate itself separates Khafre from plateau no better than chance (AUC 0.504).' },
-  { id: 'R11', title: 'Used as a dense array, the image holds no propagating wave', body: 'Cross-correlating 759 pixel series over 1.8 km finds a median peak of 0.004, against 0.49 for an injected wavefield put through the identical stack.' },
+
+// ---- P2-03
+const blk = sees.real.block;
+const lt = (sees.motion.look_times_s as number[]);
+const tc = lt[Math.floor(lt.length / 2)];
+const tx = lt.map((t) => t - tc);
+const rel = (a: number[]) => a.map((v) => um(v - a[Math.floor(a.length / 2)]));
+const coh = sees.coherence;
+const W = coh.look_s as number;
+const lp = sees.lowpass.rows as { f_hz: number; recovered_gain: number; sinc_gain: number }[];
+const fs = Array.from({ length: 301 }, (_, i) => 0.01 + i * 0.01);
+const sinc = (x: number) => (x === 0 ? 1 : Math.sin(Math.PI * x) / (Math.PI * x));
+const gr = sees.motion.ground;
+const pt = sees.motion.point;
+const gains = [
+  { what: 'ordinary ground, simulated on the real geometry', cpx: gr.gain_complex, cse: gr.gain_complex_se, env: gr.gain_envelope, ese: gr.gain_envelope_se, par: gr.gain_paired },
+  { what: 'ordinary ground, the real Giza image', cpx: blk.gain_complex, cse: blk.gain_complex_se, env: blk.gain_envelope, ese: blk.gain_envelope_se, par: blk.gain_paired },
+  { what: 'a lone bright scatterer, simulated', cpx: pt.gain_complex, cse: pt.gain_complex_se, env: pt.gain_envelope, ese: pt.gain_envelope_se, par: pt.gain_paired },
 ];
+
+// ---- P2-04
+const cases = imp.cases as { case: string; vertical_velocity_m_s: number; frequency_hz: number; phase_speed_m_s: number; strain: number; imprint_los_velocity_m_s: number; imprint_over_motion: number; source: string }[];
+const prof = imp.profile;
+const conv = imp.convergence as { spacing_m: number; half_width_m: number; epicentre_uz_m: number }[];
+
+// ---- P2-05
+type Row = { case: string; target: string; imprint_m_s: number; a_min_m_s: number | null; shortfall: number | null; shake_needed_m_s: number | null; note: string };
+const rows = bud.rows as Row[];
+const targets = (bud.targets as { target: string }[]).map((t) => t.target);
+const caseNames = cases.map((c) => c.case);
+const cell = (c: string, t: string) => rows.find((r) => r.case === c && r.target === t)!;
+const ground = cell(caseNames[0], targets[1]);
+const bright = cell(caseNames[0], targets[2]);
+const refl = cell(caseNames[0], targets[3]);
+const chk = bud.check;
+
+// ---- P2-06
+const drow = dep.rows as { f_hz: number; depth_m: number; predicted_m: number; folded: boolean }[];
+const mph = dep.metres_per_hz as number;
+const fsamp = dep.pair_sampling_hz as number;
+const fline = Array.from({ length: 321 }, (_, i) => i * 0.01);
+const fold = (f: number) => mph * Math.abs(f - fsamp * Math.round(f / fsamp));
+const prof6 = dep.profiles as Record<string, { depth_m: number; tomogram: number[] }>;
+const zax = dep.depth_axis_m as number[];
+const tones = dep.site_tones_m as Record<string, { label: string; f_hz: number; depth_m: number }>;
 ---
 <Doc
   title="The satellite over the same ground"
-  kicker="Phase 2 · next"
+  kicker="Phase 2 · simulated on the real geometry"
   current="satellite"
-  lede="Phase 2 flies an ICEYE Spotlight Dwell, with the real Giza and Sacsayhuamán parameters, over the same simulated shaking ground the geophones recorded. What the radar can measure is then compared pixel by pixel with what the seismometers measured, and handed to the same inversions."
-  state="status · planned · the measured evidence below is already in hand"
+  lede="Phase 2 simulates the real ICEYE dwell over Giza, pixel by pixel, over ground whose chambers and motion are known, and checks it on the real image. The answer is no, for three reasons that do not depend on one another: one image cannot see ordinary ground move, a chamber barely changes how the ground moves, and the published depth is only the frequency of the motion."
+  state="status · answered · 28 September 2026 · simulated on the real Giza geometry, checked on its real image"
   index={[
-    { id: 'plan', label: 'The plan' },
-    { id: 'geometry', label: 'Geometry' },
-    { id: 'acquisitions', label: 'The acquisitions' },
-    { id: 'measured', label: 'Already measured' },
+    { id: 'verdict', label: 'The verdict' },
+    { id: 'geometry', label: 'The real geometry' },
+    { id: 'blind', label: 'What one dwell sees' },
+    { id: 'imprint', label: 'The chamber’s imprint' },
+    { id: 'budget', label: 'The budget' },
+    { id: 'depth', label: 'Depth is frequency' },
+    { id: 'record', label: 'Corrections' },
   ]}
 >
-  <section id="plan">
-    <h2>The radar sees only the surface, so it is judged on the surface first</h2>
-    <p class="sub">
-      <Term k="xband">X-band</Term> enters centimetres of dry limestone, so any radar view of the underworld must come through motion of the
-      surface. Phase 2 simulates exactly that motion and asks, in order, three questions of increasing difficulty.
-    </p>
-    <div class="grid-3">
-      <div class="note-card">
-        <span class="tag planned">step 1</span>
-        <h3>Does the radar record the ground's motion?</h3>
-        <p>The Phase 1 surface wavefield, projected on the real line of sight, modulates a synthesised dwell; its velocity series is compared with the geophone at the same spot.</p>
-      </div>
-      <div class="note-card">
-        <span class="tag planned">step 2</span>
-        <h3>Does the published pipeline find the chambers?</h3>
-        <p>The same simulated product goes through the Doppler-tomography chain exactly as published, over ground whose chambers are known.</p>
-      </div>
-      <div class="note-card">
-        <span class="tag planned">step 3</span>
-        <h3>Can any inversion make a tomogram from it?</h3>
-        <p>The radar's velocity field, with its real sampling, record length and floor, is given to the Phase 1 inversions as if it were a geophone array.</p>
-      </div>
+  <section id="verdict">
+    <h2>One radar image cannot find a chamber, for three independent reasons</h2>
+    <div class="stat-row">
+      <div class="stat"><span class="value">{pct(blk.gain_complex)}</span><span class="what">of a stretch of real ground’s motion recovered by registering one image’s looks against each other, as every single-image method does</span><span class="src">P2-03 · the real Giza image</span></div>
+      <div class="stat"><span class="value"><Sci v={imp.cases[0].imprint_over_motion} /></span><span class="what">the fraction of the ground’s own motion a 6 m chamber 15 m down changes, as a microseism passes</span><span class="src">P2-04 · the lab’s solver</span></div>
+      <div class="stat"><span class="value">{order(ground.shortfall!)}<small>×</small></span><span class="what">short: the smallest imprint a dwell could detect on the plateau, against the imprint there is ({order(bright.shortfall!)} on a bright scatterer)</span><span class="src">P2-05 · every advantage allowed</span></div>
+      <div class="stat"><span class="value">{mph.toFixed(2)}<small>m/Hz</small></span><span class="what">of published “depth” per hertz of ground motion, whatever lies below: the depth axis is a frequency axis</span><span class="src">P2-06 · the published focusing</span></div>
     </div>
+    <p class="sub">
+      Each is sufficient alone. The first is about the estimator: <Term k="look">looks</Term> cut from one image share their
+      spectrum sample for sample, so correlating them cannot see motion. The second is about physics: ambient waves are
+      kilometres long and strain the rock around a chamber almost uniformly. The third is about the method’s algebra: its
+      steering grows with time, so its focusing is a Fourier transform over time. The measured record from the real
+      acquisitions (<a href={`${base}/archive/`}>the first investigation</a>) agrees, and three of its readings are corrected
+      below.
+    </p>
   </section>
 
   <section id="geometry">
-    <h2>A dwell trades looking longer for looking from further round</h2>
+    <h2>The real dwell has three speeds, and the simulator now has all three</h2>
     <p class="sub">
-      A <Term k="dwell">Spotlight Dwell</Term> holds the beam on Giza for 24.5 s. Every second of{' '}
-      <Term k="aperture">synthetic aperture</Term> is also a change of viewing direction, and the claimed method reads ground
-      motion from the differences between <Term k="sub-aperture">sub-apertures</Term>: looks from different moments that are
-      also looks from different angles.
+      A <Term k="dwell">Spotlight Dwell</Term> holds the beam on Giza for {gz.aperture_s.toFixed(1)} s. The platform moves at
+      {' '}{kms(gz.speeds_m_s.platform)} m/s, the image’s rows sweep the ground at {kms(gz.speeds_m_s.ground_sweep)} m/s,
+      and the Doppler history runs at {kms(gz.speeds_m_s.effective)} m/s, their geometric mean to
+      {' '}{Math.abs((gz.veff2_over_vs_vg - 1) * 1e6).toFixed(0)} parts per million. The first simulator used one speed and put the
+      Doppler rate {Math.abs(gz.flat_earth_rate_error.with_ground_speed * 100).toFixed(0)}% off. Every second of aperture is
+      also a change of viewing direction, and a look’s resolution times its duration is fixed by the orbit: a
+      {' '}{gz.looks[3].duration_s} s look resolves {gz.looks[3].resolution_m.toFixed(2)} m, a 0.25 s look {gz.looks[0].resolution_m.toFixed(1)} m.
     </p>
     <DwellDiagram />
-  </section>
-
-  <section id="acquisitions">
-    <h2>Two real dwells set the parameters</h2>
     <table class="data">
       <thead><tr><th></th><th>Giza</th><th>Sacsayhuamán</th></tr></thead>
-      <tbody>
-        {
-          acquisitions.map((r) => (
-            <tr>
-              <td>{r[0]}</td>
-              <td class="num">{r[1]}</td>
-              <td class="num">{r[2]}</td>
-            </tr>
-          ))
-        }
-      </tbody>
+      <tbody>{acquisitions.map((r) => <tr><td>{r[0]}</td><td class="num">{r[1]}</td><td class="num">{r[2]}</td></tr>)}</tbody>
     </table>
+    <p class="note">
+      Read from each product’s metadata into <code>sites/acquisitions/</code>. On this geometry the synthesizer’s point
+      response is {(gz.synthetic.impulse_width_azimuth_m * 100).toFixed(2)} × {(gz.synthetic.impulse_width_slant_m * 100).toFixed(1)} cm
+      as predicted, and a target receding at 2 mm/s moves {gz.synthetic.azimuth_shift_m.toFixed(3)} m in azimuth, read back as{' '}{(gz.synthetic.recovered_speed_m_s * 1e3).toFixed(3)} mm/s. The earlier “168 km” was the span of one bank’s sub-aperture
+      centres ({(gz.reference_bank_centre_span_m / 1e3).toFixed(1)} km), not the platform’s travel.
+    </p>
+    <RunDetails manifest={geo.manifest} />
   </section>
 
-  <section id="measured">
-    <h2>What the real acquisitions already show</h2>
+  <section id="blind">
+    <h2>Looks cut from one image cannot see ordinary ground move</h2>
     <p class="sub">
-      From the first investigation, measured on the real products, not simulated. Each becomes a calibration or a check
-      for the Phase 2 simulation. <a href={`${base}/archive/`}>The full record</a>
+      Every single-image method, published or ours, reads motion by registering one image’s looks against each other. Two
+      such looks share the spectrum they overlap, sample for sample, so their cross-spectrum is real and non-negative and
+      their correlation locks at zero, whatever the ground does. For natural ground, whose <Term k="speckle">speckle</Term> is
+      independent in every Doppler bin, motion shared by a patch leaves the image’s statistics exactly unchanged. Here a 20 m
+      stretch of the real Giza image is made to sway at 2 mm/s, and read three ways.
     </p>
+    <div class="grid-2 charts">
+      <LineChart
+        directLabels={false}
+        title="Fig. S1 · A block of the real Giza image swaying at 2 mm/s, read from one image and against its motionless twin"
+        series={[
+          { name: 'the motion put in', x: tx, y: rel(blk.injected_absolute as number[]), color: 'var(--text)', width: 1.5 },
+          { name: 'against the twin (simulation only)', x: tx, y: rel(blk.paired as number[]), color: 'var(--ochre)', dash: '4 3', markers: true },
+          { name: 'one image, magnitudes', x: tx, y: (blk.envelope as number[]).map(um), color: 'var(--verdigris)', markers: true },
+          { name: 'one image, complex (published, R4)', x: tx, y: (blk.complex as number[]).map(um), color: 'var(--cinnabar)', markers: true },
+        ]}
+        xLabel="look time from the reference look, s"
+        yLabel="line-of-sight velocity, µm/s"
+        zeroLine
+        caption={`Relative to the reference look. Complex registration recovers ${pct(blk.gain_complex)} ± ${pct(blk.gain_complex_se)}, magnitudes ${pct(blk.gain_envelope)} ± ${pct(blk.gain_envelope_se)}; the motion is in the data (${pct(blk.gain_paired)} against the twin).`}
+      />
+      <LineChart
+        directLabels={false}
+        title="Fig. S2 · The first investigation’s coherence curve is the looks’ overlap"
+        series={[
+          { name: '1 − Δ/W, the shared spectrum', x: coh.delta_s as number[], y: coh.overlap as number[], color: 'var(--muted)', width: 1.4 },
+          { name: 'simulated desert, no decorrelation', x: coh.delta_s as number[], y: coh.simulated as number[], color: 'var(--verdigris)', markers: true, dash: '3 3' },
+          { name: 'R9, measured on the real image', x: coh.r9_measured.delta_s as number[], y: coh.r9_measured.coherence as number[], color: 'var(--lapis)', markers: true, dash: '1 4' },
+        ]}
+        xLabel="separation between looks, s"
+        yLabel="coherence"
+        caption={`Looks ${W} s wide. The real crop’s own power spectrum reproduces its measured coherence to within a billionth: R9 measured the looks, not the ground.`}
+      />
+    </div>
+    <div class="grid-2 charts">
+      <LineChart
+        directLabels={false}
+        title="Fig. S3 · A look averages motion over its duration"
+        series={[
+          { name: 'sinc(f W), a boxcar average', x: fs, y: fs.map((f) => sinc(f * W)), color: 'var(--muted)', width: 1.4 },
+          { name: 'a bright point, recovered', x: lp.map((r) => r.f_hz), y: lp.map((r) => r.recovered_gain), color: 'var(--verdigris)', markers: true },
+        ]}
+        xLabel="frequency of the motion, Hz"
+        yLabel="gain"
+        zeroLine
+        caption={`${W} s looks pass little above 0.3 Hz. The first investigation’s R7 injected at 1, 2 and 3 Hz, where a bright point comes back at ${lp.filter((r) => r.f_hz >= 1).map((r) => pct(Math.abs(r.recovered_gain))).join(', ')}.`}
+      />
+      <div class="note-card">
+        <span class="tag simulated">simulated and real · P2-03</span>
+        <h3>What each way of reading recovers</h3>
+        <table class="data compact">
+          <thead><tr><th></th><th>complex</th><th>magnitudes</th><th>twin</th></tr></thead>
+          <tbody>
+            {gains.map((g) => <tr><td>{g.what}</td><td class="num">{pct(g.cpx)} ± {pct(g.cse)}</td><td class="num">{pct(g.env)} ± {pct(g.ese)}</td><td class="num">{pct(g.par)}</td></tr>)}
+          </tbody>
+        </table>
+        <p>
+          Magnitudes catch what is point-like in the ground, more on the real plateau than in simulated speckle; a lone bright
+          scatterer’s envelope follows its motion in full. “Twin” reads each look against the same look of the motionless
+          scene, which only a simulation has: it shows the motion was there to be seen.
+        </p>
+      </div>
+    </div>
+    <RunDetails manifest={sees.manifest} />
+  </section>
+
+  <section id="imprint">
+    <h2>A chamber changes the ground’s own motion by less than a ten-thousandth of it</h2>
+    <p class="sub">
+      Whatever a satellite could use to find a chamber passively would have to be its <Term k="imprint">imprint</Term>: the
+      difference it makes to how the surface moves. Ambient waves are far longer than the chamber and its depth, so the rock
+      around it is strained almost uniformly and almost statically. The lab’s solver answers the static question directly:
+      load the rock with a uniform horizontal stress, open the chamber, and let the ground settle.
+    </p>
+    <div class="grid-2 charts">
+      <LineChart
+        directLabels={false}
+        title="Fig. S4 · The surface over a 6 m chamber 15 m down, in rock under 1 MPa of horizontal tension"
+        series={[
+          { name: 'the lab’s solver', x: prof.x_m as number[], y: (prof.solver_uz_m as number[]).map(um), color: 'var(--verdigris)', width: 2 },
+          { name: 'Eshelby’s void, Okada’s point sources', x: prof.x_m as number[], y: (prof.analytic_uz_m as number[]).map(um), color: 'var(--lapis)', dash: '5 3' },
+        ]}
+        xLabel="distance from above the chamber, m"
+        yLabel="vertical displacement, µm"
+        zeroLine
+        caption={`Without the chamber nothing moves. On a 0.5 m grid the epicentre sinks ${Math.abs(um(conv[2].epicentre_uz_m)).toFixed(1)} µm against ${Math.abs(um(conv[0].epicentre_uz_m)).toFixed(1)} µm on 1 m; domains from 100 to 180 m wide agree to four digits. The analytic curve is a point sphere of equal volume.`}
+      />
+      <div class="note-card">
+        <span class="tag simulated">simulated · P2-04</span>
+        <h3>The imprint on the line-of-sight velocity</h3>
+        <table class="data compact">
+          <thead><tr><th>the ground’s motion</th><th>moves at</th><th>imprint</th></tr></thead>
+          <tbody>
+            {cases.map((c) => <tr><td>{c.case}</td><td class="num"><Sci v={um(c.vertical_velocity_m_s)} /> µm/s</td><td class="num"><Sci v={um(c.imprint_los_velocity_m_s)} /> µm/s</td></tr>)}
+          </tbody>
+        </table>
+        <p>
+          A passing <Term k="rayleigh">Rayleigh wave</Term> strains the ground by its horizontal-to-vertical ratio times its
+          speed of motion over its phase speed, whatever its frequency, so the imprint is a fixed fraction of the motion for a
+          given wave speed: <Sci v={imp.cases[0].imprint_over_motion} /> for microseisms. The truck is only a guide: at 15 Hz the
+          waves are 110 m long, not long compared with the depth.
+        </p>
+      </div>
+    </div>
+    <RunDetails manifest={imp.manifest} />
+  </section>
+
+  <section id="budget">
+    <h2>Allowing every advantage, one dwell falls short by ten thousand to a hundred million</h2>
+    <p class="sub">
+      The smallest imprint a dwell could detect, from what P2-03 measured: every one of its independent looks counted as a
+      full measurement, a 3-sigma threshold, the look’s gain at the imprint’s frequency, and the best tracker for each
+      target. Under Giza’s microseisms that is {um(ground.a_min_m_s!).toFixed(0)} µm/s on the plateau’s own texture,
+      {' '}{um(bright.a_min_m_s!).toFixed(0)} µm/s on a bright scatterer directly above the chamber, and {um(refl.a_min_m_s!).toFixed(0)} µm/s
+      on a corner reflector that no archive image contains, against an imprint of <Sci v={um(ground.imprint_m_s)} /> µm/s. For the
+      plateau the ground would have to shake at {ground.shake_needed_m_s!.toFixed(0)} m/s, beyond the strongest earthquakes
+      recorded, for the whole dwell.
+    </p>
+    <table class="data">
+      <thead><tr><th>short by</th>{caseNames.map((c) => <th>{c}</th>)}</tr></thead>
+      <tbody>
+        {targets.map((t) => (
+          <tr><td>{t}</td>{caseNames.map((c) => { const r = cell(c, t); return <td class="num">{r.shortfall === null ? 'no response' : order(r.shortfall)}</td>; })}</tr>
+        ))}
+      </tbody>
+    </table>
+    <p class="note">
+      The threshold is checked by simulation: without motion the bright scatterer’s fitted sway scatters by
+      {' '}{um(chk.null_rms_m_s).toFixed(0)} µm/s against the {um(chk.predicted_sigma_m_s).toFixed(0)} µm/s the formula uses, and a sway at
+      the threshold is found in {pct(chk.detected_fraction)} of {chk.null_fits_m_s.length} realisations at a 5% false-alarm rate.
+      Motion at 1–3 Hz needs 250 ms looks, resolving 4 m; the truck needs 33 ms looks, resolving 33 m, during its few seconds.
+    </p>
+    <RunDetails manifest={bud.manifest} />
+  </section>
+
+  <section id="depth">
+    <h2>The published depth is the frequency of the motion: {mph.toFixed(2)} m per hertz</h2>
+    <p class="sub">
+      The published focusing projects each patch’s trajectory on a steering wave whose wavenumber grows with the platform’s
+      offset, and on a dwell the offset grows steadily with time. So the focusing is a Fourier transform over time, and motion
+      at frequency f appears at a depth of f times λ<sub>s</sub> R sin θ / 2V<sub>s</sub>, whatever is under the ground. Given
+      the exact motion at every pair, with none of the blindness above, it still cannot say where a chamber is.
+    </p>
+    <div class="grid-2 charts">
+      <LineChart
+        directLabels={false}
+        title="Fig. S5 · Where the published focusing puts motion of each frequency"
+        series={[
+          { name: 'f λs R sin θ / 2Vs, folded', x: fline, y: fline.map(fold), color: 'var(--muted)', width: 1.4 },
+          { name: 'the pipeline, given the exact motion', x: drow.map((r) => r.f_hz), y: drow.map((r) => r.depth_m), color: 'var(--porphyry)', markers: true },
+        ]}
+        xLabel="frequency of the ground's motion, Hz"
+        yLabel="published depth, m"
+        caption={`The 2022 paper’s bank on the real geometry samples time at ${fsamp.toFixed(1)} Hz, so its whole axis, 0 to ${(dep.nyquist_depth_m as number).toFixed(1)} m, is 0 to ${(fsamp / 2).toFixed(1)} Hz, and faster motion folds back: Giza’s ${tones.giza_ground.f_hz} Hz ground resonance would be drawn at ${tones.giza_ground.depth_m.toFixed(1)} m, Khufu’s ${tones.khufu.f_hz} Hz at ${tones.khufu.depth_m.toFixed(1)} m.`}
+      />
+      <LineChart
+        directLabels={false}
+        title="Fig. S6 · The same microseism over two chambers and over open ground"
+        series={[
+          { name: 'chamber 15 m down', x: zax, y: prof6['chamber 15 m down'].tomogram, color: 'var(--lapis)', width: 3 },
+          { name: 'chamber 30 m down', x: zax, y: prof6['chamber 30 m down'].tomogram, color: 'var(--porphyry)', dash: '6 4', width: 2 },
+          { name: 'open ground', x: zax, y: prof6['open ground, the wave itself'].tomogram, color: 'var(--text)', dash: '1 3', width: 1.5 },
+        ]}
+        xLabel="published depth, m"
+        yLabel="focused power, normalised"
+        caption={`All three peak at ${prof6['chamber 15 m down'].depth_m.toFixed(2)} m, the depth of 0.2 Hz, and agree to rounding error; only their brightness differs.`}
+      />
+    </div>
+    <RunDetails manifest={dep.manifest} />
+  </section>
+
+  <section id="record">
+    <h2>What Phase 2 corrects in the first investigation, and what still stands</h2>
     <div class="grid-2">
-      {
-        findings.map((f) => (
-          <div class="note-card">
-            <span class="tag measured">{f.id} · measured</span>
-            <h3>{f.title}</h3>
-            <p>{f.body}</p>
-          </div>
-        ))
-      }
+      <div class="note-card">
+        <span class="tag measured">R9 · corrected</span>
+        <h3>The coherence curve measured the looks, not the ground</h3>
+        <p>Its 0.98 s to half and 1.76 s to a tenth are 1 − Δ/W for its 1.96 s looks, reproduced by simulated desert with no decorrelation and by the real crop’s own spectrum. How stable the ground is across a dwell has not been measured.</p>
+      </div>
+      <div class="note-card">
+        <span class="tag measured">R4 · corrected</span>
+        <h3>The 77 µm/s floor is noise, not sensitivity</h3>
+        <p>It is the scatter of a complex registration that recovers {pct(blk.gain_complex)} of real ground’s motion. On bright point targets a magnitude tracker does follow motion, with a scatter of the same order.</p>
+      </div>
+      <div class="note-card">
+        <span class="tag measured">R7 · corrected</span>
+        <h3>The injected motion never came back</h3>
+        <p>Its recovery gains sit near zero at every amplitude up to 1 cm, as expected of motion common to a whole crop of speckle. Its later frequencies, 1, 2 and 3 Hz, sit on the nulls of its looks.</p>
+      </div>
+      <div class="note-card">
+        <span class="tag measured">R10 · corrected</span>
+        <h3>Bright pixels were graded with the same identity</h3>
+        <p>Complex coherence between one image’s looks is set by the spectrum whatever the pixels are. A lone bright scatterer’s envelope in fact follows its motion across the dwell.</p>
+      </div>
+      <div class="note-card">
+        <span class="tag measured">R13 · stands</span>
+        <h3>Hundreds of surveyed burial shafts give no signal at their depths</h3>
+        <p>Over the Eastern and Western Cemeteries, shafts 5 to 30 m deep, the depth profiles match bare plateau, before and after matching surface brightness.</p>
+      </div>
+      <div class="note-card">
+        <span class="tag measured">R2, R15, R16 · stand</span>
+        <h3>The depth axis is set by the processing, and resolution by the look</h3>
+        <p>The published axis folds within metres and repeats by an algebraic identity (P2-06 gives it a frequency); a look short enough to follow a wave through the ground resolves tens of metres at best.</p>
+      </div>
     </div>
   </section>
 </Doc>
+
+<style>
+  .note {
+    font-size: 0.82rem;
+    color: var(--muted);
+    max-width: 90ch;
+  }
+  table.compact td,
+  table.compact th {
+    font-size: 0.78rem;
+    padding: 0.28rem 0.45rem;
+  }
+</style>
