@@ -1,0 +1,86 @@
+{
+ "f0": 9650000000.0,
+ "R0": 644630.1965595626,
+ "theta_deg": 34.974753752936564,
+ "V": 7045.338178564579,
+ "dx": 0.046167199128363284,
+ "dr": 0.2526945488610625,
+ "band_frac": 0.8692959384013061,
+ "V_platform": 7676.77363032188,
+ "Ka_signed": -5400.9056119551,
+ "band_frac_r": 0.5057389713140732,
+ "prf": 152604.8430829802,
+ "row_dt": 6.552871978356817e-06,
+ "heading_deg": 349.79182961569677,
+ "los_enu": [
+  -0.5641415964684731,
+  -0.10158834828233881,
+  0.8194047025904042
+ ],
+ "baseline_coeffs": [
+  -0.0006132718140946463,
+  7676.769439940621,
+  -0.0017886713150779157,
+  -0.001589493862957749
+ ],
+ "name": "giza-20220715",
+ "source": {
+  "product": "ICEYE_X13_SLC_SLED_868226_20220715T235744.h5",
+  "satellite": "ICEYE-X13",
+  "mode": "SpotlightDwell",
+  "polarization": "VV",
+  "look_side": "right",
+  "orbit_direction": "ASCENDING",
+  "collection_start": "2022-07-15T23:57:44.386583",
+  "collection_end": "2022-07-15T23:58:09.199419",
+  "collection_duration_s": 24.812836,
+  "image_span_s": 0.709689,
+  "shape": [
+   108302,
+   11342
+  ],
+  "scene_centre": {
+   "row": 54152.0,
+   "column": 5672.0,
+   "latitude": 29.977668272594155,
+   "longitude": 31.131845452838974,
+   "height_m": 59.64179229736328
+  },
+  "chirp_bandwidth_hz": 300000000.0,
+  "range_sampling_rate_hz": 593191383.3345749,
+  "window_range": "NONE",
+  "window_azimuth": "NONE",
+  "incidence_from_state_vectors_deg": 34.945617525263344,
+  "slant_range_from_state_vectors_m": 644626.9426962502,
+  "baseline_span_m": 188553.37528567488,
+  "baseline_fit_residual_m": 0.004508416990574915,
+  "fields": [
+   "processing_prf",
+   "azimuth_time_interval",
+   "total_processed_bandwidth_azimuth",
+   "carrier_frequency",
+   "azimuth_ground_spacing",
+   "slant_range_spacing",
+   "slant_range_to_first_pixel",
+   "incidence_center",
+   "doppler_rate_coeffs",
+   "chirp_bandwidth",
+   "range_sampling_rate",
+   "coord_center",
+   "heading",
+   "state vectors (posX..velZ, state_vector_time_utc)"
+  ]
+ },
+ "derived": {
+  "wavelength_m": 0.03106657595854922,
+  "ground_sweep_speed_m_s": 7045.338178564579,
+  "effective_speed_m_s": 7353.943915166286,
+  "aperture_time_s": 24.562319692971183,
+  "doppler_band_hz": 132658.77027240332,
+  "azimuth_resolution_m": 0.047054330545884454,
+  "slant_resolution_m": 0.44269352964666675,
+  "time_space_m_s": 1.3044734873665387,
+  "aspect_span_deg": 16.757921404980927
+ },
+ "about": "Acquisition record for the Phase 2 simulator, read from the product metadata by sim/experiments/p2_01_geometry.py. Imagery is not included."
+}
