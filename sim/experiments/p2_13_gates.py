@@ -49,12 +49,13 @@ MODULE = GATED / 'biondi_tomography_v1_8.py'
 PROFILE = GATED / 'profiles/iceye_x13_khafre_w50.json'
 GEOID_M = 15.5
 FIT_WINDOW_M = 80.0
-FACE_HEIGHT_M = 70.5
+FACE_HEIGHT_M = 70.5                 # the profile's own height
+HEIGHTS = [20.0, 35.0, 50.0, 60.0, 70.5, 80.0, 95.0]
 V_AMP = 2e-3
 PLANTS = [('North', 0.26), ('South', 3.66)]
 MIDDLE = (30, 71)
 MARGIN = 40
-TWIN_SEED = 101
+TWIN_SEEDS = [101, 102]
 SIDES = ['North', 'East', 'South', 'West']
 
 
@@ -85,21 +86,21 @@ def fit_offset(p, g, sc):
     return register(obs, origin, la, lr, rr, cc, B, max_shift_px=window)
 
 
-def face_geometry(p, sc, shift):
+def face_geometry(p, sc, shift, height):
     kh = next(s for s in sc['structures'] if s['id'] == 'khafre')['shape']
     cx, cy, zb = kh['centre']
     half = kh['base'] / 2
-    h = half - FACE_HEIGHT_M / (kh['height'] / half)
+    h = half - height / (kh['height'] / half)
     corners = {'NW': (cx - h, cy + h), 'NE': (cx + h, cy + h), 'SE': (cx + h, cy - h), 'SW': (cx - h, cy - h)}
 
     def px(pt):
-        r, c = project(p, sc, np.array([pt[0]]), np.array([pt[1]]), np.array([zb + FACE_HEIGHT_M]), GEOID_M, shift)
+        r, c = project(p, sc, np.array([pt[0]]), np.array([pt[1]]), np.array([zb + height]), GEOID_M, shift)
         return [float(c[0]), float(r[0])]
 
     def ll(pt):
         a, b = frame_to_lla(sc['frame']['origin'], pt[0], pt[1])
         return [float(a), float(b)]
-    geom = {'title': "Khafre's four faces at 70.5 m above the base",
+    geom = {'title': f"Khafre's four faces at {height:g} m above the base",
             'coordinate_order': 'Geographic endpoints are [latitude, longitude]. Native pixels are [column, row].',
             'projection': {'height_m': FACE_HEIGHT_M}, 'sides': {}}
     for name, (a, b) in zip(SIDES, [('NW', 'NE'), ('NE', 'SE'), ('SE', 'SW'), ('SW', 'NW')]):
@@ -169,73 +170,87 @@ def main():
     bank = profile['processing']['filter_bank']
     params = {'acquisition': ACQ, 'gated_module_sha256': sha256(MODULE), 'gated_profile_sha256': sha256(PROFILE),
               'profile': profile['profile_name'], 'face_height_m': FACE_HEIGHT_M, 'geoid_m': GEOID_M,
-              'fit_window_m': FIT_WINDOW_M, 'planted': PLANTS, 'planted_v_m_s': V_AMP, 'twin_seed': TWIN_SEED,
+              'fit_window_m': FIT_WINDOW_M, 'planted': PLANTS, 'planted_v_m_s': V_AMP, 'twin_seeds': TWIN_SEEDS,
+              'heights_m': HEIGHTS,
               'bank': {k: bank[k] for k in ('support_hz', 'mask_width_hz', 'bshift_hz', 'k_leap_hz', 'pair_count')}}
     with Run(RID, 'Stricter gates: features in a motionless image, none from a planted vibration', params) as run:
         shift, corr = fit_offset(p, g, sc)
-        geom, half_at_h = face_geometry(p, sc, shift)
         gdir = Path(__file__).resolve().parents[1] / 'data' / RID       # the gated pipeline's own outputs: large, not in git
         if gdir.exists():
             import shutil
             shutil.rmtree(gdir)
         gdir.mkdir(parents=True)
-        (gdir / 'geometry.json').write_text(json.dumps(geom, indent=1))
-        prof = dict(profile)
-        prof['input'] = dict(profile['input'], hdf5_path=str(PRODUCT), geometry_path=str(gdir / 'geometry.json'))
-        prof_path = gdir / 'profile.json'
-        prof_path.write_text(json.dumps(prof, indent=1))
         gated = load_gated()
         original = gated.load_source_and_preflight
-        results, planted_regions = {}, []
-        for case in ('real', 'twin', 'planted'):
-            def wrapped(config, config_path, case=case):
-                res = list(original(config, config_path))
-                if case == 'twin':
-                    res[7] = motionless_twin(res[7], np.random.default_rng(TWIN_SEED))
-                elif case == 'planted':
-                    res[7], regions = plant(res[7], res[4], res[5][0], res[6][0], g)
-                    planted_regions.extend(regions)
-                return tuple(res)
-            gated.load_source_and_preflight = wrapped
-            outdir = gdir / case
-            gated.run_full(prof, prof_path, outdir)
-            audit = np.load(outdir / 'biondi_v1_8_audit.npz')
-            results[case] = analyse(audit, audit['kz_rad_per_m'])
-            print(f"  {case}: feature positions {results[case]['feature_positions']}", flush=True)
+        cases = ['real'] + [f'twin{seed}' for seed in TWIN_SEEDS] + ['planted']
+        sets, plants = [], []
+        for height in HEIGHTS:
+            geom, half_at_h = face_geometry(p, sc, shift, height)
+            hdir = gdir / f'h{height:g}'
+            hdir.mkdir()
+            (hdir / 'geometry.json').write_text(json.dumps(geom, indent=1))
+            prof = dict(profile)
+            prof['input'] = dict(profile['input'], hdf5_path=str(PRODUCT), geometry_path=str(hdir / 'geometry.json'))
+            prof_path = hdir / 'profile.json'
+            prof_path.write_text(json.dumps(prof, indent=1))
+            res, regions_here = {}, []
+            for case in cases:
+                def wrapped(config, config_path, case=case):
+                    out = list(original(config, config_path))
+                    if case.startswith('twin'):
+                        out[7] = motionless_twin(out[7], np.random.default_rng(int(case[4:])))
+                    elif case == 'planted':
+                        out[7], regions = plant(out[7], out[4], out[5][0], out[6][0], g)
+                        regions_here.extend(regions)
+                    return tuple(out)
+                gated.load_source_and_preflight = wrapped
+                gated.run_full(prof, prof_path, hdir / case)
+                audit = np.load(hdir / case / 'biondi_v1_8_audit.npz')
+                res[case] = analyse(audit, audit['kz_rad_per_m'])
+                print(f"  {height:g} m, {case}: feature positions {res[case]['feature_positions']}", flush=True)
+            real = np.load(hdir / 'real' / 'biondi_v1_8_audit.npz')
+            pl = np.load(hdir / 'planted' / 'biondi_v1_8_audit.npz')
+            for reg in regions_here:
+                sd = SIDES.index(reg['side'])
+                d = pl['Y'][sd][MIDDLE[0]:MIDDLE[1]] - real['Y'][sd][MIDDLE[0]:MIDDLE[1]]
+                ideal = ideal_pair_response_px(g, reg['f_hz'], bank['mask_width_hz'], bank['bshift_hz'])
+                plants.append({**reg, 'height_m': height, 'changed_fraction': float(np.mean(d != 0)),
+                               'rms_change_px': float(np.sqrt(np.mean(d ** 2))), 'full_tracker_rms_px': ideal / np.sqrt(2)})
+            sets.append({'height_m': height, 'face_half_width_m': half_at_h, 'cases': res})
         gated.load_source_and_preflight = original
-        # the planted vibrations: how far they moved the shifts, against a full tracker's response
-        real = np.load(gdir / 'real' / 'biondi_v1_8_audit.npz')
-        pl = np.load(gdir / 'planted' / 'biondi_v1_8_audit.npz')
-        plants = []
-        for reg in planted_regions:
-            s = SIDES.index(reg['side'])
-            d = pl['Y'][s][MIDDLE[0]:MIDDLE[1]] - real['Y'][s][MIDDLE[0]:MIDDLE[1]]
-            ideal = ideal_pair_response_px(g, reg['f_hz'], bank['mask_width_hz'], bank['bshift_hz'])
-            plants.append({**reg, 'changed_fraction': float(np.mean(d != 0)), 'rms_change_px': float(np.sqrt(np.mean(d ** 2))),
-                           'full_tracker_rms_px': ideal / np.sqrt(2), 'full_tracker_amplitude_px': ideal})
-        feats = {c: [dict(f, side=sd) for sd, v in r['sides'].items() for f in v['features']] for c, r in results.items()}
-        zc = results['real']['depth_per_cycle_m']
-        near = [abs(f['best_depth_m'] - f['mode_depth_m']) for c in feats for f in feats[c]]
-        zero = np.mean([v['exact_zero'] for v in results['real']['sides'].values()])
-        step = np.mean([v['within_one_step'] for v in results['real']['sides'].values()])
+        count = lambda case: sum(st['cases'][case]['feature_positions'] for st in sets)
+        n_real, n_planted = count('real'), count('planted')
+        n_twins = [count(f'twin{seed}') for seed in TWIN_SEEDS]
+        feats = [dict(f, side=sd, case=c, height_m=st['height_m']) for st in sets for c, r in st['cases'].items()
+                 for sd, v in r['sides'].items() for f in v['features']]
+        zc = sets[0]['cases']['real']['depth_per_cycle_m']
+        near = [abs(f['best_depth_m'] - f['mode_depth_m']) for f in feats]
+        within = float(np.mean(np.array(near) <= zc / 2)) if near else float('nan')
+        zero = float(np.mean([v['exact_zero'] for st in sets for v in st['cases']['real']['sides'].values()]))
+        step = float(np.mean([v['within_one_step'] for st in sets for v in st['cases']['real']['sides'].values()]))
         span_s = bank['mask_width_hz'] / abs(g.Ka_signed)
         shared = 1 - bank['bshift_hz'] / bank['mask_width_hz']
+        by_f = {f: [x for x in plants if x['f_hz'] == f] for _, f in PLANTS}
+        rms = {f: float(np.mean([x['rms_change_px'] for x in v])) for f, v in by_f.items()}
+        full = {f: float(np.mean([x['full_tracker_rms_px'] for x in v])) for f, v in by_f.items()}
+        positions = len(HEIGHTS) * 4 * 101
         finding = (
-            f"Selection gates find features in a motionless image and none from a planted vibration. A gated version of the "
-            f"method, run unchanged on the 2022 image of Khafre, passes {results['real']['feature_positions']} positions; on a "
-            f"motionless twin of the same image, with nothing moving and nothing inside, it passes "
-            f"{results['twin']['feature_positions']}; with the faces made to vibrate at 2 mm/s along the line of sight, some "
-            f"40,000 times Giza's microseisms, it passes {results['planted']['feature_positions']}. Each image of its pairs spans "
-            f"{span_s:.1f} s of the pass and the two share {shared * 100:.2f}% of their spectrum, so {zero * 100:.0f}% of its "
-            f"shifts are exactly zero and {step * 100:.0f}% within one 0.01 px step; the planted vibrations move them by "
-            f"{plants[0]['rms_change_px']:.3f} px at {plants[0]['f_hz']} Hz and {plants[1]['rms_change_px']:.3f} px at "
-            f"{plants[1]['f_hz']} Hz, where a tracker following them fully would see {plants[0]['full_tracker_rms_px']:.3f} and "
-            f"{plants[1]['full_tracker_rms_px']:.3f} px. Every feature's best depth lies within "
-            f"{max(near) if near else float('nan'):.1f} m of its winning mode times {zc:.2f} m, the depth one cycle spans in a "
-            f"window: the gates choose a frequency and the focus names it a depth.")
-        run.save({'registration': {'shift_px': list(shift), 'correlation': corr}, 'face_half_width_m': half_at_h,
-                  'cases': results, 'features': feats, 'planted': plants, 'depth_per_cycle_m': zc,
-                  'pair_span_s': span_s, 'pair_shared_fraction': shared, 'finding': finding})
+            f"A gated version of the method, run unchanged on {len(HEIGHTS)} loops round Khafre's faces in the 2022 image "
+            f"({positions:,} positions), passes {n_real} positions on the real image and "
+            f"{' and '.join(str(n) for n in n_twins)} on two motionless twins of it, with nothing moving and nothing inside; "
+            f"with the faces made to vibrate at 2 mm/s along the line of sight, some 40,000 times Giza's microseisms, it passes "
+            f"{n_planted}. Each image of its pairs spans {span_s:.1f} s of the pass and the two share {shared * 100:.2f}% of "
+            f"their spectrum, so {zero * 100:.0f}% of its shifts are exactly zero and {step * 100:.0f}% within one 0.01 px "
+            f"step; the planted vibrations move them by {rms[PLANTS[0][1]]:.3f} px at {PLANTS[0][1]} Hz and "
+            f"{rms[PLANTS[1][1]]:.3f} px at {PLANTS[1][1]} Hz, where a tracker following them fully would see "
+            f"{full[PLANTS[0][1]]:.3f} and {full[PLANTS[1][1]]:.3f} px."
+            + (f" Of the {len(feats)} passing positions, {within * 100:.0f}% have their best depth within half a cycle "
+               f"({zc / 2:.1f} m) of their winning mode times {zc:.2f} m, the depth one cycle spans in a window."
+               if feats else ""))
+        run.save({'registration': {'shift_px': list(shift), 'correlation': corr}, 'heights_m': HEIGHTS, 'sets': sets,
+                  'features': feats, 'planted': plants, 'counts': {'real': n_real, 'twins': n_twins, 'planted': n_planted,
+                  'positions_per_image': positions}, 'depth_per_cycle_m': zc, 'pair_span_s': span_s,
+                  'pair_shared_fraction': shared, 'planted_rms_px': rms, 'full_tracker_rms_px': full, 'finding': finding})
         print(finding)
 
 
