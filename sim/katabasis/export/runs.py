@@ -9,7 +9,8 @@ from ..runs import RESULTS
 from .sites import DATA
 
 PUBLISHED = ['p1_01_forward_validation', 'p1_02_traveltime', 'p1_03_scattered', 'p1_04_ambient', 'm1_01_ambient_levels', 'p2_00_ambient_giza', 'p1_05_fwi',
-             'p2_01_geometry', 'p2_03_what_a_dwell_sees', 'p2_04_chamber_imprint', 'p2_05_budget', 'p2_06_depth_is_frequency']
+             'p2_01_geometry', 'p2_03_what_a_dwell_sees', 'p2_04_chamber_imprint', 'p2_05_budget', 'p2_06_depth_is_frequency',
+             'p2_07_whole_chain']
 
 
 def export_runs(out: Path = DATA) -> list[str]:
@@ -20,6 +21,11 @@ def export_runs(out: Path = DATA) -> list[str]:
         src = RESULTS / rid / 'summary.json'
         if src.exists():
             shutil.copyfile(src, d / f'{rid}.json')
+            figs = RESULTS / rid / 'figs'
+            if figs.is_dir():                      # images a run renders for the site (P2-07)
+                (d / rid).mkdir(exist_ok=True)
+                for f in figs.glob('*.png'):
+                    shutil.copyfile(f, d / rid / f.name)
             done.append(rid)
     (d / 'index.json').write_text(json.dumps(
         {rid: json.loads((d / f'{rid}.json').read_text())['manifest'] for rid in done}, indent=1))

@@ -235,6 +235,8 @@ def main():
         sar = velocity_series(looks(img_A, m), g, rr_, cc_)
         seis = Shaking(g, field, kern, 1.0).los_velocity(0.0, 0.0, t_fine)
         tw = np.abs(t_fine) <= 1.2
+        c0 = field.centre_series(t_fine)
+        ground_trace = {'t_s': t_fine[::10], 'up_m_s': c0['u_dot'][2][::10]}     # the ground's own trembling, vertical
         compare = {'look_times_s': R4_CENTRES, 'satellite_m_s': sar - sar.mean(),
                    'seismometer_t_s': t_fine[tw][::4], 'seismometer_m_s': (seis - seis[tw].mean())[tw][::4],
                    'satellite_rms_m_s': float(np.std(sar)), 'seismometer_rms_m_s': float(np.std(seis[tw]))}
@@ -314,7 +316,7 @@ def main():
             f"dwell's velocity series wanders by {compare['satellite_rms_m_s'] * 1e6:.0f} um/s, "
             f"{compare['satellite_rms_m_s'] / compare['seismometer_rms_m_s']:.0f} times more, and not with it.")
         run.save({'geometry': geom, 'A_vs_B': A_vs_B, 'sweep': sweep, 'shown_gain': G_show, 'depth_axis_m': z,
-                  'boosted_change_spread': flat,
+                  'boosted_change_spread': flat, 'ground_trace': ground_trace,
                   'compare': compare, 'look_correlation': look_corr, 'real': real, 'figures': fig, 'finding': finding})
         print(finding)
 
