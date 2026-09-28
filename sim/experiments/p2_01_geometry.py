@@ -2,8 +2,9 @@
 
     uv run python experiments/p2_01_geometry.py
 
-Reads the two ICEYE Spotlight Dwell Fine products' metadata (no imagery) and writes their
-acquisition records to sites/acquisitions/, from which `sarsim.acquisition.DwellGeometry` builds
+Reads the ICEYE Spotlight Dwell products' metadata (no imagery): Giza 2025 (X33) and Sacsayhuaman
+2025 (X35), both Dwell Fine, and Giza 2022 (X13), the image the BiondiProtocol group's Khufu tomograms
+use. It writes their acquisition records to sites/acquisitions/, from which `sarsim.acquisition.DwellGeometry` builds
 the simulator's geometry anywhere, without the products. Where the products are absent (the
 cloud), the committed records are used and only the synthetic checks run again.
 
@@ -32,6 +33,7 @@ from sarsim.acquisition import DwellGeometry, RECORDS
 PRODUCTS = {
     'giza-20250827': Path.home() / 'tmp/sar/giza/ICEYE_X33_SLC_SLEDF_951562307_20250827T202654.h5',
     'sacsayhuaman-20250822': Path.home() / 'tmp/sar/sacsayhuaman/ICEYE_X35_SLC_SLEDF_5907293_20250822T152433.h5',
+    'giza-20220715': Path.home() / 'tmp/sar/giza2/ICEYE_X13_SLC_SLED_868226_20220715T235744.h5',
 }
 REFERENCE_BANK = {'K': 50, 'width_frac': 0.10}     # the first investigation's reference bank (legacy real_common)
 
