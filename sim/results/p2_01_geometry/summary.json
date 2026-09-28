@@ -1,0 +1,197 @@
+{
+ "manifest": {
+  "id": "p2_01_geometry",
+  "title": "The real dwell as the simulator's geometry",
+  "date": "2026-09-28",
+  "started_utc": "2026-09-28T04:07:29+00:00",
+  "runtime_s": 0.3,
+  "commit": "c651c62",
+  "params": {
+   "products": {
+    "giza-20250827": "ICEYE_X33_SLC_SLEDF_951562307_20250827T202654.h5",
+    "sacsayhuaman-20250822": "ICEYE_X35_SLC_SLEDF_5907293_20250822T152433.h5"
+   },
+   "reference_bank": {
+    "K": 50,
+    "width_frac": 0.1
+   },
+   "look_durations_s": [
+    0.25,
+    0.5,
+    1.0,
+    1.96,
+    4.0
+   ]
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  }
+ },
+ "sites": {
+  "giza-20250827": {
+   "origin": "product",
+   "satellite": "ICEYE-X33",
+   "mode": "SpotlightDwellFine",
+   "collection_start": "2025-08-27T20:26:54.327037",
+   "speeds_m_s": {
+    "platform": 7661.531266,
+    "ground_sweep": 7013.602461,
+    "effective": 7330.445804
+   },
+   "veff2_over_vs_vg": 1.000009,
+   "doppler_rate_hz_s": -5662.497778,
+   "flat_earth_rate_error": {
+    "with_ground_speed": -0.084578,
+    "with_platform_speed": 0.092372
+   },
+   "wavelength_m": 0.031228,
+   "slant_range_m": 607761.598483,
+   "incidence_deg": 20.805112,
+   "incidence_from_los_deg": 20.805112,
+   "los_enu": [
+    -0.348508,
+    -0.068573,
+    0.934794
+   ],
+   "heading_deg": 348.868801,
+   "aperture_s": 24.485484,
+   "collection_s": 24.762808,
+   "image_span_s": 0.712901,
+   "doppler_band_hz": 138648.996687,
+   "aspect_span_deg": 17.68551422502812,
+   "baseline_span_m": 187590.370549,
+   "baseline_fit_residual_m": 0.004321,
+   "reference_bank_centre_span_m": 168832.318893,
+   "azimuth_resolution_m": 0.044819,
+   "slant_resolution_m": 0.221347,
+   "pixel_m": {
+    "azimuth": 0.043978,
+    "slant": 0.153601
+   },
+   "windows": {
+    "range": "NONE",
+    "azimuth": "NONE"
+   },
+   "time_space_m_s": 1.238606,
+   "looks": [
+    {
+     "duration_s": 0.25,
+     "resolution_m": 4.389619
+    },
+    {
+     "duration_s": 0.5,
+     "resolution_m": 2.194809
+    },
+    {
+     "duration_s": 1.0,
+     "resolution_m": 1.097405
+    },
+    {
+     "duration_s": 1.96,
+     "resolution_m": 0.5599
+    },
+    {
+     "duration_s": 4.0,
+     "resolution_m": 0.274351
+    }
+   ],
+   "velocity_per_azimuth_metre": 0.012606,
+   "platform_speed_over_range": 0.012606,
+   "synthetic": {
+    "impulse_width_azimuth_m": 0.04483626599605116,
+    "predicted_azimuth_m": 0.044819,
+    "impulse_width_slant_m": 0.22052348751884823,
+    "predicted_slant_m": 0.221347,
+    "receding_speed_m_s": 0.002,
+    "azimuth_shift_m": -0.15873478345002287,
+    "predicted_shift_m": -0.158651,
+    "recovered_speed_m_s": 0.002001
+   }
+  },
+  "sacsayhuaman-20250822": {
+   "origin": "product",
+   "satellite": "ICEYE-X35",
+   "mode": "SpotlightDwellFine",
+   "collection_start": "2025-08-22T15:24:33.919422",
+   "speeds_m_s": {
+    "platform": 7717.45644,
+    "ground_sweep": 7185.585736,
+    "effective": 7446.577393
+   },
+   "veff2_over_vs_vg": 0.999947,
+   "doppler_rate_hz_s": -7181.583393,
+   "flat_earth_rate_error": {
+    "with_ground_speed": -0.068869,
+    "with_platform_speed": 0.074076
+   },
+   "wavelength_m": 0.031228,
+   "slant_range_m": 494508.467995,
+   "incidence_deg": 20.479929,
+   "incidence_from_los_deg": 20.47992,
+   "los_enu": [
+    -0.343623,
+    0.06587,
+    0.936795
+   ],
+   "heading_deg": 190.851621,
+   "aperture_s": 19.936257,
+   "collection_s": 20.16999,
+   "image_span_s": 0.695838,
+   "doppler_band_hz": 143173.889762,
+   "aspect_span_deg": 17.825583509365284,
+   "baseline_span_m": 153853.549462,
+   "baseline_fit_residual_m": 0.003907,
+   "reference_bank_centre_span_m": 138468.751461,
+   "azimuth_resolution_m": 0.044466,
+   "slant_resolution_m": 0.221347,
+   "pixel_m": {
+    "azimuth": 0.043628,
+    "slant": 0.152358
+   },
+   "windows": {
+    "range": "NONE",
+    "azimuth": "NONE"
+   },
+   "time_space_m_s": 1.000557,
+   "looks": [
+    {
+     "duration_s": 0.25,
+     "resolution_m": 3.545975
+    },
+    {
+     "duration_s": 0.5,
+     "resolution_m": 1.772988
+    },
+    {
+     "duration_s": 1.0,
+     "resolution_m": 0.886494
+    },
+    {
+     "duration_s": 1.96,
+     "resolution_m": 0.452293
+    },
+    {
+     "duration_s": 4.0,
+     "resolution_m": 0.221623
+    }
+   ],
+   "velocity_per_azimuth_metre": 0.015605,
+   "platform_speed_over_range": 0.015606,
+   "synthetic": {
+    "impulse_width_azimuth_m": 0.04447868977234715,
+    "predicted_azimuth_m": 0.044466,
+    "impulse_width_slant_m": 0.21873863453406045,
+    "predicted_slant_m": 0.221347,
+    "receding_speed_m_s": 0.002,
+    "azimuth_shift_m": -0.12815646650262633,
+    "predicted_shift_m": -0.12816,
+    "recovered_speed_m_s": 0.002
+   }
+  }
+ },
+ "finding": "The real dwell has three speeds, not one: the platform's 7,662 m/s, the image rows' sweep over the ground at 7,014 m/s, and 7,330 m/s from the Doppler rate, their geometric mean to 9 parts per million. The first investigation's flat-earth simulator used one and put the Doppler rate 8% off. Over the 24.49 s processed aperture the platform moves 187.6 km (169 km between the reference bank's first and last sub-aperture centres, the figure quoted before). A look's azimuth resolution times its duration is fixed at 1.10 m s: a 1.96 s look resolves 0.56 m. On this geometry the synthesizer's point response is 4.5 cm by 22 cm, and a target receding at 2 mm/s moves -0.16 m in azimuth (predicted -0.16 m)."
+}

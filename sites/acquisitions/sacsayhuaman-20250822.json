@@ -1,0 +1,86 @@
+{
+ "f0": 9600000000.0,
+ "R0": 494508.46799493267,
+ "theta_deg": 20.479929352448668,
+ "V": 7185.5857357086525,
+ "dx": 0.04362773327748982,
+ "dr": 0.15235801066631458,
+ "band_frac": 0.8692892277073847,
+ "V_platform": 7717.456440100298,
+ "Ka_signed": -7181.583393114104,
+ "band_frac_r": 0.6098539436891954,
+ "prf": 164702.2477653252,
+ "row_dt": 6.071562553443974e-06,
+ "heading_deg": 190.85162059543123,
+ "los_enu": [
+  -0.3436226750115417,
+  0.06586984890525288,
+  0.9367948656045847
+ ],
+ "baseline_coeffs": [
+  0.0003921586874564498,
+  7717.436994493422,
+  -6.002717965683069e-05,
+  -0.0016430685127738444
+ ],
+ "name": "sacsayhuaman-20250822",
+ "source": {
+  "product": "ICEYE_X35_SLC_SLEDF_5907293_20250822T152433.h5",
+  "satellite": "ICEYE-X35",
+  "mode": "SpotlightDwellFine",
+  "polarization": "VV",
+  "look_side": "left",
+  "orbit_direction": "DESCENDING",
+  "collection_start": "2025-08-22T15:24:33.919422",
+  "collection_end": "2025-08-22T15:24:54.089412",
+  "collection_duration_s": 20.16999,
+  "image_span_s": 0.695838,
+  "shape": [
+   114606,
+   11482
+  ],
+  "scene_centre": {
+   "row": 57304.0,
+   "column": 5742.0,
+   "latitude": -13.509299999716061,
+   "longitude": -71.97315,
+   "height_m": 3582.541748046875
+  },
+  "chirp_bandwidth_hz": 600000000.0,
+  "range_sampling_rate_hz": 983842125.1659276,
+  "window_range": "NONE",
+  "window_azimuth": "NONE",
+  "incidence_from_state_vectors_deg": 20.46369251798999,
+  "slant_range_from_state_vectors_m": 494502.924023617,
+  "baseline_span_m": 153853.5494618304,
+  "baseline_fit_residual_m": 0.003906532394466922,
+  "fields": [
+   "processing_prf",
+   "azimuth_time_interval",
+   "total_processed_bandwidth_azimuth",
+   "carrier_frequency",
+   "azimuth_ground_spacing",
+   "slant_range_spacing",
+   "slant_range_to_first_pixel",
+   "incidence_center",
+   "doppler_rate_coeffs",
+   "chirp_bandwidth",
+   "range_sampling_rate",
+   "coord_center",
+   "heading",
+   "state vectors (posX..velZ, state_vector_time_utc)"
+  ]
+ },
+ "derived": {
+  "wavelength_m": 0.031228381041666666,
+  "ground_sweep_speed_m_s": 7185.5857357086525,
+  "effective_speed_m_s": 7446.577392575157,
+  "aperture_time_s": 19.93625666156977,
+  "doppler_band_hz": 143173.8897615899,
+  "azimuth_resolution_m": 0.044466410547615264,
+  "slant_resolution_m": 0.22134676482333332,
+  "time_space_m_s": 1.000557306428884,
+  "aspect_span_deg": 17.825583509365284
+ },
+ "about": "Acquisition record for the Phase 2 simulator, read from the product metadata by sim/experiments/p2_01_geometry.py. Imagery is not included."
+}
