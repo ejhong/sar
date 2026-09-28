@@ -119,3 +119,17 @@ def inject_region_motion(slc, g, weight, displacement):
 def look_gain(f_hz, width_s):
     """A look averages velocity over its duration: gain sinc(f W) at frequency f."""
     return np.sinc(np.asarray(f_hz, float) * width_s)
+
+def motionless_twin(img, rng, smooth=(9, 5)):
+    """A copy of an image in which nothing moves and nothing is inside: the image's own brightness pattern (smoothed over
+    about 3 x 3 resolution cells) and mean spectral envelopes in both axes, with fresh complex Gaussian speckle."""
+    from scipy.ndimage import uniform_filter
+    img = np.asarray(img)
+    I = uniform_filter(np.abs(img) ** 2, smooth)
+    z = (rng.standard_normal(img.shape) + 1j * rng.standard_normal(img.shape)).astype(np.complex64) / np.sqrt(2)
+    t = np.sqrt(I).astype(np.float32) * z
+    Fa = np.sqrt(np.mean(np.abs(np.fft.fft(img, axis=0)) ** 2, axis=1) / np.mean(np.abs(np.fft.fft(t, axis=0)) ** 2, axis=1))
+    t = np.fft.ifft(np.fft.fft(t, axis=0) * Fa[:, None], axis=0)
+    Fr = np.sqrt(np.mean(np.abs(np.fft.fft(img, axis=1)) ** 2, axis=0) / np.mean(np.abs(np.fft.fft(t, axis=1)) ** 2, axis=0))
+    t = np.fft.ifft(np.fft.fft(t, axis=1) * Fr[None, :], axis=1)
+    return t.astype(np.complex64)

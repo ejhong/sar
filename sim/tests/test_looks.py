@@ -95,3 +95,15 @@ def test_only_the_envelope_of_a_bright_point_follows_its_motion():
 def test_a_look_averages_motion_over_its_duration():
     assert look_gain(0.0, 1.96) == 1.0
     assert abs(look_gain(1.0, 1.96)) < 0.03 and abs(look_gain(2.0, 1.96)) < 0.03
+
+
+def test_motionless_twin_keeps_brightness_and_spectrum_not_speckle():
+    from sarsim.looks import motionless_twin
+    rng = np.random.default_rng(3)
+    base = (rng.standard_normal((256, 128)) + 1j * rng.standard_normal((256, 128))).astype(np.complex64)
+    base[:, 64:] *= 3.0                                   # a brighter half
+    t = motionless_twin(base, np.random.default_rng(4))
+    ratio = np.mean(np.abs(t[:, 64:]) ** 2) / np.mean(np.abs(t[:, :64]) ** 2)
+    assert 7.0 < ratio < 11.0                             # the brighter half stays about 9 times brighter
+    inner = (slice(8, -8), slice(72, 120))                # inside the bright half: fresh speckle, not the same
+    assert abs(np.corrcoef(np.abs(t[inner]).ravel(), np.abs(base[inner]).ravel())[0, 1]) < 0.1

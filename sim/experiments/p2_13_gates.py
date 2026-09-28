@@ -1,0 +1,243 @@
+"""P2-13 · Stricter gates: features in a motionless image, none from a planted vibration.
+
+    uv run --with scikit-image python experiments/p2_13_gates.py
+
+Later reconstructions of the method add selection gates between the shifts and the depth focus: keep only windows of
+50 pairs whose two shift components trace an ellipse at one of modes 1 to 10, with a minimum fit and shape; require ten
+successive windows to agree on the mode; keep the family inside the central pairs; and require four or five neighbouring
+pixels to pass at the same window. The depth focus then runs only where everything passed. A public implementation of
+this gated pipeline, with a frozen profile for the ICEYE X13 pass of 15 July 2022 (317 pairs, masks 32,330 Hz wide and
+404 Hz apart, registration to 0.01 px, lambda_s 0.2406 m, depths 0 to 300 m), is run here unchanged: its source is
+imported as published and its hash recorded; only the image it reads is replaced.
+
+Lines: four sides round Khafre's faces at 70.5 m above the base (the profile's height), placed through the product's RPC
+over the site's surface with the residual offset fitted against predicted brightness (sarsim.ortho, within 80 m).
+
+Three images, the same code:
+  real     the product's crop, as it is;
+  twin     a motionless twin (sarsim.looks.motionless_twin): the crop's brightness pattern and spectrum, fresh speckle,
+           nothing moving and nothing inside;
+  planted  the real crop with two stretches of the faces vibrating along the line of sight at 2 mm/s (some 40,000 times
+           Giza's microseisms): 0.26 Hz on the north face and 3.66 Hz on the south face, frequencies proposed for a 648 m
+           column of air and for the Grand Gallery's length; put into the image itself (sarsim.looks.inject_region_motion).
+
+Scored: the shifts (how many sit at exactly zero, their spread), how many windows pass each gate, where features survive,
+each feature's winning mode against the depth of its best score (depth = mode x the depth one cycle spans in a window),
+and how far the planted vibrations move the shifts against what a tracker following them fully would report.
+"""
+import hashlib
+import importlib.util
+import json
+import sys
+from pathlib import Path
+
+import numpy as np
+
+from katabasis.compose import load_site
+from katabasis.export.sites import scene as site_scene
+from katabasis.runs import Run
+from sarsim.acquisition import DwellGeometry
+from sarsim.dwell import DwellProduct
+from sarsim.looks import inject_region_motion, motionless_twin
+from sarsim.ortho import frame_to_lla, multilook, predicted_brightness, project, register
+
+RID = 'p2_13_gates'
+ACQ = 'giza-20220715'
+PRODUCT = Path.home() / 'tmp/sar/giza2/ICEYE_X13_SLC_SLED_868226_20220715T235744.h5'
+GATED = Path.home() / 'tmp/sar/biondi_v18/pkg/Biondi_Protocol_v1.8'
+MODULE = GATED / 'biondi_tomography_v1_8.py'
+PROFILE = GATED / 'profiles/iceye_x13_khafre_w50.json'
+GEOID_M = 15.5
+FIT_WINDOW_M = 80.0
+FACE_HEIGHT_M = 70.5
+V_AMP = 2e-3
+PLANTS = [('North', 0.26), ('South', 3.66)]
+MIDDLE = (30, 71)
+MARGIN = 40
+TWIN_SEED = 101
+SIDES = ['North', 'East', 'South', 'West']
+
+
+def sha256(path):
+    h = hashlib.sha256()
+    with open(path, 'rb') as f:
+        for block in iter(lambda: f.read(1 << 20), b''):
+            h.update(block)
+    return h.hexdigest()
+
+
+def load_gated():
+    spec = importlib.util.spec_from_file_location('gated', MODULE)
+    m = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(m)
+    return m
+
+
+def fit_offset(p, g, sc):
+    x = np.arange(-600, 600, 2.0)
+    X, Y = np.meshgrid(x, x)
+    B, Z = predicted_brightness(sc, X, Y, g.los_enu, 2.0)
+    rr, cc = project(p, sc, X, Y, Z, GEOID_M)
+    la = int(round(1.0 / g.dx))
+    lr = max(1, int(round(np.sin(g.theta) / g.dr)))
+    obs, origin = multilook(p, int(rr.min()) - 2000, int(rr.max()) + 2000, int(cc.min()) - 300, int(cc.max()) + 300, la, lr)
+    window = (int(FIT_WINDOW_M / g.dx), int(FIT_WINDOW_M * np.sin(g.theta) / g.dr))
+    return register(obs, origin, la, lr, rr, cc, B, max_shift_px=window)
+
+
+def face_geometry(p, sc, shift):
+    kh = next(s for s in sc['structures'] if s['id'] == 'khafre')['shape']
+    cx, cy, zb = kh['centre']
+    half = kh['base'] / 2
+    h = half - FACE_HEIGHT_M / (kh['height'] / half)
+    corners = {'NW': (cx - h, cy + h), 'NE': (cx + h, cy + h), 'SE': (cx + h, cy - h), 'SW': (cx - h, cy - h)}
+
+    def px(pt):
+        r, c = project(p, sc, np.array([pt[0]]), np.array([pt[1]]), np.array([zb + FACE_HEIGHT_M]), GEOID_M, shift)
+        return [float(c[0]), float(r[0])]
+
+    def ll(pt):
+        a, b = frame_to_lla(sc['frame']['origin'], pt[0], pt[1])
+        return [float(a), float(b)]
+    geom = {'title': "Khafre's four faces at 70.5 m above the base",
+            'coordinate_order': 'Geographic endpoints are [latitude, longitude]. Native pixels are [column, row].',
+            'projection': {'height_m': FACE_HEIGHT_M}, 'sides': {}}
+    for name, (a, b) in zip(SIDES, [('NW', 'NE'), ('NE', 'SE'), ('SE', 'SW'), ('SW', 'NW')]):
+        geom['sides'][name] = {'P0_label': a, 'P_last_label': b, 'geographic_endpoint_lat_lon': [ll(corners[a]), ll(corners[b])],
+                               'native_endpoints_col_row': [px(corners[a]), px(corners[b])]}
+    return geom, float(h)
+
+
+def plant(img, tracks, row0, col0, g):
+    out = img.copy()
+    regions = []
+    for side, f in PLANTS:
+        tgt = tracks[side]['target'][MIDDLE[0]:MIDDLE[1]]
+        r0, r1 = int(tgt[:, 0].min()) - MARGIN - row0, int(tgt[:, 0].max()) + MARGIN - row0
+        c0, c1 = int(tgt[:, 1].min()) - MARGIN - col0, int(tgt[:, 1].max()) + MARGIN - col0
+        w = np.zeros(out.shape[0])
+        w[r0:r1] = 1.0
+        amp = V_AMP / (2 * np.pi * f)
+        out[:, c0:c1] = inject_region_motion(out[:, c0:c1], g, w, lambda t, a=amp, fr=f: a * np.sin(2 * np.pi * fr * t))
+        regions.append({'side': side, 'f_hz': f, 'displacement_amp_m': amp})
+    return out, regions
+
+
+def ideal_pair_response_px(g, f, mask_hz, bshift_hz):
+    """What a tracker following a point fully would see between a pair's two images: each image is displaced by
+    2 V_g / (lambda |Ka|) times the velocity averaged over its span (mask / |Ka| seconds, gain sinc(f T)); the two spans
+    are bshift / |Ka| apart. Amplitude in native azimuth pixels."""
+    T = mask_hz / abs(g.Ka_signed)
+    dt = bshift_hz / abs(g.Ka_signed)
+    scale = 2 * g.V / (g.lam * abs(g.Ka_signed))
+    return float(scale * V_AMP * abs(np.sinc(f * T)) * 2 * abs(np.sin(np.pi * f * dt)) / g.dx)
+
+
+def analyse(audit, kz_per_side):
+    a = audit
+    out = {'sides': {}}
+    for s, side in enumerate(SIDES):
+        key = side.lower()
+        Y = a['Y'][s]
+        F = a['focus_p4'][s]
+        pos = np.flatnonzero(np.isfinite(F).any(axis=1))
+        dk = float(np.median(np.abs(np.diff(kz_per_side[s]))))
+        zres = 2 * np.pi / (50 * dk)
+        feats = []
+        for p in pos:
+            i = int(np.nanargmax(F[p]))
+            st = int(a['winning_start_p4'][s][p, i])
+            m = int(a[f'{key}_window_mode'][p, st]) if st >= 0 else -1
+            feats.append({'position': int(p), 'mode': m, 'best_depth_m': float(a['z_m'][i]), 'score': float(F[p, i]),
+                          'mode_depth_m': m * zres})
+        out['sides'][side] = {'exact_zero': float(np.mean(Y == 0)), 'within_one_step': float(np.mean(np.abs(Y) <= 0.0100001)),
+                              'rms_px': float(np.sqrt(np.nanmean(Y ** 2))),
+                              'window_passes': int(a[f'{key}_window_pass'].sum()),
+                              'track10_families': int(a[f'{key}_family_pass'].sum()),
+                              'p4_cells': int(a['p4_window_gate'][s].sum()), 'features': feats}
+        out['depth_per_cycle_m'] = zres
+        out['repeat_m'] = 2 * np.pi / dk
+    out['feature_positions'] = int(sum(len(v['features']) for v in out['sides'].values()))
+    return out
+
+
+def main():
+    g = DwellGeometry.from_record(ACQ)
+    sc = site_scene(load_site('giza'))
+    p = DwellProduct(PRODUCT)
+    profile = json.loads(PROFILE.read_text())
+    bank = profile['processing']['filter_bank']
+    params = {'acquisition': ACQ, 'gated_module_sha256': sha256(MODULE), 'gated_profile_sha256': sha256(PROFILE),
+              'profile': profile['profile_name'], 'face_height_m': FACE_HEIGHT_M, 'geoid_m': GEOID_M,
+              'fit_window_m': FIT_WINDOW_M, 'planted': PLANTS, 'planted_v_m_s': V_AMP, 'twin_seed': TWIN_SEED,
+              'bank': {k: bank[k] for k in ('support_hz', 'mask_width_hz', 'bshift_hz', 'k_leap_hz', 'pair_count')}}
+    with Run(RID, 'Stricter gates: features in a motionless image, none from a planted vibration', params) as run:
+        shift, corr = fit_offset(p, g, sc)
+        geom, half_at_h = face_geometry(p, sc, shift)
+        gdir = Path(__file__).resolve().parents[1] / 'data' / RID       # the gated pipeline's own outputs: large, not in git
+        if gdir.exists():
+            import shutil
+            shutil.rmtree(gdir)
+        gdir.mkdir(parents=True)
+        (gdir / 'geometry.json').write_text(json.dumps(geom, indent=1))
+        prof = dict(profile)
+        prof['input'] = dict(profile['input'], hdf5_path=str(PRODUCT), geometry_path=str(gdir / 'geometry.json'))
+        prof_path = gdir / 'profile.json'
+        prof_path.write_text(json.dumps(prof, indent=1))
+        gated = load_gated()
+        original = gated.load_source_and_preflight
+        results, planted_regions = {}, []
+        for case in ('real', 'twin', 'planted'):
+            def wrapped(config, config_path, case=case):
+                res = list(original(config, config_path))
+                if case == 'twin':
+                    res[7] = motionless_twin(res[7], np.random.default_rng(TWIN_SEED))
+                elif case == 'planted':
+                    res[7], regions = plant(res[7], res[4], res[5][0], res[6][0], g)
+                    planted_regions.extend(regions)
+                return tuple(res)
+            gated.load_source_and_preflight = wrapped
+            outdir = gdir / case
+            gated.run_full(prof, prof_path, outdir)
+            audit = np.load(outdir / 'biondi_v1_8_audit.npz')
+            results[case] = analyse(audit, audit['kz_rad_per_m'])
+            print(f"  {case}: feature positions {results[case]['feature_positions']}", flush=True)
+        gated.load_source_and_preflight = original
+        # the planted vibrations: how far they moved the shifts, against a full tracker's response
+        real = np.load(gdir / 'real' / 'biondi_v1_8_audit.npz')
+        pl = np.load(gdir / 'planted' / 'biondi_v1_8_audit.npz')
+        plants = []
+        for reg in planted_regions:
+            s = SIDES.index(reg['side'])
+            d = pl['Y'][s][MIDDLE[0]:MIDDLE[1]] - real['Y'][s][MIDDLE[0]:MIDDLE[1]]
+            ideal = ideal_pair_response_px(g, reg['f_hz'], bank['mask_width_hz'], bank['bshift_hz'])
+            plants.append({**reg, 'changed_fraction': float(np.mean(d != 0)), 'rms_change_px': float(np.sqrt(np.mean(d ** 2))),
+                           'full_tracker_rms_px': ideal / np.sqrt(2), 'full_tracker_amplitude_px': ideal})
+        feats = {c: [dict(f, side=sd) for sd, v in r['sides'].items() for f in v['features']] for c, r in results.items()}
+        zc = results['real']['depth_per_cycle_m']
+        near = [abs(f['best_depth_m'] - f['mode_depth_m']) for c in feats for f in feats[c]]
+        zero = np.mean([v['exact_zero'] for v in results['real']['sides'].values()])
+        step = np.mean([v['within_one_step'] for v in results['real']['sides'].values()])
+        span_s = bank['mask_width_hz'] / abs(g.Ka_signed)
+        shared = 1 - bank['bshift_hz'] / bank['mask_width_hz']
+        finding = (
+            f"Selection gates find features in a motionless image and none from a planted vibration. A gated version of the "
+            f"method, run unchanged on the 2022 image of Khafre, passes {results['real']['feature_positions']} positions; on a "
+            f"motionless twin of the same image, with nothing moving and nothing inside, it passes "
+            f"{results['twin']['feature_positions']}; with the faces made to vibrate at 2 mm/s along the line of sight, some "
+            f"40,000 times Giza's microseisms, it passes {results['planted']['feature_positions']}. Each image of its pairs spans "
+            f"{span_s:.1f} s of the pass and the two share {shared * 100:.2f}% of their spectrum, so {zero * 100:.0f}% of its "
+            f"shifts are exactly zero and {step * 100:.0f}% within one 0.01 px step; the planted vibrations move them by "
+            f"{plants[0]['rms_change_px']:.3f} px at {plants[0]['f_hz']} Hz and {plants[1]['rms_change_px']:.3f} px at "
+            f"{plants[1]['f_hz']} Hz, where a tracker following them fully would see {plants[0]['full_tracker_rms_px']:.3f} and "
+            f"{plants[1]['full_tracker_rms_px']:.3f} px. Every feature's best depth lies within "
+            f"{max(near) if near else float('nan'):.1f} m of its winning mode times {zc:.2f} m, the depth one cycle spans in a "
+            f"window: the gates choose a frequency and the focus names it a depth.")
+        run.save({'registration': {'shift_px': list(shift), 'correlation': corr}, 'face_half_width_m': half_at_h,
+                  'cases': results, 'features': feats, 'planted': plants, 'depth_per_cycle_m': zc,
+                  'pair_span_s': span_s, 'pair_shared_fraction': shared, 'finding': finding})
+        print(finding)
+
+
+if __name__ == '__main__':
+    main()
