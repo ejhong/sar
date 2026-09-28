@@ -3,9 +3,9 @@
   "id": "p2_12_real_pass",
   "title": "The real pass over Giza, laid on the ground",
   "date": "2026-09-28",
-  "started_utc": "2026-09-28T16:59:37+00:00",
-  "runtime_s": 8.5,
-  "commit": "51697f0",
+  "started_utc": "2026-09-28T17:37:00+00:00",
+  "runtime_s": 8.8,
+  "commit": "02c7253",
   "params": {
    "acquisition": "giza-20250827",
    "site": "giza",
