@@ -148,6 +148,13 @@ def main():
         same = float(np.corrcoef(mon, con)[0, 1])
         spread = [float(np.corrcoef(profiles[a], profiles[b])[0, 1]) for i, (a, _) in enumerate(PATCHES)
                   for b, _ in PATCHES[i + 1:]]
+        # is a pyramid's picture more different from open plateau than open plateau is from itself?
+        cc = lambda a, b: float(np.corrcoef(profiles[a], profiles[b])[0, 1])
+        mons = [k for k, kind in PATCHES if kind == 'monument']
+        cons = [k for k, kind in PATCHES if kind == 'control']
+        within_mon = [cc(a, b) for i, a in enumerate(mons) for b in mons[i + 1:]]
+        within_con = [cc(a, b) for i, a in enumerate(cons) for b in cons[i + 1:]]
+        across = [cc(a, b) for a in mons for b in cons]
         np.savez_compressed(run.dir / 'volumes.npz', **{f'{k}_T': v['T'] for k, v in vols.items()},
                             **{f'{k}_index': v['index'] for k, v in vols.items()},
                             z_raw=z_raw, voxel_m=VOXEL_M, grid_x0=x0, grid_y0=y0)
@@ -155,11 +162,12 @@ def main():
             f"The real pass lays onto the ground to within its fitted offset of {abs(shift[0]) * g.dx:.1f} m along track "
             f"and {abs(shift[1]) * g.dr / np.sin(g.theta):.1f} m across (image against predicted brightness, correlation "
             f"{corr:.2f}); the image covers {covered * 100:.0f}% of the site. Its wave reaches at most about 0.3 m into dry "
-            f"sand and less into rock. The published method, run on this image, draws the same kind of picture over the "
-            f"three pyramids as over two stretches of empty plateau: the mean depth profiles over the monuments and over "
-            f"the controls correlate at {same:.3f} (patch against patch {min(spread):.3f} to {max(spread):.3f}), and on every "
-            f"patch the power at a pixel follows that pixel's trajectory energy ({min(x['pillar_power_vs_energy'] for x in patches):.4f} "
-            f"or better), so its columns mark where the registration wanders, not what lies below.")
+            f"sand and less into rock. The published method, run on this image over three pyramids and three stretches of "
+            f"open plateau, draws its columns wherever the registration wanders: on every patch the power at a pixel follows "
+            f"that pixel's trajectory energy ({min(x['pillar_power_vs_energy'] for x in patches):.4f} or better). Its mean depth "
+            f"profiles are alike over the three pyramids ({min(within_mon):.2f} to {max(within_mon):.2f}), whose surfaces are "
+            f"alike, and a pyramid's differs from open plateau's ({min(across):.2f} to {max(across):.2f}) by no more than two "
+            f"stretches of open plateau differ from each other ({min(within_con):.2f} to {max(within_con):.2f}).")
         run.save({'acquisition': g.record()['derived'] | {'heading_deg': g.heading_deg, 'incidence_deg': g.theta_deg},
                   'registration': {'shift_px': list(shift), 'correlation': corr,
                                    'shift_m': [shift[0] * g.dx, shift[1] * g.dr / np.sin(g.theta)]},
@@ -167,6 +175,7 @@ def main():
                             'look_px': [la, lr], 'db_range': [float(lo), float(hi)], 'covered': covered},
                   'reach_m': 0.3, 'patches': patches, 'monument_vs_control_profile_corr': same,
                   'patch_profile_corr_range': [min(spread), max(spread)],
+                  'profile_corr': {'within_monuments': within_mon, 'within_controls': within_con, 'across': across},
                   'profiles': {k: v[::4].round(4).tolist() for k, v in profiles.items()},
                   'profile_depth_m': (z_raw[::4] * CLAIM_REPEAT_M / patches[0]['repeat_depth_raw_m']).round(1).tolist(),
                   'finding': finding})
