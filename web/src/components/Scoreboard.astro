@@ -6,6 +6,7 @@
 import tt from '../../public/data/runs/p1_02_traveltime.json';
 import sc3 from '../../public/data/runs/p1_03_scattered.json';
 import am from '../../public/data/runs/p1_04_ambient.json';
+import fw from '../../public/data/runs/p1_05_fwi.json';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const pct = (v: number) => `${v > 0 ? '+' : ''}${(v * 100).toFixed(1)}%`;
 const cx = tt.surveys.crosshole.score;
@@ -15,7 +16,7 @@ const rows = [
   { method: 'Travel-time tomography', survey: 'surface · hammer and geophone grids', f: '120 Hz', rec: pct(su.chamber_mean_rel), cnr: `${Math.max(0, su.contrast_to_noise).toFixed(1)}×`, status: 'done', run: 'p1_02_traveltime', href: '#traveltime' },
   { method: 'Echo imaging (RTM)', survey: 'surface · same grids, the chamber\u2019s echo', f: '120 Hz', rec: `lit, ${sc3.score.brightest_offset_from_chamber_m.toFixed(1)} m off centre`, cnr: `${sc3.score.contrast.toFixed(1)}×`, status: 'done', run: 'p1_03_scattered', href: '#echo' },
   { method: 'Ambient-noise echo imaging', survey: 'surface · same geophones, noise as virtual sources', f: `~${am.manifest.params.noise_band_centre_hz} Hz`, rec: `brightest ${am.score.brightest_offset_from_chamber_m.toFixed(1)} m off centre`, cnr: `${am.score.image_contrast_ensemble.toFixed(1)}×`, status: 'done', run: 'p1_04_ambient', href: '#ambient' },
-  { method: 'Full-waveform inversion', survey: 'surface · iterated from a practitioner’s start', f: '60 → 120 Hz', rec: '—', cnr: '—', status: 'next', run: '', href: '#methods' },
+  { method: 'Full-waveform inversion', survey: 'surface · same records, from a practitioner’s start', f: '120 Hz', rec: `${pct(fw.score.vs.chamber_mean_rel)} in S speed`, cnr: `${fw.score.vs.contrast_to_noise.toFixed(1)}×`, status: 'done', run: 'p1_05_fwi', href: '#fwi' },
 ];
 ---
 <table class="data scoreboard">
@@ -40,7 +41,7 @@ const rows = [
     }
   </tbody>
 </table>
-<p class="sb-note">Chamber recovered: mean relative P-wave speed inside the true chamber (air would read −90%); for echo imaging, where the image is brightest. vs scatter: that anomaly over the image's own level around it. One chamber, 6 m, top 12 m down, bare limestone, noise 30 dB below each record's peak; ambient noise with an unlimited record (record length is the question, see below).</p>
+<p class="sb-note">Chamber recovered: mean relative P-wave speed inside the true chamber (air would read −90%); for echo imaging, where the image is brightest; for full-waveform inversion, mean relative S-wave speed. vs scatter: that anomaly over the image's own level around it. One chamber, 6 m, top 12 m down, bare limestone, noise 30 dB below each record's peak; ambient noise with an unlimited record (record length is the question, see below).</p>
 
 <style>
   .scoreboard a {

@@ -170,8 +170,10 @@ def main():
                        'xz_vs': rel_s[:, j, :].T.round(4), 'xy_vs': rel_s[:, :, k].T.round(4)},
             'volume': {'shape': list(vols['vs'].shape), 'origin': [float(xs[0]), float(ys[0]), float(zs[0])], 'spacing': g.spacing,
                        'range': [lo, 0.0], 'units': 'fraction of background'},
-            'finding': (f"From uniform rock at the travel-time P speed and a textbook S speed, fitting the whole records to the "
-                        f"noise level leaves the chamber at {100 * final['vs']['chamber_mean_rel']:+.0f}% in S speed "
+            'finding': (f"From uniform rock at the travel-time P speed and a textbook S speed, {len(stages_out[-1]['history']) - 1} "
+                        f"iterations fitting the whole records bring the misfit to {stages_out[-1]['history'][-1]['misfit']:.2f} "
+                        f"(the noise alone: {stages_out[-1]['noise_misfit']:.2f}) and leave the chamber at "
+                        f"{100 * final['vs']['chamber_mean_rel']:+.0f}% in S speed "
                         f"({final['vs']['contrast_to_noise']:.1f}x the scatter around it) and {100 * final['vp']['chamber_mean_rel']:+.0f}% "
                         f"in P speed; the background S speed moves from {vs0:.0f} to {final['vs']['background_m_s']:.0f} m/s "
                         f"(true 1830)."),

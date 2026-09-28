@@ -8,7 +8,7 @@ from pathlib import Path
 from ..runs import RESULTS
 from .sites import DATA
 
-PUBLISHED = ['p1_01_forward_validation', 'p1_02_traveltime', 'p1_03_scattered', 'p1_04_ambient', 'm1_01_ambient_levels', 'p2_00_ambient_giza']
+PUBLISHED = ['p1_01_forward_validation', 'p1_02_traveltime', 'p1_03_scattered', 'p1_04_ambient', 'm1_01_ambient_levels', 'p2_00_ambient_giza', 'p1_05_fwi']
 
 
 def export_runs(out: Path = DATA) -> list[str]:

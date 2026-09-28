@@ -5,6 +5,7 @@ import v01 from '../../public/data/runs/p1_01_forward_validation.json';
 import tt from '../../public/data/runs/p1_02_traveltime.json';
 import sc3 from '../../public/data/runs/p1_03_scattered.json';
 import am from '../../public/data/runs/p1_04_ambient.json';
+import fw from '../../public/data/runs/p1_05_fwi.json';
 import SectionMap from '../components/SectionMap.astro';
 import Scoreboard from '../components/Scoreboard.astro';
 import RunDetails from '../components/RunDetails.astro';
@@ -28,6 +29,10 @@ const a4 = am.score;
 const rt = am.retrieval;
 const cvr = a4.contrast_vs_record;
 const needS = a4.record_for_contrast_3_s;
+const fs = fw.score;
+const fst = fw.stages[0];
+const fh = fst.history;
+const fwSurfXZ = (fw.stations.receivers as number[][]).filter((p) => Math.abs(p[1]) < 0.3).map((p) => [p[0], p[2]] as [number, number]);
 const dur = (s: number) => (s < 60 ? `${s.toFixed(0)} s` : s < 3600 ? `${(s / 60).toFixed(0)} min` : s < 86400 ? `${(s / 3600).toFixed(s < 36000 ? 1 : 0)} h` : `${(s / 86400).toFixed(0)} days`);
 ---
 <Doc
@@ -35,7 +40,7 @@ const dur = (s: number) => (s < 60 ? `${s.toFixed(0)} s` : s < 3600 ? `${(s / 60
   kicker="Phase 1 · the reference ceiling"
   current="seismic"
   lede="Before asking whether a satellite can see a chamber, ask what the instruments built for the job can see. Geophysicists image the shallow ground with arrays of geophones and a source, hammer blows or the ambient hum, and invert the records into a three-dimensional tomogram. This chapter does that in simulation, over ground whose contents are known."
-  state="status · solver validated · travel times, echo imaging and ambient noise done on the one-chamber bench · full-waveform inversion running"
+  state="status · solver validated · travel times, echo imaging, ambient noise and full-waveform inversion done on the one-chamber bench"
   index={[
     { id: 'chain', label: 'The chain' },
     { id: 'scoreboard', label: 'Scoreboard' },
@@ -43,6 +48,7 @@ const dur = (s: number) => (s < 60 ? `${s.toFixed(0)} s` : s < 3600 ? `${(s / 60
     { id: 'traveltime', label: 'Travel times' },
     { id: 'echo', label: 'Echo imaging' },
     { id: 'ambient', label: 'Ambient noise' },
+    { id: 'fwi', label: 'Full waveform' },
     { id: 'arrays', label: 'Arrays' },
     { id: 'methods', label: 'Three methods' },
     { id: 'scoring', label: 'Scoring' },
@@ -321,6 +327,66 @@ const dur = (s: number) => (s < 60 ? `${s.toFixed(0)} s` : s < 3600 ? `${(s / 60
     </div>
     <p class="finding">{am.finding}</p>
     <RunDetails manifest={am.manifest} extra={[['noise', `${am.manifest.params.noise_sources} independent band-limited vertical force streams around ${am.manifest.params.noise_band_centre_hz} Hz, ${am.manifest.params.noise_source_area}`], ['retrieval', 'ensemble correlations computed exactly from each source\u2019s response; the virtual wave is minus their lag derivative (Snieder 2004)'], ['imaging', `${am.manifest.params.virtual_sources} virtual sources, reverse-time migration as in echo imaging, one data scale for every image so they add linearly`], ['record length', `a finite record modelled as random source phases over ${am.manifest.params.fluctuation_reference_segments} segments of ${(2 * am.manifest.params.response_length_s).toFixed(3)} s`], ['viewer', 'Show: Recovered (ambient noise, passive)']]} />
+  </section>
+
+  <section id="fwi">
+    <h2>Fitting whole records from a practitioner’s start finds the chamber as a {pct(fs.vs.chamber_mean_rel).replace('-', '−')} drop in S speed, {fs.vs.contrast_to_noise.toFixed(1)}× the scatter</h2>
+    <p class="sub">
+      The same noisy surface records echo imaging migrated, now fitted whole by <Term k="fwi">full-waveform inversion</Term>.
+      Unlike echo imaging, the rock is not given: the start is what a practitioner would have, uniform rock at the P speed
+      the surface travel times gave ({Math.round(fw.manifest.params.start.vp_m_s).toLocaleString('en-US')} m/s) and an S speed from
+      the textbook ratio √3 ({Math.round(fw.manifest.params.start.vs_m_s).toLocaleString('en-US')} m/s, 3% fast). Gradients of P and
+      S speed come from correlating forward and adjoint stresses, checked against finite differences; traces within 4 m of
+      their hammer are left out, and the iterations stop at the noise level or after ten; here after ten, just above it. The records were made with the
+      same solver and grid the inversion uses (the “inverse crime”): the most favourable case for FWI, softened only by the
+      noise and the wrong start.
+    </p>
+    <div class="stat-row">
+      <div class="stat"><span class="value">{pct(fs.vs.chamber_mean_rel)}</span><span class="what">S speed recovered inside the chamber</span><span class="src">{fs.vs.contrast_to_noise.toFixed(1)}× the scatter around it</span></div>
+      <div class="stat"><span class="value">{pct(fs.vp.chamber_mean_rel)}</span><span class="what">P speed recovered inside the chamber</span><span class="src">{fs.vp.contrast_to_noise.toFixed(1)}× the scatter</span></div>
+      <div class="stat"><span class="value">{Math.round(fs.vs.background_m_s).toLocaleString('en-US')}<small>m/s</small></span><span class="what">background S speed after inversion, from {Math.round(fw.manifest.params.start.vs_m_s).toLocaleString('en-US')}</span><span class="src">true 1,830 m/s</span></div>
+      <div class="stat"><span class="value">{fh[fh.length - 1].misfit.toFixed(2)}</span><span class="what">misfit left after {fh.length - 1} iterations, where the noise alone leaves {fst.noise_misfit.toFixed(2)}</span><span class="src">{fst.traces_kept.toLocaleString('en-US')} of {fst.traces.toLocaleString('en-US')} traces</span></div>
+    </div>
+    <div class="grid-3 charts">
+      <SectionMap
+        title="Fig. 8a · FWI, S speed: vertical section through the chamber"
+        x={fw.slices.x}
+        y={fw.slices.z}
+        values={fw.slices.xz_vs}
+        domain={0.15}
+        outlines={[chamber]}
+        points={fwSurfXZ}
+        xLabel="east, m"
+        yLabel="height, m"
+        caption="relative S speed against the inverted background"
+      />
+      <SectionMap
+        title="Fig. 8b · FWI, P speed: vertical section through the chamber"
+        x={fw.slices.x}
+        y={fw.slices.z}
+        values={fw.slices.xz_vp}
+        domain={0.15}
+        outlines={[chamber]}
+        points={fwSurfXZ}
+        xLabel="east, m"
+        yLabel="height, m"
+        caption="relative P speed; for records dominated by the surface wave the P speed is the weaker constraint"
+      />
+      <LineChart
+        title="Fig. 8c · Misfit against iteration"
+        series={[
+          { name: 'misfit', x: fh.map((h) => h.iteration), y: fh.map((h) => h.misfit), color: 'var(--verdigris)', markers: true },
+          { name: 'noise level', x: [0, fh[fh.length - 1].iteration], y: [fst.noise_misfit, fst.noise_misfit], color: 'var(--faint)', dash: '3 3', width: 1 },
+        ]}
+        xLabel="iteration"
+        yLabel="misfit / start"
+        yDomain={[0, 1.05]}
+        height={210}
+        caption="L-BFGS with an illumination preconditioner; the noise level estimated from each record's quiet first 2 ms"
+      />
+    </div>
+    <p class="finding">From uniform rock at the travel-time P speed and a textbook S speed, ten iterations fitting the whole records bring the misfit to {fh[fh.length - 1].misfit.toFixed(2)} of its start, against {fst.noise_misfit.toFixed(2)} for the noise alone. The chamber comes back as {pct(fs.vs.chamber_mean_rel)} in S speed, {fs.vs.contrast_to_noise.toFixed(1)}× the scatter around it, its slowest cell {fs.vs.slowest_offset_from_chamber_m.toFixed(1)} m from the chamber's centre, in its upper half; in P speed only {pct(fs.vp.chamber_mean_rel)}. The background S speed moves from {Math.round(fw.manifest.params.start.vs_m_s).toLocaleString('en-US')} to {Math.round(fs.vs.background_m_s).toLocaleString('en-US')} m/s, toward the true 1,830. Of the surface methods, this is the only one to put the chamber where it is with the rock not given, in the most favourable case.</p>
+    <RunDetails manifest={fw.manifest} extra={[['start', 'uniform rock: Vp from P1-02 surface travel times, Vs = Vp/√3'], ['misfit', fw.manifest.params.misfit], ['optimiser', fw.manifest.params.optimiser], ['inverse crime', fw.manifest.params.inverse_crime], ['viewer', 'Show: Recovered (full-waveform inversion, S or P speed)']]} />
   </section>
 
   <section id="arrays">

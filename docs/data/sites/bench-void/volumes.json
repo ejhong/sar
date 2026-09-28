@@ -106,5 +106,59 @@
   ],
   "run": "p1_04_ambient \u00b7 2026-09-27 \u00b7 e563377",
   "caption": "best case, rock known, endless record \u00b7 chamber 2.2\u00d7 brighter than elsewhere"
+ },
+ {
+  "id": "fwi-vs",
+  "label": "Full-waveform inversion, S speed",
+  "method": "Whole records fitted from a practitioner's start, 60 Hz then 120 Hz",
+  "survey": "surface",
+  "status": "tomogram",
+  "quantity": "relative S-wave speed",
+  "units": "fraction of background",
+  "file": "vol-fwi-vs.u8",
+  "shape": [
+   77,
+   77,
+   60
+  ],
+  "origin": [
+   -18.75,
+   -18.75,
+   -0.25
+  ],
+  "spacing": 0.5,
+  "range": [
+   -0.12,
+   0.0
+  ],
+  "run": "p1_05_fwi \u00b7 2026-09-27 \u00b7 37baecd",
+  "caption": "chamber recovered at -15.8% \u00b7 brightest = 12% slower than the rock or more"
+ },
+ {
+  "id": "fwi-vp",
+  "label": "Full-waveform inversion, P speed",
+  "method": "Whole records fitted from a practitioner's start, 60 Hz then 120 Hz",
+  "survey": "surface",
+  "status": "tomogram",
+  "quantity": "relative P-wave speed",
+  "units": "fraction of background",
+  "file": "vol-fwi-vp.u8",
+  "shape": [
+   77,
+   77,
+   60
+  ],
+  "origin": [
+   -18.75,
+   -18.75,
+   -0.25
+  ],
+  "spacing": 0.5,
+  "range": [
+   -0.12,
+   0.0
+  ],
+  "run": "p1_05_fwi \u00b7 2026-09-27 \u00b7 37baecd",
+  "caption": "chamber recovered at -2.4% \u00b7 brightest = 12% slower than the rock or more"
  }
 ]
