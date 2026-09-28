@@ -493,7 +493,7 @@ const sig2 = (v: number) => Number(v.toPrecision(2)).toLocaleString('en-US');
       own shifts alone, so a volume is every row. The method’s “inversion” is only a Fourier transform of each pixel’s own shifts,
       with no waves modelled through the ground: for the Khafre patch’s
       {(pk.grid[0] * pk.grid[1]).toLocaleString('en-US')} pixels it takes a twentieth of a second, where a real seismic inversion of one
-      small block takes hours (full-waveform inversion, above on the seismic page). The costly step is measuring the shifts, which
+      small block takes hours (full-waveform inversion, on the seismic page). The costly step is measuring the shifts, which
       grows with the number of pixels; the lab refines each correlation peak locally (Guizar-Sicairos and others, 2008) instead of
       upsampling whole patches, so that patch took minutes, where every pixel of the whole image would take about two months.
     </p>
