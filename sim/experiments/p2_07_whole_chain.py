@@ -36,6 +36,7 @@ from sarsim.looks import look_masks, looks, velocity_series
 from sarsim.pipeline import run_pipeline
 from sarsim.scene import Scatterers
 from sarsim.subap import SubapBank
+from sarsim.tomo import focus_paper, nyquist_depth
 
 RID = 'p2_07_whole_chain'
 PRODUCT = Path.home() / 'tmp/sar/giza/ICEYE_X33_SLC_SLEDF_951562307_20250827T202654.h5'
@@ -168,10 +169,14 @@ def save(path, A, cmap, lo=None, hi=None):
 
 
 # ------------------------------------------------------------------ the run
-def run_method(img, g, rows, cols):
+def run_method(img, g, rows, cols, full=False):
     out = run_pipeline(img.astype(np.complex64), g, rows, cols, bank=SubapBank(), patch=PATCH, upsample=1000,
                        lam_s=LAM_S, modes=('paper',), verbose=False)
-    return out['tomo_paper'], out['z']
+    if not full:
+        return out['tomo_paper'], out['z']
+    # the same focusing over one whole period of its depth axis, [0, 2 pi / dKz), for the viewer
+    z_full = np.linspace(0.0, 2 * nyquist_depth(out['kz']), 320, endpoint=False)
+    return out['tomo_paper'], out['z'], focus_paper(out['q'][..., 0] + 1j * out['q'][..., 1], out['kz'], z_full), z_full
 
 
 def main():
@@ -202,16 +207,16 @@ def main():
         t0 = time.time()
         img_B = synthesize(scat, g, SHAPE, motion=Shaking(g, field, kern, 0.0), dtype=np.complex128)
         img_A = synthesize(scat, g, SHAPE, motion=Shaking(g, field, kern, 1.0), dtype=np.complex128)
-        T_B, z = run_method(img_B, g, RR.ravel(), CC.ravel())
-        T_A, _ = run_method(img_A, g, RR.ravel(), CC.ravel())
+        T_B, z, F_B, z_full = run_method(img_B, g, RR.ravel(), CC.ravel(), full=True)
+        T_A, _, F_A, _ = run_method(img_A, g, RR.ravel(), CC.ravel(), full=True)
         print(f'  A and B: {time.time() - t0:.0f} s', flush=True)
         rel = lambda a, b: float(np.sqrt(np.mean(np.abs(a - b) ** 2)) / np.sqrt(np.mean(np.abs(b) ** 2)))
         foot = np.hypot(*np.meshgrid(x_rows, (cols - SHAPE[1] // 2) * g.dr / np.sin(g.theta), indexing='ij')).ravel() < 15
         A_vs_B = {'image_relative_difference': rel(img_A, img_B), 'method_relative_difference': rel(T_A, T_B),
                   'imprint_phase_rad': Shaking(g, field, kern, 1.0).imprint_phase(t_fine)}
         # the method's depth volumes with and without the chamber, for the viewer (not committed; rerun to regenerate)
-        np.savez_compressed(run.dir / 'volumes.npz', A=T_A.astype(np.float32), B=T_B.astype(np.float32),
-                            rows=rows, cols=cols, z=z, dx=g.dx, dr=g.dr, theta=g.theta)
+        np.savez_compressed(run.dir / 'volumes.npz', A=F_A.astype(np.float32), B=F_B.astype(np.float32),
+                            rows=rows, cols=cols, z=z_full, dx=g.dx, dr=g.dr, theta=g.theta)
         # the boost: how far must the imprint be multiplied before the method's output changes?
         sweep = []
         T_show, G_show = None, None
