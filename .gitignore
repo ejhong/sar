@@ -27,3 +27,7 @@ web/node_modules/
 web/dist/
 web/.astro/
 shots/
+
+# experiments built on private correspondence: kept local until the owner clears them
+sim/private/
+sim/results/p2_10_*/
