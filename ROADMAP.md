@@ -25,6 +25,29 @@ The site is now **Underworld**: the front page leads with the answer, `/pictures
 P2-03 also corrects the first investigation's record: R9's coherence curve is an identity of the looks, R4's floor is
 the scatter of an estimator that does not respond to ground motion, and R7 never recovered its injected motion.
 
+Since then (still 28 September):
+
+- **P2-08** reproduces the published pictures' pillars, bands and blocks from the method's arithmetic on the real
+  Khafre image (Parseval, the axis's resolution, and the repeat depth where every steering phase coincides).
+- **P2-09** puts a wave into the image and reads 3,264 virtual sensors: they are deaf (0% by complex correlation), and
+  where magnitudes hear, the chamber would need 2e19 sensors (R11's control had been added after tracking).
+- **P2-11** closes every route, not only the published one: penetration, vibration within an image, deformation
+  between images under tides, air pressure, heat and the water table, and the surface's own material. X band reaches
+  about 30 cm into the driest sand; only P band (Biomass) reaches a few metres, at 25 m resolution. The owner's wish,
+  a viewer that looks underground from radar data, is therefore possible only for shallow ground at low frequency, not
+  from ICEYE's X band, and not for anything like the claim.
+- **The 2026 micro-motion papers** (Vattulainen et al., IEEE Access; Lotti et al., SCHM), the "vibrations from
+  satellites work" results, measure isolated bright targets (corner reflectors, a steel bridge) moving at 0.7 mm/s and
+  up, with errors near 1 mm/s: what P2-03 says works, 2e8 times the chamber's imprint. Recorded in METHOD_AUDIT.
+- **A third product**: the owner supplied ICEYE X13's 2022 Spotlight Dwell over Khufu (`~/tmp/sar/giza2/`, record
+  `sites/acquisitions/giza-20220715.json`: 35.0 degrees incidence, 24.56 s, looking east-north-east, so Khufu's east face
+  is at 86 degrees local incidence, nearly edge-on and mostly shadowed step by step).
+- **The viewer's satellite data** is exported (`sim/katabasis/export/radar.py`: the track, the draped image, the
+  virtual sensors, the method's volumes with and without the chamber over one whole period of its depth axis, and the
+  Khafre volume); the viewer's Satellite mode that draws them is next.
+- The derivative protocol's public repository was last committed on 23 September (v1.7, whose registration is
+  whole-pixel despite its configuration's oversampling); the group's newer runs are not public.
+
 - **Start here:** `CLAUDE.md`, this file, `web/DESIGN.md`. `cd sim && uv sync` then `uv run pytest` (≈35 s here);
   `cd web && npm ci && npm run check && npm test && npm run build`. On this Mac, scikit-fmm builds only with
   `CPLUS_INCLUDE_PATH=/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1`.
@@ -98,27 +121,26 @@ The lab does it by simulation over ground whose contents are known, in two phase
 
 ## Next, in order
 
-1. **P2-08, how the method draws pillars and boxes.** The published Khafre renderings show helical shafts with blocks
-   at their feet. Hypothesis to test on the real Khafre crop: each column is a pixel's trajectory spectrum relabelled as
-   depth (P2-06), bright or unstable surface pixels give tall columns, the fluctuations along a column have the depth
-   resolution's period (the bands, read as spirals), and a constant offset in a trajectory focuses at zero depth and again
-   at the axis's repeat depth, where the derivative protocol's grid ends (R12): the blocks. Reproduce them, render them
-   beside the claim in the viewer's claimed-underworld site.
-2. **P2-10, Khufu's east face as the protocol's authors now run it** (`inputs/manu_09_28.txt`, 28 September): their
-   eleven lines (a south control at -35 m, the King's Chamber axis at -11 m, the centre, and 5 m steps north to the
-   Grotto at +35 m) placed on our X33 image, processed as they describe (317 R/O pairs over the central 12 s in six
-   sectors, 32-px patches, lambda 0.24 m, their six gates), with many control lines on Khafre, Menkaure and open plateau
-   and on P2-07's simulated speckle. Pre-stated test: do gated features line up with the surveyed chambers better than
-   with the same lines shifted, and better than on the controls? Note the lines lie on the face turned away from the
-   radar, its darkest part (local incidence about 72 degrees), where the signal is closest to the noise.
-3. **Optional confirmations on the real image**, none of which can change the result: the Khufu known-chamber
+1. **The viewer's Satellite mode** (data exported): the satellite and its beam over the site, the simulated image draped
+   on the ground, the virtual sensors bobbing with the true motion and what each reading reports, and the method's
+   volume with and without the chamber, in cinnabar; the 3-D link earlier in the menu; a role for each scene.
+2. **P2-10, Khufu's east face as the protocol's authors now run it**: their configuration, communicated privately
+   (kept in `sim/private/` and out of git until the owner clears it), on the X13 (2022) and X33 (2025) images, with
+   controls. Pre-stated tests: the two images must agree, and the real image must differ from a motionless twin. The
+   lines lie on the face turned away from the radar, its darkest part, where the signal is closest to the noise.
+3. **A viewer that takes real radar data** (the owner's end goal, bounded by P2-11): given a product, build its 3-D
+   scene: the satellite's pass from the state vectors, the image draped on the terrain, how deep that band can reach in
+   that ground (a few centimetres for X band on rock), and what the published method draws from it, labelled for what
+   it is. For low-frequency data over dry ground (Biomass P band, NISAR or ALOS-2 L band), a shallow mode can show
+   buried features within the top metres, which is the one place radar does see underground.
+4. **Optional confirmations on the real image**, none of which can change the result: the Khufu known-chamber
    positive control (metre-level registration on surveyed base corners, then the King's and Queen's Chambers and the
    Grand Gallery under the published chain); the derivative protocol v1.7 on a simulated dwell (desktop only).
-4. **Tidy the first investigation's record**: rerun or retire R7 (its script and results disagree); mark R9 and R10
+5. **Tidy the first investigation's record**: rerun or retire R7 (its script and results disagree); mark R9 and R10
    on the archive as identities of the looks rather than measurements of the ground.
-5. **A short findings note for the protocol's authors** (draft for the owner to send): P2-03's blindness of complex
+6. **A short findings note for the protocol's authors** (draft for the owner to send): P2-03's blindness of complex
    look registration and P2-06's depth-frequency identity, besides the earlier geometry points.
-6. Phase 1, if it continues for its own sake: full-waveform inversion beyond the inverse crime; the ambient field in
+7. Phase 1, if it continues for its own sake: full-waveform inversion beyond the inverse crime; the ambient field in
    every site; symmetric near-air stencils; detectability sweeps; the shaft field and Giza; the claimed underworld
    at low frequency. None bears on the radar question.
 

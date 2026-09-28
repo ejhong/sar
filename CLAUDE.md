@@ -47,9 +47,7 @@ ground. Owner: Eugene Jhong. Read `ROADMAP.md` (state and next steps) and `web/D
 - **Manu Seyfzadeh** (with Brian) maintains the derivative protocol, *Replication and Verification of the Biondi Protocol*:
   https://github.com/BiondiProtocol/ (repository `Replication-and-Verification-Biondi-Protocol`; v1.5 inspected at
   `81451263`, v1.7 installed on the desktop at `~/tmp/sar/biondi_v17`). He corresponds with the owner; his messages and
-  figures arrive in `inputs/` (private, gitignored; never published without the owner's say), e.g. `inputs/manu_09_28.txt`
-  with its two figures: gated tomograms along eleven lines over the Great Pyramid's east face (ICEYE X13, 317 R/O pairs from
-  the central 12 s in six 50-pair sectors, 32-px patches framed in 128 and oversampled 100x, lambda 0.24 m, six gates,
-  depth in "nominal metres", a south control line at -35 m).
+  figures arrive in `inputs/` (private, gitignored; never published without the owner's say). Experiments built on that
+  correspondence live in `sim/private/` and write to gitignored results until the owner clears them.
 - **The claim**: Biondi & Malanga (2022, retracted 2026) and the March 2025 Khafre announcement; see `/claim/`.
 

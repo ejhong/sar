@@ -328,9 +328,61 @@ investigation's record, and what it leaves open follow.
    seismometer there records. With the published lambda_s the axis ends at 13.4 m, above the chamber; lambda_s only
    relabels the same pixels (P2-06).
 
+6. **The published pictures' pillars, bands and blocks are the method's own arithmetic (P2-08).** Averaged over a
+   period of the depth axis, the power drawn at a pixel equals that pixel's trajectory energy (Parseval; correlation
+   1.000 on the real Khafre image), so a pixel whose registration wanders is bright at every depth and stands as a
+   column in any thick-slab rendering; such pixels lie where the surface is darker or changes brightness, and open
+   plateau with no monument draws the tallest columns. Along a column the power rises and falls at the axis's
+   resolution (13 m relabelled): the bands. At z = 0 and at every repeat depth (648 m and 1,296 m relabelled) all
+   steering phases coincide and the power is the pixel's mean offset squared (ratio 0.994): the blocks. Below 648 m
+   the picture repeats.
+7. **A radar image is not a dense seismic array (P2-09).** With the motion put into the image itself (a 60 m, 0.15 Hz
+   test wave), 3,264 virtual sensors read by complex correlation recover 0% of the motion under them and by magnitudes
+   −6%. Still sensors do average down as n^−0.50, but a deaf sensor stacks to a precise zero. Where magnitudes hear
+   (a fifth, over real point-like ground), the chamber would need about 2 × 10¹⁹ independent sensors over it; there
+   are 3,602 there, 7 × 10⁷ in the whole image and 4 × 10¹⁴ on all of Earth's land. The ground's own trembling would
+   need 1,186 times more than the image holds.
+8. **No route carries a Giza room to an X-band radar, and none carries the claimed structure to any radar (P2-11).**
+   An echo depends only on how strongly each scatterer returns the wave and where it is while watched, so a room can
+   reach the record by penetration, by vibration within one image, by deformation between images under varying
+   loads, or by changing the surface's material, and in no other way. Penetration: X band reaches about 30 cm into
+   the driest sand (TanDEM-X), L band 1 to 2 m (SIR-A's buried valleys), P band up to 5 m (Biomass, 2025); limestone
+   conducts 50 to 200 times more than dry sand, so the bench chamber's roof is at least 347 dB down at X band and the
+   claimed structure 34,000 dB, against about 30 dB an image spans; only P band could reach a shallow room, inside
+   its 25 m resolution cell with the surface. Vibration: the smallest motion ever measured from orbit (0.66 mm/s RMS
+   on a corner reflector, 2026) is 2 × 10⁸ times the chamber's imprint, which reaches it only under shaking of
+   0.6 m/s during the pass, over reflectors placed in advance. Between passes: the largest load, the year's heat
+   wave, moves the ground over the chamber by 2.4 µm, which needs about 8 × 10⁵ passes at 0.5 mm each and is 180
+   times smaller than the ground's own seasonal breathing; tides, air pressure and the water table give 0.03 to
+   0.2 µm. The surface's temperature changes by 0.1 mK. Any processing, gates and learning included, is a function of
+   the record and cannot restore what these routes do not carry.
+
 Any one of 1, 3 and 4 is sufficient on its own; they fail for independent reasons (the estimator, the
 physics of the signal, and the algebra of the depth axis). R16's resolution bound, which rests on the
-same trade between a look's duration and its resolution (1.10 m s at Giza, P2-01), is a fourth.
+same trade between a look's duration and its resolution (1.10 m s at Giza, P2-01), is a fourth. 8 extends
+the question beyond the published method to every route a radar record offers.
+
+### Motion measured from orbit, 2026
+
+Two papers from the Strathclyde and Trento groups (one co-author, Clemente, also wrote the 2020 tracking papers with
+Biondi) measure vibration from single spaceborne images against synchronous ground truth, and are the strongest
+evidence that single-image micro-motion is real:
+
+- Vattulainen et al. (2026), *Assessment of spaceborne SAR micro-motion measurement for vibration-based SHM*, IEEE
+  Access 14, 6043–6064, doi:10.1109/ACCESS.2026.3652346. Corner reflectors on shakers, set in open grass away from
+  other reflectors, nine Umbra spotlight images (5–16 s), vertical motion at 1–4 Hz tracked by sub-pixel offset
+  tracking of the brightest pixel through overlapping sub-apertures. Peak radial velocities from 95.5 down to
+  1.4 mm/s; RMS errors from 20.6 mm/s (22%) to 0.9 mm/s (63%); frequencies found in every test, down to 0.10 mm RMS
+  displacement (0.66 mm/s RMS velocity).
+- Lotti et al. (2026), *Monitoring bridge vibrations via spaceborne SAR micro-Doppler*, Structural Control and Health
+  Monitoring, doi:10.1155/stc/3858095. A steel footbridge over the Clyde, chosen because its steel and sharp corners
+  are bright; peak radial velocities 0.5–2 mm/s, errors of about 1 mm/s, dominant frequencies found at 0.06 Hz
+  resolution.
+
+Both are what P2-03 predicts works: an isolated, bright, point-like target's envelope follows its own motion. Neither
+tracks natural ground or speckle, and the smallest motion measured is 13,000 times the ground's whole trembling at
+Giza and 2 × 10⁸ times the chamber's imprint on it. Their measured floor is some ten to a hundred times above the
+corner-reflector threshold P2-05 computes, so P2-05's thresholds are generous to the claim.
 
 ### Corrections to the first investigation's record
 
@@ -358,6 +410,10 @@ same trade between a look's duration and its resolution (1.10 m s at Giza, P2-01
   coherence between looks, which is set by the spectrum whatever the pixels are. "Bright targets
   decorrelate as fast as desert" is therefore not established by it; a lone bright scatterer's
   envelope in fact follows its motion across the whole dwell (P2-03).
+- **R11's positive control never passed through the tracker.** Its synthetic plane wave was added to the
+  velocity series after tracking, so its detection says the stacking works, not that the image's pixels hear a
+  wave; and its band, 0.9–3.5 Hz, is averaged away by its own 1.96 s looks (a bright point swaying at 1, 2 and
+  3 Hz comes back at 10, 4 and 1%, P2-03). P2-09 puts the wave into the image instead: the sensors are deaf.
 - **The platform moves 187.6 km over the processed aperture**, not 168 km; 168.8 km is the span
   between the reference bank's first and last sub-aperture centres (P2-01).
 - **The flat-earth simulator of the first chapter put the Doppler rate 8% off** for this geometry.
@@ -374,5 +430,8 @@ same trade between a look's duration and its resolution (1.10 m s at Giza, P2-01
   the apparent brightness a displacement gradient produces, which for this imprint is of order 10⁻¹¹.
 - Giza's own ambient level is unmeasured in the open literature; the microseism level is from
   Kottamya, 67 km east (M1-01), bracketed by Peterson's global models.
-- The Khufu known-chamber positive control on the real image has not been run. Given 1 and 4 it could
+- The Khufu east-face test on the real images (X13 2022 and X33 2025, P2-10) follows a configuration communicated
+  privately by the BiondiProtocol group and is kept out of the public record until cleared. Given 1 and 4 it could
   only confirm, not change, the result.
+- P2-11's penetration bounds use dry sand's measured penetration as an upper bound for limestone, and a limestone
+  conductivity from the standard GPR table; no microwave loss measurement of Mokattam limestone itself is used.
