@@ -106,7 +106,7 @@ def main():
         covered = float(np.mean(np.isfinite(L)))
         # ---- what the method draws, patch by patch
         patches, vols = [], {}
-        profiles = {}
+        profiles, energies = {}, {}
         for key, kind in PATCHES:
             out = legacy_patch(key, sc)
             meta = out['meta']
@@ -123,6 +123,7 @@ def main():
             pillar = float(np.corrcoef(T.mean(axis=1), energy)[0, 1])
             prof = T.mean(axis=0) / T.mean()
             profiles[key] = prof
+            energies[key] = energy
             # where each site cell falls among the patch's pixels
             r0, c0 = meta['crop_origin']
             prow = r0 + out['rows'][keep]
@@ -148,6 +149,15 @@ def main():
         same = float(np.corrcoef(mon, con)[0, 1])
         spread = [float(np.corrcoef(profiles[a], profiles[b])[0, 1]) for i, (a, _) in enumerate(PATCHES)
                   for b, _ in PATCHES[i + 1:]]
+        # how many of the strongest columns each patch draws: its share of the pixels among the noisiest 5% of all
+        top = np.percentile(np.concatenate(list(energies.values())), 95)
+        for x in patches:
+            e = energies[x['key']]
+            x['median_energy'] = float(np.median(e))
+            x['share_in_top5'] = float(np.mean(e > top))
+            x['max_energy'] = float(e.max())
+        share = lambda kind: [x['share_in_top5'] for x in patches if x['kind'] == kind]
+        med = [x['median_energy'] for x in patches]
         # is a pyramid's picture more different from open plateau than open plateau is from itself?
         cc = lambda a, b: float(np.corrcoef(profiles[a], profiles[b])[0, 1])
         mons = [k for k, kind in PATCHES if kind == 'monument']
@@ -164,7 +174,12 @@ def main():
             f"{corr:.2f}); the image covers {covered * 100:.0f}% of the site. Its wave reaches at most about 0.3 m into dry "
             f"sand and less into rock. The published method, run on this image over three pyramids and three stretches of "
             f"open plateau, draws its columns wherever the registration wanders: on every patch the power at a pixel follows "
-            f"that pixel's trajectory energy ({min(x['pillar_power_vs_energy'] for x in patches):.4f} or better). Its mean depth "
+            f"that pixel's trajectory energy ({min(x['pillar_power_vs_energy'] for x in patches):.4f} or better). Every patch "
+            f"draws columns; the pyramids, whose faces, shadows and edges give the tracker more hard places, draw more of the "
+            f"strongest ({min(share('monument')) * 100:.0f} to {max(share('monument')) * 100:.0f}% of their pixels are among the "
+            f"noisiest 5% of all, against {min(share('control')) * 100:.1f} to {max(share('control')) * 100:.1f}% on open "
+            f"plateau), while their typical pixel wanders as much as open plateau's (medians within "
+            f"{(max(med) / min(med) - 1) * 100:.0f}%). Its mean depth "
             f"profiles are alike over the three pyramids ({min(within_mon):.2f} to {max(within_mon):.2f}), whose surfaces are "
             f"alike, and a pyramid's differs from open plateau's ({min(across):.2f} to {max(across):.2f}) by no more than two "
             f"stretches of open plateau differ from each other ({min(within_con):.2f} to {max(within_con):.2f}).")
