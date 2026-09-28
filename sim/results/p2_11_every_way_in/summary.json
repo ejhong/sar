@@ -1,0 +1,360 @@
+{
+ "manifest": {
+  "id": "p2_11_every_way_in",
+  "title": "Every way a buried room could reach a radar",
+  "date": "2026-09-28",
+  "started_utc": "2026-09-28T12:42:25+00:00",
+  "runtime_s": 0.1,
+  "commit": "a32c15f",
+  "params": {
+   "rooms": [
+    {
+     "id": "bench",
+     "name": "the bench chamber",
+     "size_m": 6.0,
+     "centre_m": 15.0
+    },
+    {
+     "id": "hall",
+     "name": "a large hall",
+     "size_m": 20.0,
+     "centre_m": 30.0
+    },
+    {
+     "id": "claim",
+     "name": "the claimed deep structure",
+     "size_m": 80.0,
+     "centre_m": 1220.0
+    }
+   ],
+   "bands": [
+    {
+     "id": "X",
+     "name": "X band (ICEYE, TerraSAR-X)",
+     "wavelength_m": 0.031,
+     "sand_penetration_m": 0.3,
+     "source": "martone2014",
+     "note": "about 20 to 30 cm into dry desert soil; the larger value is used"
+    },
+    {
+     "id": "L",
+     "name": "L band (ALOS-2, NISAR)",
+     "wavelength_m": 0.24,
+     "sand_penetration_m": 2.0,
+     "source": "mccauley1982",
+     "note": "buried river valleys seen under 1 to 2 m of sand; the larger value is used"
+    },
+    {
+     "id": "P",
+     "name": "P band (Biomass)",
+     "wavelength_m": 0.69,
+     "sand_penetration_m": 5.0,
+     "source": "esa2025",
+     "note": "up to 5 m below the desert surface; used as the penetration depth itself, which is more than the observation implies"
+    }
+   ],
+   "loss_budget_db": 30.0,
+   "limestone": {
+    "sigma_s_m": 0.0005,
+    "eps_r": 8.0
+   },
+   "earthquake_f_hz": 2.0,
+   "strongest_pgv_m_s": 3.0,
+   "smallest_measured_m_s": 0.00066,
+   "loads": {
+    "tidal_strain": 5e-08,
+    "air_pa": 3000.0,
+    "water_pa": 10000.0,
+    "year_t_k": 12.0,
+    "alpha_per_k": 8e-06,
+    "kappa_m2_s": 1.3e-06
+   },
+   "insar_mm": 0.5,
+   "sigma_k": 3.0,
+   "geometry": "giza-20250827"
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  }
+ },
+ "sources": {
+  "martone2014": "Martone, Brautigam, Rizzoli, Yague-Martinez and Krieger (2014), Enhancing interferometric SAR performance over sandy areas: experience from the TanDEM-X mission, IEEE JSTARS",
+  "mccauley1982": "McCauley et al. (1982), Subsurface valleys and geoarcheology of the eastern Sahara revealed by Shuttle radar, Science 218, 1004-1020; Paillou et al., ALOS/PALSAR over the Sahara",
+  "esa2025": "ESA (23 June 2025), Biomass satellite returns striking first images of forests and more",
+  "davis1989": "Davis and Annan (1989), Ground-penetrating radar for high-resolution mapping of soil and rock stratigraphy, Geophysical Prospecting 37, 531-551 (table of typical properties)",
+  "vattulainen2026": "Vattulainen et al. (2026), Assessment of spaceborne SAR micro-motion measurement for vibration-based SHM, IEEE Access 14, 6043-6064, doi:10.1109/ACCESS.2026.3652346",
+  "lotti2026": "Lotti et al. (2026), Monitoring bridge vibrations via spaceborne SAR micro-Doppler, Structural Control and Health Monitoring, doi:10.1155/stc/3858095"
+ },
+ "rooms": [
+  {
+   "id": "bench",
+   "name": "the bench chamber",
+   "size_m": 6.0,
+   "centre_m": 15.0
+  },
+  {
+   "id": "hall",
+   "name": "a large hall",
+   "size_m": 20.0,
+   "centre_m": 30.0
+  },
+  {
+   "id": "claim",
+   "name": "the claimed deep structure",
+   "size_m": 80.0,
+   "centre_m": 1220.0
+  }
+ ],
+ "A_penetration": {
+  "rows": [
+   {
+    "room": "bench",
+    "roof_m": 12.0,
+    "limestone_floor_db": 6.9414591057746495,
+    "bands": {
+     "X": {
+      "two_way_loss_db_if_sand": 347.4355855226015,
+      "reach_m": 1.0361632918473205,
+      "short_by_db": 317.4355855226015
+     },
+     "L": {
+      "two_way_loss_db_if_sand": 52.115337828390224,
+      "reach_m": 6.907755278982137,
+      "short_by_db": 22.115337828390224
+     },
+     "P": {
+      "two_way_loss_db_if_sand": 20.84613513135609,
+      "reach_m": 17.269388197455342,
+      "short_by_db": -9.153864868643911
+     }
+    }
+   },
+   {
+    "room": "hall",
+    "roof_m": 20.0,
+    "limestone_floor_db": 11.569098509624416,
+    "bands": {
+     "X": {
+      "two_way_loss_db_if_sand": 579.0593092043358,
+      "reach_m": 1.0361632918473205,
+      "short_by_db": 549.0593092043358
+     },
+     "L": {
+      "two_way_loss_db_if_sand": 86.85889638065036,
+      "reach_m": 6.907755278982137,
+      "short_by_db": 56.858896380650364
+     },
+     "P": {
+      "two_way_loss_db_if_sand": 34.74355855226015,
+      "reach_m": 17.269388197455342,
+      "short_by_db": 4.743558552260147
+     }
+    }
+   },
+   {
+    "room": "claim",
+    "roof_m": 1180.0,
+    "limestone_floor_db": 682.5768120678406,
+    "bands": {
+     "X": {
+      "two_way_loss_db_if_sand": 34164.49924305581,
+      "reach_m": 1.0361632918473205,
+      "short_by_db": 34134.49924305581
+     },
+     "L": {
+      "two_way_loss_db_if_sand": 5124.6748864583715,
+      "reach_m": 6.907755278982137,
+      "short_by_db": 5094.6748864583715
+     },
+     "P": {
+      "two_way_loss_db_if_sand": 2049.8699545833488,
+      "reach_m": 17.269388197455342,
+      "short_by_db": 2019.8699545833488
+     }
+    }
+   }
+  ],
+  "bands": [
+   {
+    "id": "X",
+    "name": "X band (ICEYE, TerraSAR-X)",
+    "wavelength_m": 0.031,
+    "sand_penetration_m": 0.3,
+    "source": "martone2014",
+    "note": "about 20 to 30 cm into dry desert soil; the larger value is used"
+   },
+   {
+    "id": "L",
+    "name": "L band (ALOS-2, NISAR)",
+    "wavelength_m": 0.24,
+    "sand_penetration_m": 2.0,
+    "source": "mccauley1982",
+    "note": "buried river valleys seen under 1 to 2 m of sand; the larger value is used"
+   },
+   {
+    "id": "P",
+    "name": "P band (Biomass)",
+    "wavelength_m": 0.69,
+    "sand_penetration_m": 5.0,
+    "source": "esa2025",
+    "note": "up to 5 m below the desert surface; used as the penetration depth itself, which is more than the observation implies"
+   }
+  ],
+  "limestone_two_way_db_per_m_lower_bound": 0.5784549254812208,
+  "biomass_slant_resolution_m": 24.983333
+ },
+ "B_vibration": {
+  "trembling_m_s": 4.9e-08,
+  "imprint_m_s": 3.247e-12,
+  "imprint_over_motion_microseisms": 6.626e-05,
+  "imprint_over_motion_2hz": 0.001176,
+  "smallest_measured_m_s": 0.00066,
+  "smallest_measured_error_m_s": 0.00091,
+  "measured_over_imprint": 203264551.894056,
+  "measured_over_trembling": 13469.387755,
+  "shaking_needed_bench_m_s": 0.561224,
+  "shaking_needed_claim_m_s": 1.566237,
+  "strongest_pgv_m_s": 3.0,
+  "imprint_under_strongest_m_s": 0.003528,
+  "lab_floors": [
+   {
+    "target": "ordinary ground, complex registration (published protocols, R4)",
+    "floor_m_s": 0.001238,
+    "shortfall": 381154175.765517,
+    "shake_needed_m_s": 18.676555
+   },
+   {
+    "target": "ordinary ground, magnitudes",
+    "floor_m_s": 0.0008999,
+    "shortfall": 277143236.361475,
+    "shake_needed_m_s": 13.580019
+   },
+   {
+    "target": "a lone bright scatterer",
+    "floor_m_s": 6.169e-05,
+    "shortfall": 18998527.633994,
+    "shake_needed_m_s": 0.930928
+   },
+   {
+    "target": "a corner reflector 20 dB brighter (designed; in no archive image)",
+    "floor_m_s": 6.155e-06,
+    "shortfall": 1895722.483492,
+    "shake_needed_m_s": 0.09289
+   }
+  ],
+  "virtual_sensor_gain_complex": 0.0009525
+ },
+ "C_between_passes": {
+  "heat_wave_depth_m": 3.6138093489209644,
+  "insar_mm": 0.5,
+  "rooms": {
+   "bench": {
+    "tide": {
+     "label": "solid-earth tide, horizontal strain 5e-8",
+     "imprint_m": 3.448e-08,
+     "passes_needed": 3784522559.257756,
+     "years_daily": 10361458.067783,
+     "breathing_over_imprint": 12591.392222779747
+    },
+    "air": {
+     "label": "air pressure, a 30 hPa swing",
+     "imprint_m": 1.033e-07,
+     "passes_needed": 421514082.434441,
+     "years_daily": 1154042.66238,
+     "breathing_over_imprint": 4202.176092246149
+    },
+    "water": {
+     "label": "the water table, a 1 m swing around the room",
+     "imprint_m": 1.967e-07,
+     "passes_needed": 116328601.153382,
+     "years_daily": 318490.352234,
+     "breathing_over_imprint": 2207.5546113690343
+    },
+    "heat": {
+     "label": "the year's heat wave, 12 K at the surface, taken at the room's roof",
+     "imprint_m": 2.392e-06,
+     "passes_needed": 786396.317283,
+     "years_daily": 2153.035776,
+     "breathing_over_imprint": 181.50514440442032
+    }
+   },
+   "hall": {
+    "tide": {
+     "label": "solid-earth tide, horizontal strain 5e-8",
+     "imprint_m": 3.191e-07,
+     "passes_needed": 44191514.265565,
+     "years_daily": 120989.772117,
+     "breathing_over_imprint": 1360.6224890767173
+    },
+    "air": {
+     "label": "air pressure, a 30 hPa swing",
+     "imprint_m": 9.578e-07,
+     "passes_needed": 4905386.440399,
+     "years_daily": 13430.216127,
+     "breathing_over_imprint": 453.31993349911386
+    },
+    "water": {
+     "label": "the water table, a 1 m swing around the room",
+     "imprint_m": 1.824e-06,
+     "passes_needed": 1353168.889073,
+     "years_daily": 3704.774508,
+     "breathing_over_imprint": 238.0916722964546
+    },
+    "heat": {
+     "label": "the year's heat wave, 12 K at the surface, taken at the room's roof",
+     "imprint_m": 2.419e-06,
+     "passes_needed": 768760.64534,
+     "years_daily": 2104.751938,
+     "breathing_over_imprint": 179.45839306180295
+    }
+   },
+   "claim": {
+    "tide": {
+     "label": "solid-earth tide, horizontal strain 5e-8",
+     "imprint_m": 1.235e-08,
+     "passes_needed": 29507555944.745335,
+     "years_daily": 80787285.269666,
+     "breathing_over_imprint": 35158.86306843379
+    },
+    "air": {
+     "label": "air pressure, a 30 hPa swing",
+     "imprint_m": 3.707e-08,
+     "passes_needed": 3275424416.344553,
+     "years_daily": 8967623.316481,
+     "breathing_over_imprint": 11713.913003820851
+    },
+    "water": {
+     "label": "the water table, a 1 m swing around the room",
+     "imprint_m": 7.057e-08,
+     "passes_needed": 903537870.575656,
+     "years_daily": 2473751.870159,
+     "breathing_over_imprint": 6152.354948716024
+    },
+    "heat": {
+     "label": "the year's heat wave, 12 K at the surface, taken at the room's roof",
+     "imprint_m": 3.688e-147,
+     "passes_needed": 4.499999999999999e+54,
+     "years_daily": 1.2320328542094453e+52,
+     "breathing_over_imprint": 4.341846446395559e+26
+    }
+   }
+  },
+  "surface_breathing_m": 0.0004341846446395559
+ },
+ "D_surface": {
+  "bench": {
+   "surface_anomaly_k": 0.0001191
+  },
+  "hall": {
+   "surface_anomaly_k": 8.21e-08
+  },
+  "claim": {
+   "surface_anomaly_k": 7.59e-296
+  }
+ },
+ "finding": "No route carries a Giza room to an X-band radar, and none carries the claimed structure to any radar. A: the wave gets about 30 cm into the driest sand at X band, 2 m at L band and 5 m at P band; limestone is less transparent, so the bench chamber's roof at 12 m lies at least 347 dB down at X band and the claimed structure 34,164 dB, against about 30 dB an image can span; only P band could reach a shallow room, blurred into its 25 m resolution cell with the surface. B: the smallest motion ever measured from orbit, on a corner reflector, is 2e+08 times the bench chamber's imprint and 13,469 times the ground's whole trembling; lifting the imprint to it needs shaking of 0.6 m/s during the 25 s pass, with reflectors installed over the spot. C: between passes the largest load, the year's heat wave, moves the ground over the bench chamber by 2.39 um; at 0.5 mm a measurement, a detection needs 8e+05 passes, and the ground's own seasonal breathing (0.43 mm) is 182 times larger. D: the chamber changes the surface's temperature by 0.12 mK. Any processing, gates or learning included, is a function of the record and cannot add what these routes do not carry."
+}
