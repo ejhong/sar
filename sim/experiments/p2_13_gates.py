@@ -1,4 +1,4 @@
-"""P2-13 · Stricter gates: features in motionless images and open desert; a planted vibration not recovered.
+"""P2-13 · Stricter gates: motionless images pass them; a planted vibration is not recovered.
 
     uv run --with scikit-image python experiments/p2_13_gates.py
 
@@ -206,8 +206,7 @@ def main():
               'fit_window_m': FIT_WINDOW_M, 'planted': PLANTS, 'planted_v_m_s': V_AMP, 'twin_seeds': TWIN_SEEDS,
               'heights_m': HEIGHTS, 'desert_centre_m': DESERT,
               'bank': {k: bank[k] for k in ('support_hz', 'mask_width_hz', 'bshift_hz', 'k_leap_hz', 'pair_count')}}
-    with Run(RID, 'Stricter gates: features in motionless images and open desert; a planted vibration not recovered',
-             params) as run:
+    with Run(RID, 'Stricter gates: motionless images pass them; a planted vibration is not recovered', params) as run:
         shift, corr = fit_offset(p, g, sc)
         gdir = Path(__file__).resolve().parents[1] / 'data' / RID       # the gated pipeline's own outputs: large, not in git
         if gdir.exists():
@@ -315,7 +314,9 @@ def main():
         rms = {f: float(np.mean([x['rms_change_px'] for x in v])) for f, v in by_f.items()}
         full = {f: float(np.mean([x['full_tracker_rms_px'] for x in v])) for f, v in by_f.items()}
         n_new = len(new_runs)
-        thin = float(f"{1 / max(gate['trace_width_ratio']):.2g}")
+        long_over_wide = 1 / max(gate['trace_width_ratio'])
+        unit = 10 ** (int(np.floor(np.log10(long_over_wide))) - 1)
+        thin = np.floor(long_over_wide / unit) * unit              # rounded down: "at least"
         new_text = '; '.join(f"at mode {', '.join(map(str, r['modes']))} "
                              f"({', '.join(f'{m / window_s:.1f}' for m in r['modes'])} Hz) on the "
                              f"{r['side'].lower()} face" + (f", planted at {r['planted_hz']} Hz" if r['planted_hz'] else '')
@@ -349,6 +350,7 @@ def main():
                   'track10_families': track10, 'planted_new': new_runs, 'planted_kept': kept,
                   'depth_per_cycle_m': zc, 'repeat_m': zrep, 'depth_within_half_cycle': within,
                   'depth_chance_fraction': chance, 'gate': gate, 'pair_span_s': span_s, 'pair_shared_fraction': shared,
+                  'real_exact_zero': zero, 'real_within_one_step': step,
                   'planted_rms_px': rms, 'full_tracker_rms_px': full, 'finding': finding})
         print(finding)
 
