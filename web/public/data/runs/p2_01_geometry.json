@@ -3,13 +3,14 @@
   "id": "p2_01_geometry",
   "title": "The real dwell as the simulator's geometry",
   "date": "2026-09-28",
-  "started_utc": "2026-09-28T05:09:10+00:00",
-  "runtime_s": 0.5,
-  "commit": "d9e33c2",
+  "started_utc": "2026-09-28T12:26:57+00:00",
+  "runtime_s": 0.3,
+  "commit": "7583420",
   "params": {
    "products": {
     "giza-20250827": "ICEYE_X33_SLC_SLEDF_951562307_20250827T202654.h5",
-    "sacsayhuaman-20250822": "ICEYE_X35_SLC_SLEDF_5907293_20250822T152433.h5"
+    "sacsayhuaman-20250822": "ICEYE_X35_SLC_SLEDF_5907293_20250822T152433.h5",
+    "giza-20220715": "ICEYE_X13_SLC_SLED_868226_20220715T235744.h5"
    },
    "reference_bank": {
     "K": 50,
@@ -190,6 +191,86 @@
     "azimuth_shift_m": -0.12815646650262633,
     "predicted_shift_m": -0.12816,
     "recovered_speed_m_s": 0.002
+   }
+  },
+  "giza-20220715": {
+   "origin": "product",
+   "satellite": "ICEYE-X13",
+   "mode": "SpotlightDwell",
+   "collection_start": "2022-07-15T23:57:44.386583",
+   "speeds_m_s": {
+    "platform": 7676.77363,
+    "ground_sweep": 7045.338179,
+    "effective": 7353.943915
+   },
+   "veff2_over_vs_vg": 0.999908,
+   "doppler_rate_hz_s": -5400.905612,
+   "flat_earth_rate_error": {
+    "with_ground_speed": -0.082168,
+    "with_platform_speed": 0.089725
+   },
+   "wavelength_m": 0.031067,
+   "slant_range_m": 644630.19656,
+   "incidence_deg": 34.974754,
+   "incidence_from_los_deg": 34.974753,
+   "los_enu": [
+    -0.564142,
+    -0.101588,
+    0.819405
+   ],
+   "heading_deg": 349.79183,
+   "aperture_s": 24.56232,
+   "collection_s": 24.812836,
+   "image_span_s": 0.709689,
+   "doppler_band_hz": 132658.770272,
+   "aspect_span_deg": 16.757921404980927,
+   "baseline_span_m": 188553.375286,
+   "baseline_fit_residual_m": 0.004508,
+   "reference_bank_centre_span_m": 169699.045934,
+   "azimuth_resolution_m": 0.047054,
+   "slant_resolution_m": 0.442694,
+   "pixel_m": {
+    "azimuth": 0.046167,
+    "slant": 0.252695
+   },
+   "windows": {
+    "range": "NONE",
+    "azimuth": "NONE"
+   },
+   "time_space_m_s": 1.304473,
+   "looks": [
+    {
+     "duration_s": 0.25,
+     "resolution_m": 4.623054
+    },
+    {
+     "duration_s": 0.5,
+     "resolution_m": 2.311527
+    },
+    {
+     "duration_s": 1.0,
+     "resolution_m": 1.155764
+    },
+    {
+     "duration_s": 1.96,
+     "resolution_m": 0.589675
+    },
+    {
+     "duration_s": 4.0,
+     "resolution_m": 0.288941
+    }
+   ],
+   "velocity_per_azimuth_metre": 0.011908,
+   "platform_speed_over_range": 0.011909,
+   "synthetic": {
+    "impulse_width_azimuth_m": 0.047067688135304646,
+    "predicted_azimuth_m": 0.047054,
+    "impulse_width_slant_m": 0.44088247483243886,
+    "predicted_slant_m": 0.442694,
+    "receding_speed_m_s": 0.002,
+    "azimuth_shift_m": -0.16807745932669757,
+    "predicted_shift_m": -0.167958,
+    "recovered_speed_m_s": 0.002001
    }
   }
  },

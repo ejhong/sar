@@ -290,13 +290,14 @@
   "id": "p2_01_geometry",
   "title": "The real dwell as the simulator's geometry",
   "date": "2026-09-28",
-  "started_utc": "2026-09-28T05:09:10+00:00",
-  "runtime_s": 0.5,
-  "commit": "d9e33c2",
+  "started_utc": "2026-09-28T12:26:57+00:00",
+  "runtime_s": 0.3,
+  "commit": "7583420",
   "params": {
    "products": {
     "giza-20250827": "ICEYE_X33_SLC_SLEDF_951562307_20250827T202654.h5",
-    "sacsayhuaman-20250822": "ICEYE_X35_SLC_SLEDF_5907293_20250822T152433.h5"
+    "sacsayhuaman-20250822": "ICEYE_X35_SLC_SLEDF_5907293_20250822T152433.h5",
+    "giza-20220715": "ICEYE_X13_SLC_SLED_868226_20220715T235744.h5"
    },
    "reference_bank": {
     "K": 50,
@@ -471,9 +472,9 @@
   "id": "p2_07_whole_chain",
   "title": "The whole chain: a satellite image of shaking ground over a chamber",
   "date": "2026-09-28",
-  "started_utc": "2026-09-28T05:57:50+00:00",
-  "runtime_s": 316.2,
-  "commit": "b0bde9a",
+  "started_utc": "2026-09-28T12:22:04+00:00",
+  "runtime_s": 305.5,
+  "commit": "7583420",
   "params": {
    "geometry": "giza-20250827",
    "image_px": [

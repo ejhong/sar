@@ -22,7 +22,7 @@
    "features": {
     "truth": 1
    },
-   "volumes": 6
+   "volumes": 8
   },
   {
    "id": "bench-shafts",
@@ -70,7 +70,7 @@
    "features": {
     "claimed": 9
    },
-   "volumes": 0
+   "volumes": 1
   },
   {
    "id": "giza",

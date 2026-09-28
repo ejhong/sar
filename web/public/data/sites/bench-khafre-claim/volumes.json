@@ -1,0 +1,28 @@
+[
+ {
+  "id": "radar-khafre",
+  "status": "radar",
+  "file": "vol-radar-khafre.u8",
+  "shape": [
+   75,
+   75,
+   175
+  ],
+  "origin": [
+   -296.0,
+   -296.0,
+   -4.0
+  ],
+  "spacing": 8.0,
+  "label": "Satellite \u00b7 the published method on the real Khafre image",
+  "method": "The first investigation\u2019s trajectories on the ICEYE Giza dwell, focused past the repeat depth and relabelled",
+  "quantity": "focused power, log scale",
+  "units": "relative",
+  "range": [
+   -0.41362541913986206,
+   0.6582559943199158
+  ],
+  "run": "p2_08_pillars_and_boxes \u00b7 2026-09-28 \u00b7 5cd8a43",
+  "caption": "pillars where the surface reading is noisiest; blocks at 648 m and 1296 m, where the depth axis repeats"
+ }
+]

@@ -70,6 +70,9 @@ def export_sites(out: Path = DATA) -> list[dict]:
         wfs = d / 'wavefields.json'
         if wfs.exists():
             sc['wavefields'] = json.loads(wfs.read_text())
+        rad = d / 'radar.json'
+        if rad.exists():                  # the satellite's pass over the site (export/radar.py)
+            sc['radar'] = json.loads(rad.read_text())
         (d / 'scene.json').write_text(json.dumps(sc, separators=(',', ':'), ensure_ascii=False))
         counts = {}
         for f in site.features:

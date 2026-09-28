@@ -160,5 +160,57 @@
   ],
   "run": "p1_05_fwi \u00b7 2026-09-27 \u00b7 37baecd",
   "caption": "chamber recovered at -2.4% \u00b7 brightest = 12% slower than the rock or more"
+ },
+ {
+  "id": "radar-A",
+  "status": "radar",
+  "file": "vol-radar-A.u8",
+  "shape": [
+   100,
+   100,
+   28
+  ],
+  "origin": [
+   -49.5,
+   -49.5,
+   -0.5
+  ],
+  "spacing": 1.0,
+  "label": "Satellite \u00b7 the published method, with the chamber",
+  "method": "One ICEYE dwell, sub-aperture pairs registered and focused as published (lambda_s 0.48 m)",
+  "quantity": "focused power, log scale",
+  "units": "relative",
+  "range": [
+   -0.5178549289703369,
+   0.6649909019470215
+  ],
+  "run": "p2_07_whole_chain \u00b7 2026-09-28 \u00b7 7583420",
+  "caption": "its depth picture of this ground: pillars and streaks everywhere, the chamber nowhere"
+ },
+ {
+  "id": "radar-B",
+  "status": "radar",
+  "file": "vol-radar-B.u8",
+  "shape": [
+   100,
+   100,
+   28
+  ],
+  "origin": [
+   -49.5,
+   -49.5,
+   -0.5
+  ],
+  "spacing": 1.0,
+  "label": "Satellite \u00b7 the published method, without the chamber",
+  "method": "One ICEYE dwell, sub-aperture pairs registered and focused as published (lambda_s 0.48 m)",
+  "quantity": "focused power, log scale",
+  "units": "relative",
+  "range": [
+   -0.5178549289703369,
+   0.6649909019470215
+  ],
+  "run": "p2_07_whole_chain \u00b7 2026-09-28 \u00b7 7583420",
+  "caption": "the same ground with no chamber: the same picture, to one part in a hundred million"
  }
 ]
