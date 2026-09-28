@@ -397,6 +397,10 @@ evidence that single-image micro-motion is real:
   are bright; peak radial velocities 0.5–2 mm/s, errors of about 1 mm/s, dominant frequencies found at 0.06 Hz
   resolution.
 
+The same tracking was first applied by the method's authors to bridges (Biondi, Addabbo, Ullo, Clemente and Orlando,
+2020, *Remote Sensing* 12, 3852) and to the Mosul Dam (*IEEE JSTARS* 13, 6337), without synchronous ground truth; the
+2026 assessment notes that gap and fills it for bright targets.
+
 Both are what P2-03 predicts works: an isolated, bright, point-like target's envelope follows its own motion. Neither
 tracks natural ground or speckle, and the smallest motion measured is 13,000 times the ground's whole trembling at
 Giza and 2 × 10⁸ times the chamber's imprint on it. Their measured floor is some ten to a hundred times above the
