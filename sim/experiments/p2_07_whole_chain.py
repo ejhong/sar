@@ -209,6 +209,9 @@ def main():
         foot = np.hypot(*np.meshgrid(x_rows, (cols - SHAPE[1] // 2) * g.dr / np.sin(g.theta), indexing='ij')).ravel() < 15
         A_vs_B = {'image_relative_difference': rel(img_A, img_B), 'method_relative_difference': rel(T_A, T_B),
                   'imprint_phase_rad': Shaking(g, field, kern, 1.0).imprint_phase(t_fine)}
+        # the method's depth volumes with and without the chamber, for the viewer (not committed; rerun to regenerate)
+        np.savez_compressed(run.dir / 'volumes.npz', A=T_A.astype(np.float32), B=T_B.astype(np.float32),
+                            rows=rows, cols=cols, z=z, dx=g.dx, dr=g.dr, theta=g.theta)
         # the boost: how far must the imprint be multiplied before the method's output changes?
         sweep = []
         T_show, G_show = None, None
