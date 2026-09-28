@@ -118,29 +118,31 @@ The lab does it by simulation over ground whose contents are known, in two phase
   dwell can see of motion; P2-04 the chamber's imprint by static relaxation, checked against Eshelby and Okada;
   P2-05 the budget; P2-06 the depth-frequency identity; P2-07 the whole chain end to end (its figures are rendered by
   the run into `figs/` and exported with it).
+- **The viewer's Satellite mode** (`web/src/viewer/scene/Radar.ts`, key `s`, `#bench-void/satellite`): the ICEYE
+  satellite and its spotlight beam over the site (not to scale), the simulated image draped on the ground, the image's
+  virtual sensors each carrying the true motion (ochre) beside what the image reports (cinnabar, complex or magnitudes),
+  and the method's volume with and without the chamber in cinnabar. Radar volumes are listed apart in Recovered mode;
+  the Khafre claim carries the method's real-image volume. P2-08, P2-09 and P2-11 are on `/satellite/`.
 
 ## Next, in order
 
-1. **The viewer's Satellite mode** (data exported): the satellite and its beam over the site, the simulated image draped
-   on the ground, the virtual sensors bobbing with the true motion and what each reading reports, and the method's
-   volume with and without the chamber, in cinnabar; the 3-D link earlier in the menu; a role for each scene.
-2. **P2-10, Khufu's east face as the protocol's authors now run it**: their configuration, communicated privately
+1. **P2-10, Khufu's east face as the protocol's authors now run it**: their configuration, communicated privately
    (kept in `sim/private/` and out of git until the owner clears it), on the X13 (2022) and X33 (2025) images, with
    controls. Pre-stated tests: the two images must agree, and the real image must differ from a motionless twin. The
    lines lie on the face turned away from the radar, its darkest part, where the signal is closest to the noise.
-3. **A viewer that takes real radar data** (the owner's end goal, bounded by P2-11): given a product, build its 3-D
+2. **A viewer that takes real radar data** (the owner's end goal, bounded by P2-11): given a product, build its 3-D
    scene: the satellite's pass from the state vectors, the image draped on the terrain, how deep that band can reach in
    that ground (a few centimetres for X band on rock), and what the published method draws from it, labelled for what
    it is. For low-frequency data over dry ground (Biomass P band, NISAR or ALOS-2 L band), a shallow mode can show
    buried features within the top metres, which is the one place radar does see underground.
-4. **Optional confirmations on the real image**, none of which can change the result: the Khufu known-chamber
+3. **Optional confirmations on the real image**, none of which can change the result: the Khufu known-chamber
    positive control (metre-level registration on surveyed base corners, then the King's and Queen's Chambers and the
    Grand Gallery under the published chain); the derivative protocol v1.7 on a simulated dwell (desktop only).
-5. **Tidy the first investigation's record**: rerun or retire R7 (its script and results disagree); mark R9 and R10
+4. **Tidy the first investigation's record**: rerun or retire R7 (its script and results disagree); mark R9 and R10
    on the archive as identities of the looks rather than measurements of the ground.
-6. **A short findings note for the protocol's authors** (draft for the owner to send): P2-03's blindness of complex
+5. **A short findings note for the protocol's authors** (draft for the owner to send): P2-03's blindness of complex
    look registration and P2-06's depth-frequency identity, besides the earlier geometry points.
-7. Phase 1, if it continues for its own sake: full-waveform inversion beyond the inverse crime; the ambient field in
+6. Phase 1, if it continues for its own sake: full-waveform inversion beyond the inverse crime; the ambient field in
    every site; symmetric near-air stencils; detectability sweeps; the shaft field and Giza; the claimed underworld
    at low frequency. None bears on the radar question.
 
