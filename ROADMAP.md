@@ -116,6 +116,9 @@ The lab does it by simulation over ground whose contents are known, in two phase
   dwell can see of motion; P2-04 the chamber's imprint by static relaxation, checked against Eshelby and Okada;
   P2-05 the budget; P2-06 the depth-frequency identity; P2-07 the whole chain end to end (its figures are rendered by
   the run into `figs/` and exported with it).
+- **The real pass on the ground** (P2-12, `#giza/satellite`): the 2025 image resampled onto the Giza terrain, the
+  method's volumes from it at Khafre, Khufu, Menkaure and open plateau south of Khafre; a pyramid's picture differs from
+  open plateau's by no more than two stretches of open plateau differ from each other.
 - **The viewer's Satellite mode** (`web/src/viewer/scene/Radar.ts`, key `s`, `#bench-void/satellite`): the ICEYE
   satellite and its spotlight beam over the site (not to scale), the simulated image draped on the ground, the image's
   virtual sensors each carrying the true motion (ochre) beside what the image reports (cinnabar, complex or magnitudes),
@@ -127,11 +130,13 @@ The lab does it by simulation over ground whose contents are known, in two phase
 1. **P2-10, Khufu on two real passes** (run locally, in `sim/private/`, not yet published): lines across the east
    face on the 2022 and 2025 images, with a motionless twin of each. Pre-stated tests: the two passes must agree, and
    the real image must differ from its twin.
-2. **A viewer that takes real radar data** (the owner's end goal, bounded by P2-11): given a product, build its 3-D
-   scene: the satellite's pass from the state vectors, the image draped on the terrain, how deep that band can reach in
-   that ground (a few centimetres for X band on rock), and what the published method draws from it, labelled for what
-   it is. For low-frequency data over dry ground (Biomass P band, NISAR or ALOS-2 L band), a shallow mode can show
-   buried features within the top metres, which is the one place radar does see underground.
+2. **A viewer that takes real radar data** (the owner's end goal, bounded by P2-11). Built for the 2025 Giza pass
+   (P2-12; the Giza site's Satellite mode): the pass from the product, the image resampled onto the terrain
+   (`sarsim.ortho`: RPC over terrain and pyramids, residual offset fitted on predicted brightness), the X-band reach,
+   and the published method's volumes at the pyramids and open plateau (the first investigation's patch runner). Any
+   product goes through the same steps; next, a command that takes a product path and a site. Then, for low-frequency
+   data over dry ground (Biomass P band, NISAR or ALOS-2 L band), a shallow mode that shows buried features within the
+   top metres, the one place radar does see underground.
 3. **Optional confirmations on the real image**, none of which can change the result: the Khufu known-chamber
    positive control (metre-level registration on surveyed base corners, then the King's and Queen's Chambers and the
    Grand Gallery under the published chain).

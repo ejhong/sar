@@ -355,6 +355,14 @@ investigation's record, and what it leaves open follow.
    0.2 µm. The surface's temperature changes by 0.1 mK. Any processing, gates and learning included, is a function of
    the record and cannot restore what these routes do not carry.
 
+9. **On the real image, the method's picture is the surface's (P2-12).** Run on the 2025 pass over Khafre, Khufu,
+   Menkaure and three stretches of open plateau, the published pipeline's power at every pixel follows that pixel's
+   trajectory energy (1.0000 on every patch); its mean depth profiles are alike over the three pyramids (0.88 to 0.91),
+   whose surfaces are alike, and a pyramid's differs from open plateau's (0.61 to 0.83) by no more than two stretches
+   of open plateau differ from each other (0.44 to 0.72). The image itself is resampled onto the ground through the
+   product's RPC over terrain and pyramids, the residual offset fitted against predicted brightness (1.0 m and 2.6 m;
+   the fit's correlation is low, 0.03, and the alignment was checked by eye against the pyramids' bases).
+
 Any one of 1, 3 and 4 is sufficient on its own; they fail for independent reasons (the estimator, the
 physics of the signal, and the algebra of the depth axis). R16's resolution bound, which rests on the
 same trade between a look's duration and its resolution (1.10 m s at Giza, P2-01), is a fourth. 8 extends
