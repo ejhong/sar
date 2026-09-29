@@ -60,19 +60,31 @@ the key regenerated from it.
 
 ## 4. Scoring, stated in advance
 
-- Detection: the area under the ROC curve of the scores against presence, with its 95% interval by the permutation
-  of labels (1,000 permutations).
-- Location: a hit is a reported room within 6 m of the true one horizontally and within 5 m in depth; every other
-  report is a false positive. Hits and false positives per product, and the depth error of each hit.
-- Depth: whether reported depth rises with true depth (rank correlation over the rooms found), since a method whose depth
-  is the shaking's frequency reports the same depth for every room (P2-06, P2-28).
-- Contents: whether the scores or maps for hollow rooms differ from those for granite blocks beyond the null.
+Five claims are scored apart, because failure on one does not establish failure on the others: a method that recovers a
+branching tunnel or a room's layout at one of two possible depths is a major success.
 
-Success, for the boosted set: AUC at least 0.8 with its interval above 0.5, a median depth error of 5 m or less, and a
-positive depth correlation. At the real level the lab's bound predicts an AUC indistinguishable from 0.5 for any method
-(P2-25: detection minus false alarm at most about 1e-9 under the microseisms); a method that does better at the real
-level would contradict the model (speckle, the Doppler-to-time relation, the imprint), which is why the real level is in
-the test.
+- **Presence:** the area under the ROC curve of the scores against presence, with its 95% interval by permuting the
+  labels (1,000 permutations).
+- **Horizontal location:** a hit is a reported structure whose plan position lies within 6 m of a true one; every other
+  report is a false positive, extra predicted structures included.
+- **Shape:** the reported plan geometry against the true footprints (the overlap of thresholded maps, and which of the
+  candidate layouts the output matches best), the controls scored identically.
+- **Relative vertical geometry:** whether deeper parts are reported deeper, whatever the scale (rank correlation over
+  multi-level layouts).
+- **Absolute depth:** after the allowance below; a median error of 5 m or less.
+
+Depth ambiguity is allowed, but declared before the products exist: either a fixed set of alternative depth branches
+(the method's own aliases: its axis's repeat and mirror, and the stated choices of its sound wavelength) or one global
+vertical transformation (a shift and a scale for the whole output). The complete predicted geometry is scored after that
+one allowance; features are never moved or stretched one by one to fit. The same freedom is given to the null outputs
+(motionless copies, pure speckle, random perturbations) and to any comparison method, so an allowance that makes noise
+look like structure is caught.
+
+Success, for the boosted set: presence AUC at least 0.8 with its interval above 0.5, and location and shape better than
+the controls given the same freedom. At the real level the lab's bound predicts presence indistinguishable from chance for
+any method (P2-25, P2-30), and the same for location and shape, since telling two layouts apart is harder than telling
+either from none; a method that does better at the real level would contradict the model, which is why the real level is
+in the test. A method with some but not 95% / 5% performance may still have prospecting value, and is reported as such.
 
 ## 5. What each outcome would mean
 

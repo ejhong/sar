@@ -567,6 +567,21 @@ several component checks and found overstatements on both sides. Adopted:
 None of the review's corrections was rejected; where it asked for a measurement (the six-second transfer function)
 the measurement was made (P2-15).
 
+### The organising question, widened (29 September 2026)
+
+The owner asked that useful underground information, horizontal location and shape included, be the goal even where
+absolute depth is ambiguous. Adopted: presence, horizontal location, shape, relative vertical geometry and absolute depth
+are separate claims. The depth-alias results (P2-06, P2-08, P2-28) show that the published depth is uncalibrated,
+repeats and mirrors, and that changing the sound wavelength rescales it without changing the fit: a calibration
+ambiguity and non-unique depth, not by themselves evidence that recovered horizontal positions or shapes are artefacts.
+The evidence that the published and gated pictures carry no underground information at the real level rests on the
+controls instead: the same picture with and without a known chamber (P2-07, P2-20), patterns in motionless copies and
+open ground (P2-13, P2-14), pictures that do not survive a change of pass (P2-21), and a picture that does not follow the
+chamber where the data demonstrably hold it (P2-24). The finite bounds (P2-25, P2-29, P2-30) bound presence within their
+model, and location and shape with it, since telling two layouts apart is harder than telling either from none; a bound
+that excludes 95% at 5% is not by itself a proof of no prospecting value, which is excluded only where the bound on
+detection minus false alarm is itself small. The shape test (P2-31) is the next decisive experiment.
+
 ### Second review, 29 September 2026: corrections adopted
 
 A second independent review of the branch that added P2-25 and P2-26 (commit d7e9b9e) asked that they not be presented
