@@ -1,0 +1,123 @@
+{
+ "manifest": {
+  "id": "p2_16_khufu_volume",
+  "title": "The gated reconstruction over the Great Pyramid, in three dimensions",
+  "date": "2026-09-29",
+  "started_utc": "2026-09-29T04:13:12+00:00",
+  "runtime_s": 1.8,
+  "commit": "d8a0060",
+  "params": {
+   "acquisition": "giza-20220715",
+   "gated_module_sha256": "3e1154c11274b896b91e262198576ffd750732709ad08ac00c6892c4ea5e1b1d",
+   "gated_profile_sha256": "ae84cade31f7e5ffa9b4daa0eba152649d2afc7f1655415bad38553f4f4d69aa",
+   "khufu_centre_m": [
+    324.26,
+    349.19
+   ],
+   "lines": 95,
+   "positions_per_line": 101,
+   "step_m": 3.0,
+   "geoid_m": 15.5,
+   "supports": [
+    1,
+    4
+   ],
+   "twin_seed": 101
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  }
+ },
+ "results": {
+  "real": {
+   "supported_positions": {
+    "1": 1355,
+    "4": 4
+   },
+   "first_gate_windows": 89006,
+   "exact_zero": 0.357467
+  },
+  "twin101": {
+   "supported_positions": {
+    "1": 660,
+    "4": 4
+   },
+   "first_gate_windows": 43096,
+   "exact_zero": 0.406257
+  }
+ },
+ "stats": {
+  "real_p1": {
+   "voxels_with_score": 135591,
+   "mean_score_in_chambers": -0.055149,
+   "chamber_voxels_with_score": 108,
+   "chamber_voxels": 519,
+   "mean_score_same_depths_elsewhere": 0.039542,
+   "share_above_0_5": 0.006623
+  },
+  "real_p4": {
+   "voxels_with_score": 400,
+   "mean_score_in_chambers": null,
+   "chamber_voxels_with_score": 0,
+   "chamber_voxels": 519,
+   "mean_score_same_depths_elsewhere": -0.175649,
+   "share_above_0_5": 0.01
+  },
+  "twin101_p1": {
+   "voxels_with_score": 66035,
+   "mean_score_in_chambers": -0.064176,
+   "chamber_voxels_with_score": 31,
+   "chamber_voxels": 519,
+   "mean_score_same_depths_elsewhere": 0.048668,
+   "share_above_0_5": 0.007769
+  },
+  "twin101_p4": {
+   "voxels_with_score": 404,
+   "mean_score_in_chambers": null,
+   "chamber_voxels_with_score": 0,
+   "chamber_voxels": 519,
+   "mean_score_same_depths_elsewhere": -0.684722,
+   "share_above_0_5": 0.014851
+  }
+ },
+ "reused_pipeline_outputs": {
+  "real": {
+   "audit_sha256": "2cb881ee8565fb96e52f50641c9740f1c3d64630b155d8cf7c4aa5f54b89aef4",
+   "pipeline_run_created": "2026-09-29T03:46:35.941369+00:00",
+   "geometry_sha256": "5fe476df43e90301574a2a4d5303774f15536c465b624f490d23ec25319ff927",
+   "config_sha256": "57881df5e2e9d051511752c9e427e86dc4f4320b821407ad9962ebc4d9408318"
+  },
+  "twin101": {
+   "audit_sha256": "8125e1112785e4d0ac0bef29af557755fcf878ef5be86f320bf300299b360cb0",
+   "pipeline_run_created": "2026-09-29T04:12:17.417744+00:00",
+   "geometry_sha256": "5fe476df43e90301574a2a4d5303774f15536c465b624f490d23ec25319ff927",
+   "config_sha256": "57881df5e2e9d051511752c9e427e86dc4f4320b821407ad9962ebc4d9408318"
+  }
+ },
+ "grid": {
+  "x0": 174.26,
+  "y0": 208.19,
+  "z_top": 206.6,
+  "step_m": 3.0,
+  "shape": [
+   101,
+   95,
+   151
+  ]
+ },
+ "chambers": [
+  "khufu-kings-chamber",
+  "khufu-queens-chamber",
+  "khufu-grand-gallery",
+  "khufu-ascending-passage",
+  "khufu-descending-passage",
+  "khufu-subterranean-chamber",
+  "khufu-scanpyramids-big-void",
+  "khufu-north-face-corridor"
+ ],
+ "finding": "Across the Great Pyramid, 95 east-west lines of 101 positions 3 m apart in the 2022 image, the unchanged gated pipeline supports 1,355 positions at a support of one and 4 at four; its motionless twin supports 660 and 4. Stacked into a volume, the real image's scores at support one fill 135,591 voxels and the twin's 66,035. Inside the surveyed chambers and passages the real image scores -0.055 on average against 0.040 at the same depths elsewhere (the twin: -0.064 and 0.049), with 108 of 519 chamber voxels holding any score."
+}

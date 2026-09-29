@@ -102,5 +102,113 @@
   ],
   "run": "p2_12_real_pass \u00b7 2026-09-28 \u00b7 02c7253",
   "caption": "the same kind of picture over empty plateau"
+ },
+ {
+  "id": "radar-khufu-gated-real-p1",
+  "status": "radar",
+  "file": "vol-radar-khufu-gated-real-p1.u8",
+  "shape": [
+   101,
+   95,
+   109
+  ],
+  "origin": [
+   174.26,
+   208.19,
+   206.6
+  ],
+  "spacing": 3.0,
+  "label": "Satellite \u00b7 the gated reconstruction at Khufu, the real image, support 1",
+  "method": "The 2022 ICEYE pass through the gated reconstruction's own code, unchanged (317 pairs; ellipse, Track10 and support-1 gates), along 95 lines across the Great Pyramid 3 m apart",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "p2_16_khufu_volume \u00b7 2026-09-29 \u00b7 d8a0060",
+  "tint": "gated",
+  "caption": "fit scores, unsmoothed; empty where nothing passed"
+ },
+ {
+  "id": "radar-khufu-gated-real-p4",
+  "status": "radar",
+  "file": "vol-radar-khufu-gated-real-p4.u8",
+  "shape": [
+   101,
+   95,
+   109
+  ],
+  "origin": [
+   174.26,
+   208.19,
+   206.6
+  ],
+  "spacing": 3.0,
+  "label": "Satellite \u00b7 the gated reconstruction at Khufu, the real image, support 4",
+  "method": "The 2022 ICEYE pass through the gated reconstruction's own code, unchanged (317 pairs; ellipse, Track10 and support-4 gates), along 95 lines across the Great Pyramid 3 m apart",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "p2_16_khufu_volume \u00b7 2026-09-29 \u00b7 d8a0060",
+  "tint": "gated",
+  "caption": "fit scores, unsmoothed; empty where nothing passed"
+ },
+ {
+  "id": "radar-khufu-gated-twin-p1",
+  "status": "radar",
+  "file": "vol-radar-khufu-gated-twin-p1.u8",
+  "shape": [
+   101,
+   95,
+   109
+  ],
+  "origin": [
+   174.26,
+   208.19,
+   206.6
+  ],
+  "spacing": 3.0,
+  "label": "Satellite \u00b7 the gated reconstruction at Khufu, a motionless copy, support 1",
+  "method": "The 2022 ICEYE pass through the gated reconstruction's own code, unchanged (317 pairs; ellipse, Track10 and support-1 gates), along 95 lines across the Great Pyramid 3 m apart",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "p2_16_khufu_volume \u00b7 2026-09-29 \u00b7 d8a0060",
+  "tint": "gated",
+  "caption": "fit scores, unsmoothed; empty where nothing passed"
+ },
+ {
+  "id": "radar-khufu-gated-twin-p4",
+  "status": "radar",
+  "file": "vol-radar-khufu-gated-twin-p4.u8",
+  "shape": [
+   101,
+   95,
+   109
+  ],
+  "origin": [
+   174.26,
+   208.19,
+   206.6
+  ],
+  "spacing": 3.0,
+  "label": "Satellite \u00b7 the gated reconstruction at Khufu, a motionless copy, support 4",
+  "method": "The 2022 ICEYE pass through the gated reconstruction's own code, unchanged (317 pairs; ellipse, Track10 and support-4 gates), along 95 lines across the Great Pyramid 3 m apart",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "p2_16_khufu_volume \u00b7 2026-09-29 \u00b7 d8a0060",
+  "tint": "gated",
+  "caption": "fit scores, unsmoothed; empty where nothing passed"
  }
 ]

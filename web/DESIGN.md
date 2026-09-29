@@ -13,7 +13,7 @@ underworld. Cool and muted: mist for reading, deep slate-blue where the drama an
 - **Type.** IBM Plex Sans (UI, section headings), IBM Plex Mono (data, labels, captions), Newsreader (display titles and
   prose), all self-hosted through fontsource so every reader sees the same page. Headings are statements.
 - **Colour roles — one each, everywhere, 2-D and 3-D.** lapis = voids and chambers; verdigris = what an instrument
-  recovered; ochre = sensors and sources; porphyry = claimed structures, always dashed; cinnabar = the radar. Three sets:
+  recovered; ochre = sensors and sources; porphyry = claimed structures, always dashed; cinnabar = the radar; gold = the gated reconstruction's fit scores (viewer only, beside cinnabar). Three sets:
   on mist (`#2c5aa0 #16876e #a8741f #7a55a6 #aa4b33`), on deep water (`#5b8fe0 #23a07f #be8a2e #9a78d3 #d46e50`), both
   passing the dataviz six checks; and emissive glows in the viewer (`#82b3ff #74d8bc #e8b95c #c0a6da #f0906f`).
 - **Front page.** An introduction, not an instrument: the hero tours the underworld on its own (no controls, never

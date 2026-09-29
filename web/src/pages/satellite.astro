@@ -18,6 +18,7 @@ import realpass from '../../public/data/runs/p2_12_real_pass.json';
 import gates from '../../public/data/runs/p2_13_gates.json';
 import own from '../../public/data/runs/p2_14_own_lines.json';
 import resp from '../../public/data/runs/p2_15_pair_response.json';
+import khufu from '../../public/data/runs/p2_16_khufu_volume.json';
 import passive from '../../public/data/runs/p1_04_ambient.json';
 import echo from '../../public/data/runs/p1_03_scattered.json';
 import Figure from '../components/Figure.astro';
@@ -221,6 +222,17 @@ const rMaxPt2 = Math.max(...rScenes.point.rows.filter((r) => r.v_m_s === 0.002).
 const rMaxTx2 = Math.max(...rScenes.texture.rows.filter((r) => r.v_m_s === 0.002).map((r) => r.pair_amp_px.azimuth));
 const rPointWindows = rScenes.point.rows.reduce((acc, r) => acc + r.windows_passing, 0);
 const rWidth = Math.max(...['point_on_clutter', 'texture'].flatMap((sc) => rScenes[sc].rows.filter((r) => r.pair_amp_px.azimuth >= 0.005).map((r) => r.trace_width_ratio)));
+// ---- P2-16
+type KStat = { voxels_with_score: number; mean_score_in_chambers: number | null; mean_score_same_depths_elsewhere: number | null; chamber_voxels_with_score: number; chamber_voxels: number };
+const kStats = khufu.stats as unknown as Record<string, KStat>;
+const kRes = khufu.results as unknown as Record<string, { supported_positions: Record<string, number> }>;
+const kR1 = kStats.real_p1;
+const kT1 = kStats.twin101_p1;
+const kLift = (st: KStat) => (st.mean_score_in_chambers ?? 0) - (st.mean_score_same_depths_elsewhere ?? 0);
+const kHigher = kLift(kR1) > 0.05;
+const kLikeCopy = Math.abs(kRes.real.supported_positions['1'] - kRes.twin101.supported_positions['1']) < 0.5 * kRes.real.supported_positions['1'];
+const kFmt = (v: number | null) => (v === null ? '–' : v.toFixed(2));
+const kHeading = `Across the whole Great Pyramid, the gated reconstruction’s scores ${kHigher ? 'run higher' : 'are no higher'} inside the surveyed chambers than at the same depths elsewhere${kLikeCopy ? ', and a motionless copy draws a volume of the same kind' : ''}`;
 ---
 <Doc
   title="The satellite over the same ground"
@@ -240,6 +252,7 @@ const rWidth = Math.max(...['point_on_clutter', 'texture'].flatMap((sc) => rScen
     { id: 'chain', label: 'The whole chain' },
     { id: 'pillars', label: 'Pillars and boxes' },
     { id: 'gates', label: 'Stricter gates' },
+    { id: 'khufu3d', label: 'Khufu in 3-D' },
     { id: 'sensors', label: 'Virtual sensors' },
     { id: 'every', label: 'Other routes' },
     { id: 'real', label: 'The real pass' },
@@ -758,6 +771,47 @@ const rWidth = Math.max(...['point_on_clutter', 'texture'].flatMap((sc) => rScen
       </div>
     </div>
     <RunDetails manifest={own.manifest} />
+  </section>
+
+  <section id="khufu3d">
+    <h2>{kHeading}</h2>
+    <p class="sub">
+      The reconstruction’s tomograms are curtains: along each line, a score at every nominal depth below every position. P2-16
+      lays {khufu.manifest.params.lines} lines across Khufu, {khufu.manifest.params.step_m} m apart, running east to west as its own
+      east-face lines do, runs the 2022 image through its unchanged code, and stacks the curtains into a volume on a
+      {' '}{khufu.manifest.params.step_m} m grid, with the same calculation on a motionless copy of the image beside it. The volume
+      holds the method’s fit scores, unsmoothed, and is empty where nothing passed: it is what the method computes, not a
+      detection and not a validated depth. <a href={`${base}/underworld/#giza/satellite`}>Open it in the 3-D view</a>, where it
+      is drawn in gold beside the surveyed chambers in blue.
+    </p>
+    <div class="grid-2">
+      <div class="note-card">
+        <span class="tag measured">real image · P2-16</span>
+        <h3>What passes, and how much of the volume it fills</h3>
+        <table class="data compact">
+          <thead><tr><th></th><th class="num">positions, support 1</th><th class="num">support 4</th><th class="num">voxels with a score</th></tr></thead>
+          <tbody>
+            <tr><td>the real image</td><td class="num">{kRes.real.supported_positions['1'].toLocaleString('en-US')}</td><td class="num">{kRes.real.supported_positions['4']}</td><td class="num">{kR1.voxels_with_score.toLocaleString('en-US')}</td></tr>
+            <tr><td>a motionless copy</td><td class="num">{kRes.twin101.supported_positions['1'].toLocaleString('en-US')}</td><td class="num">{kRes.twin101.supported_positions['4']}</td><td class="num">{kT1.voxels_with_score.toLocaleString('en-US')}</td></tr>
+          </tbody>
+        </table>
+        <p>Of {(khufu.manifest.params.lines * khufu.manifest.params.positions_per_line).toLocaleString('en-US')} positions, those that pass at
+        a support of one hang full depth profiles, so the volume shows columns banded every few metres, the fit’s own cycle,
+        wherever a position passed; at the method’s own support of four almost nothing passes.</p>
+      </div>
+      <div class="note-card">
+        <span class="tag measured">a known-chamber check · P2-16</span>
+        <h3>Inside the surveyed chambers</h3>
+        <p>If the scores located rooms, they would be higher inside the King’s and Queen’s Chambers, the Grand Gallery, the
+        passages, the Subterranean Chamber and the ScanPyramids voids than at the same depths elsewhere. In the real image
+        they are {kFmt(kR1.mean_score_in_chambers)} on average inside and {kFmt(kR1.mean_score_same_depths_elsewhere)} at the same
+        depths elsewhere; in the motionless copy {kFmt(kT1.mean_score_in_chambers)} and {kFmt(kT1.mean_score_same_depths_elsewhere)}.
+        {kR1.chamber_voxels_with_score} of the {kR1.chamber_voxels} chamber voxels hold any score in the real image. The chambers are
+        small against a 3 m grid and the depth coordinate is nominal, so this is one check among several, stated before it was
+        run, not a verdict on its own.</p>
+      </div>
+    </div>
+    <RunDetails manifest={khufu.manifest} />
   </section>
 
   <section id="sensors">

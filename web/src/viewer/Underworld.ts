@@ -186,7 +186,10 @@ export class Underworld {
     this.markCurrent();
     const available = this.availableModes();
     this.setMode(available.includes(this.mode) ? this.mode : 'truth', this.item[this.mode]);
-    this.frame(animate);
+    const g = scene.radar?.gated;
+    // a gated reconstruction's volume is small beside the site: open on it, not on the whole block
+    if (this.mode === 'satellite' && g && g.volumes.some((v) => v.id === this.item.satellite)) this.frameOn(g.focus, g.radius_m, animate);
+    else this.frame(animate);
     this.setLoading(false);
   }
 
@@ -206,6 +209,7 @@ export class Underworld {
     const b = this.block;
     const s = this.scene;
     if (!b || !s) return;
+    let focusGated = false;
     if (!this.availableModes().includes(mode)) mode = 'truth';
     const refit = (mode === 'satellite') !== (this.mode === 'satellite') && !!b.radar;
     this.mode = mode;
@@ -220,10 +224,15 @@ export class Underworld {
     } else if (mode === 'satellite' && s.radar) {
       const rv = s.radar.volumes;
       if (Array.isArray(rv)) {
-        // a real site: one of the method's volumes, or none
-        const which = item === 'none' || rv.includes(item ?? '') ? item! : this.item.satellite && (this.item.satellite === 'none' || rv.includes(this.item.satellite)) ? this.item.satellite : rv[0];
+        // a real site: one of the methods' volumes, or none; the gated reconstruction's real-image volume first
+        const gated = s.radar.gated?.volumes.map((g) => g.id) ?? [];
+        const allowed = [...gated, ...rv];
+        const first = s.radar.gated?.volumes.find((g) => g.case === 'real')?.id ?? rv[0];
+        const was = this.item.satellite;
+        const which = item === 'none' || allowed.includes(item ?? '') ? item! : was && (was === 'none' || allowed.includes(was)) ? was : first;
         this.item.satellite = which;
         b.showVolume(which === 'none' ? null : which);
+        focusGated = gated.includes(which) && (!gated.includes(was ?? '') || refit);
       } else {
         const which = item === 'with' || item === 'without' ? item : this.item.satellite === 'without' ? 'without' : 'with';
         this.item.satellite = which;
@@ -248,7 +257,11 @@ export class Underworld {
     b.setFeatureEmphasis(mode === 'truth' || mode === 'satellite' ? 1 : 0.35);
     this.renderModeUI();
     this.writeHash();
-    if (refit && !this.opts.tour) this.frame(true);
+    if (!this.opts.tour) {
+      const g = s.radar?.gated;
+      if (focusGated && g) this.frameOn(g.focus, g.radius_m);
+      else if (refit) this.frame(true);
+    }
     this.engine.poke();
   }
 
@@ -395,8 +408,22 @@ export class Underworld {
     const r = s.radar!;
     const a = r.acquisition;
     const vols = (Array.isArray(r.volumes) ? r.volumes : []).map((id) => s.volumes.find((v) => v.id === id)).filter(Boolean) as SiteScene['volumes'];
-    const which = this.item.satellite ?? vols[0]?.id ?? 'none';
+    const gv = r.gated;
+    const which = this.item.satellite ?? gv?.volumes.find((g) => g.case === 'real')?.id ?? vols[0]?.id ?? 'none';
     const st = r.stats;
+    const fmt = (v: number | null | undefined) => (v === null || v === undefined ? '–' : v.toFixed(2));
+    const gatedBlock = gv
+      ? `<div class="uw-subhead">${esc(gv.title)}</div>
+      <p class="uw-ctx-note">${esc(gv.note)}</p>
+      ${[...gv.volumes]
+        .sort((a, b) => a.support - b.support || (a.case === 'real' ? -1 : 1))
+        .map(
+          (g) => `<label class="uw-radio"><input type="radio" name="sat-vol" value="${g.id}" ${g.id === which ? 'checked' : ''}/>
+        <span><span class="uw-opt-name">${g.case === 'real' ? 'The real image' : 'A motionless copy'} · ${g.support === 1 ? 'one position' : `${g.support} positions in a row`}</span><span class="uw-opt-sub">${g.case === 'real' ? `the ${esc(gv.date)} image, through the unchanged code` : 'the same crop with nothing moving and nothing inside'}</span></span></label>`,
+        )
+        .join('')}
+      ${gv.chambers ? `<p class="uw-ctx-note">Inside the surveyed chambers and passages (blue) the real image scores ${fmt(gv.chambers.real[0])} on average, against ${fmt(gv.chambers.real[1])} at the same depths elsewhere; the motionless copy ${fmt(gv.chambers.twin[0])} and ${fmt(gv.chambers.twin[1])}.</p>` : ''}`
+      : '';
     ctx.innerHTML = `
       <p class="uw-ctx-note">The real ${esc(a.satellite ?? 'ICEYE')} pass of ${esc(a.date ?? '')}: ${a.aperture_s.toFixed(1)} s,
         ${a.track_km.toFixed(1)} km of track, ${Math.round(a.slant_range_km)} km away, looking ${Math.round(a.incidence_deg)}° from straight
@@ -406,6 +433,7 @@ export class Underworld {
       <div class="uw-subhead">How far down it can see</div>
       <p class="uw-ctx-note">About ${Math.round((r.reach_m ?? 0.3) * 100)} cm into the driest sand, less into rock: at this scale, thinner than the
         line of the ground itself. Everything below the surface is out of its reach.</p>
+      ${gatedBlock}
       <div class="uw-subhead">What the paper-style pipeline draws from it</div>
       <p class="uw-ctx-note">The 2025 image through the pipeline as the 2022 paper describes it: 50 half-band pairs, no selection
         gates, focused power on a log scale, depth relabelled so it repeats at 648 m as the claim does, and smoothed for
@@ -418,7 +446,7 @@ export class Underworld {
         .join('')}
       <label class="uw-radio"><input type="radio" name="sat-vol" value="none" ${which === 'none' ? 'checked' : ''}/><span><span class="uw-opt-name">None</span></span></label>
       ${st ? `<p class="uw-ctx-note">Over the pyramids and over empty plateau its depth profiles correlate at ${st.monument_vs_control_profile_corr.toFixed(3)}; at every pixel its power follows how much the registration wandered (${st.pillar_power_vs_energy_min.toFixed(3)}).</p>` : ''}
-      <label class="uw-range"><span>Show power stronger than</span><input type="range" min="0.02" max="0.95" step="0.01" value="0.8" data-uw="threshold" /></label>`;
+      <label class="uw-range"><span>Show values above</span><input type="range" min="0.02" max="0.95" step="0.01" value="${gv && gv.volumes.some((g) => g.id === which) ? '0.08' : '0.8'}" data-uw="threshold" /></label>`;
     ctx.querySelectorAll<HTMLInputElement>('input[name=sat-vol]').forEach((el) =>
       el.addEventListener('change', () => this.setMode('satellite', el.value)),
     );
@@ -486,6 +514,22 @@ export class Underworld {
     const pose = {
       position: [r * Math.cos(el) * Math.sin(az), r * Math.sin(el) + lift, r * Math.cos(el) * Math.cos(az)] as [number, number, number],
       target: [0, lift, 0] as [number, number, number],
+      fov: 28,
+    };
+    if (animate) void this.engine.flyTo(pose, 1.3);
+    else this.engine.setPose(pose);
+  }
+
+  /** Stand off from one place in the site (site coordinates, metres), from the south-east and a little above. */
+  private frameOn(focus: [number, number, number], radius_m: number, animate = true) {
+    const b = this.block!;
+    const c = b.world(focus);
+    const r = b.world([focus[0] + radius_m, focus[1], focus[2]]).distanceTo(c);
+    const az = (38 * Math.PI) / 180;
+    const el = (22 * Math.PI) / 180;
+    const pose = {
+      position: [c.x + r * Math.cos(el) * Math.sin(az), c.y + r * Math.sin(el), c.z + r * Math.cos(el) * Math.cos(az)] as [number, number, number],
+      target: [c.x, c.y, c.z] as [number, number, number],
       fov: 28,
     };
     if (animate) void this.engine.flyTo(pose, 1.3);

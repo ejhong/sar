@@ -81,6 +81,8 @@ export interface VolumeInfo {
   range: [number, number];
   run?: string;
   caption?: string;
+  /** 'gated': the stricter reconstruction's fit scores, drawn in gold rather than the radar's cinnabar. */
+  tint?: 'gated';
 }
 
 export interface RadarSensors {
@@ -120,6 +122,17 @@ export interface RadarInfo {
   reach_m?: number;
   stats?: { monument_vs_control_profile_corr: number; patch_profile_corr_range: [number, number]; pillar_power_vs_energy_min: number };
   run?: string;
+  /** The gated reconstruction over one monument: its volumes (real image and motionless copy, by support), where to look,
+   * and how its scores sit inside the surveyed chambers against the same depths elsewhere. */
+  gated?: {
+    title: string;
+    date: string;
+    volumes: { id: string; case: 'real' | 'twin'; support: number }[];
+    focus: [number, number, number];
+    radius_m: number;
+    chambers?: { real: [number | null, number | null]; twin: [number | null, number | null] };
+    note: string;
+  };
 }
 
 export interface Extent {

@@ -51,9 +51,9 @@ export class Volume {
         uTex: { value: tex },
         uLo: { value: lo },
         uHi: { value: hi },
-        uColor: { value: new Color(info.status === 'radar' ? theme.radar : theme.recovered) },
+        uColor: { value: new Color(tint(info, theme)) },
         uThreshold: { value: 0.18 },
-        uDensity: { value: 1.6 },
+        uDensity: { value: info.tint === 'gated' ? 6.0 : 1.6 }, // sparse fit-score columns need more opacity to read
         uCutY: { value: -1e9 },
         uSteps: { value: 160 },
         uCamLocal: { value: new Vector3() },
@@ -76,7 +76,7 @@ export class Volume {
   }
 
   setTheme(t: SceneTheme) {
-    this.mat.uniforms.uColor.value.set(this.info.status === 'radar' ? t.radar : t.recovered);
+    this.mat.uniforms.uColor.value.set(tint(this.info, t));
     this.mat.uniforms.uDay.value = t.name === 'day' ? 1 : 0;
     this.mat.blending = t.name === 'day' ? NormalBlending : AdditiveBlending;
     this.mat.needsUpdate = true;
@@ -95,6 +95,12 @@ export class Volume {
     (this.mat.uniforms.uTex.value as Data3DTexture).dispose();
     this.mat.dispose();
   }
+}
+
+/** A volume's colour role: the gated reconstruction in gold, other radar in cinnabar, an instrument's recovery in verdigris. */
+function tint(info: VolumeInfo, t: SceneTheme): number {
+  if (info.tint === 'gated') return t.gated;
+  return info.status === 'radar' ? t.radar : t.recovered;
 }
 
 const VS = /* glsl */ `

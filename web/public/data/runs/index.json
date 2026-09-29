@@ -865,5 +865,38 @@
    "threads": 16,
    "cpus": 16
   }
+ },
+ "p2_16_khufu_volume": {
+  "id": "p2_16_khufu_volume",
+  "title": "The gated reconstruction over the Great Pyramid, in three dimensions",
+  "date": "2026-09-29",
+  "started_utc": "2026-09-29T04:13:12+00:00",
+  "runtime_s": 1.8,
+  "commit": "d8a0060",
+  "params": {
+   "acquisition": "giza-20220715",
+   "gated_module_sha256": "3e1154c11274b896b91e262198576ffd750732709ad08ac00c6892c4ea5e1b1d",
+   "gated_profile_sha256": "ae84cade31f7e5ffa9b4daa0eba152649d2afc7f1655415bad38553f4f4d69aa",
+   "khufu_centre_m": [
+    324.26,
+    349.19
+   ],
+   "lines": 95,
+   "positions_per_line": 101,
+   "step_m": 3.0,
+   "geoid_m": 15.5,
+   "supports": [
+    1,
+    4
+   ],
+   "twin_seed": 101
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  }
  }
 }

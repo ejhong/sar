@@ -535,8 +535,10 @@ corner-reflector threshold P2-05 computes, so P2-05's thresholds are generous to
   the apparent brightness a displacement gradient produces, which for this imprint is of order 10⁻¹¹.
 - Giza's own ambient level is unmeasured in the open literature; the microseism level is from
   Kottamya, 67 km east (M1-01), bracketed by Peterson's global models.
-- The known-chamber test at Khufu on two real passes (2022 and 2025) is run locally and not yet published. Given 1
-  and 4 it could only confirm, not change, the result.
+- The known-chamber test at Khufu on two real passes (2022 and 2025) is run locally and not yet published. Stated in
+  advance: if a frozen method scores the surveyed chambers above matched controls, blind, on both passes, that would
+  weaken 1 and the scope of 4; if it does not, it strengthens them. P2-16 makes the same comparison, in the open, for
+  the gated reconstruction across the whole pyramid.
 - P2-13's loops are the lab's, on Khafre's faces; P2-14 runs the implementation's own base lines. The motionless twin
   keeps the image's smoothed brightness and mean spectra, not its fine texture, and registers a little more steadily
   (41% of shifts exactly zero against 36%), which is why open desert in the same image is run beside it. The

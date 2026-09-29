@@ -155,7 +155,8 @@ The lab does it by simulation over ground whose contents are known, in two phase
    product goes through the same steps; next, a command that takes a product path and a site. Then, for low-frequency
    data over dry ground (Biomass P band, NISAR or ALOS-2 L band), a shallow mode that shows buried features within the
    top metres, the one place radar does see underground.
-3. **Optional confirmations on the real image**, none of which can change the result: the Khufu known-chamber
+3. **Known-chamber tests on the real image**, each with its outcome stated in advance (a method that scores the
+   surveyed chambers above matched controls, blind, would weaken our conclusions; one that does not, strengthen them): the Khufu known-chamber
    positive control (metre-level registration on surveyed base corners, then the King's and Queen's Chambers and the
    Grand Gallery under the published chain).
 4. **Tidy the first investigation's record**: rerun or retire R7 (its script and results disagree); mark R9 and R10
