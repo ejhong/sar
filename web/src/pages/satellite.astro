@@ -23,6 +23,7 @@ import plateau from '../../public/data/runs/p2_17_plateau_control.json';
 import pulses from '../../public/data/runs/p2_18_echo_validation.json';
 import known from '../../public/data/runs/p2_19_known_vibration.json';
 import labKhafre from '../../public/data/runs/lab_khafre.json';
+import bench from '../../public/data/runs/p2_20_bench_gated.json';
 import passive from '../../public/data/runs/p1_04_ambient.json';
 import echo from '../../public/data/runs/p1_03_scattered.json';
 import Figure from '../components/Figure.astro';
@@ -250,6 +251,27 @@ type KRow = { v_m_s: number; f_hz: number; tracker: { recovered_m_s: number; tru
 const kRows = Object.entries(known.results as unknown as Record<string, KRow>);
 const kMoving = kRows.filter(([, r]) => r.v_m_s > 0);
 const kElsewhere = kRows.flatMap(([, r]) => Object.values(r.passing_positions['1']).map((v) => v.length));
+// ---- P2-20: the known bench through the gated pipeline
+type BChange = { positions_changed: number; positions_changed_near: number; passes_flipped: number; near_changes_at_chamber_depth: number; max_score_change: number };
+type BRow = { boost: number | null; supported_positions: Record<string, number>; values_changed: number; p1?: BChange };
+const bRes = bench.results as unknown as Record<string, BRow>;
+const bShare = bench.near_share as number;
+const bGathers = (r?: BChange) => !!r && r.positions_changed_near >= 5 && r.positions_changed_near > 3 * bShare * r.positions_changed;
+const bFirst = ['with', 'boost_1e4', 'boost_1e8'].find((k) => bGathers(bRes[k].p1));
+const bRows: [string, string][] = [
+  ['without', 'without the chamber'],
+  ['with', 'with it, at its real level'],
+  ['null', 'a random perturbation of that size'],
+  ['boost_1e4', 'its imprint ×10⁴'],
+  ['boost_1e8', 'its imprint ×10⁸'],
+];
+const bV8 = (bench.imprint_los_velocity_boost_1e8_m_s as number) * 1e3;
+const bJump = Math.max(bRes.with.p1!.max_score_change, bRes.null.p1!.max_score_change);
+const bHeading = bFirst === undefined
+  ? 'Over the known chamber, the gated pipeline’s picture changes no more with the chamber than with random noise of its size, even boosted a hundred million times'
+  : bFirst === 'with'
+    ? 'Over the known chamber, the gated pipeline’s picture changes where the chamber is'
+    : `Over the known chamber, the gated pipeline’s picture changes over it only once its imprint is boosted ${bFirst === 'boost_1e4' ? 'ten thousand' : 'a hundred million'} times`;
 // ---- the lab's Khafre run
 type LRes = Record<string, { supported_positions: Record<string, number> }>;
 const lk = labKhafre.results as unknown as LRes;
@@ -313,6 +335,7 @@ const lk = labKhafre.results as unknown as LRes;
         <tr><td>Correlating one image’s looks registers little of ordinary ground’s motion</td><td>measured, for that estimator</td><td>P2-03 on real texture; an exact identity for whole images, an approximation for patches</td><td>an estimator shown to recover planted ground motion on real texture</td></tr>
         <tr><td>The six-second pairs register little of a vibration</td><td>measured in simulation</td><td>P2-15, confirmed pulse by pulse (P2-18)</td><td>shaker and reflector data showing more</td></tr>
         <tr><td>The gated reconstruction does not respond to a known vibration a standard tracker measures</td><td>measured in simulation</td><td>synthetic products through its own loader (P2-19)</td><td>a frozen setting at which it recovers a planted vibration’s frequency, place and amplitude</td></tr>
+        <tr><td>{bFirst === undefined ? 'Over a known chamber, the gated reconstruction’s picture does not depend on the chamber' : 'Over a known chamber, the gated reconstruction’s picture changes where the chamber is'}</td><td>measured in simulation</td><td>the one-chamber bench as synthetic products, shaken inside the band it reads, the chamber boosted up to ×10⁸, beside a null (P2-20)</td><td>real ground over a known void, or a forward model with more physics, that behaves otherwise</td></tr>
         <tr><td>The gated reconstruction’s patterns also appear with nothing moving and nothing inside</td><td>measured, not a calibrated rate</td><td>two synthetic twins and open desert (P2-13, P2-14)</td><td>a frozen recipe that beats nulls with the same correlations on withheld truth</td></tr>
         <tr><td>A small chamber changes ambient motion by under a ten-thousandth; one dwell falls far short</td><td>modelled</td><td>uniform rock, quasi-static strain, regional ambient level (P2-04, P2-05)</td><td>motion measured on the plateau during a pass; resonant or larger structures</td></tr>
         <tr><td>Other routes carry far too little at X band</td><td>modelled estimates</td><td>penetration, loads, heat, surface (P2-11)</td><td>measured penetration in Mokattam limestone; deformation over known voids</td></tr>
@@ -1008,7 +1031,7 @@ const lk = labKhafre.results as unknown as LRes;
   </section>
 
   <section id="benchmark">
-    <h2>The benchmark has begun: the simulator holds up against pulses, and a vibration a tracker measures leaves the gated pipeline silent</h2>
+    <h2>The benchmark has begun: the simulator holds up against pulses, a vibration a tracker measures leaves the gated pipeline silent, and {bFirst === undefined ? 'over a known chamber its picture does not depend on the chamber' : 'over a known chamber its picture responds only when the chamber is boosted'}</h2>
     <div class="grid-2">
       <div class="note-card">
         <span class="tag simulated">simulated pulse by pulse · P2-18</span>
@@ -1044,8 +1067,32 @@ const lk = labKhafre.results as unknown as LRes;
         at these settings: it does not respond to a vibration that is there and measurable.</p>
       </div>
     </div>
+    <div class="note-card wide">
+      <span class="tag simulated">synthetic products · P2-20</span>
+      <h3>{bHeading}</h3>
+      <table class="data compact">
+        <thead><tr><th>the bench’s product</th><th class="num">values changed</th><th class="num">positions passing</th><th class="num">scores changed</th><th class="num">of them within 12 m</th></tr></thead>
+        <tbody>
+          {bRows.map(([k, label]) => {
+            const r = bRes[k];
+            return <tr><td>{label}</td><td class="num">{r.values_changed.toLocaleString('en-US')}</td><td class="num">{r.supported_positions['1']}</td><td class="num">{r.p1 ? r.p1.positions_changed : '–'}</td><td class="num">{r.p1 ? r.p1.positions_changed_near : '–'}</td></tr>;
+          })}
+        </tbody>
+      </table>
+      <p>The one-chamber bench as a synthetic product the reconstruction reads unchanged: speckle shaken as Giza shakes, at
+      0.2 Hz and with the measured 1–3 Hz level placed on the method’s own second mode, {(bench.mode_hz as number).toFixed(2)} Hz,
+      where it looks. The chamber’s imprint (P2-04) rides on that shaking at its real level, then boosted until it moves the
+      ground over the chamber by {bV8.toFixed(1)} mm/s. Each product is compared with the one without the chamber, beside a random
+      perturbation the size of the real-level imprint; {Math.round(bShare * 100)}% of the 2,601 positions lie within 12 m of the
+      chamber’s axis, so changes that gather over it would show there first. Changes in the last digits of the numbers the
+      pipeline reads move its fit scores at a position by up to {bJump.toFixed(2)} on its scale of 0 to 1, the chamber’s and the
+      random perturbation’s alike. The positions that pass at all are set by the speckle, and at the method’s own support
+      of four none pass. <a href={`${base}/underworld/#bench-void/satellite`}>Open the
+      volumes in the lab</a>, under the satellite’s gated reconstruction.</p>
+    </div>
     <RunDetails manifest={pulses.manifest} />
     <RunDetails manifest={known.manifest} />
+    <RunDetails manifest={bench.manifest} />
   </section>
 
   <section id="record">
@@ -1131,5 +1178,8 @@ const lk = labKhafre.results as unknown as LRes;
   table.compact th {
     font-size: 0.78rem;
     padding: 0.28rem 0.45rem;
+  }
+  .note-card.wide {
+    margin-top: 16px;
   }
 </style>

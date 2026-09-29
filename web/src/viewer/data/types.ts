@@ -145,6 +145,9 @@ export interface RadarInfo {
   lab?: {
     name: string;
     title: string;
+    /** The pass's year, and how its lines were laid ('ew' or 'ns'). */
+    pass?: string;
+    lines?: 'ew' | 'ns';
     volumes: { id: string; case: 'real' | 'twin'; support: number }[];
     focus: [number, number, number];
     radius_m: number;

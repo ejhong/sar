@@ -3,7 +3,19 @@ import { Engine } from './engine/Engine';
 import { THEMES, type ThemeName } from './engine/theme';
 import { loadIndex, loadScene, loadVolume } from './data/load';
 import type { Feature, SiteIndexEntry, SiteScene } from './data/types';
-import { defaultChoice, dimensions, findChoice, methodsOf, step, supportName, type Choice, type Instrument, type Method } from './catalogue';
+import {
+  defaultChoice,
+  dimensions,
+  findChoice,
+  methodsOf,
+  step,
+  supportName,
+  viewSet,
+  type Choice,
+  type Dimension,
+  type Instrument,
+  type Method,
+} from './catalogue';
 import { Block } from './scene/Block';
 import type { Wavefield } from './scene/Wavefield';
 import { featureDepth, fmtM } from './ui/format';
@@ -15,6 +27,7 @@ const MODES: Mode[] = ['truth', 'geophones', 'satellite'];
 /** Names the lab used before it was arranged by instrument, still honoured in links. */
 const LEGACY: Record<string, Mode> = { recovered: 'geophones', waves: 'geophones', instruments: 'geophones', ground: 'truth' };
 const INSTRUMENT_NAME: Record<Mode, string> = { truth: 'The ground', geophones: 'Geophones', satellite: 'Satellite' };
+const DIM_LABEL: Record<Dimension, string> = { area: 'go to a place', pass: 'the pass', lines: 'the lines', input: 'what went in', support: 'support' };
 
 export interface TourStop {
   site: string;
@@ -60,6 +73,10 @@ export class Underworld {
   private threshold = { method: '', value: 0.18 };
   /** A mode named in an old link, resolved once the site's methods are known. */
   private legacy?: string;
+  /** A link that names one picture opens on its place; otherwise the whole site. */
+  private placeOnLoad = false;
+  /** Labels on the stage for each place the picture covers, and where each stands. */
+  private places: { el: HTMLButtonElement; at: [number, number, number] }[] = [];
   private themeName: ThemeName = 'night';
   private ray = new Raycaster();
   private pointer = new Vector2(2, 2);
@@ -108,6 +125,7 @@ export class Underworld {
         this.engine.poke();
       }
       if (++this.scaleTick % 6 === 0) this.updateScaleBar();
+      this.updatePlaces();
     });
     if (!opts.tour) this.bindControls();
   }
@@ -153,6 +171,7 @@ export class Underworld {
     if (h?.mode) this.mode = h.mode;
     if (h?.item && h.mode) this.item[h.mode] = h.item;
     this.legacy = h?.legacy;
+    this.placeOnLoad = !!h?.item;
     await this.show(first, false);
     if (this.opts.hash)
       addEventListener('hashchange', () => {
@@ -200,10 +219,11 @@ export class Underworld {
     this.markCurrent();
     this.setMode(this.legacy ?? this.mode, this.item[this.mode], false);
     this.legacy = undefined;
-    // a picture small beside the site opens on its own place, not on the whole block
+    // the whole site, with every place labelled; a link that names one picture opens on its place
     const sel = this.selected()?.choice;
-    if (sel?.focus && sel.radius_m) this.frameOn(sel.focus, sel.radius_m, animate);
+    if (this.placeOnLoad && sel?.focus && sel.radius_m) this.frameOn(sel.focus, sel.radius_m, animate);
     else this.frame(animate);
+    this.placeOnLoad = false;
     this.setLoading(false);
   }
 
@@ -224,7 +244,7 @@ export class Underworld {
 
   // ---------- modes ----------
 
-  setMode(mode: Mode | string, item?: string, reframe = true) {
+  setMode(mode: Mode | string, item?: string, reframe = true, place = false) {
     const b = this.block;
     const s = this.scene;
     if (!b || !s) return;
@@ -248,7 +268,9 @@ export class Underworld {
       }
     }
     const vol = choice?.kind === 'volume' ? s.volumes.find((v) => v.id === choice!.id) : undefined;
-    b.showVolume(vol?.id ?? null);
+    const chosen = choice ? findChoice(this.methods[m as Instrument], choice.id) : undefined;
+    const set = chosen && vol ? viewSet(chosen.method, chosen.choice).filter((c) => c.kind === 'volume') : [];
+    b.showVolumes(set.map((c) => c.id));
     b.showSurvey(vol?.survey ? (s.surveys?.find((sv) => sv.id === vol.survey) ?? null) : null);
     if (choice?.kind === 'wave') {
       this.wave = b.showWavefield(choice.id);
@@ -267,20 +289,48 @@ export class Underworld {
     }
     this.renderModeUI();
     this.renderNow();
+    this.renderPlaces(set.length > 1 ? set : []);
     this.writeHash();
-    if (reframe && !this.opts.tour) this.reframe(was?.choice, choice, refit);
+    // the camera moves when asked to go to a place, or when the satellite comes or goes; otherwise it stays
+    if (reframe && !this.opts.tour) {
+      if (place && choice?.focus && choice.radius_m) this.frameOn(choice.focus, choice.radius_m);
+      else if (refit) this.frame(true);
+    }
+    void was;
     this.engine.poke();
   }
 
-  /** Move the camera only when the place in question changes: to a picture's own place, or back to the whole block. */
-  private reframe(from: Choice | undefined, to: Choice | undefined, refit: boolean) {
-    const f = to?.focus;
-    if (f && to?.radius_m) {
-      const g = from?.focus;
-      const near =
-        !!g && !!from?.radius_m && Math.hypot(f[0] - g[0], f[1] - g[1], f[2] - g[2]) < 0.3 * to.radius_m && Math.abs(Math.log(from.radius_m / to.radius_m)) < 0.4;
-      if (!near || refit) this.frameOn(f, to.radius_m);
-    } else if (refit || from?.focus) this.frame(true);
+  /** A label on the stage for each place the picture covers; a click goes there. */
+  private renderPlaces(set: Choice[]) {
+    const box = this.$('[data-uw=places]');
+    this.places = [];
+    if (!box) return;
+    box.innerHTML = '';
+    const inst = this.mode as Instrument;
+    for (const c of set) {
+      if (!c.focus || !c.area) continue;
+      const el = document.createElement('button');
+      el.type = 'button';
+      el.className = `uw-place${c.control ? ' control' : ''}${c.id === this.item[this.mode] ? ' current' : ''}`;
+      el.textContent = c.control ? `${c.area} · control` : c.area;
+      el.title = `Go to ${c.area}`;
+      el.addEventListener('click', () => this.setMode(inst, c.id, true, true));
+      box.appendChild(el);
+      this.places.push({ el, at: c.focus });
+    }
+    this.updatePlaces();
+  }
+
+  private updatePlaces() {
+    const b = this.block;
+    if (!b || !this.places.length) return;
+    const canvas = this.engine.canvas;
+    for (const p of this.places) {
+      const v = b.world(p.at).project(this.engine.camera);
+      const off = v.z > 1 || Math.abs(v.x) > 1.05 || Math.abs(v.y) > 1.05;
+      p.el.style.display = off ? 'none' : '';
+      p.el.style.transform = `translate(${((v.x + 1) / 2) * canvas.clientWidth}px, ${((1 - v.y) / 2) * canvas.clientHeight}px) translate(-50%, -130%)`;
+    }
   }
 
   private renderModeUI() {
@@ -341,11 +391,12 @@ export class Underworld {
     ctx.querySelectorAll<HTMLButtonElement>('[data-dim]').forEach((el) =>
       el.addEventListener('click', () => {
         if (!sel) return;
-        const key = el.dataset.dim as 'area' | 'input' | 'support';
+        const key = el.dataset.dim as Dimension;
         const value = key === 'support' ? Number(el.dataset.value) : el.dataset.value!;
-        this.setMode(inst, step(sel.method, sel.choice, key, value).id);
+        this.setMode(inst, step(sel.method, sel.choice, key, value).id, true, key === 'area');
       }),
     );
+    ctx.querySelector('[data-uw=all-places]')?.addEventListener('click', () => this.frame(true));
     ctx.querySelector('[data-choice=none]')?.addEventListener('click', () => this.setMode(inst, 'none'));
     const th = ctx.querySelector<HTMLInputElement>('[data-uw=threshold]');
     th?.addEventListener('input', () => {
@@ -363,11 +414,12 @@ export class Underworld {
       ? dimensions(m, c)
           .map(
             (d) =>
-              `<div class="uw-chips" role="group" aria-label="${d.key === 'area' ? 'where' : d.key === 'input' ? 'what went in' : 'support'}">${d.values
+              `<div class="uw-chips" role="group" aria-label="${DIM_LABEL[d.key]}">${d.key === 'area' ? '<span class="uw-chips-label">go to</span><button type="button" class="uw-chip" data-uw="all-places">the whole site</button>' : ''}${d.values
                 .map((v) => {
                   const control = m.choices.filter((x) => x[d.key] === v).every((x) => x.control);
                   const label = d.key === 'support' ? supportName(v as number) : String(v);
-                  return `<button type="button" class="uw-chip${control ? ' control' : ''}" data-dim="${d.key}" data-value="${esc(String(v))}" aria-pressed="${c[d.key] === v}"${
+                  const pressed = d.key === 'area' ? false : c[d.key] === v;
+                  return `<button type="button" class="uw-chip${control ? ' control' : ''}${d.key === 'area' ? ' place' : ''}" data-dim="${d.key}" data-value="${esc(String(v))}" aria-pressed="${pressed}"${
                     control ? ' title="a control: nothing here for the method to find"' : ''
                   }>${esc(label)}</button>`;
                 })
@@ -490,7 +542,16 @@ export class Underworld {
       else if (!sel) now.innerHTML = `<span class="uw-dot radar"></span><b>${INSTRUMENT_NAME[this.mode]}</b><span>the pass, no picture</span>`;
       else {
         const { method: m, choice: c } = sel;
-        const parts = [m.name, c.area, c.input !== m.name ? c.input : undefined, c.support ? supportName(c.support) : undefined].filter(Boolean) as string[];
+        const places = new Set(m.choices.map((x) => x.area)).size;
+        const lines = new Set(m.choices.map((x) => x.lines)).size;
+        const parts = [
+          m.name,
+          places > 1 ? undefined : c.area,
+          c.pass,
+          lines > 1 ? c.lines : undefined,
+          c.input !== m.name ? c.input : undefined,
+          c.support ? supportName(c.support) : undefined,
+        ].filter(Boolean) as string[];
         now.innerHTML = `<span class="uw-dot ${m.dot}"></span><b>${INSTRUMENT_NAME[this.mode]}</b><span>${parts.map(esc).join(' · ')}</span>${
           c.control ? '<span class="uw-tag">control</span>' : ''
         }${c.kind === 'volume' ? `<span class="uw-badge">${m.quantity}</span>` : ''}`;
@@ -562,11 +623,13 @@ export class Underworld {
     const b = this.block!;
     const h = b.worldHeight;
     // with the satellite shown, stand further back and look higher, so its beam and the block both fit
+    // on a bench the satellite and its beam are the story; over a real site, the ground and what lies under it
     const sat = this.mode === 'satellite' && !!b.radar;
-    const r = ((this.opts.tour ? 5.0 : 5.5) + h * 1.25) * (sat ? 1.55 : 1);
+    const bench = this.scene?.radar?.kind === 'bench';
+    const r = ((this.opts.tour ? 5.0 : 5.5) + h * 1.25) * (sat ? (bench ? 1.55 : 1.12) : 1);
     const az = (38 * Math.PI) / 180; // from the south, toward the east
-    const el = ((sat ? 16 : 21) * Math.PI) / 180;
-    const lift = sat ? 0.55 : -h * 0.1;
+    const el = ((sat ? (bench ? 16 : 24) : 21) * Math.PI) / 180;
+    const lift = sat ? (bench ? 0.55 : 0.08) : -h * 0.1;
     const pose = {
       position: [r * Math.cos(el) * Math.sin(az), r * Math.sin(el) + lift, r * Math.cos(el) * Math.cos(az)] as [number, number, number],
       target: [0, lift, 0] as [number, number, number],

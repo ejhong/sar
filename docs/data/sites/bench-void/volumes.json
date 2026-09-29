@@ -212,5 +212,275 @@
   ],
   "run": "p2_07_whole_chain \u00b7 2026-09-28 \u00b7 7583420",
   "caption": "the same ground with no chamber: the same picture, to one part in a hundred million"
+ },
+ {
+  "id": "radar-gated-without-p1",
+  "status": "radar",
+  "file": "vol-radar-gated-without-p1.u8",
+  "shape": [
+   51,
+   51,
+   25
+  ],
+  "origin": [
+   -60.0,
+   -60.0,
+   -0.0
+  ],
+  "spacing": 2.4,
+  "label": "Satellite \u00b7 the gated reconstruction over the bench, without the chamber, support 1",
+  "method": "Synthetic products in the 2022 layout, shaken as Giza shakes, through the gated reconstruction's own code, unchanged, along 51 lines 2.4 m apart",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "p2_20_bench_gated \u00b7 2026-09-29 \u00b7 3c68cdf",
+  "tint": "gated",
+  "caption": "fit scores, unsmoothed; empty where nothing passed"
+ },
+ {
+  "id": "radar-gated-without-p4",
+  "status": "radar",
+  "file": "vol-radar-gated-without-p4.u8",
+  "shape": [
+   51,
+   51,
+   25
+  ],
+  "origin": [
+   -60.0,
+   -60.0,
+   -0.0
+  ],
+  "spacing": 2.4,
+  "label": "Satellite \u00b7 the gated reconstruction over the bench, without the chamber, support 4",
+  "method": "Synthetic products in the 2022 layout, shaken as Giza shakes, through the gated reconstruction's own code, unchanged, along 51 lines 2.4 m apart",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "p2_20_bench_gated \u00b7 2026-09-29 \u00b7 3c68cdf",
+  "tint": "gated",
+  "caption": "fit scores, unsmoothed; empty where nothing passed"
+ },
+ {
+  "id": "radar-gated-with-p1",
+  "status": "radar",
+  "file": "vol-radar-gated-with-p1.u8",
+  "shape": [
+   51,
+   51,
+   25
+  ],
+  "origin": [
+   -60.0,
+   -60.0,
+   -0.0
+  ],
+  "spacing": 2.4,
+  "label": "Satellite \u00b7 the gated reconstruction over the bench, with the chamber, support 1",
+  "method": "Synthetic products in the 2022 layout, shaken as Giza shakes, through the gated reconstruction's own code, unchanged, along 51 lines 2.4 m apart",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "p2_20_bench_gated \u00b7 2026-09-29 \u00b7 3c68cdf",
+  "tint": "gated",
+  "caption": "fit scores, unsmoothed; empty where nothing passed"
+ },
+ {
+  "id": "radar-gated-with-p4",
+  "status": "radar",
+  "file": "vol-radar-gated-with-p4.u8",
+  "shape": [
+   51,
+   51,
+   25
+  ],
+  "origin": [
+   -60.0,
+   -60.0,
+   -0.0
+  ],
+  "spacing": 2.4,
+  "label": "Satellite \u00b7 the gated reconstruction over the bench, with the chamber, support 4",
+  "method": "Synthetic products in the 2022 layout, shaken as Giza shakes, through the gated reconstruction's own code, unchanged, along 51 lines 2.4 m apart",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "p2_20_bench_gated \u00b7 2026-09-29 \u00b7 3c68cdf",
+  "tint": "gated",
+  "caption": "fit scores, unsmoothed; empty where nothing passed"
+ },
+ {
+  "id": "radar-gated-null-p1",
+  "status": "radar",
+  "file": "vol-radar-gated-null-p1.u8",
+  "shape": [
+   51,
+   51,
+   25
+  ],
+  "origin": [
+   -60.0,
+   -60.0,
+   -0.0
+  ],
+  "spacing": 2.4,
+  "label": "Satellite \u00b7 the gated reconstruction over the bench, a random perturbation of the imprint's size, support 1",
+  "method": "Synthetic products in the 2022 layout, shaken as Giza shakes, through the gated reconstruction's own code, unchanged, along 51 lines 2.4 m apart",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "p2_20_bench_gated \u00b7 2026-09-29 \u00b7 3c68cdf",
+  "tint": "gated",
+  "caption": "fit scores, unsmoothed; empty where nothing passed"
+ },
+ {
+  "id": "radar-gated-null-p4",
+  "status": "radar",
+  "file": "vol-radar-gated-null-p4.u8",
+  "shape": [
+   51,
+   51,
+   25
+  ],
+  "origin": [
+   -60.0,
+   -60.0,
+   -0.0
+  ],
+  "spacing": 2.4,
+  "label": "Satellite \u00b7 the gated reconstruction over the bench, a random perturbation of the imprint's size, support 4",
+  "method": "Synthetic products in the 2022 layout, shaken as Giza shakes, through the gated reconstruction's own code, unchanged, along 51 lines 2.4 m apart",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "p2_20_bench_gated \u00b7 2026-09-29 \u00b7 3c68cdf",
+  "tint": "gated",
+  "caption": "fit scores, unsmoothed; empty where nothing passed"
+ },
+ {
+  "id": "radar-gated-boost-1e4-p1",
+  "status": "radar",
+  "file": "vol-radar-gated-boost-1e4-p1.u8",
+  "shape": [
+   51,
+   51,
+   25
+  ],
+  "origin": [
+   -60.0,
+   -60.0,
+   -0.0
+  ],
+  "spacing": 2.4,
+  "label": "Satellite \u00b7 the gated reconstruction over the bench, with the chamber's imprint boosted 10,000 times, support 1",
+  "method": "Synthetic products in the 2022 layout, shaken as Giza shakes, through the gated reconstruction's own code, unchanged, along 51 lines 2.4 m apart",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "p2_20_bench_gated \u00b7 2026-09-29 \u00b7 3c68cdf",
+  "tint": "gated",
+  "caption": "fit scores, unsmoothed; empty where nothing passed"
+ },
+ {
+  "id": "radar-gated-boost-1e4-p4",
+  "status": "radar",
+  "file": "vol-radar-gated-boost-1e4-p4.u8",
+  "shape": [
+   51,
+   51,
+   25
+  ],
+  "origin": [
+   -60.0,
+   -60.0,
+   -0.0
+  ],
+  "spacing": 2.4,
+  "label": "Satellite \u00b7 the gated reconstruction over the bench, with the chamber's imprint boosted 10,000 times, support 4",
+  "method": "Synthetic products in the 2022 layout, shaken as Giza shakes, through the gated reconstruction's own code, unchanged, along 51 lines 2.4 m apart",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "p2_20_bench_gated \u00b7 2026-09-29 \u00b7 3c68cdf",
+  "tint": "gated",
+  "caption": "fit scores, unsmoothed; empty where nothing passed"
+ },
+ {
+  "id": "radar-gated-boost-1e8-p1",
+  "status": "radar",
+  "file": "vol-radar-gated-boost-1e8-p1.u8",
+  "shape": [
+   51,
+   51,
+   25
+  ],
+  "origin": [
+   -60.0,
+   -60.0,
+   -0.0
+  ],
+  "spacing": 2.4,
+  "label": "Satellite \u00b7 the gated reconstruction over the bench, with the chamber's imprint boosted 100,000,000 times, support 1",
+  "method": "Synthetic products in the 2022 layout, shaken as Giza shakes, through the gated reconstruction's own code, unchanged, along 51 lines 2.4 m apart",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "p2_20_bench_gated \u00b7 2026-09-29 \u00b7 3c68cdf",
+  "tint": "gated",
+  "caption": "fit scores, unsmoothed; empty where nothing passed"
+ },
+ {
+  "id": "radar-gated-boost-1e8-p4",
+  "status": "radar",
+  "file": "vol-radar-gated-boost-1e8-p4.u8",
+  "shape": [
+   51,
+   51,
+   25
+  ],
+  "origin": [
+   -60.0,
+   -60.0,
+   -0.0
+  ],
+  "spacing": 2.4,
+  "label": "Satellite \u00b7 the gated reconstruction over the bench, with the chamber's imprint boosted 100,000,000 times, support 4",
+  "method": "Synthetic products in the 2022 layout, shaken as Giza shakes, through the gated reconstruction's own code, unchanged, along 51 lines 2.4 m apart",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "p2_20_bench_gated \u00b7 2026-09-29 \u00b7 3c68cdf",
+  "tint": "gated",
+  "caption": "fit scores, unsmoothed; empty where nothing passed"
  }
 ]

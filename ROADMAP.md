@@ -72,6 +72,10 @@ Then (29 September):
 - **P2-19** writes synthetic products in the ICEYE layout (`sarsim/slcfile.py`) that the gated reconstruction reads
   unchanged: a corner reflector vibrating at 5 to 20 mm/s is read by a standard tracker and not registered by the
   pipeline, which passes nothing at the reflector.
+- **P2-20** runs the gated reconstruction unchanged over the one-chamber bench on synthetic products shaken as Giza
+  shakes, inside the band it reads: with the chamber at its real level, boosted ten thousand and a hundred million
+  times, and beside a random perturbation of the imprint's size, the changes never gather over the chamber (6, 6 and
+  9 of 178, 242 and 300 changed positions lie within 12 m, where chance puts 5 to 9; the null, 4 of 182).
 - **The lab's command** runs the gated reconstruction over any area: across Khafre (`lab_khafre`) the real image passes
   1,218 of 9,595 positions at a support of one and none at four, its motionless copy 539 and none, Khufu's pattern.
 - **The lab reorganised by instrument** (the owner found "instruments" beside "satellite" confusing): the ground,

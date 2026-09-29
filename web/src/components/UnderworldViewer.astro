@@ -67,6 +67,7 @@ const { mode = 'full', initial } = Astro.props;
   </aside>
   <div class="uw-stage">
     <canvas aria-label="Three-dimensional block diagram of the selected site"></canvas>
+    <div class="uw-places" data-uw="places"></div>
     <div class="uw-title" data-uw="title"></div>
     <div class="uw-now" data-uw="now" aria-live="polite"></div>
     <div class="uw-card" data-uw="card" hidden>
@@ -676,6 +677,60 @@ const { mode = 'full', initial } = Astro.props;
     text-transform: uppercase;
     opacity: 0.62;
   }
+  .uw-places {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .uw-place {
+    position: absolute;
+    left: 0;
+    top: 0;
+    pointer-events: auto;
+    font: 600 10.5px/1 var(--font-sans);
+    letter-spacing: 0.02em;
+    color: #f1f5f8;
+    background: rgba(18, 28, 39, 0.82);
+    border: 1px solid rgba(240, 144, 111, 0.55);
+    border-radius: 999px;
+    padding: 5px 9px;
+    white-space: nowrap;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .uw-place::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    width: 1px;
+    height: 10px;
+    background: rgba(240, 144, 111, 0.55);
+  }
+  .uw-place.control {
+    border-style: dashed;
+    color: var(--panel-muted);
+  }
+  .uw-place:hover,
+  .uw-place.current {
+    border-color: #f0906f;
+    background: rgba(18, 28, 39, 0.95);
+  }
+  .uw[data-theme='day'] .uw-place {
+    color: var(--text);
+    background: rgba(245, 248, 250, 0.9);
+  }
+  .uw-chips-label {
+    font: 500 9.5px/1 var(--font-mono);
+    color: var(--panel-faint);
+    align-self: center;
+    margin-right: 2px;
+  }
+  .uw-chip.place {
+    border-color: rgba(240, 144, 111, 0.45);
+  }
   .uw-now {
     position: absolute;
     top: 16px;
@@ -697,6 +752,19 @@ const { mode = 'full', initial } = Astro.props;
   }
   .uw-now:empty {
     display: none;
+  }
+  .uw[data-theme='day'] .uw-now {
+    background: rgba(245, 248, 250, 0.9);
+    border-color: var(--border);
+    color: var(--muted);
+  }
+  .uw[data-theme='day'] .uw-now b {
+    color: var(--text);
+  }
+  .uw[data-theme='day'] .uw-now .uw-badge,
+  .uw[data-theme='day'] .uw-now .uw-tag {
+    color: var(--muted);
+    border-color: var(--border-strong);
   }
   .uw-now b {
     color: var(--panel-text);

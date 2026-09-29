@@ -1039,6 +1039,77 @@
   },
   "command": "uv run --with scikit-image python experiments/p2_19_known_vibration.py"
  },
+ "p2_20_bench_gated": {
+  "id": "p2_20_bench_gated",
+  "title": "The gated reconstruction over the known bench",
+  "date": "2026-09-29",
+  "started_utc": "2026-09-29T12:57:25+00:00",
+  "runtime_s": 2250.7,
+  "commit": "3c68cdf",
+  "params": {
+   "acquisition": "giza-20220715",
+   "shape": [
+    8192,
+    640
+   ],
+   "step_m": 2.4,
+   "half_m": 60.0,
+   "cases": [
+    [
+     "without",
+     0.0
+    ],
+    [
+     "with",
+     1.0
+    ],
+    [
+     "null",
+     null
+    ],
+    [
+     "boost_1e4",
+     10000.0
+    ],
+    [
+     "boost_1e8",
+     100000000.0
+    ]
+   ],
+   "bands": [
+    {
+     "frequency_hz": 0.2,
+     "strain": 1.09e-11,
+     "vertical_velocity_m_s": 4.9e-08
+    },
+    {
+     "frequency_hz": 2.138297,
+     "strain": 1.145e-11,
+     "vertical_velocity_m_s": 2.9e-08
+    }
+   ],
+   "band_sources": [
+    "M1-01 median, 0.1-0.3 Hz; phase speed sites/ambient.json",
+    "M1-01 median; the rock's own Rayleigh speed, slower than the real waves, so the strain is generous; placed on the gates' mode 2"
+   ],
+   "taper_m": 10.0,
+   "near_m": 12.0,
+   "supports": [
+    1,
+    4
+   ],
+   "gated_module_sha256": "3e1154c11274b896b91e262198576ffd750732709ad08ac00c6892c4ea5e1b1d",
+   "gated_profile_sha256": "ae84cade31f7e5ffa9b4daa0eba152649d2afc7f1655415bad38553f4f4d69aa"
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  },
+  "command": "uv run --with scikit-image python experiments/p2_20_bench_gated.py"
+ },
  "lab_khafre": {
   "id": "lab_khafre",
   "title": "The gated reconstruction across Khafre, from the 2022 image",

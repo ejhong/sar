@@ -63,6 +63,8 @@ export class Block {
     radar: new Group(),
   };
   readonly volumes = new Map<string, Volume>();
+  /** Outlines on the ground of the places a set of volumes covers. */
+  private readonly footprints = new Group();
   readonly wavefields = new Map<string, Wavefield>();
   radar?: Radar;
   readonly pickables: Mesh[] = [];
@@ -90,6 +92,7 @@ export class Block {
     this.site.rotation.x = -Math.PI / 2;
     this.root.add(this.site);
     for (const g of Object.values(this.layers)) this.site.add(g);
+    this.layers.volumes.add(this.footprints);
     this.buildTerrain();
     this.buildWalls();
     this.buildStructures();
@@ -199,7 +202,48 @@ export class Block {
   }
 
   showVolume(id: string | null) {
-    for (const [k, v] of this.volumes) v.mesh.visible = k === id;
+    this.showVolumes(id ? [id] : []);
+  }
+
+  /** Several volumes at once: one method's pictures of every place it was run, each place outlined on the ground so
+   * that ground outside every outline reads as not yet computed, not as empty. */
+  showVolumes(ids: string[]) {
+    for (const [k, v] of this.volumes) v.mesh.visible = ids.includes(k);
+    const g = this.footprints;
+    for (const c of [...g.children]) {
+      g.remove(c);
+      disposeTree(c);
+    }
+    if (ids.length < 2) return;
+    for (const id of ids) {
+      const info = this.volumes.get(id)?.info;
+      if (!info) continue;
+      const h = info.spacing / 2;
+      const x0 = info.origin[0] - h;
+      const y0 = info.origin[1] - h;
+      const x1 = x0 + info.shape[0] * info.spacing;
+      const y1 = y0 + info.shape[1] * info.spacing;
+      const pts: Vector3[] = [];
+      const edge = (ax: number, ay: number, bx: number, by: number) => {
+        const n = Math.max(2, Math.ceil(Math.hypot(bx - ax, by - ay) / 4));
+        for (let i = 0; i < n; i++) {
+          const x = ax + ((bx - ax) * i) / n;
+          const y = ay + ((by - ay) * i) / n;
+          const x2 = ax + ((bx - ax) * (i + 1)) / n;
+          const y2 = ay + ((by - ay) * (i + 1)) / n;
+          pts.push(new Vector3(x, y, terrainHeight(this.scene, x, y) + 0.6), new Vector3(x2, y2, terrainHeight(this.scene, x2, y2) + 0.6));
+        }
+      };
+      edge(x0, y0, x1, y0);
+      edge(x1, y0, x1, y1);
+      edge(x1, y1, x0, y1);
+      edge(x0, y1, x0, y0);
+      const mat = new LineBasicMaterial({ color: this.theme.radar, transparent: true, opacity: 0.7, depthTest: false, clippingPlanes: [this.clip] });
+      this.themed.push({ obj: mat, apply: (t) => mat.color.set(t.radar) });
+      const l = new LineSegments(new BufferGeometry().setFromPoints(pts), mat);
+      l.renderOrder = 6;
+      g.add(l);
+    }
   }
 
   setVolumeThreshold(t: number) {

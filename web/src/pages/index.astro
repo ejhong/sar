@@ -11,9 +11,22 @@ import sees from '../../public/data/runs/p2_03_what_a_dwell_sees.json';
 import imp from '../../public/data/runs/p2_04_chamber_imprint.json';
 import bud from '../../public/data/runs/p2_05_budget.json';
 import dep from '../../public/data/runs/p2_06_depth_is_frequency.json';
+import bench from '../../public/data/runs/p2_20_bench_gated.json';
 import type { TourStop } from '../viewer/Underworld';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+// P2-20: the stricter gated reconstruction over the same bench, the chamber at its real level and boosted
+type BChange = { positions_changed: number; positions_changed_near: number };
+const bR = bench.results as unknown as Record<string, { p1?: BChange }>;
+const bShare = bench.near_share as number;
+const bGathers = (r?: BChange) => !!r && r.positions_changed_near >= 5 && r.positions_changed_near > 3 * bShare * r.positions_changed;
+const bFirst = ['with', 'boost_1e4', 'boost_1e8'].find((k) => bGathers(bR[k].p1));
+const bSentence =
+  bFirst === undefined
+    ? 'A stricter version of the method, run unchanged on the same ground, is no different: what it draws does not gather over the room, even with the room’s signal made a hundred million times stronger.'
+    : bFirst === 'with'
+      ? 'A stricter version of the method, run unchanged on the same ground, draws changes over the room.'
+      : `A stricter version of the method, run unchanged on the same ground, draws changes over the room only once the room’s signal is made ${bFirst === 'boost_1e4' ? 'ten thousand' : 'a hundred million'} times stronger.`;
 
 const stops: TourStop[] = [
   { site: 'bench-shafts', caption: '<b>Test bench</b>Twelve burial shafts, 5 to 30 m deep, in fractured limestone: the scale of Giza’s cemeteries.' },
@@ -68,7 +81,7 @@ const explore = [
         <p class="sub">
           We built ground with a room in it, 6 m wide and 15 m down, flew the real satellite over it in simulation while the
           ground trembled as it does at Giza, and ran the published method on the image it took. These are its pictures of
-          a slice straight down through the room. The dashed outline is the room.
+          a slice straight down through the room. The dashed outline is the room. {bSentence}
         </p>
       </div>
       <div class="trio">

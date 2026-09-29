@@ -12,8 +12,12 @@ export interface Choice {
   /** The volume or wavefield shown. */
   id: string;
   kind: 'volume' | 'wave';
-  /** Where the method was run, when it was run over several places. */
+  /** Where the method was run, when it was run over several places. A method's pictures of every place with the same
+   * pass, lines, input and support are shown together, one underworld. */
   area?: string;
+  /** The radar pass it was made from, and how the reconstruction's lines were laid. */
+  pass?: string;
+  lines?: string;
   /** What went in: the real image, a motionless copy, the ground with the chamber, … */
   input: string;
   /** A control: a picture that should hold nothing, drawn beside the one that might. */
@@ -51,7 +55,20 @@ export interface Method {
 }
 
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
-const head = (caption?: string) => (caption ?? '').split(' · ')[0];
+
+/** Where a volume sits: the centre of its top, and how far to stand back to see it whole. */
+function anchor(v: VolumeInfo): { focus: [number, number, number]; radius_m: number } {
+  const w = (v.shape[0] - 1) * v.spacing;
+  const h = (v.shape[1] - 1) * v.spacing;
+  return { focus: [v.origin[0] + w / 2, v.origin[1] + h / 2, v.origin[2]], radius_m: 2.2 * Math.max(w, h) };
+}
+/** A caption's finding about the chamber first, its conditions after in brackets; the colour scale's note left out. */
+const head = (caption?: string) => {
+  const parts = (caption ?? '').split(' · ').filter(Boolean);
+  const finding = parts.find((x) => /chamber/.test(x)) ?? parts[0] ?? '';
+  const rest = parts.filter((x) => x !== finding && !/^brightest/.test(x));
+  return rest.length ? `${finding} (${rest.join(', ')})` : finding;
+};
 
 /** The place a title names: "… at Khufu", "… across Khafre, from …". */
 export function areaOf(title: string): string | undefined {
@@ -151,10 +168,12 @@ export function satelliteMethods(s: SiteScene): Method[] {
       const place = where.replace(/\s*\(control\)/, '').split(',')[0].replace(/\s+pyramid$/, '');
       const single = ids.length === 1;
       paper.push({
+        ...(single ? {} : anchor(v)),
         id,
         kind: 'volume',
         area: single ? undefined : cap(place),
-        input: single ? cap(place) : r?.acquisition.date ? `The ${r.acquisition.date.slice(0, 4)} image` : 'The real image',
+        input: single ? cap(place) : 'Real image',
+        pass: !single && r?.acquisition.date ? `${r.acquisition.date.slice(0, 4)} pass` : undefined,
         control,
         sub: cap(v.caption ?? ''),
         run: v.run,
@@ -194,16 +213,19 @@ export function satelliteMethods(s: SiteScene): Method[] {
       ? `Inside the surveyed chambers and passages the real image scores ${fmt(g.chambers.real[0])} on average, against ${fmt(g.chambers.real[1])} at the same depths elsewhere; the motionless copy ${fmt(g.chambers.twin[0])} and ${fmt(g.chambers.twin[1])}.`
       : undefined;
     for (const v of g.volumes) {
-      const [input, control, sub, rank] = gatedInput(v.case, v.boost);
+      const plateau = v.case === 'plateau';
+      const [input, control, sub, rank] = plateau ? gatedInput('real') : gatedInput(v.case, v.boost);
       gated.push({
         rank,
         id: v.id,
         kind: 'volume',
-        area,
+        area: plateau ? 'Open plateau' : area,
+        pass: r.kind === 'bench' ? undefined : `${g.date} pass`,
+        lines: r.kind === 'bench' ? undefined : 'East–west lines',
         input,
-        control,
+        control: plateau || control,
         support: v.support,
-        sub: v.case === 'real' ? `the ${g.date} image, through the unchanged code` : sub,
+        sub: plateau ? 'the same raster over open plateau, where no monument stands' : v.case === 'real' ? `the ${g.date} image, through the unchanged code` : sub,
         note: g.note,
         stats,
         run: vol(v.id)?.run,
@@ -221,6 +243,8 @@ export function satelliteMethods(s: SiteScene): Method[] {
         id: v.id,
         kind: 'volume',
         area: areaOf(lab.title) ?? cap(lab.name),
+        pass: `${lab.pass ?? '2022'} pass`,
+        lines: lab.lines === 'ns' ? 'North–south lines' : 'East–west lines',
         input,
         control,
         support: v.support,
@@ -243,7 +267,7 @@ export function satelliteMethods(s: SiteScene): Method[] {
       line: 'a stricter version with selection gates and a depth fit, its own code run unchanged',
       why:
         r?.kind === 'bench'
-          ? 'A column wherever a position passed the gates, banded where the fit’s phase turns whole times across a window. The speckle alone decides where; the chamber’s imprint is far below what the pipeline reads.'
+          ? 'A column wherever a position passed the gates, banded where the fit’s phase turns whole times across a window. The speckle decides where: the chamber’s imprint, even made a hundred million times stronger, moves the columns no nearer to it than random noise of its size does.'
           : 'A column hangs wherever a position passed the gates; along it the score peaks where the depth fit’s phase turns a whole number of times across a window, about 6 m per turn, and at the mirror of that depth. The depth is the frequency the gates chose, not a measured depth.',
       choices: ordered(gated),
     });
@@ -252,7 +276,10 @@ export function satelliteMethods(s: SiteScene): Method[] {
 
 /** Areas in the order they were run, then the picture before its controls, then support. */
 function ordered(cs: Choice[]): Choice[] {
-  const areas = [...new Set(cs.map((c) => c.area ?? ''))];
+  // places in the order they were run, the controls' places last
+  const isControl = (a: string) => cs.filter((c) => (c.area ?? '') === a).every((c) => c.control);
+  const first = [...new Set(cs.map((c) => c.area ?? ''))];
+  const areas = [...first.filter((a) => !isControl(a)), ...first.filter(isControl)];
   return [...cs].sort(
     (a, b) =>
       areas.indexOf(a.area ?? '') - areas.indexOf(b.area ?? '') || (a.rank ?? 9) - (b.rank ?? 9) || (a.support ?? 0) - (b.support ?? 0),
@@ -282,9 +309,11 @@ export function defaultChoice(methods: Method[]): Choice | undefined {
 
 /** The dimensions a method's choices vary over, each with its values in order of first appearance; given the current
  * choice, what went in and the support are those run in its area. */
-export function dimensions(m: Method, current?: Choice): { key: 'area' | 'input' | 'support'; values: (string | number)[] }[] {
-  const dims: { key: 'area' | 'input' | 'support'; values: (string | number)[] }[] = [];
-  for (const key of ['area', 'input', 'support'] as const) {
+export type Dimension = 'area' | 'pass' | 'lines' | 'input' | 'support';
+
+export function dimensions(m: Method, current?: Choice): { key: Dimension; values: (string | number)[] }[] {
+  const dims: { key: Dimension; values: (string | number)[] }[] = [];
+  for (const key of ['area', 'pass', 'lines', 'input', 'support'] as const) {
     const values: (string | number)[] = [];
     const pool = key === 'area' || !current ? m.choices : m.choices.filter((c) => c.area === current.area);
     for (const c of pool) {
@@ -297,9 +326,18 @@ export function dimensions(m: Method, current?: Choice): { key: 'area' | 'input'
 }
 
 /** Step from the current choice along one dimension, keeping the others where they are when such a picture exists. */
-export function step(m: Method, current: Choice, key: 'area' | 'input' | 'support', value: string | number): Choice {
+export function step(m: Method, current: Choice, key: Dimension, value: string | number): Choice {
   const pool = m.choices.filter((c) => c[key] === value);
   const score = (c: Choice) =>
-    (c.area === current.area ? 4 : 0) + (c.input === current.input ? 2 : 0) + (c.support === current.support ? 1 : 0);
+    (c.area === current.area ? 16 : 0) +
+    (c.pass === current.pass ? 8 : 0) +
+    (c.lines === current.lines ? 4 : 0) +
+    (c.input === current.input ? 2 : 0) +
+    (c.support === current.support ? 1 : 0);
   return pool.reduce((best, c) => (score(c) > score(best) ? c : best), pool[0]);
+}
+
+/** Everything drawn with a choice: the method's pictures of every place made the same way. */
+export function viewSet(m: Method, c: Choice): Choice[] {
+  return m.choices.filter((x) => x.pass === c.pass && x.lines === c.lines && x.input === c.input && x.support === c.support);
 }

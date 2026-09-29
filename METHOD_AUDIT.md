@@ -427,9 +427,24 @@ investigation's record, and what it leaves open follow.
     The injection is the lab's usual approximation (a phase history on a focused image, without range migration,
     occlusion or changing reflectivity); a pulse-level simulation or shaker data would test it.
 
+13. **Over the known bench, the gated reconstruction draws the same whether the chamber is there or not (P2-20).**
+    Synthetic products in the ICEYE layout, read by the reconstruction's own loader and run unchanged (51 east-west
+    lines of 51 positions, 2.4 m apart, over the one-chamber bench), hold speckle shaken as Giza shakes: the measured
+    microseisms at 0.2 Hz and the measured 1-3 Hz level placed on the gates' own second mode (2.14 Hz), where the
+    method looks. The chamber's imprint (P2-04's map, tapered at its edge, times each band's strain) rides on that
+    motion at its real level, boosted ten thousand and a hundred million times (3.6 mm/s over the chamber), beside a
+    null: a random perturbation the size of the real-level imprint at the same pixels. Stated before the run: a
+    response would gather the changed positions over the chamber (within 12 m of its axis, 3% of the positions) as the
+    boost grows. Against the product without the chamber, the fit scores change at 178 positions with the chamber (6
+    of them near it), 182 with the null (4), 242 at ten thousand (6) and 300 at a hundred million (9), where chance
+    puts 5 to 9 near; 275 to 280 positions pass at support one in every product, none at the profile's own four. The
+    changes never gather over the chamber. Changes in the last digits of single precision move a position's fit score
+    by up to 0.43 (the chamber) and 0.50 (the null) on the method's scale of 0 to 1. An earlier version of this run
+    shook the ground only at 0.2 Hz, below the band the method reads; it was stopped and replaced before publication.
+
 These reasons differ in kind and strength. 4 is algebraic and holds whatever the ground does: the depth axis is a
 frequency axis with a repeat and a mirror, and no validated model turns it into a physical depth. 1 and 12 are
-measured, for particular estimators and configurations. 2, 3 and 8 are models with stated assumptions (a small chamber
+measured, for particular estimators and configurations; 13 is a known-truth test of one of them, on synthetic products. 2, 3 and 8 are models with stated assumptions (a small chamber
 in uniform rock, quasi-static strain, the regional microseism level, dry sand's penetration as a bound for limestone).
 Together they show that the methods tested do not establish subsurface imaging; they do not prove every conceivable
 route impossible. R16's resolution bound (1.10 m s at Giza, P2-01) limits short looks; strong prior information could
