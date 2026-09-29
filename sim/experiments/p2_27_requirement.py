@@ -245,10 +245,14 @@ def markers(amb, p204, p226, maps):
     cases = {k: v for k, v in p226['cases'].items() if 'peak_value' in v} if isinstance(p226['cases'], dict) \
         else {c['case']: c for c in p226['cases'] if 'peak_value' in c}
     name, top = max(((k, v['peak_value']) for k, v in cases.items()), key=lambda kv: kv[1])
-    constrained = {'ratio': float(top), 'case': name, 'f_hz': float(cases[name]['peak_f_hz']),
-                   'note': "the largest room-specific motion per unit ambient motion in P2-26's rooms, at any frequency, "
-                           "applied at every frequency (generous); covers mechanisms that only redistribute the ambient "
-                           "motion, within those rooms"}
+    # a change of phase alone, of any size and by any mechanism (linear, nonlinear, parametric), moves the ground by at
+    # most twice the ambient amplitude: |A cos(wt + p + dp) - A cos(wt + p)| <= 2A
+    constrained = {'ratio': float(max(2.0, top)), 'phase_only_ratio': 2.0, 'modelled_ratio': float(top), 'case': name,
+                   'f_hz': float(cases[name]['peak_f_hz']),
+                   'note': "the larger of 2 (a change of the ambient motion's phase alone, of any size, by any mechanism) "
+                           "and the largest room-specific motion per unit ambient motion in P2-26's rooms, applied at every "
+                           "frequency (generous); covers mechanisms that change the ambient motion's phase, or scatter it "
+                           "as those rooms do, not mechanisms with gain"}
     # the bench room's imprints: P2-04's static map (LOS per unit strain, rms over directions, 2 m grid)
     m = np.asarray(p204['imprint_map_los_per_strain_m'])
     sp = p204['kernel_grid']['spacing_m']
@@ -368,8 +372,9 @@ def main():
             f"modelled static imprint under Giza's regional microseism level falls short of the curve at its own footprint "
             f"by {sci(sb['short_by'])}; its dynamic imprints under a truck over a bump 15 m away for the whole pass by "
             f"{sci(min(im['short_by'] for im in dyn))} to {sci(max(im['short_by'] for im in dyn))}. A mechanism that only "
-            f"redistributes the ambient motion, giving at most {constrained['ratio']:.2f} times it (the largest in P2-26's "
-            f"rooms), would need the ambient levels here raised at least {sci(lo)} times. Handing the method the ground's "
+            f"changes the ambient motion's phase (any phase change moves the ground by at most twice the ambient amplitude, "
+            f"linear or not) or scatters it as P2-26's rooms do (at most {constrained['modelled_ratio']:.2f} times), would "
+            f"need the ambient levels here raised at least {sci(lo)} times. Handing the method the ground's "
             f"reflectivity lowers the curve; a corner reflector on the footprint's peak needs "
             f"{byf[0.2]['linear'][0]['D_reflector_m'][0.9] * 1e6:.0f} um whatever the footprint. These are requirements "
             f"conditional on the model: they say nothing of routes outside it, nor of mechanisms not specified.")
