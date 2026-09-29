@@ -170,8 +170,10 @@ def main():
                 got = float(np.hypot(coef[0], coef[1]))
                 truth = vamp * abs(np.sinc(f * W_look))          # the look's own average of the velocity
                 resid = vel - A @ coef
+                sigma = float(np.std(resid) * np.sqrt(2.0 / len(centres)))    # the fitted amplitude's standard error
                 control.append({'v_m_s': vamp, 'f_hz': f, 'recovered_m_s': got, 'truth_look_average_m_s': float(truth),
-                                'gain': got / truth, 'residual_rms_m_s': float(np.std(resid))})
+                                'gain': got / truth, 'gain_se': sigma / truth, 'residual_rms_m_s': float(np.std(resid)),
+                                'resolved': got > 3 * sigma})
                 print('E', control[-1], flush=True)
         out['positive_control'] = {'look_s': W_look, 'looks': len(centres), 'reflector_scr_db': 50.0, 'rows': control}
 
@@ -206,7 +208,9 @@ def main():
         res = out['resolution']
         sl = [s['corr_same'] for s in out['slice_is_stretch']]
         mir = [s['corr_mirror'] for s in out['slice_is_stretch'] if s['corr_mirror'] is not None]
-        gains = [c['gain'] for c in control]
+        clean = [c for c in control if c['resolved']]
+        noisy = [c for c in control if not c['resolved']]
+        noisy_mm = ', '.join(sorted({f"{c['v_m_s'] * 1e3:.0f}" for c in noisy}))
         finding = (
             f"Pulse by pulse, on the 2022 geometry, the simulator focuses a point to {res['azimuth_m'] * 100:.2f} cm in azimuth "
             f"(theory {res['azimuth_theory_m'] * 100:.2f}) with a first sidelobe of {res['azimuth_first_sidelobe_db']:.1f} dB, and to "
@@ -216,9 +220,14 @@ def main():
             f"synthesizer's image of the same still scatterers matches the pulses to {out['fast_vs_pulses']['corr_complex']:.3f}. A "
             f"steady {out['steady_velocity']['v_m_s'] * 1e3:.0f} mm/s recession shifts the image by "
             f"{out['steady_velocity']['shift_m'] * 100:.2f} cm against {out['steady_velocity']['theory_m'] * 100:.2f} cm from R v / V_s. "
-            f"As a positive control, a corner reflector 50 dB above clutter, vibrating at 1 and 5 mm/s at 1 to 4 Hz, is read from "
-            f"one image by magnitudes through {W_look * 1000:.0f} ms looks at {min(gains):.2f} to {max(gains):.2f} of its look-averaged "
-            f"velocity. Through the six-second pairs, pulses and the injection give the bright point's pair shifts of "
+            f"As a positive control, a corner reflector 50 dB above clutter is read from one image by magnitudes through "
+            f"{W_look * 1000:.0f} ms looks: vibrating at "
+            + ', '.join(f"{c['v_m_s'] * 1e3:.0f} mm/s and {c['f_hz']:.0f} Hz at {c['gain']:.2f} ± {c['gain_se']:.2f}" for c in clean)
+            + " of its look-averaged velocity"
+            + (f"; at {noisy_mm} mm/s it lies "
+               f"within the per-look noise ({np.mean([c['residual_rms_m_s'] for c in noisy]) * 1e3:.0f} mm/s), as it would need a "
+               f"brighter reflector or a longer series" if noisy else "")
+            + ". Through the six-second pairs, pulses and the injection give the bright point's pair shifts of "
             + '; '.join(f"{q['pulses_px']:.4f} and {q['injection_px']:.4f} px ({q['v_m_s'] * 1e3:.0f} mm/s, {q['f_hz']:.2f} Hz)" for q in pairs)
             + ".")
         run.save({**out, 'finding': finding})
