@@ -479,7 +479,7 @@ const times = (v: number | null) => (v === null ? '—' : v >= 1000 ? `×${sci(v
         <tr><td>The best detector on {bA.realisations} speckle images, a {bA.width_m} m imprint at {bA.f_hz} Hz boosted to a peak phase of {bA.peak_phase_rad.toFixed(2)} rad: its spread without, its shift with, against √<i>F</i> and <i>aF</i></td><td>{bA.spread_over_sqrtF.toFixed(2)} ± {bA.spread_se.toFixed(2)} and {bA.shift_over_aF.toFixed(2)} ± {bA.shift_se.toFixed(2)}; its estimate’s variance {bA.estimator_var_times_F.toFixed(2)} of the Cramér–Rao bound</td></tr>
         {bA.synthesizer && <tr><td>The same, on the lab’s synthesizer: {bA.synthesizer.realisations} scenes of scatterers at random, moved through its own motion callback</td><td>{bA.synthesizer.spread_over_sqrtF.toFixed(2)} ± {bA.synthesizer.spread_se.toFixed(2)} and {bA.synthesizer.paired_shift_over_aF.toFixed(2)} ± {bA.synthesizer.paired_shift_se.toFixed(2)}</td></tr>}
         <tr><td>The stretch regime (a {bB.width_m} m imprint at {bB.f_hz} Hz, where the chamber’s microseism imprint lives), {bB.realisations} images</td><td>{bB.spread_over_sqrtF.toFixed(2)} ± {bB.spread_se.toFixed(2)} and {bB.shift_over_aF.toFixed(2)} ± {bB.shift_se.toFixed(2)}</td></tr>
-        <tr><td>P2-04’s static kernels, recomputed, against its published map</td><td>largest difference {(bd.kernels.largest_difference_over_peak * 100).toFixed(1)}% of the peak</td></tr>
+        <tr><td>P2-04’s static kernels, recomputed, against its published map</td><td>largest difference {sci(bd.kernels.largest_difference_over_peak)} of the peak</td></tr>
       </tbody>
     </table>
 
