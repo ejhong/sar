@@ -108,9 +108,9 @@ def raster(product, sc, centre, half_ew, half_ns, step, positions=101, lines='ew
             'coordinate_order': 'Geographic endpoints are [latitude, longitude]. Native pixels are [column, row].',
             'tracks': {}}
     heights, z_surf = [], np.zeros((len(offs), positions))
-    for j, o in enumerate(offs):
-        X = cx + trace if ew else np.full_like(trace, cx + o)
-        Y = np.full_like(trace, cy + o) if ew else cy + trace
+    for j, off in enumerate(offs):
+        X = cx + trace if ew else np.full_like(trace, cx + off)
+        Y = np.full_like(trace, cy + off) if ew else cy + trace
         Z = surface(sc, X, Y)
         if syn:
             r, c = flat_project(syn, X, Y, Z)
