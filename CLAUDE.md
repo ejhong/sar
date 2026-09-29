@@ -22,8 +22,9 @@ ground. Owner: Eugene Jhong. Read `ROADMAP.md` (state and next steps) and `web/D
 - `sim/katabasis/seismic` — `elastic3d` (the solver), `analytic`, `arrays`, `picking`, `traveltime`, `imaging`.
 - `sim/katabasis/export` — sites, runs, volumes and wavefields for the viewer.
 - `sim/experiments/p1_*.py` — the published runs. `sim/legacy/` — the first investigation, intact.
-- `web/` — Astro + Three.js; `src/viewer/` the underworld (engine, scene: Block, Volume, Wavefield, sections), `src/pages/`
-  (the front page leads with the answer; `pictures` is the plain-language walk-through; `satellite` the evidence).
+- `web/` — Astro + Three.js; `src/viewer/` the lab (engine, scene: Block, Volume, Wavefield, sections; `catalogue.ts`
+  arranges it by instrument, method and choice), `src/pages/` (six tabs: the overview leads with the answer and holds
+  the plain-language walk-through, `pictures` and `claim` forward to it; `satellite` the evidence, detail folded).
 - `docs/` — the built site (committed; Pages serves it from `main`).
 
 ## Conventions
@@ -48,6 +49,7 @@ ground. Owner: Eugene Jhong. Read `ROADMAP.md` (state and next steps) and `web/D
   https://github.com/BiondiProtocol/ (repository `Replication-and-Verification-Biondi-Protocol`; v1.5 inspected at
   `81451263`, v1.7 installed on the desktop at `~/tmp/sar/biondi_v17`). He corresponds with the owner; his messages and
   figures arrive in `inputs/` (private, gitignored; never published without the owner's say). Experiments built on that
-  correspondence live in `sim/private/` and write to gitignored results until the owner clears them.
+  correspondence live in `sim/private/` and write to gitignored results until the owner clears them. The site credits
+  the public repository wherever its code is used (`web/src/data/credits.ts`), without naming people.
 - **The claim**: Biondi & Malanga (2022, retracted 2026) and the March 2025 Khafre announcement; see `/claim/`.
 
