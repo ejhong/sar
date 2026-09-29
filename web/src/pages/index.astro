@@ -30,10 +30,10 @@ const blk = sees.real.block;
 const plateau = (bud.rows as { case: string; target: string; shortfall: number | null; a_min_m_s: number | null }[])
   .filter((r) => r.case === imp.cases[0].case);
 const budget = [
-  { value: `${(blk.gain_complex * 100).toFixed(0)}`, unit: '%', what: 'of a stretch of real ground’s motion recovered by registering one image’s looks against each other, as the published method does: the looks share their spectrum', src: 'P2-03 · the real Giza image' },
-  { value: `${(imp.cases[0].imprint_over_motion * 1e5).toFixed(1)}`, unit: '× 10⁻⁵', what: 'of the ground’s own motion is all a 6 m chamber 15 m down changes as a microseism passes', src: 'P2-04 · the lab’s solver' },
-  { value: order(plateau[1].shortfall!), unit: '×', what: `short of that imprint on the plateau, ${order(plateau[2].shortfall!)} on a bright scatterer above it, allowing every look and a 3-sigma threshold`, src: 'P2-05 · the budget' },
-  { value: (dep.metres_per_hz as number).toFixed(2), unit: 'm/Hz', what: 'of published depth per hertz of ground motion, whatever lies below: the depth axis is a frequency axis', src: 'P2-06 · the published focusing' },
+  { value: (dep.metres_per_hz as number).toFixed(2), unit: 'm/Hz', what: 'of published depth per hertz of the registration’s oscillation, whatever lies below: the depth axis is a frequency axis', src: 'P2-06 · the processing’s algebra' },
+  { value: `${(blk.gain_complex * 100).toFixed(0)}`, unit: '%', what: 'of a stretch of real ground’s planted motion recovered by correlating one image’s looks, the published way', src: 'P2-03 · measured on the real Giza image' },
+  { value: `${(imp.cases[0].imprint_over_motion * 1e5).toFixed(1)}`, unit: '× 10⁻⁵', what: 'of the ground’s own motion is all a 6 m chamber 15 m down changes as a microseism passes, in uniform rock', src: 'P2-04 · a model' },
+  { value: order(plateau[1].shortfall!), unit: '×', what: `short of that imprint on the plateau, ${order(plateau[2].shortfall!)} on a bright scatterer above it, allowing every look and a 3-sigma threshold`, src: 'P2-05 · a model' },
 ];
 
 // the answer, in pictures from the whole chain (P2-07)
@@ -63,8 +63,8 @@ const explore = [
   <div class="home">
     <section class="answer">
       <div class="head">
-        <p class="label">The answer</p>
-        <h2>With the chamber and without it, the method draws the same picture</h2>
+        <p class="label">What we found</p>
+        <h2>In our simulation, the method draws the same picture with the chamber and without it</h2>
         <p class="sub">
           We built ground with a room in it, 6 m wide and 15 m down, flew the real satellite over it in simulation while the
           ground trembled as it does at Giza, and ran the published method on the image it took. These are its pictures of
@@ -87,7 +87,7 @@ const explore = [
             <img src={fig('look_early.png')} alt="" /><img src={fig('look_late.png')} alt="" />
           </div>
           <p class="cap mono">⅛ s apart: the same data · 2 s apart: unrelated</p>
-          <p>The method cuts one image into slices and looks for the ground shifting between them. But the slices come from one recording: where they overlap they are identical, and where they don’t, nothing lines up. A patch of the real image made to sway comes back at {(blk.gain_complex * 100).toFixed(0)}%.</p>
+          <p>The method cuts one image into slices and looks for the ground shifting between them. But the slices come from one recording: where they overlap they share the same data, and where they don’t, the texture no longer matches. In our test, a patch of the real image made to sway came back at {(blk.gain_complex * 100).toFixed(0)}%.</p>
         </a>
         <a class="reason" href={`${base}/pictures/#scale`}>
           <p class="n mono">2</p>
@@ -104,7 +104,7 @@ const explore = [
             <text x="170" y="88" text-anchor="middle" class="tk">micrometres per second</text>
           </svg>
           <p class="cap mono">{order(plateau[1].shortfall!)} times too faint on plain ground, {order(plateau[2].shortfall!)} on a bright stone</p>
-          <p>A room changes the ground’s own trembling by one part in {(Math.round(1 / imp.cases[0].imprint_over_motion / 1000) * 1000).toLocaleString('en-US')}. Even the whole trembling at Giza is far below what one satellite pass can detect.</p>
+          <p>In our model a room changes the ground’s own trembling by one part in {(Math.round(1 / imp.cases[0].imprint_over_motion / 1000) * 1000).toLocaleString('en-US')}, and even the whole trembling at Giza is far below what one satellite pass could detect.</p>
         </a>
         <a class="reason" href={`${base}/pictures/#frequency`}>
           <p class="n mono">3</p>
@@ -143,11 +143,11 @@ const explore = [
     <section class="block">
       <div class="head">
         <p class="label">The ladder of instruments</p>
-        <h2>Instruments that touch the ground find the chamber; the satellite cannot</h2>
+        <h2>Instruments that touch the ground find the chamber; the satellite methods tested here do not</h2>
         <p class="sub">
           One chamber, 6 m across and 12 m down in limestone. Every way of looking for it, from a borehole beside it to a
-          satellite 600 km away, is simulated over the same ground and scored against the truth. The lab’s tools find it
-          when the physics allows, so the satellite’s failure is the satellite’s.
+          satellite 600 km away, is simulated over the same ground and scored against the truth. The same tools that miss it from
+          orbit find it from the ground, so the miss is not the simulation’s.
         </p>
       </div>
       <Ladder />
@@ -175,12 +175,13 @@ const explore = [
     <div class="home">
       <div class="head">
         <span class="tag simulated on-deep">simulated on the real geometry, checked on the real image</span>
-        <h2>One radar image misses the chamber three independent ways</h2>
+        <h2>The satellite methods tested miss the chamber, for reasons of different strength</h2>
         <p class="sub">
-          The estimator cannot see ground move, the chamber barely changes how it moves, and the depth axis is a
-          frequency axis. Each is sufficient alone. Nor does any other route carry a buried room to the radar: its wave
-          gets a few centimetres into rock, and the ground over a room deforms between passes by millionths of a metre.{' '}
-          <a href={`${base}/satellite/`}>The satellite →</a>
+          The depth axis is a frequency axis, a property of the processing itself; correlating one image’s looks registers
+          little of the ground’s motion, as measured; and in our model the chamber barely changes how the ground moves. The
+          other routes we estimated carry far too little at X band. None of this proves that no radar could ever sense anything
+          underground, and what would test it is set out with the evidence.{' '}
+          <a href={`${base}/satellite/#sure`}>How sure, and what is open →</a>
         </p>
       </div>
       <div class="stat-row deep">

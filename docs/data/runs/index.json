@@ -819,5 +819,51 @@
    "threads": 16,
    "cpus": 16
   }
+ },
+ "p2_15_pair_response": {
+  "id": "p2_15_pair_response",
+  "title": "What the six-second pairs register of a vibration, measured rather than assumed",
+  "date": "2026-09-29",
+  "started_utc": "2026-09-29T03:09:24+00:00",
+  "runtime_s": 283.8,
+  "commit": "a94ee0f",
+  "params": {
+   "acquisition": "giza-20220715",
+   "gated_module_sha256": "3e1154c11274b896b91e262198576ffd750732709ad08ac00c6892c4ea5e1b1d",
+   "gated_profile_sha256": "ae84cade31f7e5ffa9b4daa0eba152649d2afc7f1655415bad38553f4f4d69aa",
+   "shape": [
+    8192,
+    144
+   ],
+   "speeds_m_s": [
+    0.002,
+    0.02
+   ],
+   "frequencies_hz": [
+    0.1,
+    0.26,
+    0.5,
+    1.0691,
+    2.1383,
+    3.2074,
+    3.66,
+    4.2766,
+    5.3457,
+    6.4149,
+    7.484,
+    8.5532,
+    9.6223,
+    10.6915
+   ],
+   "scr_db": 30.0,
+   "block_half_m": 10.0
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  }
  }
 }

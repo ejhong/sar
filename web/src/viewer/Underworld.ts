@@ -406,7 +406,10 @@ export class Underworld {
       <div class="uw-subhead">How far down it can see</div>
       <p class="uw-ctx-note">About ${Math.round((r.reach_m ?? 0.3) * 100)} cm into the driest sand, less into rock: at this scale, thinner than the
         line of the ground itself. Everything below the surface is out of its reach.</p>
-      <div class="uw-subhead">What the published method draws from it</div>
+      <div class="uw-subhead">What the paper-style pipeline draws from it</div>
+      <p class="uw-ctx-note">The 2025 image through the pipeline as the 2022 paper describes it: 50 half-band pairs, no selection
+        gates, focused power on a log scale, depth relabelled so it repeats at 648 m as the claim does, and smoothed for
+        display. It is not the stricter gated reconstruction.</p>
       ${vols
         .map(
           (v) => `<label class="uw-radio"><input type="radio" name="sat-vol" value="${v.id}" ${v.id === which ? 'checked' : ''}/>

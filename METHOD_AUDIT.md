@@ -303,10 +303,12 @@ investigation's record, and what it leaves open follow.
 
 ### What is established
 
-1. **Complex registration of one image's looks is blind to the ground's motion (P2-03).** Two looks
-   cut from one image share their overlapping spectrum sample for sample, so their cross-spectrum is
-   |Y|² H_A H_B, real and non-negative, and their correlation locks at zero lag whatever the ground
-   does. A 20 m block of ground swaying at 2 mm/s comes back at 3 ± 1% on simulated desert and 1 ± 1%
+1. **Complex registration of one image's looks registers little of the ground's motion (P2-03).** Two
+   looks cut from one image share their overlapping spectrum, so for whole images and real, non-negative
+   masks their cross-spectrum is |Y|² H_A H_B and their correlation peaks at zero lag whatever the ground
+   does; for patch registration, which mixes frequencies, this is a strong bias to be measured rather than
+   an exact identity (an independent check found two of seven cropped static patches off by one 0.01 px
+   step). A 20 m block of ground swaying at 2 mm/s comes back at 3 ± 1% on simulated desert and 1 ± 1%
    on real Giza texture, though it is in the data (102% and 101% read against a motionless twin, which
    no real dwell has). For fully developed speckle this is exact in distribution: every Doppler bin is
    an independent circular Gaussian, so a phase history common to a patch changes nothing. Magnitude
@@ -349,10 +351,11 @@ investigation's record, and what it leaves open follow.
    (a fifth, over real point-like ground), the chamber would need about 2 × 10¹⁹ independent sensors over it; there
    are 3,602 there, 7 × 10⁷ in the whole image and 4 × 10¹⁴ on all of Earth's land. The ground's own trembling would
    need 1,186 times more than the image holds.
-8. **No route carries a Giza room to an X-band radar, and none carries the claimed structure to any radar (P2-11).**
-   An echo depends only on how strongly each scatterer returns the wave and where it is while watched, so a room can
-   reach the record by penetration, by vibration within one image, by deformation between images under varying
-   loads, or by changing the surface's material, and in no other way. Penetration: X band reaches about 30 cm into
+8. **As estimated, no route carries a Giza room to an X-band radar in useful measure, nor the claimed structure to any
+   radar (P2-11).** An echo depends on how strongly each scatterer returns the wave and where it is while watched; we
+   group the ways a room could reach the record into penetration, vibration within one image, deformation between
+   images under varying loads, and changes of the surface's material. These are estimates with stated assumptions,
+   not a proof that no route or processing could ever carry anything. Penetration: X band reaches about 30 cm into
    the driest sand (TanDEM-X), L band 1 to 2 m (SIR-A's buried valleys), P band up to 5 m (Biomass, 2025); limestone
    conducts 50 to 200 times more than dry sand, so the bench chamber's roof is at least 347 dB down at X band and the
    claimed structure 34,000 dB, against about 30 dB an image spans; only P band could reach a shallow room, inside
@@ -375,7 +378,7 @@ investigation's record, and what it leaves open follow.
    product's RPC over terrain and pyramids, the residual offset fitted against predicted brightness (1.0 m and 2.6 m;
    the fit's correlation is low, 0.03, and the alignment was checked by eye against the pyramids' bases).
 
-10. **Stricter gates pass motionless images, and no vibration can pass them on its own trace (P2-13).** A public
+10. **Stricter gates pass motionless images, and a simple vibrating target's trace does not pass them (P2-13).** A public
     implementation of a gated reconstruction (317 pairs of 32,330 Hz masks 404 Hz apart over the central 12 s,
     registration rounded to 0.01 px, arcs subtracted; a window of 50 pairs kept only if its two shift components fit an
     ellipse at modes 1 to 10 with adjusted R² ≥ 0.25, a minor semi-axis ≥ 0.005 px and an axis ratio ≥ 0.1; ten same-mode
@@ -386,13 +389,16 @@ investigation's record, and what it leaves open follow.
     along the line of sight planted in the image at 0.26 Hz and 3.66 Hz: the real image's feature again, and one new
     feature on the 0.26 Hz stretch at mode 3, which stands for 3.2 Hz. Each image of its pairs spans 6.0 s and the two
     share 98.75% of their spectrum: 36% of the shifts are exactly zero and 75% within one step, and the planted
-    vibrations move them by 0.006 and 0.002 px rms where a full tracker would see 0.063 and 0.016 px. A mode is m cycles
-    in 50 pairs (0.935 s), so the modes stand for 1.07 to 10.7 Hz, where a 6.0 s image keeps at most 4.7% of a motion
-    and under 10⁻⁵ at modes 5 and 10. A vibrating point moves in each image along azimuth by its line-of-sight velocity
-    times 84 s and in range by its displacement, so its trace is at least 3,000 times as long as it is wide; the gate
-    keeps ellipses at most 10 times, so what passes is shaped by the registration's noise. 31 of the 35 passing
-    positions have their best depth within half a cycle of the mode times 6.17 m or of its mirror (308.7 m less),
-    against 4% by chance. At the first gate the real image passes 2.5 times the twins' windows and open desert 1.9
+    vibrations move them by 0.006 and 0.002 px rms. (The run also quotes a "full tracker" at 0.063 and 0.016 px and a
+    boxcar gain of at most 4.7%, under 10⁻⁵ at modes 5 and 10; both are rectangular-average values, not this
+    registration's response, which P2-15 measures instead.) A mode is m cycles in 50 pairs (0.935 s), so the modes stand
+    for 1.07 to 10.7 Hz; a 3.66 Hz tone is expected to win mode 3. A simple target moving along the line of sight moves in
+    each image along azimuth by its velocity times 84 s and in range by its displacement, so its trace is at least 3,000
+    times as long as it is wide; the gate keeps ellipses at most 10 times, so for such a target what passes is shaped by
+    the registration's noise; more complicated scenes would need their own forward simulation. 31 of the 35 passing
+    positions have their best depth within half a cycle of the mode times 6.17 m or of its mirror (308.7 m less): that
+    is what the depth fit computes after the gates keep sinusoids, not a significance test, and the 35 positions form a
+    handful of clusters. The twins and the desert are stress tests, not a calibrated false-alarm rate. At the first gate the real image passes 2.5 times the twins' windows and open desert 1.9
     times (36% of shifts exactly zero against 41%); planting changes that count by 0.7%, and passing early does not
     predict passing at the end. The lines are the lab's, on the faces, placed through the product's RPC over the site's
     surface (offset (44, 4) px from predicted brightness, correlation 0.03); the implementation's own lines, round the
@@ -409,15 +415,53 @@ investigation's record, and what it leaves open follow.
     two, 12, 4, 0, 8 and 4. Planting adds and removes a few positions (18 start passing and 15 stop, over all supports):
     in the 0.26 Hz stretch at modes 1 to 3, which that frequency cannot produce, and in the 3.66 Hz stretch one position
     at the nearest mode. 352 of the 395 positions passing at support one have their best depth within half a cycle of
-    their mode times 6.17 m or its mirror, against 3% by chance. The pipeline's own steering uses a Doppler rate of
+    their mode times 6.17 m or its mirror, as a frequency fit must. The pipeline's own steering uses a Doppler rate of
     5,390 Hz/s at Khafre, so each 32,330 Hz image holds 6.00 s of every pixel's pass, and puts the four sides'
     zero-Doppler moments within 0.03 s of each other. The corrected file's projection.height_m is a text note, which
     the steering reads as a number; it is set to the corners' ellipsoidal height.
 
-Any one of 1, 3 and 4 is sufficient on its own; they fail for independent reasons (the estimator, the
-physics of the signal, and the algebra of the depth axis). R16's resolution bound, which rests on the
-same trade between a look's duration and its resolution (1.10 m s at Giza, P2-01), is a fourth. 8 extends
-the question beyond the published method to every route a radar record offers.
+12. **What the six-second pairs register of a vibration, measured (P2-15).** The reconstruction's own frequency_masks and
+    register_one are applied to simulated images on the 2022 geometry (a bright point alone, the point 30 dB over
+    clutter, a 20 m block of clutter), with line-of-sight sinusoids of 2 and 20 mm/s at the modes' frequencies and at
+    0.1, 0.26, 0.5 and 3.66 Hz, put in through the Doppler-time mapping. Measured through the reconstruction's own masks and registration, on simulated images of the 2022 geometry with motion put in through the Doppler-time mapping, the six-second images do carry a vibration, but not as a boxcar average: read against its motionless twin, a lone bright point's image moves by 0.062 to 45 times the boxcar value, depending on frequency (at 2 mm/s and 0.5 Hz, 0.129 px where the boxcar gives 0.0085 px). The pair registration then catches only part of the shift between its two images: 3% to 46% for the bright point and 0.6% to 2.8% for a 20 m block of texture, where that shift is resolvable. At 2 mm/s, some 40,000 times Giza's microseisms, the pair shifts change by at most 0.011 px for the point, about the 0.01 px rounding step, and 0.0017 px for texture. The moving point passes 0 of the first gate's windows at every frequency and both speeds, its trace a line; with clutter or texture the traces large enough to measure are at most 0.06 as wide as they are long, under the gate's 0.1, while still texture alone passes 24 windows.
+    The injection is the lab's usual approximation (a phase history on a focused image, without range migration,
+    occlusion or changing reflectivity); a pulse-level simulation or shaker data would test it.
+
+These reasons differ in kind and strength. 4 is algebraic and holds whatever the ground does: the depth axis is a
+frequency axis with a repeat and a mirror, and no validated model turns it into a physical depth. 1 and 12 are
+measured, for particular estimators and configurations. 2, 3 and 8 are models with stated assumptions (a small chamber
+in uniform rock, quasi-static strain, the regional microseism level, dry sand's penetration as a bound for limestone).
+Together they show that the methods tested do not establish subsurface imaging; they do not prove every conceivable
+route impossible. R16's resolution bound (1.10 m s at Giza, P2-01) limits short looks; strong prior information could
+in principle detect weak changes below it.
+
+### Independent review, 28 September 2026: corrections adopted
+
+An independent review of this repository (commit bd76ceb) and of the reconstruction's public v1.8 code reproduced
+several component checks and found overstatements on both sides. Adopted:
+
+- **Scope.** Universal impossibility language ("cannot", "every route is closed") is replaced by scoped claims: the
+  methods tested do not establish subsurface imaging; the depth model is unvalidated and aliased; the ambient-vibration
+  benchmarks are models showing severe sensitivity problems.
+- **Geometry.** P2-13 ran the lab's loops up Khafre's faces after misreading the reconstruction's 70.5 m (the base's
+  height above sea level) as a height above the base; P2-14 runs its own base lines, with hashes and manifest.
+- **The boxcar.** sinc(fT) is a rectangular average's response, not the registration's; P2-03's own point target
+  departs from it (21% against 2% at 0.5 Hz with 1.96 s looks), and P2-15 measures the six-second configuration.
+- **The shared-spectrum identity** is exact for whole images and a measured bias for patch registration.
+- **3.66 Hz** is expected to win mode 3; a mode alone does not show whether a planted motion came back.
+- **Twins and desert** are stress tests, not calibrated nulls; open desert is not surveyed ground.
+- **Depth following the mode** is what the fit computes after the gates select sinusoids, not a significance result.
+- **Models are conditional**: the imprint (6.6 × 10⁻⁵) and the budget assume a small chamber in uniform rock,
+  quasi-static strain and a regional ambient level not measured on the plateau during a pass.
+- **Injections are approximations**: a phase history on a focused image, reasonable for diagnosis, not a pulse-level
+  simulation of a vibrating pyramid.
+- **The sound wavelength**: the review notes that the 2022 paper implies 0.48 m in its text (12,500 Hz at 6,000 m/s)
+  and 0.24 m in a displayed expression; the depth scale is proportional to it and the identity holds either way.
+- **The orange volume** in the viewer is the paper-style pipeline (the 2025 image, 50 pairs, no gates, focused power,
+  relabelled to repeat at 648 m, smoothed), not the gated reconstruction; the viewer now says so.
+
+None of the review's corrections was rejected; where it asked for a measurement (the six-second transfer function)
+the measurement was made (P2-15).
 
 ### Motion measured from orbit, 2026
 
@@ -498,6 +542,7 @@ corner-reflector threshold P2-05 computes, so P2-05's thresholds are generous to
   (41% of shifts exactly zero against 36%), which is why open desert in the same image is run beside it. The
   implementation's eleven Great Pyramid lines use a newer format the published pipeline does not read and are not
   run; they lie on the east face, nearly edge-on to this pass (86 degrees) and as dark as the darkest tenth of the
-  scene around the pyramid.
+  scene around the pyramid. Whether their pixels are mostly receiver noise would need a ray check against the terrain;
+  darkness alone does not show it.
 - P2-11's penetration bounds use dry sand's measured penetration as an upper bound for limestone, and a limestone
   conductivity from the standard GPR table; no microwave loss measurement of Mokattam limestone itself is used.

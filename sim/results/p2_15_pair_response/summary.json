@@ -1,0 +1,1852 @@
+{
+ "manifest": {
+  "id": "p2_15_pair_response",
+  "title": "What the six-second pairs register of a vibration, measured rather than assumed",
+  "date": "2026-09-29",
+  "started_utc": "2026-09-29T03:09:24+00:00",
+  "runtime_s": 283.8,
+  "commit": "a94ee0f",
+  "params": {
+   "acquisition": "giza-20220715",
+   "gated_module_sha256": "3e1154c11274b896b91e262198576ffd750732709ad08ac00c6892c4ea5e1b1d",
+   "gated_profile_sha256": "ae84cade31f7e5ffa9b4daa0eba152649d2afc7f1655415bad38553f4f4d69aa",
+   "shape": [
+    8192,
+    144
+   ],
+   "speeds_m_s": [
+    0.002,
+    0.02
+   ],
+   "frequencies_hz": [
+    0.1,
+    0.26,
+    0.5,
+    1.0691,
+    2.1383,
+    3.2074,
+    3.66,
+    4.2766,
+    5.3457,
+    6.4149,
+    7.484,
+    8.5532,
+    9.6223,
+    10.6915
+   ],
+   "scr_db": 30.0,
+   "block_half_m": 10.0
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  }
+ },
+ "geometry": {
+  "image_span_s": 5.986058,
+  "pair_dt_s": 0.074812,
+  "window_s": 0.935324,
+  "mode_hz": [
+   1.069149,
+   2.138297,
+   3.207446,
+   4.276594,
+   5.345743,
+   6.414891,
+   7.48404,
+   8.553188,
+   9.622337,
+   10.691485
+  ],
+  "azimuth_m_per_m_s": 83.979225,
+  "pixel_m": [
+   0.046167,
+   0.252695
+  ]
+ },
+ "scenes": {
+  "point": {
+   "still_windows_passing": 0,
+   "still_exact_zero": 1.0,
+   "rows": [
+    {
+     "v_m_s": 0.002,
+     "f_hz": 0.1,
+     "mode_equivalent": 0.093532,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.010566
+     },
+     "trace_width_ratio": 0.0,
+     "instantaneous_px": 0.170994,
+     "boxcar_px": 0.086598,
+     "gain_vs_instantaneous": 0.06179,
+     "paired_amp_px": 2.580474,
+     "paired_boxcar_px": 1.842457,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.121286,
+     "pair_share_of_present": 0.087114,
+     "image_over_boxcar": 1.400561
+    },
+    {
+     "v_m_s": 0.002,
+     "f_hz": 0.26,
+     "mode_equivalent": 0.243184,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.010713
+     },
+     "trace_width_ratio": 0.0,
+     "instantaneous_px": 0.444349,
+     "boxcar_px": 0.089457,
+     "gain_vs_instantaneous": 0.024109,
+     "paired_amp_px": 0.110469,
+     "paired_boxcar_px": 0.732415,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.013493,
+     "pair_share_of_present": null,
+     "image_over_boxcar": 0.150828
+    },
+    {
+     "v_m_s": 0.002,
+     "f_hz": 0.5,
+     "mode_equivalent": 0.467662,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.0
+     },
+     "trace_width_ratio": 0.0,
+     "instantaneous_px": 0.853082,
+     "boxcar_px": 0.001987,
+     "gain_vs_instantaneous": 0.0,
+     "paired_amp_px": 0.128772,
+     "paired_boxcar_px": 0.008472,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.030196,
+     "pair_share_of_present": null,
+     "image_over_boxcar": 15.19906
+    },
+    {
+     "v_m_s": 0.002,
+     "f_hz": 1.0691,
+     "mode_equivalent": 0.999955,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.0
+     },
+     "trace_width_ratio": 0.0,
+     "instantaneous_px": 1.809087,
+     "boxcar_px": 0.08555,
+     "gain_vs_instantaneous": 0.0,
+     "paired_amp_px": 0.010672,
+     "paired_boxcar_px": 0.17204,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.005307,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.002,
+     "f_hz": 2.1383,
+     "mode_equivalent": 2.000003,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.0
+     },
+     "trace_width_ratio": 0.0,
+     "instantaneous_px": 3.504705,
+     "boxcar_px": 0.051231,
+     "gain_vs_instantaneous": 0.0,
+     "paired_amp_px": 0.0,
+     "paired_boxcar_px": 0.05318,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.0,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.002,
+     "f_hz": 3.2074,
+     "mode_equivalent": 2.999957,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.0
+     },
+     "trace_width_ratio": 0.0,
+     "instantaneous_px": 4.980043,
+     "boxcar_px": 0.048463,
+     "gain_vs_instantaneous": 0.0,
+     "paired_amp_px": 0.0,
+     "paired_boxcar_px": 0.035404,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.0,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.002,
+     "f_hz": 3.66,
+     "mode_equivalent": 3.423285,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.0
+     },
+     "trace_width_ratio": 0.0,
+     "instantaneous_px": 5.515123,
+     "boxcar_px": 0.022603,
+     "gain_vs_instantaneous": 0.0,
+     "paired_amp_px": 0.0,
+     "paired_boxcar_px": 0.01491,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.0,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.002,
+     "f_hz": 4.2766,
+     "mode_equivalent": 4.000006,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.0
+     },
+     "trace_width_ratio": 0.0,
+     "instantaneous_px": 6.1427,
+     "boxcar_px": 0.072642,
+     "gain_vs_instantaneous": 0.0,
+     "paired_amp_px": 0.0,
+     "paired_boxcar_px": 0.043022,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.0,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.002,
+     "f_hz": 5.3457,
+     "mode_equivalent": 4.99996,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.0
+     },
+     "trace_width_ratio": 0.0,
+     "instantaneous_px": 6.919439,
+     "boxcar_px": 7.086e-05,
+     "gain_vs_instantaneous": 0.0,
+     "paired_amp_px": 0.0,
+     "paired_boxcar_px": 3.725e-05,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.0,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.002,
+     "f_hz": 6.4149,
+     "mode_equivalent": 6.000008,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.0
+     },
+     "trace_width_ratio": 0.0,
+     "instantaneous_px": 7.261612,
+     "boxcar_px": 0.057246,
+     "gain_vs_instantaneous": 0.0,
+     "paired_amp_px": 0.0,
+     "paired_boxcar_px": 0.02868,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.0,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.002,
+     "f_hz": 7.484,
+     "mode_equivalent": 6.999963,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.0
+     },
+     "trace_width_ratio": 0.0,
+     "instantaneous_px": 7.147665,
+     "boxcar_px": 0.029895,
+     "gain_vs_instantaneous": 0.0,
+     "paired_amp_px": 0.0,
+     "paired_boxcar_px": 0.015216,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.0,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.002,
+     "f_hz": 8.5532,
+     "mode_equivalent": 8.000011,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.0
+     },
+     "trace_width_ratio": 0.0,
+     "instantaneous_px": 6.584735,
+     "boxcar_px": 0.024058,
+     "gain_vs_instantaneous": 0.0,
+     "paired_amp_px": 0.0,
+     "paired_boxcar_px": 0.013292,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.0,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.002,
+     "f_hz": 9.6223,
+     "mode_equivalent": 8.999966,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.0
+     },
+     "trace_width_ratio": 0.0,
+     "instantaneous_px": 5.608281,
+     "boxcar_px": 0.029486,
+     "gain_vs_instantaneous": 0.0,
+     "paired_amp_px": 0.0,
+     "paired_boxcar_px": 0.019128,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.0,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.002,
+     "f_hz": 10.6915,
+     "mode_equivalent": 10.000014,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.0
+     },
+     "trace_width_ratio": 0.0,
+     "instantaneous_px": 4.27946,
+     "boxcar_px": 3.795e-06,
+     "gain_vs_instantaneous": 0.0,
+     "paired_amp_px": 0.0,
+     "paired_boxcar_px": 3.226e-06,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.0,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.02,
+     "f_hz": 0.1,
+     "mode_equivalent": 0.093532,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.145344
+     },
+     "trace_width_ratio": 0.0,
+     "instantaneous_px": 1.70994,
+     "boxcar_px": 0.865984,
+     "gain_vs_instantaneous": 0.084999,
+     "paired_amp_px": 6.66234,
+     "paired_boxcar_px": 18.424567,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.313141,
+     "pair_share_of_present": 0.464148,
+     "image_over_boxcar": 0.361601
+    },
+    {
+     "v_m_s": 0.02,
+     "f_hz": 0.26,
+     "mode_equivalent": 0.243184,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.093891
+     },
+     "trace_width_ratio": 0.0,
+     "instantaneous_px": 4.443487,
+     "boxcar_px": 0.894566,
+     "gain_vs_instantaneous": 0.02113,
+     "paired_amp_px": 6.165248,
+     "paired_boxcar_px": 7.324145,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.753019,
+     "pair_share_of_present": 0.124687,
+     "image_over_boxcar": 0.84177
+    },
+    {
+     "v_m_s": 0.02,
+     "f_hz": 0.5,
+     "mode_equivalent": 0.467662,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.023619
+     },
+     "trace_width_ratio": 0.0,
+     "instantaneous_px": 8.530821,
+     "boxcar_px": 0.019867,
+     "gain_vs_instantaneous": 0.002769,
+     "paired_amp_px": 3.795198,
+     "paired_boxcar_px": 0.084724,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.889932,
+     "pair_share_of_present": 0.02654,
+     "image_over_boxcar": 44.794916
+    },
+    {
+     "v_m_s": 0.02,
+     "f_hz": 1.0691,
+     "mode_equivalent": 0.999955,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.011886
+     },
+     "trace_width_ratio": 0.0,
+     "instantaneous_px": 18.090875,
+     "boxcar_px": 0.855503,
+     "gain_vs_instantaneous": 0.000657,
+     "paired_amp_px": 0.107352,
+     "paired_boxcar_px": 1.720403,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.053383,
+     "pair_share_of_present": 0.222664,
+     "image_over_boxcar": 0.062399
+    },
+    {
+     "v_m_s": 0.02,
+     "f_hz": 2.1383,
+     "mode_equivalent": 2.000003,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.031807
+     },
+     "trace_width_ratio": 0.0,
+     "instantaneous_px": 35.047047,
+     "boxcar_px": 0.512309,
+     "gain_vs_instantaneous": 0.0009076,
+     "paired_amp_px": 0.026618,
+     "paired_boxcar_px": 0.531801,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.025643,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.02,
+     "f_hz": 3.2074,
+     "mode_equivalent": 2.999957,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.017735
+     },
+     "trace_width_ratio": 8.067e-23,
+     "instantaneous_px": 49.800427,
+     "boxcar_px": 0.484633,
+     "gain_vs_instantaneous": 0.0003561,
+     "paired_amp_px": 0.011847,
+     "paired_boxcar_px": 0.354037,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.016217,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.02,
+     "f_hz": 3.66,
+     "mode_equivalent": 3.423285,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.019223
+     },
+     "trace_width_ratio": 0.0,
+     "instantaneous_px": 55.151228,
+     "boxcar_px": 0.226029,
+     "gain_vs_instantaneous": 0.0003485,
+     "paired_amp_px": 0.011422,
+     "paired_boxcar_px": 0.1491,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.017316,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.02,
+     "f_hz": 4.2766,
+     "mode_equivalent": 4.000006,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.002165
+     },
+     "trace_width_ratio": 0.0,
+     "instantaneous_px": 61.426997,
+     "boxcar_px": 0.726417,
+     "gain_vs_instantaneous": 3.524e-05,
+     "paired_amp_px": 0.0,
+     "paired_boxcar_px": 0.430225,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.0,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.02,
+     "f_hz": 5.3457,
+     "mode_equivalent": 4.99996,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.01229
+     },
+     "trace_width_ratio": 0.0,
+     "instantaneous_px": 69.194386,
+     "boxcar_px": 0.0007086,
+     "gain_vs_instantaneous": 0.0001776,
+     "paired_amp_px": 0.004021,
+     "paired_boxcar_px": 0.0003725,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.007648,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.02,
+     "f_hz": 6.4149,
+     "mode_equivalent": 6.000008,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.0
+     },
+     "trace_width_ratio": 0.0,
+     "instantaneous_px": 72.616117,
+     "boxcar_px": 0.572458,
+     "gain_vs_instantaneous": 0.0,
+     "paired_amp_px": 0.0,
+     "paired_boxcar_px": 0.2868,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.0,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.02,
+     "f_hz": 7.484,
+     "mode_equivalent": 6.999963,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.0
+     },
+     "trace_width_ratio": 0.0,
+     "instantaneous_px": 71.476649,
+     "boxcar_px": 0.298947,
+     "gain_vs_instantaneous": 0.0,
+     "paired_amp_px": 0.0,
+     "paired_boxcar_px": 0.152159,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.0,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.02,
+     "f_hz": 8.5532,
+     "mode_equivalent": 8.000011,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.0
+     },
+     "trace_width_ratio": 0.0,
+     "instantaneous_px": 65.847348,
+     "boxcar_px": 0.240576,
+     "gain_vs_instantaneous": 0.0,
+     "paired_amp_px": 0.0,
+     "paired_boxcar_px": 0.132918,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.0,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.02,
+     "f_hz": 9.6223,
+     "mode_equivalent": 8.999966,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.0
+     },
+     "trace_width_ratio": 0.0,
+     "instantaneous_px": 56.082812,
+     "boxcar_px": 0.294864,
+     "gain_vs_instantaneous": 0.0,
+     "paired_amp_px": 0.0,
+     "paired_boxcar_px": 0.191276,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.0,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.02,
+     "f_hz": 10.6915,
+     "mode_equivalent": 10.000014,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.0
+     },
+     "trace_width_ratio": 0.0,
+     "instantaneous_px": 42.794601,
+     "boxcar_px": 3.795e-05,
+     "gain_vs_instantaneous": 0.0,
+     "paired_amp_px": 0.0,
+     "paired_boxcar_px": 3.226e-05,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.0,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    }
+   ]
+  },
+  "point_on_clutter": {
+   "still_windows_passing": 0,
+   "still_exact_zero": 0.566246,
+   "rows": [
+    {
+     "v_m_s": 0.002,
+     "f_hz": 0.1,
+     "mode_equivalent": 0.093532,
+     "pair_amp_px": {
+      "range": 0.0001044,
+      "azimuth": 0.005236
+     },
+     "trace_width_ratio": 0.019285,
+     "instantaneous_px": 0.170994,
+     "boxcar_px": 0.086598,
+     "gain_vs_instantaneous": 0.030623,
+     "paired_amp_px": 1.665196,
+     "paired_boxcar_px": 1.842457,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.078267,
+     "pair_share_of_present": 0.066904,
+     "image_over_boxcar": 0.903791
+    },
+    {
+     "v_m_s": 0.002,
+     "f_hz": 0.26,
+     "mode_equivalent": 0.243184,
+     "pair_amp_px": {
+      "range": 0.0002437,
+      "azimuth": 0.006237
+     },
+     "trace_width_ratio": 0.009587,
+     "instantaneous_px": 0.444349,
+     "boxcar_px": 0.089457,
+     "gain_vs_instantaneous": 0.014036,
+     "paired_amp_px": 0.071422,
+     "paired_boxcar_px": 0.732415,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.008723,
+     "pair_share_of_present": null,
+     "image_over_boxcar": 0.097516
+    },
+    {
+     "v_m_s": 0.002,
+     "f_hz": 0.5,
+     "mode_equivalent": 0.467662,
+     "pair_amp_px": {
+      "range": 0.0001014,
+      "azimuth": 0.001374
+     },
+     "trace_width_ratio": 0.001661,
+     "instantaneous_px": 0.853082,
+     "boxcar_px": 0.001987,
+     "gain_vs_instantaneous": 0.001611,
+     "paired_amp_px": 0.070592,
+     "paired_boxcar_px": 0.008472,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.016553,
+     "pair_share_of_present": null,
+     "image_over_boxcar": 8.331985
+    },
+    {
+     "v_m_s": 0.002,
+     "f_hz": 1.0691,
+     "mode_equivalent": 0.999955,
+     "pair_amp_px": {
+      "range": 0.0001713,
+      "azimuth": 0.0003778
+     },
+     "trace_width_ratio": 0.203697,
+     "instantaneous_px": 1.809087,
+     "boxcar_px": 0.08555,
+     "gain_vs_instantaneous": 0.0002089,
+     "paired_amp_px": 0.001873,
+     "paired_boxcar_px": 0.17204,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.0009314,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.002,
+     "f_hz": 2.1383,
+     "mode_equivalent": 2.000003,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.002212
+     },
+     "trace_width_ratio": 0.0,
+     "instantaneous_px": 3.504705,
+     "boxcar_px": 0.051231,
+     "gain_vs_instantaneous": 0.0006311,
+     "paired_amp_px": 0.0,
+     "paired_boxcar_px": 0.05318,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.0,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.002,
+     "f_hz": 3.2074,
+     "mode_equivalent": 2.999957,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.001175
+     },
+     "trace_width_ratio": 0.0,
+     "instantaneous_px": 4.980043,
+     "boxcar_px": 0.048463,
+     "gain_vs_instantaneous": 0.0002359,
+     "paired_amp_px": 0.0,
+     "paired_boxcar_px": 0.035404,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.0,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.002,
+     "f_hz": 3.66,
+     "mode_equivalent": 3.423285,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.001202
+     },
+     "trace_width_ratio": 0.0,
+     "instantaneous_px": 5.515123,
+     "boxcar_px": 0.022603,
+     "gain_vs_instantaneous": 0.000218,
+     "paired_amp_px": 0.0,
+     "paired_boxcar_px": 0.01491,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.0,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.002,
+     "f_hz": 4.2766,
+     "mode_equivalent": 4.000006,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.0003451
+     },
+     "trace_width_ratio": 0.0,
+     "instantaneous_px": 6.1427,
+     "boxcar_px": 0.072642,
+     "gain_vs_instantaneous": 5.618e-05,
+     "paired_amp_px": 0.0,
+     "paired_boxcar_px": 0.043022,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.0,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.002,
+     "f_hz": 5.3457,
+     "mode_equivalent": 4.99996,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.0006886
+     },
+     "trace_width_ratio": 0.0,
+     "instantaneous_px": 6.919439,
+     "boxcar_px": 7.086e-05,
+     "gain_vs_instantaneous": 9.952e-05,
+     "paired_amp_px": 0.0,
+     "paired_boxcar_px": 3.725e-05,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.0,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.002,
+     "f_hz": 6.4149,
+     "mode_equivalent": 6.000008,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.0003363
+     },
+     "trace_width_ratio": 0.0,
+     "instantaneous_px": 7.261612,
+     "boxcar_px": 0.057246,
+     "gain_vs_instantaneous": 4.632e-05,
+     "paired_amp_px": 0.0,
+     "paired_boxcar_px": 0.02868,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.0,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.002,
+     "f_hz": 7.484,
+     "mode_equivalent": 6.999963,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.0003626
+     },
+     "trace_width_ratio": 8.342e-18,
+     "instantaneous_px": 7.147665,
+     "boxcar_px": 0.029895,
+     "gain_vs_instantaneous": 5.073e-05,
+     "paired_amp_px": 0.0,
+     "paired_boxcar_px": 0.015216,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.0,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.002,
+     "f_hz": 8.5532,
+     "mode_equivalent": 8.000011,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.0001219
+     },
+     "trace_width_ratio": 0.0,
+     "instantaneous_px": 6.584735,
+     "boxcar_px": 0.024058,
+     "gain_vs_instantaneous": 1.852e-05,
+     "paired_amp_px": 0.0,
+     "paired_boxcar_px": 0.013292,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.0,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.002,
+     "f_hz": 9.6223,
+     "mode_equivalent": 8.999966,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.0001883
+     },
+     "trace_width_ratio": 0.0,
+     "instantaneous_px": 5.608281,
+     "boxcar_px": 0.029486,
+     "gain_vs_instantaneous": 3.357e-05,
+     "paired_amp_px": 0.0,
+     "paired_boxcar_px": 0.019128,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.0,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.002,
+     "f_hz": 10.6915,
+     "mode_equivalent": 10.000014,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.0001741
+     },
+     "trace_width_ratio": 0.0,
+     "instantaneous_px": 4.27946,
+     "boxcar_px": 3.795e-06,
+     "gain_vs_instantaneous": 4.068e-05,
+     "paired_amp_px": 0.0,
+     "paired_boxcar_px": 3.226e-06,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.0,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.02,
+     "f_hz": 0.1,
+     "mode_equivalent": 0.093532,
+     "pair_amp_px": {
+      "range": 0.001298,
+      "azimuth": 0.026603
+     },
+     "trace_width_ratio": 0.048778,
+     "instantaneous_px": 1.70994,
+     "boxcar_px": 0.865984,
+     "gain_vs_instantaneous": 0.015558,
+     "paired_amp_px": 0.443827,
+     "paired_boxcar_px": 18.424567,
+     "windows_passing": 5,
+     "modes_passing": {
+      "1": 2,
+      "4": 3
+     },
+     "present_between_images_px": 0.020861,
+     "pair_share_of_present": null,
+     "image_over_boxcar": 0.024089
+    },
+    {
+     "v_m_s": 0.02,
+     "f_hz": 0.26,
+     "mode_equivalent": 0.243184,
+     "pair_amp_px": {
+      "range": 0.00171,
+      "azimuth": 0.027613
+     },
+     "trace_width_ratio": 0.060164,
+     "instantaneous_px": 4.443487,
+     "boxcar_px": 0.894566,
+     "gain_vs_instantaneous": 0.006214,
+     "paired_amp_px": 3.321444,
+     "paired_boxcar_px": 7.324145,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.405679,
+     "pair_share_of_present": 0.068067,
+     "image_over_boxcar": 0.453492
+    },
+    {
+     "v_m_s": 0.02,
+     "f_hz": 0.5,
+     "mode_equivalent": 0.467662,
+     "pair_amp_px": {
+      "range": 0.0005961,
+      "azimuth": 0.017991
+     },
+     "trace_width_ratio": 0.019118,
+     "instantaneous_px": 8.530821,
+     "boxcar_px": 0.019867,
+     "gain_vs_instantaneous": 0.002109,
+     "paired_amp_px": 4.14785,
+     "paired_boxcar_px": 0.084724,
+     "windows_passing": 4,
+     "modes_passing": {
+      "1": 4
+     },
+     "present_between_images_px": 0.972625,
+     "pair_share_of_present": 0.018497,
+     "image_over_boxcar": 48.957293
+    },
+    {
+     "v_m_s": 0.02,
+     "f_hz": 1.0691,
+     "mode_equivalent": 0.999955,
+     "pair_amp_px": {
+      "range": 0.0009092,
+      "azimuth": 0.003789
+     },
+     "trace_width_ratio": 0.121792,
+     "instantaneous_px": 18.090875,
+     "boxcar_px": 0.855503,
+     "gain_vs_instantaneous": 0.0002094,
+     "paired_amp_px": 0.049162,
+     "paired_boxcar_px": 1.720403,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.024447,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.02,
+     "f_hz": 2.1383,
+     "mode_equivalent": 2.000003,
+     "pair_amp_px": {
+      "range": 0.0003132,
+      "azimuth": 0.016824
+     },
+     "trace_width_ratio": 0.003632,
+     "instantaneous_px": 35.047047,
+     "boxcar_px": 0.512309,
+     "gain_vs_instantaneous": 0.00048,
+     "paired_amp_px": 0.014332,
+     "paired_boxcar_px": 0.531801,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.013807,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.02,
+     "f_hz": 3.2074,
+     "mode_equivalent": 2.999957,
+     "pair_amp_px": {
+      "range": 0.0003562,
+      "azimuth": 0.009021
+     },
+     "trace_width_ratio": 0.024991,
+     "instantaneous_px": 49.800427,
+     "boxcar_px": 0.484633,
+     "gain_vs_instantaneous": 0.0001811,
+     "paired_amp_px": 0.008654,
+     "paired_boxcar_px": 0.354037,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.011846,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.02,
+     "f_hz": 3.66,
+     "mode_equivalent": 3.423285,
+     "pair_amp_px": {
+      "range": 0.0002709,
+      "azimuth": 0.00935
+     },
+     "trace_width_ratio": 0.003887,
+     "instantaneous_px": 55.151228,
+     "boxcar_px": 0.226029,
+     "gain_vs_instantaneous": 0.0001695,
+     "paired_amp_px": 0.006549,
+     "paired_boxcar_px": 0.1491,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.009927,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.02,
+     "f_hz": 4.2766,
+     "mode_equivalent": 4.000006,
+     "pair_amp_px": {
+      "range": 0.0002063,
+      "azimuth": 0.002835
+     },
+     "trace_width_ratio": 0.068689,
+     "instantaneous_px": 61.426997,
+     "boxcar_px": 0.726417,
+     "gain_vs_instantaneous": 4.616e-05,
+     "paired_amp_px": 0.0,
+     "paired_boxcar_px": 0.430225,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.0,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.02,
+     "f_hz": 5.3457,
+     "mode_equivalent": 4.99996,
+     "pair_amp_px": {
+      "range": 0.0001804,
+      "azimuth": 0.00646
+     },
+     "trace_width_ratio": 0.01234,
+     "instantaneous_px": 69.194386,
+     "boxcar_px": 0.0007086,
+     "gain_vs_instantaneous": 9.337e-05,
+     "paired_amp_px": 0.0,
+     "paired_boxcar_px": 0.0003725,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.0,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.02,
+     "f_hz": 6.4149,
+     "mode_equivalent": 6.000008,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.002094
+     },
+     "trace_width_ratio": 0.0,
+     "instantaneous_px": 72.616117,
+     "boxcar_px": 0.572458,
+     "gain_vs_instantaneous": 2.884e-05,
+     "paired_amp_px": 0.0,
+     "paired_boxcar_px": 0.2868,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.0,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.02,
+     "f_hz": 7.484,
+     "mode_equivalent": 6.999963,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.002731
+     },
+     "trace_width_ratio": 0.0,
+     "instantaneous_px": 71.476649,
+     "boxcar_px": 0.298947,
+     "gain_vs_instantaneous": 3.821e-05,
+     "paired_amp_px": 0.0,
+     "paired_boxcar_px": 0.152159,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.0,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.02,
+     "f_hz": 8.5532,
+     "mode_equivalent": 8.000011,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.001757
+     },
+     "trace_width_ratio": 0.0,
+     "instantaneous_px": 65.847348,
+     "boxcar_px": 0.240576,
+     "gain_vs_instantaneous": 2.668e-05,
+     "paired_amp_px": 0.0,
+     "paired_boxcar_px": 0.132918,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.0,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.02,
+     "f_hz": 9.6223,
+     "mode_equivalent": 8.999966,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.0003888
+     },
+     "trace_width_ratio": 0.0,
+     "instantaneous_px": 56.082812,
+     "boxcar_px": 0.294864,
+     "gain_vs_instantaneous": 6.933e-06,
+     "paired_amp_px": 0.0,
+     "paired_boxcar_px": 0.191276,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.0,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.02,
+     "f_hz": 10.6915,
+     "mode_equivalent": 10.000014,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.001057
+     },
+     "trace_width_ratio": 1.56e-17,
+     "instantaneous_px": 42.794601,
+     "boxcar_px": 3.795e-05,
+     "gain_vs_instantaneous": 2.47e-05,
+     "paired_amp_px": 0.0,
+     "paired_boxcar_px": 3.226e-05,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.0,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    }
+   ]
+  },
+  "texture": {
+   "still_windows_passing": 24,
+   "still_exact_zero": 0.37224,
+   "rows": [
+    {
+     "v_m_s": 0.002,
+     "f_hz": 0.1,
+     "mode_equivalent": 0.093532,
+     "pair_amp_px": {
+      "range": 0.0002527,
+      "azimuth": 0.001704
+     },
+     "trace_width_ratio": 0.145441,
+     "instantaneous_px": 0.170994,
+     "boxcar_px": 0.086598,
+     "gain_vs_instantaneous": 0.009968,
+     "paired_amp_px": 2.294032,
+     "paired_boxcar_px": 1.842457,
+     "windows_passing": 3,
+     "modes_passing": {
+      "1": 3
+     },
+     "present_between_images_px": 0.107823,
+     "pair_share_of_present": 0.015808,
+     "image_over_boxcar": 1.245094
+    },
+    {
+     "v_m_s": 0.002,
+     "f_hz": 0.26,
+     "mode_equivalent": 0.243184,
+     "pair_amp_px": {
+      "range": 0.0003268,
+      "azimuth": 0.001206
+     },
+     "trace_width_ratio": 0.114664,
+     "instantaneous_px": 0.444349,
+     "boxcar_px": 0.089457,
+     "gain_vs_instantaneous": 0.002714,
+     "paired_amp_px": 0.08285,
+     "paired_boxcar_px": 0.732415,
+     "windows_passing": 9,
+     "modes_passing": {
+      "1": 5,
+      "3": 4
+     },
+     "present_between_images_px": 0.010119,
+     "pair_share_of_present": null,
+     "image_over_boxcar": 0.113119
+    },
+    {
+     "v_m_s": 0.002,
+     "f_hz": 0.5,
+     "mode_equivalent": 0.467662,
+     "pair_amp_px": {
+      "range": 0.0006353,
+      "azimuth": 0.0001161
+     },
+     "trace_width_ratio": 0.012148,
+     "instantaneous_px": 0.853082,
+     "boxcar_px": 0.001987,
+     "gain_vs_instantaneous": 0.0001361,
+     "paired_amp_px": 0.07696,
+     "paired_boxcar_px": 0.008472,
+     "windows_passing": 22,
+     "modes_passing": {
+      "1": 5,
+      "3": 17
+     },
+     "present_between_images_px": 0.018046,
+     "pair_share_of_present": null,
+     "image_over_boxcar": 9.083666
+    },
+    {
+     "v_m_s": 0.002,
+     "f_hz": 1.0691,
+     "mode_equivalent": 0.999955,
+     "pair_amp_px": {
+      "range": 0.0002581,
+      "azimuth": 0.0005767
+     },
+     "trace_width_ratio": 0.065838,
+     "instantaneous_px": 1.809087,
+     "boxcar_px": 0.08555,
+     "gain_vs_instantaneous": 0.0003188,
+     "paired_amp_px": 0.005022,
+     "paired_boxcar_px": 0.17204,
+     "windows_passing": 14,
+     "modes_passing": {
+      "1": 4,
+      "3": 10
+     },
+     "present_between_images_px": 0.002497,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.002,
+     "f_hz": 2.1383,
+     "mode_equivalent": 2.000003,
+     "pair_amp_px": {
+      "range": 0.0001696,
+      "azimuth": 0.0003856
+     },
+     "trace_width_ratio": 0.364492,
+     "instantaneous_px": 3.504705,
+     "boxcar_px": 0.051231,
+     "gain_vs_instantaneous": 0.00011,
+     "paired_amp_px": 0.003958,
+     "paired_boxcar_px": 0.05318,
+     "windows_passing": 24,
+     "modes_passing": {
+      "1": 9,
+      "3": 12,
+      "4": 3
+     },
+     "present_between_images_px": 0.003813,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.002,
+     "f_hz": 3.2074,
+     "mode_equivalent": 2.999957,
+     "pair_amp_px": {
+      "range": 0.0001174,
+      "azimuth": 0.0003028
+     },
+     "trace_width_ratio": 0.218846,
+     "instantaneous_px": 4.980043,
+     "boxcar_px": 0.048463,
+     "gain_vs_instantaneous": 6.081e-05,
+     "paired_amp_px": 0.001938,
+     "paired_boxcar_px": 0.035404,
+     "windows_passing": 26,
+     "modes_passing": {
+      "1": 9,
+      "3": 17
+     },
+     "present_between_images_px": 0.002652,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.002,
+     "f_hz": 3.66,
+     "mode_equivalent": 3.423285,
+     "pair_amp_px": {
+      "range": 2.787e-05,
+      "azimuth": 0.0001196
+     },
+     "trace_width_ratio": 0.106449,
+     "instantaneous_px": 5.515123,
+     "boxcar_px": 0.022603,
+     "gain_vs_instantaneous": 2.169e-05,
+     "paired_amp_px": 0.0,
+     "paired_boxcar_px": 0.01491,
+     "windows_passing": 17,
+     "modes_passing": {
+      "1": 1,
+      "3": 16
+     },
+     "present_between_images_px": 0.0,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.002,
+     "f_hz": 4.2766,
+     "mode_equivalent": 4.000006,
+     "pair_amp_px": {
+      "range": 0.0001445,
+      "azimuth": 0.0001803
+     },
+     "trace_width_ratio": 0.742712,
+     "instantaneous_px": 6.1427,
+     "boxcar_px": 0.072642,
+     "gain_vs_instantaneous": 2.935e-05,
+     "paired_amp_px": 0.0,
+     "paired_boxcar_px": 0.043022,
+     "windows_passing": 24,
+     "modes_passing": {
+      "1": 8,
+      "3": 16
+     },
+     "present_between_images_px": 0.0,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.002,
+     "f_hz": 5.3457,
+     "mode_equivalent": 4.99996,
+     "pair_amp_px": {
+      "range": 0.0001198,
+      "azimuth": 0.0001198
+     },
+     "trace_width_ratio": 0.73455,
+     "instantaneous_px": 6.919439,
+     "boxcar_px": 7.086e-05,
+     "gain_vs_instantaneous": 1.731e-05,
+     "paired_amp_px": 0.0,
+     "paired_boxcar_px": 3.725e-05,
+     "windows_passing": 24,
+     "modes_passing": {
+      "1": 8,
+      "3": 16
+     },
+     "present_between_images_px": 0.0,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.002,
+     "f_hz": 6.4149,
+     "mode_equivalent": 6.000008,
+     "pair_amp_px": {
+      "range": 0.0001175,
+      "azimuth": 0.0001165
+     },
+     "trace_width_ratio": 0.22459,
+     "instantaneous_px": 7.261612,
+     "boxcar_px": 0.057246,
+     "gain_vs_instantaneous": 1.604e-05,
+     "paired_amp_px": 0.0,
+     "paired_boxcar_px": 0.02868,
+     "windows_passing": 24,
+     "modes_passing": {
+      "1": 8,
+      "3": 16
+     },
+     "present_between_images_px": 0.0,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.002,
+     "f_hz": 7.484,
+     "mode_equivalent": 6.999963,
+     "pair_amp_px": {
+      "range": 3.974e-05,
+      "azimuth": 0.0003155
+     },
+     "trace_width_ratio": 0.084063,
+     "instantaneous_px": 7.147665,
+     "boxcar_px": 0.029895,
+     "gain_vs_instantaneous": 4.414e-05,
+     "paired_amp_px": 0.0,
+     "paired_boxcar_px": 0.015216,
+     "windows_passing": 13,
+     "modes_passing": {
+      "1": 1,
+      "3": 12
+     },
+     "present_between_images_px": 0.0,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.002,
+     "f_hz": 8.5532,
+     "mode_equivalent": 8.000011,
+     "pair_amp_px": {
+      "range": 6.364e-05,
+      "azimuth": 0.0001953
+     },
+     "trace_width_ratio": 0.293397,
+     "instantaneous_px": 6.584735,
+     "boxcar_px": 0.024058,
+     "gain_vs_instantaneous": 2.966e-05,
+     "paired_amp_px": 0.0,
+     "paired_boxcar_px": 0.013292,
+     "windows_passing": 24,
+     "modes_passing": {
+      "1": 8,
+      "3": 16
+     },
+     "present_between_images_px": 0.0,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.002,
+     "f_hz": 9.6223,
+     "mode_equivalent": 8.999966,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.0001249
+     },
+     "trace_width_ratio": 0.0,
+     "instantaneous_px": 5.608281,
+     "boxcar_px": 0.029486,
+     "gain_vs_instantaneous": 2.228e-05,
+     "paired_amp_px": 0.0,
+     "paired_boxcar_px": 0.019128,
+     "windows_passing": 24,
+     "modes_passing": {
+      "1": 8,
+      "3": 16
+     },
+     "present_between_images_px": 0.0,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.002,
+     "f_hz": 10.6915,
+     "mode_equivalent": 10.000014,
+     "pair_amp_px": {
+      "range": 0.0,
+      "azimuth": 0.0001202
+     },
+     "trace_width_ratio": 0.0,
+     "instantaneous_px": 4.27946,
+     "boxcar_px": 3.795e-06,
+     "gain_vs_instantaneous": 2.81e-05,
+     "paired_amp_px": 0.0,
+     "paired_boxcar_px": 3.226e-06,
+     "windows_passing": 24,
+     "modes_passing": {
+      "1": 8,
+      "3": 16
+     },
+     "present_between_images_px": 0.0,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.02,
+     "f_hz": 0.1,
+     "mode_equivalent": 0.093532,
+     "pair_amp_px": {
+      "range": 0.0008924,
+      "azimuth": 0.00156
+     },
+     "trace_width_ratio": 0.567018,
+     "instantaneous_px": 1.70994,
+     "boxcar_px": 0.865984,
+     "gain_vs_instantaneous": 0.0009123,
+     "paired_amp_px": 1.194139,
+     "paired_boxcar_px": 18.424567,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.056126,
+     "pair_share_of_present": 0.027794,
+     "image_over_boxcar": 0.064812
+    },
+    {
+     "v_m_s": 0.02,
+     "f_hz": 0.26,
+     "mode_equivalent": 0.243184,
+     "pair_amp_px": {
+      "range": 0.0007281,
+      "azimuth": 0.002052
+     },
+     "trace_width_ratio": 0.058717,
+     "instantaneous_px": 4.443487,
+     "boxcar_px": 0.894566,
+     "gain_vs_instantaneous": 0.0004618,
+     "paired_amp_px": 2.009595,
+     "paired_boxcar_px": 7.324145,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.245451,
+     "pair_share_of_present": 0.008361,
+     "image_over_boxcar": 0.274379
+    },
+    {
+     "v_m_s": 0.02,
+     "f_hz": 0.5,
+     "mode_equivalent": 0.467662,
+     "pair_amp_px": {
+      "range": 0.001391,
+      "azimuth": 0.006958
+     },
+     "trace_width_ratio": 0.027853,
+     "instantaneous_px": 8.530821,
+     "boxcar_px": 0.019867,
+     "gain_vs_instantaneous": 0.0008156,
+     "paired_amp_px": 5.063294,
+     "paired_boxcar_px": 0.084724,
+     "windows_passing": 8,
+     "modes_passing": {
+      "1": 8
+     },
+     "present_between_images_px": 1.187287,
+     "pair_share_of_present": 0.00586,
+     "image_over_boxcar": 59.762324
+    },
+    {
+     "v_m_s": 0.02,
+     "f_hz": 1.0691,
+     "mode_equivalent": 0.999955,
+     "pair_amp_px": {
+      "range": 0.001078,
+      "azimuth": 0.005158
+     },
+     "trace_width_ratio": 0.057343,
+     "instantaneous_px": 18.090875,
+     "boxcar_px": 0.855503,
+     "gain_vs_instantaneous": 0.0002851,
+     "paired_amp_px": 0.06168,
+     "paired_boxcar_px": 1.720403,
+     "windows_passing": 0,
+     "modes_passing": {},
+     "present_between_images_px": 0.030672,
+     "pair_share_of_present": null,
+     "image_over_boxcar": 0.035852
+    },
+    {
+     "v_m_s": 0.02,
+     "f_hz": 2.1383,
+     "mode_equivalent": 2.000003,
+     "pair_amp_px": {
+      "range": 0.0003679,
+      "azimuth": 0.002097
+     },
+     "trace_width_ratio": 0.074198,
+     "instantaneous_px": 35.047047,
+     "boxcar_px": 0.512309,
+     "gain_vs_instantaneous": 5.982e-05,
+     "paired_amp_px": 0.033542,
+     "paired_boxcar_px": 0.531801,
+     "windows_passing": 53,
+     "modes_passing": {
+      "1": 41,
+      "3": 2,
+      "4": 10
+     },
+     "present_between_images_px": 0.032313,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.02,
+     "f_hz": 3.2074,
+     "mode_equivalent": 2.999957,
+     "pair_amp_px": {
+      "range": 0.0007494,
+      "azimuth": 0.001105
+     },
+     "trace_width_ratio": 0.095346,
+     "instantaneous_px": 49.800427,
+     "boxcar_px": 0.484633,
+     "gain_vs_instantaneous": 2.22e-05,
+     "paired_amp_px": 0.017336,
+     "paired_boxcar_px": 0.354037,
+     "windows_passing": 19,
+     "modes_passing": {
+      "3": 19
+     },
+     "present_between_images_px": 0.023731,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.02,
+     "f_hz": 3.66,
+     "mode_equivalent": 3.423285,
+     "pair_amp_px": {
+      "range": 0.0001186,
+      "azimuth": 0.0006709
+     },
+     "trace_width_ratio": 0.066802,
+     "instantaneous_px": 55.151228,
+     "boxcar_px": 0.226029,
+     "gain_vs_instantaneous": 1.216e-05,
+     "paired_amp_px": 0.012949,
+     "paired_boxcar_px": 0.1491,
+     "windows_passing": 40,
+     "modes_passing": {
+      "1": 26,
+      "3": 8,
+      "4": 6
+     },
+     "present_between_images_px": 0.01963,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.02,
+     "f_hz": 4.2766,
+     "mode_equivalent": 4.000006,
+     "pair_amp_px": {
+      "range": 0.0002514,
+      "azimuth": 0.0008173
+     },
+     "trace_width_ratio": 0.283036,
+     "instantaneous_px": 61.426997,
+     "boxcar_px": 0.726417,
+     "gain_vs_instantaneous": 1.33e-05,
+     "paired_amp_px": 0.001949,
+     "paired_boxcar_px": 0.430225,
+     "windows_passing": 4,
+     "modes_passing": {
+      "3": 4
+     },
+     "present_between_images_px": 0.00329,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.02,
+     "f_hz": 5.3457,
+     "mode_equivalent": 4.99996,
+     "pair_amp_px": {
+      "range": 8.55e-05,
+      "azimuth": 0.001065
+     },
+     "trace_width_ratio": 0.012682,
+     "instantaneous_px": 69.194386,
+     "boxcar_px": 0.0007086,
+     "gain_vs_instantaneous": 1.539e-05,
+     "paired_amp_px": 0.006946,
+     "paired_boxcar_px": 0.0003725,
+     "windows_passing": 30,
+     "modes_passing": {
+      "1": 8,
+      "3": 14,
+      "4": 8
+     },
+     "present_between_images_px": 0.013212,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.02,
+     "f_hz": 6.4149,
+     "mode_equivalent": 6.000008,
+     "pair_amp_px": {
+      "range": 0.0002626,
+      "azimuth": 0.0005502
+     },
+     "trace_width_ratio": 0.139448,
+     "instantaneous_px": 72.616117,
+     "boxcar_px": 0.572458,
+     "gain_vs_instantaneous": 7.577e-06,
+     "paired_amp_px": 0.00332,
+     "paired_boxcar_px": 0.2868,
+     "windows_passing": 13,
+     "modes_passing": {
+      "3": 9,
+      "4": 4
+     },
+     "present_between_images_px": 0.006626,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.02,
+     "f_hz": 7.484,
+     "mode_equivalent": 6.999963,
+     "pair_amp_px": {
+      "range": 0.0001692,
+      "azimuth": 0.001059
+     },
+     "trace_width_ratio": 0.15587,
+     "instantaneous_px": 71.476649,
+     "boxcar_px": 0.298947,
+     "gain_vs_instantaneous": 1.482e-05,
+     "paired_amp_px": 0.0008452,
+     "paired_boxcar_px": 0.152159,
+     "windows_passing": 14,
+     "modes_passing": {
+      "3": 11,
+      "4": 3
+     },
+     "present_between_images_px": 0.001661,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.02,
+     "f_hz": 8.5532,
+     "mode_equivalent": 8.000011,
+     "pair_amp_px": {
+      "range": 8.724e-05,
+      "azimuth": 0.002615
+     },
+     "trace_width_ratio": 0.001047,
+     "instantaneous_px": 65.847348,
+     "boxcar_px": 0.240576,
+     "gain_vs_instantaneous": 3.971e-05,
+     "paired_amp_px": 0.0001103,
+     "paired_boxcar_px": 0.132918,
+     "windows_passing": 10,
+     "modes_passing": {
+      "1": 1,
+      "3": 9
+     },
+     "present_between_images_px": 0.0001997,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.02,
+     "f_hz": 9.6223,
+     "mode_equivalent": 8.999966,
+     "pair_amp_px": {
+      "range": 0.0002874,
+      "azimuth": 0.0007933
+     },
+     "trace_width_ratio": 0.277768,
+     "instantaneous_px": 56.082812,
+     "boxcar_px": 0.294864,
+     "gain_vs_instantaneous": 1.415e-05,
+     "paired_amp_px": 0.0,
+     "paired_boxcar_px": 0.191276,
+     "windows_passing": 12,
+     "modes_passing": {
+      "1": 1,
+      "3": 11
+     },
+     "present_between_images_px": 0.0,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    },
+    {
+     "v_m_s": 0.02,
+     "f_hz": 10.6915,
+     "mode_equivalent": 10.000014,
+     "pair_amp_px": {
+      "range": 0.0002197,
+      "azimuth": 0.0009962
+     },
+     "trace_width_ratio": 0.192639,
+     "instantaneous_px": 42.794601,
+     "boxcar_px": 3.795e-05,
+     "gain_vs_instantaneous": 2.328e-05,
+     "paired_amp_px": 0.0,
+     "paired_boxcar_px": 3.226e-05,
+     "windows_passing": 18,
+     "modes_passing": {
+      "1": 3,
+      "3": 11,
+      "4": 4
+     },
+     "present_between_images_px": 0.0,
+     "pair_share_of_present": null,
+     "image_over_boxcar": null
+    }
+   ]
+  }
+ },
+ "finding": "Measured through the reconstruction's own masks and registration, on simulated images of the 2022 geometry with motion put in through the Doppler-time mapping, the six-second images do carry a vibration, but not as a boxcar average: read against its motionless twin, a lone bright point's image moves by 0.062 to 45 times the boxcar value, depending on frequency (at 2 mm/s and 0.5 Hz, 0.129 px where the boxcar gives 0.0085 px). The pair registration then catches only part of the shift between its two images: 3% to 46% for the bright point and 0.6% to 2.8% for a 20 m block of texture, where that shift is resolvable. At 2 mm/s, some 40,000 times Giza's microseisms, the pair shifts change by at most 0.011 px for the point, about the 0.01 px rounding step, and 0.0017 px for texture. The moving point passes 0 of the first gate's windows at every frequency and both speeds, its trace a line; with clutter or texture the traces large enough to measure are at most 0.06 as wide as they are long, under the gate's 0.1, while still texture alone passes 24 windows."
+}

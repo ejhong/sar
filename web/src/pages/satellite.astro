@@ -17,6 +17,7 @@ import every from '../../public/data/runs/p2_11_every_way_in.json';
 import realpass from '../../public/data/runs/p2_12_real_pass.json';
 import gates from '../../public/data/runs/p2_13_gates.json';
 import own from '../../public/data/runs/p2_14_own_lines.json';
+import resp from '../../public/data/runs/p2_15_pair_response.json';
 import passive from '../../public/data/runs/p1_04_ambient.json';
 import echo from '../../public/data/runs/p1_03_scattered.json';
 import Figure from '../components/Figure.astro';
@@ -144,11 +145,6 @@ const gRuns = gates.runs as { real: number; twins: number[]; planted: number; de
 const gg = gates.gate;
 const gSpan = gates.pair_span_s as number;
 const gModeHz = gg.mode_hz as number[];
-const gGain = gg.look_gain as number[];
-const gNull = gModeHz.filter((_, i) => gGain[i] < 1e-5); // a whole number of cycles in the image: under a hundred-thousandth
-const gLong = 1 / Math.max(...(gg.trace_width_ratio as number[]));
-const gUnit = 10 ** (Math.floor(Math.log10(gLong)) - 1);
-const gThin = Math.floor(gLong / gUnit) * gUnit; // rounded down: "at least"
 const gSets = gates.sets as unknown as { cases: Record<string, { sides: Record<string, GSide> }> }[];
 const gMean = (pick: (c: string) => boolean, key: keyof GSide) => {
   const v = gSets.flatMap((st) => Object.entries(st.cases).filter(([c]) => pick(c)).flatMap(([, r]) => Object.values(r.sides)));
@@ -178,7 +174,6 @@ const gDots = gGroups
     return { name, x: f.map((x) => x.mode + dx), y: f.map((x) => x.best_depth_m), color, markers: true, width: 0 };
   })
   .filter((d) => d.x.length);
-const gF = Array.from({ length: 1001 }, (_, i) => 0.9 + i * 0.01);
 const gPlural = (n: number, one: string, many = `${one}s`) => `${n.toLocaleString('en-US')} ${n === 1 ? one : many}`;
 const gatesVerdict =
   `With nothing moving and nothing inside, the two twins pass ${gc.twins.join(' and ')} positions (${gRuns.twins.join(' and ')} features); ` +
@@ -214,15 +209,28 @@ const oRate = own.doppler_rate_hz_s as number;
 const oSpan = own.image_span_s as number;
 const oSpread = Math.max(...Object.values(own.steering as Record<string, { zero_doppler_spread_s: number }>).map((s) => s.zero_doppler_spread_s));
 const oFrameMs = (1000 * (gates.manifest.params.bank.k_leap_hz as number)) / oRate;
+// ---- P2-15
+type RRow = { v_m_s: number; f_hz: number; pair_amp_px: { range: number; azimuth: number }; boxcar_px: number; paired_amp_px: number; paired_boxcar_px: number; pair_share_of_present: number | null; image_over_boxcar: number | null; windows_passing: number; trace_width_ratio: number };
+const rScenes = resp.scenes as unknown as Record<string, { rows: RRow[]; still_windows_passing: number }>;
+const rRows = (sc: string, v: number) => rScenes[sc].rows.filter((r) => r.v_m_s === v && r.pair_amp_px.azimuth >= 1e-4).sort((a, b) => a.f_hz - b.f_hz);
+const rSpan = (vals: (number | null)[]) => { const v = vals.filter((x): x is number => x !== null); return [Math.min(...v), Math.max(...v)]; };
+const rImg = rSpan(rScenes.point.rows.map((r) => r.image_over_boxcar));
+const rSharePt = rSpan(rScenes.point.rows.map((r) => r.pair_share_of_present));
+const rShareTx = rSpan(rScenes.texture.rows.map((r) => r.pair_share_of_present).map((x) => (x === null ? null : x * 100)));
+const rMaxPt2 = Math.max(...rScenes.point.rows.filter((r) => r.v_m_s === 0.002).map((r) => r.pair_amp_px.azimuth));
+const rMaxTx2 = Math.max(...rScenes.texture.rows.filter((r) => r.v_m_s === 0.002).map((r) => r.pair_amp_px.azimuth));
+const rPointWindows = rScenes.point.rows.reduce((acc, r) => acc + r.windows_passing, 0);
+const rWidth = Math.max(...['point_on_clutter', 'texture'].flatMap((sc) => rScenes[sc].rows.filter((r) => r.pair_amp_px.azimuth >= 0.005).map((r) => r.trace_width_ratio)));
 ---
 <Doc
   title="The satellite over the same ground"
-  kicker="From orbit · why one radar image cannot"
+  kicker="From orbit · what one radar image can show, and what it has not"
   current="satellite"
-  lede="Here the real ICEYE pass over Giza is simulated, pixel by pixel, over ground whose chambers and motion are known, and checked on its real image. The answer is no, for three reasons that do not depend on one another: one image cannot see ordinary ground move, a chamber barely changes how the ground moves, and the published depth is only the frequency of the motion. Every other route from a buried room to a radar is closed as well."
-  state="status · answered · 28 September 2026 · simulated on the real Giza geometry, checked on its real image"
+  lede="Can one satellite radar image show chambers under the ground? Here the real ICEYE passes over Giza are simulated over ground whose contents are known, and the published method and a stricter reconstruction of it are run on the real images beside controls. The methods tested here do not establish subsurface imaging: their depth axis is a frequency axis of the image registration, with a repeat and a mirror, not a validated depth; the patterns their gates select also appear in images with nothing moving and nothing inside; and in our models the motion a small chamber adds at Giza's ambient level lies far below what these registrations pick up. Single images can measure strong vibration of bright targets. Where these conclusions rest on models, and what would test them, is set out below."
+  state="status · tested, not closed · 29 September 2026 · revised after an independent review"
   index={[
-    { id: 'verdict', label: 'The verdict' },
+    { id: 'verdict', label: 'Where it stands' },
+    { id: 'sure', label: 'How sure' },
     { id: 'questions', label: 'Four questions' },
     { id: 'geometry', label: 'The real geometry' },
     { id: 'blind', label: 'What one dwell sees' },
@@ -233,48 +241,70 @@ const oFrameMs = (1000 * (gates.manifest.params.bank.k_leap_hz as number)) / oRa
     { id: 'pillars', label: 'Pillars and boxes' },
     { id: 'gates', label: 'Stricter gates' },
     { id: 'sensors', label: 'Virtual sensors' },
-    { id: 'every', label: 'Every other route' },
+    { id: 'every', label: 'Other routes' },
     { id: 'real', label: 'The real pass' },
-    { id: 'rescue', label: 'What could rescue it' },
+    { id: 'rescue', label: 'What could change it' },
+    { id: 'settle', label: 'What would settle it' },
     { id: 'record', label: 'Corrections' },
   ]}
 >
   <section id="verdict">
-    <h2>One radar image cannot find a chamber, for three independent reasons</h2>
+    <h2>The methods tested here do not show chambers; the reasons differ in how much weight they bear</h2>
     <div class="stat-row">
-      <div class="stat"><span class="value">{pct(blk.gain_complex)}</span><span class="what">of a stretch of real ground’s motion recovered by registering one image’s looks against each other, as every single-image method does</span><span class="src">P2-03 · the real Giza image</span></div>
-      <div class="stat"><span class="value"><Sci v={imp.cases[0].imprint_over_motion} /></span><span class="what">the fraction of the ground’s own motion a 6 m chamber 15 m down changes, as a microseism passes</span><span class="src">P2-04 · the lab’s solver</span></div>
-      <div class="stat"><span class="value">{order(ground.shortfall!)}<small>×</small></span><span class="what">short: the smallest imprint a dwell could detect on the plateau, against the imprint there is ({order(bright.shortfall!)} on a bright scatterer)</span><span class="src">P2-05 · every advantage allowed</span></div>
-      <div class="stat"><span class="value">{mph.toFixed(2)}<small>m/Hz</small></span><span class="what">of published “depth” per hertz of ground motion, whatever lies below: the depth axis is a frequency axis</span><span class="src">P2-06 · the published focusing</span></div>
+      <div class="stat"><span class="value">{mph.toFixed(2)}<small>m/Hz</small></span><span class="what">of published “depth” per hertz of the registration’s oscillation, whatever lies below: the depth axis is a frequency axis, with a repeat and a mirror</span><span class="src">P2-06 · the published focusing, its algebra</span></div>
+      <div class="stat"><span class="value">{pct(blk.gain_complex)}</span><span class="what">of a stretch of real ground’s planted motion recovered by correlating one image’s looks against each other, the published way</span><span class="src">P2-03 · measured on the real Giza image, for that estimator</span></div>
+      <div class="stat"><span class="value"><Sci v={imp.cases[0].imprint_over_motion} /></span><span class="what">the fraction of the ground’s own motion a 6 m chamber 15 m down changes as a microseism passes, in uniform rock</span><span class="src">P2-04 · a quasi-static model</span></div>
+      <div class="stat"><span class="value">{order(ground.shortfall!)}<small>×</small></span><span class="what">short, in our model: the smallest imprint one dwell could detect on the plateau against the imprint modelled ({order(bright.shortfall!)} on a bright scatterer)</span><span class="src">P2-05 · a model, every advantage we could name allowed</span></div>
     </div>
     <p class="sub">
-      Each is sufficient alone. The first is about the estimator: <Term k="look">looks</Term> cut from one image share their
-      spectrum sample for sample, so correlating them cannot see motion. The second is about physics: ambient waves are
-      kilometres long and strain the rock around a chamber almost uniformly. The third is about the method’s algebra: its
-      steering grows with time, so its focusing is a Fourier transform over time. The measured record from the real
-      acquisitions (<a href={`${base}/archive/`}>the first investigation</a>) agrees, and three of its readings are corrected
-      below.
+      The first is a property of the processing and holds whatever the ground does: the published depth coordinate is the
+      frequency of each pixel’s registration series, and nothing yet supplied turns it into a physical depth; that would take a
+      model linking a buried object to the surface’s motion and to the radar’s reading, tested on known voids. The second is
+      measured, for complex correlation between one image’s <Term k="look">looks</Term> on real texture; bright points can be
+      tracked, and any other estimator needs its own measurement. The third and fourth rest on models: a small chamber in
+      uniform rock, shaken at Giza’s regional microseism level. Resonance, layering, larger structures or other forcing would
+      change their numbers, though the gaps they find are wide. None of this shows that no radar could ever sense anything
+      below the surface; it shows that these methods, as tested, do not. The measured record from the real acquisitions
+      (<a href={`${base}/archive/`}>the first investigation</a>) agrees, and several of its readings, and of ours, are
+      corrected below.
     </p>
   </section>
 
+  <section id="sure">
+    <h2>How sure: established, measured with limits, modelled, or open</h2>
+    <table class="data compact">
+      <thead><tr><th>claim</th><th>status</th><th>rests on</th><th>what would change it</th></tr></thead>
+      <tbody>
+        <tr><td>The published and reconstructed depth axes are frequency axes of the registration, with a repeat and a mirror</td><td>established</td><td>the processing’s algebra (P2-06), its code (P2-13, P2-14), an independent check</td><td>a physical model deriving depth from the registration, validated on known voids</td></tr>
+        <tr><td>Correlating one image’s looks registers little of ordinary ground’s motion</td><td>measured, for that estimator</td><td>P2-03 on real texture; an exact identity for whole images, an approximation for patches</td><td>an estimator shown to recover planted ground motion on real texture</td></tr>
+        <tr><td>The six-second pairs register little of a vibration</td><td>measured in simulation</td><td>P2-15, with motion put in through the Doppler-time mapping</td><td>pulse-level simulations, or shaker and reflector data, showing more</td></tr>
+        <tr><td>The gated reconstruction’s patterns also appear with nothing moving and nothing inside</td><td>measured, not a calibrated rate</td><td>two synthetic twins and open desert (P2-13, P2-14)</td><td>a frozen recipe that beats nulls with the same correlations on withheld truth</td></tr>
+        <tr><td>A small chamber changes ambient motion by under a ten-thousandth; one dwell falls far short</td><td>modelled</td><td>uniform rock, quasi-static strain, regional ambient level (P2-04, P2-05)</td><td>motion measured on the plateau during a pass; resonant or larger structures</td></tr>
+        <tr><td>Other routes carry far too little at X band</td><td>modelled estimates</td><td>penetration, loads, heat, surface (P2-11)</td><td>measured penetration in Mokattam limestone; deformation over known voids</td></tr>
+        <tr><td>Single images measure vibration of bright targets</td><td>established</td><td>2026 papers with ground truth; P2-03</td><td>none</td></tr>
+        <tr><td>Whether any single-image method could detect a subsurface influence on surface vibration</td><td>open</td><td>no forward model or blind test yet</td><td>the tests under <a href="#settle">What would settle it</a></td></tr>
+      </tbody>
+    </table>
+  </section>
+
   <section id="questions">
-    <h2>A satellite can measure a bright target shaking, not the ground trembling, and perfect measurements would not show a chamber</h2>
+    <h2>A satellite can measure a bright target shaking; in our tests ordinary ground’s trembling barely registers, and perfect measurements read the published way would not locate a chamber</h2>
     <div class="grid-2">
       <div class="note-card">
         <span class="tag measured">measured · 2026 papers, P2-03</span>
         <h3>Can a satellite measure vibration from one pass?</h3>
         <p>Yes, for bright, isolated targets that move a lot: in 2026, corner reflectors on shakers and a steel footbridge
-        were measured from orbit at {(eB.smallest_measured_m_s * 1e3).toFixed(2)} mm/s and up, to about 1 mm/s. Not for ordinary
-        ground. In one image, a patch of ground’s motion is nearly invisible to the looks ({pct(blk.gain_complex)} recovered on the
-        real Giza image), and Giza’s trembling is {sig2(eB.measured_over_trembling)} times below the
-        smallest motion ever measured from orbit. The 77 µm/s once quoted here was the scatter of a reading that does not respond
-        to the ground’s motion, not a sensitivity.</p>
+        were measured from orbit at {(eB.smallest_measured_m_s * 1e3).toFixed(2)} mm/s and up, to about 1 mm/s. Ordinary ground is
+        much harder. In our test on the real Giza image, correlating one image’s looks recovered {pct(blk.gain_complex)} of a patch
+        of ground’s planted motion, and Giza’s natural trembling is {sig2(eB.measured_over_trembling)} times below the smallest
+        motion measured from orbit so far. The 77 µm/s once quoted here was the scatter of a reading that barely responds to the
+        ground’s motion, not a sensitivity.</p>
       </div>
       <div class="note-card">
         <span class="tag simulated">simulated · P2-06, P1-04</span>
         <h3>If every pixel’s vibration were known perfectly, would it show a chamber?</h3>
         <p>Not by the published method: its depth is the frequency of the motion, so given the exact motion at every pixel it
-        draws the same picture over rock and over a chamber. Not by proper seismic imaging in one pass either: the ground’s
+        draws the same picture over rock and over a chamber. Nor, in our simulations, by passive seismic imaging within one pass: the ground’s
         trembling comes in waves kilometres long, too coarse to outline a room, and a pass lasts {gz.aperture_s.toFixed(1)} s.
         Even with short waves, perfect instruments on the ground and the rock known exactly, passive imaging shows the chamber
         no brighter than its surroundings after a minute of recording
@@ -285,8 +315,8 @@ const oFrameMs = (1000 * (gates.manifest.params.bank.k_leap_hz as number)) / oRa
       <div class="note-card">
         <span class="tag simulated">simulated · P2-09, P2-07</span>
         <h3>Isn’t a million virtual seismometers better than a few real ones?</h3>
-        <p>Only if they hear. Made into {vsens.sensors.n.toLocaleString('en-US')} virtual sensors and shaken by a wave put into the
-        image, they recover {pct(vsens.gains.complex)} of it read the published way. Averaging deaf sensors gives a precise zero.
+        <p>Only if they hear. In our test, made into {vsens.sensors.n.toLocaleString('en-US')} virtual sensors and shaken by a wave
+        put into the image, they recovered {pct(vsens.gains.complex)} of it read the published way. Averaging deaf sensors gives a precise zero.
         Where magnitudes hear a fifth, the chamber would need <Sci v={vsens.count.needed_for_chamber} p={0} /> sensors over it; the
         whole image holds <Sci v={vsens.count.in_image} p={0} />. Over the chamber, one pass’s reading wanders
         {' '}{sig2(ccmp.satellite_rms_m_s / ccmp.seismometer_rms_m_s)} times more than a real seismometer
@@ -294,13 +324,13 @@ const oFrameMs = (1000 * (gates.manifest.params.bank.k_leap_hz as number)) / oRa
       </div>
       <div class="note-card">
         <span class="tag simulated">simulated · P1-02 to P1-05, P2-03</span>
-        <h3>Seismic instruments find the chamber; why can’t the satellite?</h3>
+        <h3>Seismic instruments find the chamber; why doesn’t the satellite, here?</h3>
         <p>The ones that find it make their own waves. A hammer blow sends a sharp wave about {Math.round((imp.manifest.params.vs as number) / (echo.manifest.params.f0_hz as number))} m long,
         timed exactly, and instruments pressed against the ground record its echo within {Math.round((echo.manifest.params.record_s as number) * 1000)} ms: the
         chamber comes back {echo.score.contrast.toFixed(0)}× brighter than its surroundings. Listening to the ground’s own trembling instead works
         only weakly, even with perfect instruments ({passive.score.image_contrast_ensemble.toFixed(1)}× with unlimited listening). A satellite has no hammer,
-        listens for {gz.aperture_s.toFixed(1)} s, cannot hear ordinary ground tremble, and its looks follow only motion slower than about a third of a hertz,
-        whose waves are kilometres long.</p>
+        listens for {gz.aperture_s.toFixed(1)} s, registers little of ordinary ground’s trembling in our tests, and its looks follow slow
+        motion best, a few tenths of a hertz, whose waves are kilometres long.</p>
       </div>
     </div>
   </section>
@@ -337,13 +367,15 @@ const oFrameMs = (1000 * (gates.manifest.params.bank.k_leap_hz as number)) / oRa
   </section>
 
   <section id="blind">
-    <h2>Looks cut from one image cannot see ordinary ground move</h2>
+    <h2>Correlating one image’s looks registers little of ordinary ground’s motion</h2>
     <p class="sub">
       Every single-image method, published or ours, reads motion by registering one image’s looks against each other. Two
-      such looks share the spectrum they overlap, sample for sample, so their cross-spectrum is real and non-negative and
-      their correlation locks at zero, whatever the ground does. For natural ground, whose <Term k="speckle">speckle</Term> is
-      independent in every Doppler bin, motion shared by a patch leaves the image’s statistics exactly unchanged. Here a 20 m
-      stretch of the real Giza image is made to sway at 2 mm/s, and read three ways.
+      such looks share the spectrum they overlap. For whole images and real, non-negative masks their cross-spectrum is then
+      real and non-negative, so their correlation peaks at zero lag whatever the ground does: an identity. Registration works
+      on small patches, which mix frequencies, so there the identity is a strong pull toward zero rather than a proof, and it
+      has to be measured. For ground whose <Term k="speckle">speckle</Term> is independent in every Doppler bin, motion shared
+      by a patch also leaves the image’s statistics unchanged. Here a 20 m stretch of the real Giza image is made to sway at
+      2 mm/s, and read three ways.
     </p>
     <div class="grid-2 charts">
       <LineChart
@@ -376,7 +408,7 @@ const oFrameMs = (1000 * (gates.manifest.params.bank.k_leap_hz as number)) / oRa
     <div class="grid-2 charts">
       <LineChart
         directLabels={false}
-        title="Fig. S3 · A look averages motion over its duration"
+        title="Fig. S3 · A look averages motion over its duration, though not exactly as a boxcar"
         series={[
           { name: 'sinc(f W), a boxcar average', x: fs, y: fs.map((f) => sinc(f * W)), color: 'var(--muted)', width: 1.4 },
           { name: 'a bright point, recovered', x: lp.map((r) => r.f_hz), y: lp.map((r) => r.recovered_gain), color: 'var(--verdigris)', markers: true },
@@ -384,7 +416,7 @@ const oFrameMs = (1000 * (gates.manifest.params.bank.k_leap_hz as number)) / oRa
         xLabel="frequency of the motion, Hz"
         yLabel="gain"
         zeroLine
-        caption={`${W} s looks pass little above 0.3 Hz. The first investigation’s R7 injected at 1, 2 and 3 Hz, where a bright point comes back at ${lp.filter((r) => r.f_hz >= 1).map((r) => pct(Math.abs(r.recovered_gain))).join(', ')}.`}
+        caption={`${W} s looks pass little above 0.3 Hz, but a tracked point does not follow the boxcar exactly: at 0.5 Hz it keeps ${pct(Math.abs(lp.find((r) => r.f_hz === 0.5)!.recovered_gain))} where the boxcar keeps ${pct(Math.abs(lp.find((r) => r.f_hz === 0.5)!.sinc_gain))}. The first investigation’s R7 injected at 1, 2 and 3 Hz, where a bright point comes back at ${lp.filter((r) => r.f_hz >= 1).map((r) => pct(Math.abs(r.recovered_gain))).join(', ')}.`}
       />
       <div class="note-card">
         <span class="tag simulated">simulated and real · P2-03</span>
@@ -406,12 +438,13 @@ const oFrameMs = (1000 * (gates.manifest.params.bank.k_leap_hz as number)) / oRa
   </section>
 
   <section id="imprint">
-    <h2>A chamber changes the ground’s own motion by less than a ten-thousandth of it</h2>
+    <h2>In our model, a chamber changes the ground’s own motion by less than a ten-thousandth of it</h2>
     <p class="sub">
       Whatever a satellite could use to find a chamber passively would have to be its <Term k="imprint">imprint</Term>: the
       difference it makes to how the surface moves. Ambient waves are far longer than the chamber and its depth, so the rock
       around it is strained almost uniformly and almost statically. The lab’s solver answers the static question directly:
-      load the rock with a uniform horizontal stress, open the chamber, and let the ground settle.
+      load the rock with a uniform horizontal stress, open the chamber, and let the ground settle. It is a model: one small
+      chamber in uniform rock, strained quasi-statically; layering, the sand cover, resonance and other forcing are not in it.
     </p>
     <div class="grid-2 charts">
       <LineChart
@@ -447,11 +480,11 @@ const oFrameMs = (1000 * (gates.manifest.params.bank.k_leap_hz as number)) / oRa
   </section>
 
   <section id="budget">
-    <h2>Allowing every advantage, one dwell falls short by ten thousand to a hundred million</h2>
+    <h2>Within our model, allowing every advantage we could name, one dwell falls short by ten thousand to a hundred million</h2>
     <p class="sub">
       The smallest imprint a dwell could detect, from what P2-03 measured: every one of its independent looks counted as a
-      full measurement, a 3-sigma threshold, the look’s gain at the imprint’s frequency, and the best tracker for each
-      target. Under Giza’s microseisms that is {um(ground.a_min_m_s!).toFixed(0)} µm/s on the plateau’s own texture,
+      full measurement, a 3-sigma threshold, the look’s gain at the imprint’s frequency (a boxcar value; near 0.2 Hz it is
+      within about 15% of the tracker’s measured gain), and the best tracker for each target. Under Giza’s microseisms that is {um(ground.a_min_m_s!).toFixed(0)} µm/s on the plateau’s own texture,
       {' '}{um(bright.a_min_m_s!).toFixed(0)} µm/s on a bright scatterer directly above the chamber, and {um(refl.a_min_m_s!).toFixed(0)} µm/s
       on a corner reflector that no archive image contains, against an imprint of <Sci v={um(ground.imprint_m_s)} /> µm/s. For the
       plateau the ground would have to shake at {ground.shake_needed_m_s!.toFixed(0)} m/s, beyond the strongest earthquakes
@@ -470,17 +503,25 @@ const oFrameMs = (1000 * (gates.manifest.params.bank.k_leap_hz as number)) / oRa
       {' '}{um(chk.null_rms_m_s).toFixed(0)} µm/s against the {um(chk.predicted_sigma_m_s).toFixed(0)} µm/s the formula uses, and a sway at
       the threshold is found in {pct(chk.detected_fraction)} of {chk.null_fits_m_s.length} realisations at a 5% false-alarm rate.
       Motion at 1–3 Hz needs 250 ms looks, resolving 4 m; the truck needs 33 ms looks, resolving 33 m, during its few seconds.
+      These are estimates, not measurements of Giza during a pass: the ambient level is the regional microseism level
+      recorded 67 km away, and the imprint is P2-04’s model.
     </p>
     <RunDetails manifest={bud.manifest} />
   </section>
 
   <section id="depth">
-    <h2>The published depth is the frequency of the motion: {mph.toFixed(2)} m per hertz</h2>
+    <h2>The published depth is the frequency of the registration series: {mph.toFixed(2)} m per hertz, with a repeat and a mirror</h2>
     <p class="sub">
       The published focusing projects each patch’s trajectory on a steering wave whose wavenumber grows with the platform’s
       offset, and on a dwell the offset grows steadily with time. So the focusing is a Fourier transform over time, and motion
-      at frequency f appears at a depth of f times λ<sub>s</sub> R sin θ / 2V<sub>s</sub>, whatever is under the ground. Given
-      the exact motion at every pair, with none of the blindness above, it still cannot say where a chamber is.
+      at frequency f appears at a depth of f times λ<sub>s</sub> R sin θ / 2V<sub>s</sub>, whatever is under the ground; with
+      regular sampling each depth also has a repeat and a mirror. This is a property of the processing, not of Giza.
+      Frequency-dependent imaging is legitimate geophysics; what is missing is a physical model showing why this relation
+      describes a buried object, and validation on known voids. The scale depends on λ<sub>s</sub>, a free parameter: this
+      page uses the paper’s 0.48 m, and an independent review notes that the paper is inconsistent on it, its text implying
+      0.48 m and a displayed expression 0.24 m, the value the reconstruction uses. With 0.24 m every depth halves and nothing
+      else changes. Given the exact motion at every pair, the focusing draws the same peak over two chambers and over open
+      ground (Fig. S6).
     </p>
     <div class="grid-2 charts">
       <LineChart
@@ -511,7 +552,7 @@ const oFrameMs = (1000 * (gates.manifest.params.bank.k_leap_hz as number)) / oRa
   </section>
 
   <section id="chain">
-    <h2>Run whole, the chain cannot tell the chamber is there</h2>
+    <h2>Run whole on our simulated ground, the chain does not tell the chamber is there</h2>
     <p class="sub">
       P2-07 runs the claim as it would have it: simulated desert over the one-chamber bench, shaking at Giza’s measured
       microseism level with the chamber’s imprint from P2-04, imaged on the real dwell in double precision, and put through
@@ -590,24 +631,25 @@ const oFrameMs = (1000 * (gates.manifest.params.bank.k_leap_hz as number)) / oRa
   </section>
 
   <section id="gates">
-    <h2>Stricter gates keep noise: motionless images pass them, and no vibration draws the shape they require</h2>
+    <h2>Stricter gates select a pattern that also appears without motion; by themselves they certify neither vibration nor depth</h2>
     <p class="sub">
       Later versions of the method put selection gates between the shifts and the depth focus. Pairs of images are cut from
       the Doppler band, each {Math.round(gates.manifest.params.bank.mask_width_hz).toLocaleString('en-US')} Hz of it, which for every
-      pixel is {gSpan.toFixed(1)} s of its pass, and registered to 0.01 px. A window of {gW} successive pairs
-      is kept only if the two components of its shifts trace an ellipse at one of ten modes, fitted well,
-      with a narrow semi-axis of at least {gg.minor_min_px} px and at least a tenth as wide as it is long; ten windows in a row must
-      agree on the mode, and four or five neighbouring positions must pass together. The depth focus runs only where all of
-      that passed. P2-13 runs such a gated pipeline unchanged on the 2022 image of Khafre, along {gates.heights_m.length} loops
-      round its faces from {gates.heights_m[0]} to {gates.heights_m[gates.heights_m.length - 1]} m up
-      ({gc.positions_per_image.toLocaleString('en-US')} positions); on two motionless twins of that image, with its brightness
-      and spectrum and fresh speckle; on the same loops laid over open desert in the same image; and on the real image with
-      two stretches of the faces made to vibrate at 2 mm/s along the line of sight, some 40,000 times Giza’s microseisms, at
-      0.26 Hz and 3.66 Hz, resonances proposed for a 648 m column of air and for the Grand Gallery.
+      pixel is {gSpan.toFixed(1)} s of its pass, and registered to 0.01 px. A window of {gW} successive pairs is kept only if
+      the two components of its shifts trace an ellipse at one of ten modes, fitted well, with a narrow semi-axis of at least
+      {' '}{gg.minor_min_px} px and at least a tenth as wide as it is long; ten windows in a row must agree on the mode, and four
+      or five neighbouring positions must pass together. The depth focus runs only where all of that passed. We ran such a
+      gated pipeline, unchanged, twice. The first run (P2-13) used loops the lab drew up Khafre’s faces, from
+      {' '}{gates.heights_m[0]} to {gates.heights_m[gates.heights_m.length - 1]} m, because we misread the reconstruction’s
+      “70.5 m” as a height above the base; its own lines follow the base, 70.5 m above sea level, and the second run (P2-14,
+      below) uses them. Both run the real 2022 image beside two motionless twins of it (its brightness and spectrum, fresh
+      speckle), the same lines over open desert in the same image, and the real image with two stretches made to vibrate at
+      2 mm/s along the line of sight, some 40,000 times Giza’s microseisms, at 0.26 Hz and 3.66 Hz, resonances proposed for a
+      648 m column of air and for the Grand Gallery.
     </p>
     <div class="grid-2">
       <div class="note-card">
-        <span class="tag measured">real image · P2-13</span>
+        <span class="tag measured">real image · P2-13 · the lab’s loops on the faces</span>
         <h3>Positions that pass every gate</h3>
         <table class="data compact">
           <thead><tr><th></th><th class="num">positions</th><th class="num">features</th></tr></thead>
@@ -619,25 +661,33 @@ const oFrameMs = (1000 * (gates.manifest.params.bank.k_leap_hz as number)) / oRa
           </tbody>
         </table>
         <p>{gatesVerdict}</p>
-        <p>Earlier in the chain the order is reversed. At the first gate the real image passes {(gFirst.real / gFirstTwin).toFixed(1)} times as
-        many windows as the twins, and over open desert {(gFirst.desert / gFirstTwin).toFixed(1)} times: its shifts are a little less
-        steady ({pct(gZero)} exactly zero, against {pct(gZeroTwin)}), and planting the vibrations changes that count by
-        {' '}{((gFirst.planted / gFirst.real - 1) * 100).toFixed(1)}%. Passing early does not predict passing at the end.</p>
+        <p>At the first gate the order is reversed: the real image passes {(gFirst.real / gFirstTwin).toFixed(1)} times as many
+        windows as the twins, and over open desert {(gFirst.desert / gFirstTwin).toFixed(1)} times; its shifts are a little less
+        steady ({pct(gZero)} exactly zero, against {pct(gZeroTwin)}). The twins and the desert are stress tests, not a calibrated
+        false-alarm rate: they show the selected pattern can arise with nothing moving and nothing inside, under that
+        generator, but two synthetic images cannot say how often it arises over real ground, and open desert is not surveyed
+        ground.</p>
       </div>
       <div class="note-card">
-        <span class="tag measured">why · P2-13</span>
-        <h3>The shifts barely move, and the gate asks for a shape vibration cannot make</h3>
-        <p>The two images of a pair share {(gates.pair_shared_fraction * 100).toFixed(2)}% of their spectrum, so correlating
-        them locks near zero, as it does for looks: {pct(gZero)} of the shifts are exactly zero and {pct(gStep)} within one
-        0.01 px step. The planted vibrations move them by {gates.planted_rms_px['0.26'].toFixed(3)} px at 0.26 Hz and
-        {' '}{gates.planted_rms_px['3.66'].toFixed(3)} px at 3.66 Hz, where a tracker following them fully would see
-        {' '}{gates.full_tracker_rms_px['0.26'].toFixed(3)} and {gates.full_tracker_rms_px['3.66'].toFixed(3)} px.</p>
-        <p>A mode is a number of cycles in a window, so the gate listens at {gModeHz[0].toFixed(2)} to
-        {' '}{gModeHz[gModeHz.length - 1].toFixed(1)} Hz, where a {gSpan.toFixed(1)} s image keeps at most
-        {' '}{(Math.max(...gGain) * 100).toFixed(1)}% of a motion (Fig. S9). And a vibrating patch of ground moves in each image
-        along the track by its velocity times {gg.azimuth_m_per_m_s.toFixed(0)} s, and toward the radar only by its displacement,
-        so its shifts trace an ellipse at least {gThin.toLocaleString('en-US')} times as long as it is wide; the gate keeps only
-        ellipses at most {Math.round(1 / gg.axis_ratio_min)} times. What passes is drawn by the registration’s noise.</p>
+        <span class="tag simulated">measured in simulation · P2-15</span>
+        <h3>What the pairs register of a vibration</h3>
+        <p>The two images of a pair share {(gates.pair_shared_fraction * 100).toFixed(2)}% of their spectrum; in the real image
+        {' '}{pct(gZero)} of the shifts are exactly zero and {pct(gStep)} within one 0.01 px step. We first quoted a boxcar
+        average for how much of a motion each six-second image keeps; that is the response of a rectangular average, not of
+        this registration. Measured through the reconstruction’s own masks and registration on simulated images, each image
+        does carry a vibration, but at {rImg[0].toFixed(2)} to {Math.round(rImg[1])} times the boxcar value depending on
+        frequency, and a pair registers {Math.round(rSharePt[0] * 100)}–{Math.round(rSharePt[1] * 100)}% of the shift between its two
+        images for a bright point and {rShareTx[0].toFixed(1)}–{rShareTx[1].toFixed(1)}% for textured ground (Fig. S9). At 2 mm/s the
+        pair shifts change by at most {rMaxPt2.toFixed(3)} px for a bright point, about one rounding step, and
+        {' '}{rMaxTx2.toFixed(4)} px for texture; in the real image the planted vibrations changed them by
+        {' '}{gates.planted_rms_px['0.26'].toFixed(3)} and {gates.planted_rms_px['3.66'].toFixed(3)} px.</p>
+        <p>For a simple target moving along the line of sight, the azimuth shift follows its velocity, times
+        {' '}{gg.azimuth_m_per_m_s.toFixed(0)} s, and the range shift only its displacement, so its trace is a thin line: the moving
+        point passes {rPointWindows} of the first gate’s windows at every frequency tested, and the measurable traces with clutter
+        or texture are at most {rWidth.toFixed(2)} as wide as they are long, under the gate’s {gg.axis_ratio_min}. A scene with
+        along-track motion, several scatterers or changing reflectivity could draw other shapes; showing that would take its own
+        forward simulation. A 3.66 Hz tone is expected to win mode 3 ({(3.66 * gg.window_s).toFixed(2)} cycles a window), so a
+        mode alone cannot tell whether a planted motion came back; frequency, place, phase and amplitude together can.</p>
       </div>
     </div>
     <div class="grid-2 charts">
@@ -652,21 +702,27 @@ const oFrameMs = (1000 * (gates.manifest.params.bank.k_leap_hz as number)) / oRa
         xLabel="the window's winning mode"
         yLabel="best depth, m"
         xTicks={gAxis}
-        caption={`Every position that passed every gate, in all five cases${gc.desert ? '' : ' (none over open desert)'}, set a little apart by case. ${gates.depth_within_half_cycle} of ${gFeats.length} lie within half a cycle (${(gZc / 2).toFixed(1)} m) of one of the two lines, where ${pct(gates.depth_chance_fraction as number)} would by chance: a window whose shifts follow m cycles is steered best by the depth whose phase turns m times across it. The depth is the frequency the gate chose, as the published focusing’s is (above).`}
+        caption={`Every position that passed every gate in P2-13, in all five cases${gc.desert ? '' : ' (none over open desert)'}, set a little apart by case. ${gates.depth_within_half_cycle} of ${gFeats.length} lie within half a cycle (${(gZc / 2).toFixed(1)} m) of one of the two lines. That is what the depth fit computes, not a discovery: after the gates keep sinusoids, a window whose shifts follow m cycles is steered best by the depth whose phase turns m times across it, or by its mirror. The ${gFeats.length} positions form a handful of clusters, not ${gFeats.length} independent findings.`}
       />
       <LineChart
         directLabels={false}
-        title={`Fig. S9 · What a ${gSpan.toFixed(1)} s image keeps of a motion, at the gate's modes`}
+        logY
+        title="Fig. S9 · What the pairs register of a vibration, measured through the reconstruction's own masks and registration"
         series={[
-          { name: `a ${gSpan.toFixed(1)} s image`, x: gF, y: gF.map((f) => Math.abs(sinc(f * gSpan)) * 100), color: 'var(--muted)', width: 1.4 },
-          { name: 'the ten modes', x: gModeHz, y: gGain.map((v) => v * 100), color: 'var(--porphyry)', markers: true, width: 0 },
+          { name: 'a bright point, 20 mm/s', x: rRows('point', 0.02).map((r) => r.f_hz), y: rRows('point', 0.02).map((r) => r.pair_amp_px.azimuth), color: 'var(--cinnabar)', markers: true },
+          { name: 'a bright point, 2 mm/s', x: rRows('point', 0.002).map((r) => r.f_hz), y: rRows('point', 0.002).map((r) => r.pair_amp_px.azimuth), color: 'var(--cinnabar)', dash: '3 3', markers: true },
+          { name: 'texture, 20 mm/s', x: rRows('texture', 0.02).map((r) => r.f_hz), y: rRows('texture', 0.02).map((r) => r.pair_amp_px.azimuth), color: 'var(--lapis)', markers: true },
+          { name: 'texture, 2 mm/s', x: rRows('texture', 0.002).map((r) => r.f_hz), y: rRows('texture', 0.002).map((r) => r.pair_amp_px.azimuth), color: 'var(--lapis)', dash: '3 3', markers: true },
+          { name: 'a boxcar average, 2 mm/s', x: rRows('point', 0.002).map((r) => r.f_hz), y: rRows('point', 0.002).map((r) => r.boxcar_px), color: 'var(--muted)', dash: '1 3', width: 1.4 },
+          { name: 'one rounding step', x: [0.1, 10.7], y: [0.01, 0.01], color: 'var(--faint)', width: 1 },
         ]}
         xLabel="frequency of the motion, Hz"
-        yLabel="share kept, %"
-        caption={`Mode m is m cycles in ${gW} pairs, ${gg.window_s.toFixed(3)} s of the pass. Each image of a pair averages the motion over its ${gSpan.toFixed(1)} s; at the gate's frequencies that keeps at most ${(Math.max(...gGain) * 100).toFixed(1)}%, and under a hundred-thousandth at ${gNull.map((f) => f.toFixed(1)).join(' and ')} Hz, where a whole number of cycles fits in it.`}
+        yLabel="change in the pair shifts, px"
+        caption={`Simulated images on the 2022 geometry, the motion put in as a phase history through the Doppler-time mapping (an approximation shared by every motion test here). Amplitudes at the planted frequency of the pair shifts, moved minus still; points below ${(1e-4).toString()} px or exactly zero are not drawn. The boxcar is what a rectangular six-second average would pass; the registration departs from it both ways.`}
       />
     </div>
     <RunDetails manifest={gates.manifest} />
+    <RunDetails manifest={resp.manifest} />
     <div class="grid-2" style="margin-top: 22px">
       <div class="note-card">
         <span class="tag measured">real image · P2-14</span>
@@ -697,15 +753,15 @@ const oFrameMs = (1000 * (gates.manifest.params.bank.k_leap_hz as number)) / oRa
         shiver repeating several times a second blurs out within every frame.</p>
         <p>Planting the vibrations adds and removes a few positions ({oNew.length} start passing and {oLost} stop, over all
         five supports). In the 0.26 Hz stretch the new ones sit at modes {oNorthModes.join(', ')}, which no 0.26 Hz motion can
-        make; in the 3.66 Hz stretch, {oReturned === 1 ? 'one' : oReturned} at the nearest mode. Of the {oDepth.n} positions passing at a support of one,
-        {' '}{oDepth.at_mode_depth} have their best depth where their mode puts it, against {pct(oDepth.chance)} by chance.</p>
+        make; in the 3.66 Hz stretch, {oReturned === 1 ? 'one' : oReturned} at the nearest mode. {oDepth.at_mode_depth} of the {oDepth.n} positions passing at a support of one
+        have their best depth where their mode puts it, as a frequency fit must.</p>
       </div>
     </div>
     <RunDetails manifest={own.manifest} />
   </section>
 
   <section id="sensors">
-    <h2>A radar image is not a dense seismic array</h2>
+    <h2>Read the published way, a radar image did not act as a dense seismic array in our test</h2>
     <p class="sub">
       Every patch of an image can be read as a virtual seismometer, and there are millions of them, far denser than any real
       array; stacking many sensors does shrink their noise. P2-09 asks the prior question: do they hear? A test wave (60 m long,
@@ -753,12 +809,12 @@ const oFrameMs = (1000 * (gates.manifest.params.bank.k_leap_hz as number)) / oRa
   </section>
 
   <section id="every">
-    <h2>Every other route from a buried room to a radar is closed too</h2>
+    <h2>Other routes from a buried room to an X-band radar, as we estimate them, carry far too little</h2>
     <p class="sub">
-      A radar records echoes, and an echo depends on two things only: how strongly each scatterer returns the wave, and where
-      each scatterer is while it is watched. A buried room can therefore reach the record in four ways and no others. P2-11
-      bounds each, generously to the room, for the bench chamber (6 m, 15 m down), a large hall (20 m, 30 m down) and the claimed
-      deep structure (80 m, 1,220 m down).
+      A radar records echoes, and an echo depends on how strongly each scatterer returns the wave and where each scatterer is
+      while it is watched. We group the ways a buried room could reach the record into four. P2-11 estimates each, with its
+      assumptions stated and generously to the room where we could, for the bench chamber (6 m, 15 m down), a large hall
+      (20 m, 30 m down) and the claimed deep structure (80 m, 1,220 m down).
     </p>
     <table class="data">
       <thead><tr><th>Route</th><th>Best case</th><th>What it would take</th></tr></thead>
@@ -781,13 +837,15 @@ const oFrameMs = (1000 * (gates.manifest.params.bank.k_leap_hz as number)) / oRa
         <tr>
           <td><b>The surface itself changes</b><br /><span class="muted">temperature, moisture</span></td>
           <td>{(every.D_surface.bench.surface_anomaly_k * 1e3).toFixed(1)} mK at the surface</td>
-          <td>no radar responds to it</td>
+          <td>far below anything radar is known to respond to</td>
         </tr>
       </tbody>
     </table>
     <p class="sub">
-      Any processing, gates, stacking, tomography or machine learning included, is a function of the record and cannot restore
-      what these routes do not carry. Where radar does see underground is long wavelengths in very dry ground: the Shuttle’s L band
+      If these estimates hold, no processing can restore what the routes do not carry: gates, stacking, tomography and
+      machine learning are functions of the record and cannot add to it. The estimates rest on assumptions, listed with their
+      sources below (dry sand’s penetration as an upper bound for limestone, standard load models, a small chamber), and
+      measurements at Giza would test them. Where radar does see underground is long wavelengths in very dry ground: the Shuttle’s L band
       found buried river valleys under the Sahara in 1981, and ESA’s Biomass showed ancient riverbeds under the sand of Chad in 2025.
       A viewer that looks underground from radar data is possible there, for the top few metres, and not from an X-band image.
     </p>
@@ -832,12 +890,12 @@ const oFrameMs = (1000 * (gates.manifest.params.bank.k_leap_hz as number)) / oRa
   </section>
 
   <section id="rescue">
-    <h2>What could rescue it, and why it does not</h2>
+    <h2>What could change the answer, and where each stands</h2>
     <div class="grid-3">
       <div class="note-card"><h3>More motion</h3><p>Peterson’s high-noise model, 71 times Giza’s microseisms, leaves the plateau short by {order(noisyGround)}. Traffic exceeds 77 µm/s within 25 m of a road (P2-00), but at 10–30 Hz, where a look must be under 33 ms and resolves 33 m; short by {order(truckGround)} on ground. Khafre is 199 m from the nearest road.</p></div>
       <div class="note-card"><h3>Brighter targets</h3><p>Magnitude tracking follows an isolated bright scatterer in full (P2-03), so the best case is a stone or a placed corner reflector above the chamber: short by {order(brightShort)} and {order(reflShort)} under Giza’s microseisms, {order(noisyRefl)} for the reflector at the noisiest stations.</p></div>
       <div class="note-card"><h3>Other structures</h3><p>The imprint scales as volume over depth squared (checked against the solver, P2-04); the claimed deep structure scales to {(imp.claimed[0].relative_to_bench as number).toFixed(2)} of the bench chamber. Independently of any structure, Giza’s whole microseism motion is {wholeMotion.toLocaleString('en-US')} times below the plateau’s detection threshold.</p></div>
-      <div class="note-card"><h3>A better estimator</h3><p>For fully developed speckle the Doppler bins are independent circular Gaussians, so a phase history shared by a patch leaves the image’s distribution unchanged: no estimator recovers it. What survives is point-like content (magnitudes, above) and the apparent brightness a displacement gradient makes, of order 10<sup>−11</sup> here.</p></div>
+      <div class="note-card"><h3>A better estimator</h3><p>Under the textbook model of ordinary ground, fully developed speckle, the Doppler bins are independent circular Gaussians, so a phase history shared by a patch leaves the image’s distribution unchanged and no estimator can recover it from one image. Real ground departs from that model where it holds bright points, which magnitudes can track (above), and through the apparent brightness a displacement gradient makes, of order 10<sup>−11</sup> here. Other departures would need their own measurement.</p></div>
       <div class="note-card"><h3>Stricter selection</h3><p>Gates can only discard readings, never add what the image does not hold. Run unchanged on the real image, a gated version passes motionless copies of it too, passes nothing at its own settings on its own lines, and cannot pass a vibration’s own trace at any strength (<a href="#gates">above</a>).</p></div>
       <div class="note-card"><h3>The published images</h3><p>The pipeline draws structured sections from any input: identical with and without the chamber (P2-07), the same over monuments and open desert (R1, R6), no signal over hundreds of surveyed shafts (R13), and the published appearance everywhere (R8).</p></div>
       <div class="note-card"><h3>Vibration measured from orbit, 2026</h3><p>The method’s authors first applied this kind of tracking to bridges in Italy and to the Mosul Dam in 2020, without instruments on the structures at the same time. Two 2026 papers (Vattulainen et al., IEEE Access; Lotti et al., Structural Control and Health Monitoring) measure vibration from single spaceborne images against ground truth: corner reflectors on shakers in open fields, and a steel footbridge chosen because it is bright. They track isolated bright targets moving at 0.7 mm/s and up, with errors near 1 mm/s: what P2-03 says works. Their smallest motion is {Math.round(eB.measured_over_trembling).toLocaleString('en-US')} times Giza’s whole microseism motion and <Sci v={eB.measured_over_imprint} p={0} /> times the chamber’s imprint.</p></div>
@@ -845,9 +903,54 @@ const oFrameMs = (1000 * (gates.manifest.params.bank.k_leap_hz as number)) / oRa
     </div>
   </section>
 
+  <section id="settle">
+    <h2>What would settle it: one frozen recipe reproduced, a motion test with ground truth, and a blind test on known voids</h2>
+    <div class="grid-3">
+      <div class="note-card"><h3>Reproduce one nominated result</h3><p>Take one figure the method’s proponents consider successful, with its image, exact geometry, code version, settings and plotting frozen and hashed, and have an independent reviewer regenerate it. Then run that frozen recipe on motionless copies, open ground and a planted motion. So far, attractive figures and negative tests have concerned different recipes.</p></div>
+      <div class="note-card"><h3>Show that the estimator measures motion</h3><p>Run the frozen pipeline on stationary scenes, on moving targets simulated from independent physics, and preferably on shaker or corner-reflector data with instruments on them at the same time. Sweep frequency and amplitude, 0.26 and 3.66 Hz included, and score recovery before the gates as well as after, beside an estimator already validated for vibrometry, so that a faulty injection is not mistaken for a failed method.</p></div>
+      <div class="note-card"><h3>Predict known voids blind</h3><p>Choose known voids and matched surveyed controls and withhold their labels. Fix the wavelength, line placement, gates and scoring in advance; predict places, depths and sizes with tolerances; count false positives as well as hits; use a site or pass not used for calibration. Before reading stairs or spirals, a forward model built on independent wave and radar physics should tell a plain column, a spiral and nothing apart.</p></div>
+    </div>
+    <p class="note">
+      What would change this page: a frozen recipe that passes these tests, or measurements that contradict our models, such as
+      motion measured on the plateau during a pass, penetration measured in Mokattam limestone, or a pulse-level simulation of
+      the pairs that registers more than ours. A bounded validation of this kind is worth more than further compelling
+      pictures, whichever way it comes out.
+    </p>
+  </section>
+
   <section id="record">
-    <h2>What this corrects in the first investigation, and what still stands</h2>
+    <h2>What this corrects, in the first investigation and in this lab’s own later work, and what still stands</h2>
     <div class="grid-2">
+      <div class="note-card">
+        <span class="tag measured">ours · corrected</span>
+        <h3>We presented impossibility more broadly than the work supports</h3>
+        <p>Earlier versions of this page said one image “cannot” find a chamber and that every route was “closed”. The work shows that the methods tested do not establish subsurface imaging, that their depth axis is a frequency axis, and that the routes we modelled carry far too little. It does not prove every conceivable route impossible.</p>
+      </div>
+      <div class="note-card">
+        <span class="tag measured">ours · corrected</span>
+        <h3>We first ran the stricter reconstruction on the wrong lines</h3>
+        <p>Its “70.5 m” is Khafre’s base height above sea level; we read it as a height above the base and drew loops up the faces (P2-13). Its own base lines, as sent and corrected for the geoid, are run in P2-14, with their hashes.</p>
+      </div>
+      <div class="note-card">
+        <span class="tag measured">ours · corrected</span>
+        <h3>We quoted a boxcar as the registration’s response</h3>
+        <p>sinc(fT) is the response of a rectangular average. Measured through the reconstruction’s own masks and registration (P2-15), a vibrating point’s images move by {rImg[0].toFixed(2)} to {Math.round(rImg[1])} times the boxcar value, depending on frequency; the near-nulls we claimed at two of its modes are not established.</p>
+      </div>
+      <div class="note-card">
+        <span class="tag measured">ours · corrected</span>
+        <h3>We stated the shared-spectrum identity too broadly</h3>
+        <p>It is exact for whole images with real, non-negative masks. Patch registration mixes frequencies, so there it is a strong pull toward zero that has to be measured, not a proof.</p>
+      </div>
+      <div class="note-card">
+        <span class="tag measured">ours · corrected</span>
+        <h3>We gave a significance to depth following the mode</h3>
+        <p>We wrote “89% against 3% by chance”. After the gates keep sinusoids, depth following the mode is what the depth fit computes, not a test, and neighbouring positions are not independent findings.</p>
+      </div>
+      <div class="note-card">
+        <span class="tag measured">ours · corrected</span>
+        <h3>We leaned on two twins and one stretch of desert</h3>
+        <p>They are stress tests: they show the selected pattern arises without motion or anything inside under that generator. They do not measure how often it arises over real ground, and open desert is not surveyed ground.</p>
+      </div>
       <div class="note-card">
         <span class="tag measured">R9 · corrected</span>
         <h3>The coherence curve measured the looks, not the ground</h3>

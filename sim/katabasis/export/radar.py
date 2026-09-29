@@ -225,8 +225,9 @@ def export_real(out: Path = DATA) -> dict | None:
         control = p['kind'] == 'control'
         vols.append(_write_volume(d, f'radar-{key}', u8, u8, [float(xs[0]), float(ys[0])], h, {
             'label': f"Satellite · the published method {'over' if control else 'at'} {p['label']}{' (control)' if control else ''}",
-            'method': 'The real 2025 ICEYE pass, the published pipeline (50 half-band pairs, 32 px, lambda_s 0.48 m), '
-                      'depth relabelled as the claim does (repeat at 648 m)',
+            'method': 'The real 2025 ICEYE pass through the paper-style pipeline (50 half-band pairs, 32 px patches, grid-median '
+                      'correction, no selection gates, lambda_s 0.48 m): focused power on a log scale, depth relabelled as the '
+                      'claim does (repeat at 648 m), smoothed for display; not the gated reconstruction',
             'quantity': 'focused power, log scale', 'units': 'relative', 'range': [lo, hi], 'run': run,
             'caption': ('the same kind of picture over empty plateau' if control else
                         'columns where the registration wanders, as over empty plateau')}, ztop=ztop - h / 2))

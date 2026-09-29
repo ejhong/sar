@@ -88,16 +88,17 @@ const roomW = (100 * 6) / (sx1 - sx0);
 const roomY = (100 * 12) / zmax;
 ---
 <Base title="In pictures" current="pictures"
-  description="Why one satellite image cannot see beneath the ground, step by step: ground built with a chamber in it, the real satellite flown over it in simulation, and the published method run on its picture.">
+  description="Can one satellite image see beneath the ground? Step by step: ground built with a chamber in it, the real satellite flown over it in simulation, and the published method run on its picture.">
   <div class="story">
     <header class="opening">
       <p class="label">In pictures</p>
-      <h1>Why one satellite image cannot see beneath the ground</h1>
+      <h1>Can one satellite image see beneath the ground?</h1>
       <p class="lede">
         The claim is that a single radar image, taken from orbit, holds the faint trembling of the ground, and that the
         right processing turns it into a picture of what lies hundreds of metres below. To test it we built ground with a
         chamber in it, flew the real satellite over it in a computer, and ran the published method on the picture it took.
-        Here is what happens, one step at a time.
+        Here is what happens in our tests, one step at a time. Some steps are measured and some rest on models; each says
+        which, and the end says what would settle it.
       </p>
       <ol class="steps mono">
         <li><a href="#ground">the ground</a></li>
@@ -109,7 +110,7 @@ const roomY = (100 * 12) / zmax;
         <li><a href="#frequency">depth is frequency</a></li>
         <li><a href="#seismometer">beside a seismometer</a></li>
         <li><a href="#scale">how far off</a></li>
-        <li><a href="#rescue">could anything rescue it?</a></li>
+        <li><a href="#rescue">could anything change it?</a></li>
       </ol>
     </header>
 
@@ -153,7 +154,7 @@ const roomY = (100 * 12) / zmax;
     <section id="imprint" class="step">
       <div class="words">
         <p class="num">3</p>
-        <h2>A chamber changes that trembling by one part in {kilo(partsIn)}</h2>
+        <h2>In our model, a chamber changes that trembling by one part in {kilo(partsIn)}</h2>
         <p>
           The waves are kilometres long, so the rock around a room 6 metres wide is squeezed and stretched almost
           evenly. The room gives a little as they pass, and the ground above it moves a tiny bit differently. We computed
@@ -191,7 +192,7 @@ const roomY = (100 * 12) / zmax;
     <section id="image" class="step dark">
       <div class="words">
         <p class="num">4</p>
-        <h2>What the satellite sees: the surface, grainy, and nothing below it</h2>
+        <h2>What the satellite sees: the surface, grainy, and hardly anything below it</h2>
         <p>
           A radar image is not a photograph. Each spot is the echo of countless small reflections interfering, which
           gives the grainy texture radar people call <em>speckle</em>. The radar’s waves go only a few centimetres into
@@ -310,7 +311,7 @@ const roomY = (100 * 12) / zmax;
     <section id="seismometer" class="step">
       <div class="words">
         <p class="num">8</p>
-        <h2>Beside a seismometer, the satellite reads noise</h2>
+        <h2>Beside a seismometer, the satellite’s reading is mostly noise</h2>
         <p>
           Put a seismometer on the ground over the room, and read the same spot from the satellite as the method does.
           The seismometer follows the trembling. The satellite’s readings scatter {kilo(ratio)} times more widely, and not
@@ -337,7 +338,7 @@ const roomY = (100 * 12) / zmax;
     <section id="scale" class="step band">
       <div class="words">
         <p class="num">9</p>
-        <h2>The chamber’s signal is {shortWords} times too faint</h2>
+        <h2>In our model, the chamber’s signal is {shortWords} times too faint</h2>
         <p>
           Everything on one scale, each step ten times the last. On the left, how fast things actually move; on the right,
           the smallest motion one satellite pass could detect, allowing it every advantage. The chamber’s signal and the
@@ -353,7 +354,7 @@ const roomY = (100 * 12) / zmax;
     <section id="rescue" class="step">
       <div class="words">
         <p class="num">10</p>
-        <h2>Could anything rescue it?</h2>
+        <h2>Could anything change the answer?</h2>
       </div>
       <div class="qa">
         <div class="q">
@@ -370,7 +371,7 @@ const roomY = (100 * 12) / zmax;
         </div>
         <div class="q">
           <h3>What about a cleverer way to read the image?</h3>
-          <p>For natural ground the information is not in the picture. Motion shared by a stretch of ground leaves the radar texture’s statistics exactly unchanged; that is a property of speckle, not a shortcoming of one method. Only isolated bright points carry motion, and they are covered above.</p>
+          <p>For ordinary ground, as radar texture is usually modelled, the information is not in the picture: motion shared by a stretch of ground leaves the texture’s statistics unchanged, a property of speckle rather than of one method. Real ground departs from that model where it has bright points, which can be tracked (above); other departures would need tests of their own.</p>
         </div>
         <div class="q">
           <h3>What about millions of virtual sensors?</h3>
@@ -382,19 +383,19 @@ const roomY = (100 * 12) / zmax;
         </div>
         <div class="q">
           <h3>What about stricter versions that filter out the noise?</h3>
-          <p>Later versions of the method keep only readings that pass a row of tests: they must circle in a clean ellipse, ten stretches in a row must agree, and neighbouring points must pass together. We ran one, unchanged, round Khafre’s faces in the real image: {gc.real} of {gc.positions_per_image.toLocaleString('en-US')} points passed. In copies of the image in which nothing moves, {gc.twins.join(' and ')} passed; over open desert in the same image, {gc.desert ? gc.desert : 'none'}. On the lines its makers drew round the pyramid’s base, with their own settings, {oNothing ? 'nothing passed at all, in any of these images' : 'hardly anything passed'}; loosened to single points, the real image passed {oPos.wgs84.real['1']}, the still copies {oPos.wgs84.twin101['1']} and {oPos.wgs84.twin102['1']}, and open desert {oPos.desert.real['1']}. When we made the faces shake 40,000 times harder than the ground does, the tests did not find it: {gFound}. Each picture the tests compare lasts six seconds and averages such shaking away, and shaking draws a thin line in the readings, never the round ellipse the tests ask for. What passes is noise, and its “depth” is only the rhythm the tests picked. <a href={`${base}/satellite/#gates`}>The gates, measured</a>.</p>
+          <p>Later versions of the method keep only readings that pass a row of tests: they must circle in a clean ellipse, ten stretches in a row must agree, and neighbouring points must pass together. We ran one, unchanged, first on loops we drew up Khafre’s faces in the real image: {gc.real} of {gc.positions_per_image.toLocaleString('en-US')} points passed. In copies of the image in which nothing moves, {gc.twins.join(' and ')} passed; over open desert in the same image, {gc.desert ? gc.desert : 'none'}. On the lines its makers drew round the pyramid’s base, which we had first misread, with their own settings, {oNothing ? 'nothing passed at all, in any of these images' : 'hardly anything passed'}; loosened to single points, the real image passed {oPos.wgs84.real['1']}, the still copies {oPos.wgs84.twin101['1']} and {oPos.wgs84.twin102['1']}, and open desert {oPos.desert.real['1']}. When we made the faces shake 40,000 times harder than the ground does, the tests did not find it: {gFound}. Each picture the tests compare lasts six seconds, and in our measurements the pairs register little of such shaking; a simply shaking spot draws a thin line in the readings, not the round ellipse the tests ask for. What passes also passes in copies where nothing moves, and its “depth” is the rhythm the tests picked. <a href={`${base}/satellite/#gates`}>The gates, measured</a>.</p>
         </div>
         <div class="q">
           <h3>Hasn’t vibration been measured from space?</h3>
           <p>Yes, and we agree it can be. The method’s authors first tracked bridges and a dam this way in 2020; in 2026, two teams measured metal reflectors on shakers and a steel footbridge moving about a millimetre per second, checked against instruments on the ground at the same time. That is what radar does well, a bright point moving a lot. Ordinary ground is different: its trembling at Giza is thirteen thousand times smaller than the smallest motion ever measured from orbit, and one picture barely registers ground moving at all. The chamber’s signal is two hundred million times smaller.</p>
         </div>
         <div class="q">
-          <h3>Instruments on the ground find the room. Why can’t the satellite?</h3>
-          <p>Because the ones that find it make their own waves. A hammer blow sends a short, sharp wave, about fifteen metres long, whose timing is known exactly; instruments pressed against the ground catch its echo from the room a few hundredths of a second later. Simply listening to the ground’s own trembling works only weakly, even with perfect instruments and hours of listening. The satellite has no hammer, listens for 25 seconds, can’t hear ordinary ground tremble at all, and can only follow slow motion, whose waves are kilometres long.</p>
+          <h3>Instruments on the ground find the room. Why doesn’t the satellite, here?</h3>
+          <p>Because the ones that find it make their own waves. A hammer blow sends a short, sharp wave, about fifteen metres long, whose timing is known exactly; instruments pressed against the ground catch its echo from the room a few hundredths of a second later. Simply listening to the ground’s own trembling works only weakly, even with perfect instruments and hours of listening. The satellite has no hammer, listens for 25 seconds, in our tests barely registers ordinary ground’s trembling, and follows slow motion best, whose waves are kilometres long.</p>
         </div>
         <div class="q">
           <h3>What if the satellite could measure every point’s trembling perfectly?</h3>
-          <p>It still wouldn’t show the room. The published method’s “depth” is only how fast things wobble, so with perfect measurements it draws the same picture over solid rock and over a room. And the ground’s natural trembling comes in waves kilometres long, far too coarse to outline a room a few metres across, during a pass that lasts 25 seconds. Even in our simulation with perfect instruments on the ground, waves short enough to outline the room, and the rock known exactly, a minute of listening doesn’t make the room stand out, and an hour only doubles its brightness.</p>
+          <p>The published method still wouldn’t show the room. The published method’s “depth” is only how fast things wobble, so with perfect measurements it draws the same picture over solid rock and over a room. And the ground’s natural trembling comes in waves kilometres long, far too coarse to outline a room a few metres across, during a pass that lasts 25 seconds. Even in our simulation with perfect instruments on the ground, waves short enough to outline the room, and the rock known exactly, a minute of listening doesn’t make the room stand out, and an hour only doubles its brightness.</p>
         </div>
         <div class="q">
           <h3>Could the radar see down some other way?</h3>
@@ -402,7 +403,7 @@ const roomY = (100 * 12) / zmax;
         </div>
         <div class="q">
           <h3>Isn’t this only a simulation?</h3>
-          <p>Each step is checked on the real satellite image. The real image’s own numbers reproduce the method’s “coherence” exactly; a patch of the real image made to sway is invisible to the method’s reading; and the first investigation ran the method on the real Giza and Sacsayhuamán images and found nothing anywhere.</p>
+          <p>Each step is checked on the real satellite image. The real image’s own numbers reproduce the method’s “coherence” exactly; a patch of the real image made to sway is nearly invisible to the method’s reading ({Math.round(blk.gain_complex * 100)}%); and the first investigation ran the method on the real Giza and Sacsayhuamán images and found nothing anywhere. The chamber’s mark and how far off it is are models, not measurements, and those two steps are only as good as the models are. <a href={`${base}/satellite/#settle`}>What would settle it</a>.</p>
         </div>
       </div>
     </section>

@@ -22,7 +22,7 @@ const bands = Object.entries(z.band_rms_um_s as Record<string, Record<string, nu
 const micro = z.band_rms_um_s['0.1-0.3 Hz'];
 const cult = z.band_rms_um_s['1.0-3.0 Hz'];
 const nhnmMicro = pet.band_rms_um_s['0.1-0.3 Hz'].high;
-const floor = 77; // µm/s: the first investigation's velocity floor (legacy R4); Phase 2 showed it is the scatter of a blind reading
+const floor = 77; // µm/s: the first investigation's velocity floor (legacy R4); Phase 2 showed it is the scatter of a reading that registers little ground motion
 // the smallest motion one dwell could detect, every advantage allowed (P2-05), µm/s
 type BRow = { case: string; target: string; a_min_m_s: number | null };
 const bRows = bud.rows as BRow[];
@@ -186,7 +186,7 @@ const sig = (v: number) => (v >= 10 ? v.toFixed(0) : v >= 1 ? v.toFixed(1) : v.t
       <div class="note-card">
         <h3>Local, brief, and above 8 Hz</h3>
         <p>Traffic is the strongest ambient source a site like Giza has, and it is local: it falls off within tens of metres of the road, comes and goes with each vehicle, and lives above 8 Hz, “for all practical purposes the frequency range of interest to ground-borne vibration” in the manual’s words.</p>
-        <p>A truck over a bump reaches about {sig(culRows[3].um)} µm/s. The satellite simulation answered whether a dwell can follow motion that fast: a look short enough to follow 15 Hz lasts 33 ms and blurs the ground over 33 m, and at that speed the smallest motion one pass could detect on plain ground is about {Math.round(truckGroundReach / 1000).toLocaleString('en-US')},000 µm/s (<a href={`${base}/satellite/#budget`}>P2-05</a>).</p>
+        <p>A truck over a bump reaches about {sig(culRows[3].um)} µm/s. The satellite simulation tested whether a dwell can follow motion that fast: a look short enough to follow 15 Hz lasts 33 ms and blurs the ground over 33 m, and at that speed the smallest motion one pass could detect on plain ground is about {Math.round(truckGroundReach / 1000).toLocaleString('en-US')},000 µm/s (<a href={`${base}/satellite/#budget`}>P2-05</a>).</p>
       </div>
     </div>
   </section>
@@ -198,7 +198,7 @@ const sig = (v: number) => (v >= 10 ? v.toFixed(0) : v >= 1 ? v.toFixed(1) : v.t
       levels 15 m away, falling off as a surface wave does (Caltrans 2020, Eq. 6) between undamped rock and the most
       damping rock-like ground in its tables. Roads from OpenStreetMap. The map marks where a truck would shake the ground
       faster than {floor} µm/s, the first investigation’s velocity floor, which the satellite simulation showed is the scatter of a reading
-      blind to ground motion (<a href={`${base}/satellite/#record`}>R4, corrected</a>). A typical truck never does; a truck
+      that registers little ground motion (<a href={`${base}/satellite/#record`}>R4, corrected</a>). A typical truck never does; a truck
       over a bump does within {Math.round(pz.cases['bump · rock'].reach_m)} m of the road.
     </p>
     <div class="grid-2 charts">

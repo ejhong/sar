@@ -3,23 +3,26 @@
 Written so the work can be picked up cold. The look is `web/DESIGN.md`; what is and is not established is
 `METHOD_AUDIT.md`; the first investigation's record is `sim/legacy/ROADMAP.md` (its measured findings stand).
 
-## State (28 September 2026): Phase 2 has answered the question
+## State (29 September 2026): the methods tested do not establish subsurface imaging; the claims are graded
 
-The desktop session took over from the cloud session and ran Phase 2 on the real Giza geometry. The answer is no,
-for three independent reasons, each sufficient on its own (METHOD_AUDIT.md, "Phase 2"):
+Revised after an independent review (METHOD_AUDIT.md, "Independent review"): the site no longer says "cannot" or
+"every route is closed". It grades each claim on `/satellite/#sure` as established, measured with limits, modelled or
+open, lists this lab's own corrections, and says what would settle the question (`/satellite/#settle`). The reasons,
+in order of strength:
 
-1. **One dwell is nearly blind to ordinary ground moving (P2-03).** Registering one image's looks against each
-   other, as every single-image method does, recovers 1 ± 1% of a block of real ground's motion by complex
-   correlation: the looks share their spectrum sample for sample, so the correlation locks at zero.
-2. **The chamber's imprint is 10^4 to 10^8 below what a dwell can detect (P2-04, P2-05).** Under Giza's
-   microseisms the imprint on the line-of-sight velocity is 3.2e-6 um/s; the smallest a dwell could detect is
-   900 um/s on the plateau's texture and 62 um/s on a bright scatterer directly above the chamber.
-3. **The published depth is the frequency of the ground's motion (P2-06):** 6.76 m per hertz on this geometry,
-   whatever is underground.
+1. **The published depth is the frequency of the registration series (P2-06):** 6.76 m per hertz on this geometry
+   with the paper's 0.48 m (the review notes the paper also implies 0.24 m), with a repeat and a mirror, whatever is
+   underground. Algebraic; no validated model turns it into a physical depth.
+2. **Correlating one image's looks registers little of ordinary ground's motion (P2-03):** 1 ± 1% of a block of real
+   ground's planted motion by complex correlation. Measured for that estimator; the shared-spectrum identity is exact
+   for whole images and a measured bias for patches. P2-15 measures the six-second pairs of the gated reconstruction.
+3. **In our model, the chamber's imprint is 10^4 to 10^8 below what a dwell can detect (P2-04, P2-05):** a small
+   chamber in uniform rock, quasi-static, under the regional microseism level (not measured on the plateau during a
+   pass).
 
 Run whole (P2-07), over simulated desert shaking at Giza's level with the chamber's imprint, imaged on the real dwell
 and put through the published pipeline unchanged, the depth sections with and without the chamber differ by 1e-8.
-The site is now **Underworld**: the front page leads with the answer, `/pictures/` walks through it for anyone,
+The site is now **Underworld**: the front page leads with what we found, `/pictures/` walks through it for anyone,
 `/satellite/` holds the evidence.
 
 P2-03 also corrects the first investigation's record: R9's coherence curve is an identity of the looks, R4's floor is
@@ -53,6 +56,10 @@ Since then (still 28 September):
   passes on the corrected lines in any image; loosened to one, the real image passes 69, the twins 28 and 29, open
   desert 53. Its own steering record gives 6.00 s of every pixel's pass per image. The Great Pyramid's eleven lines use
   a newer format the published code does not read; they lie on the east face, nearly edge-on to the pass.
+- **P2-15** measures what the gated reconstruction's six-second pairs register of a vibration, through its own masks
+  and registration on simulated images: each image moves by 0.06 to 45 times the boxcar value depending on frequency,
+  and a pair catches 3-46% of the shift between its images for a bright point, 0.6-2.8% for texture; at 2 mm/s the
+  pair shifts change by at most about one 0.01 px step. It replaces the boxcar numbers the site had quoted.
 - **The viewer's satellite data** is exported (`sim/katabasis/export/radar.py`: the track, the draped image, the
   virtual sensors, the method's volumes with and without the chamber over one whole period of its depth axis, and the
   Khafre volume); the viewer's Satellite mode that draws them is next.

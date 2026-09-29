@@ -15,7 +15,7 @@
   ],
   "spacing": 5.0,
   "label": "Satellite \u00b7 the published method at Khafre pyramid",
-  "method": "The real 2025 ICEYE pass, the published pipeline (50 half-band pairs, 32 px, lambda_s 0.48 m), depth relabelled as the claim does (repeat at 648 m)",
+  "method": "The real 2025 ICEYE pass through the paper-style pipeline (50 half-band pairs, 32 px patches, grid-median correction, no selection gates, lambda_s 0.48 m): focused power on a log scale, depth relabelled as the claim does (repeat at 648 m), smoothed for display; not the gated reconstruction",
   "quantity": "focused power, log scale",
   "units": "relative",
   "range": [
@@ -41,7 +41,7 @@
   ],
   "spacing": 5.0,
   "label": "Satellite \u00b7 the published method at Khufu pyramid",
-  "method": "The real 2025 ICEYE pass, the published pipeline (50 half-band pairs, 32 px, lambda_s 0.48 m), depth relabelled as the claim does (repeat at 648 m)",
+  "method": "The real 2025 ICEYE pass through the paper-style pipeline (50 half-band pairs, 32 px patches, grid-median correction, no selection gates, lambda_s 0.48 m): focused power on a log scale, depth relabelled as the claim does (repeat at 648 m), smoothed for display; not the gated reconstruction",
   "quantity": "focused power, log scale",
   "units": "relative",
   "range": [
@@ -67,7 +67,7 @@
   ],
   "spacing": 5.0,
   "label": "Satellite \u00b7 the published method at Menkaure pyramid",
-  "method": "The real 2025 ICEYE pass, the published pipeline (50 half-band pairs, 32 px, lambda_s 0.48 m), depth relabelled as the claim does (repeat at 648 m)",
+  "method": "The real 2025 ICEYE pass through the paper-style pipeline (50 half-band pairs, 32 px patches, grid-median correction, no selection gates, lambda_s 0.48 m): focused power on a log scale, depth relabelled as the claim does (repeat at 648 m), smoothed for display; not the gated reconstruction",
   "quantity": "focused power, log scale",
   "units": "relative",
   "range": [
@@ -93,7 +93,7 @@
   ],
   "spacing": 5.0,
   "label": "Satellite \u00b7 the published method over Open plateau, south of Khafre (control)",
-  "method": "The real 2025 ICEYE pass, the published pipeline (50 half-band pairs, 32 px, lambda_s 0.48 m), depth relabelled as the claim does (repeat at 648 m)",
+  "method": "The real 2025 ICEYE pass through the paper-style pipeline (50 half-band pairs, 32 px patches, grid-median correction, no selection gates, lambda_s 0.48 m): focused power on a log scale, depth relabelled as the claim does (repeat at 648 m), smoothed for display; not the gated reconstruction",
   "quantity": "focused power, log scale",
   "units": "relative",
   "range": [
