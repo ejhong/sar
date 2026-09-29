@@ -33,7 +33,7 @@ from scipy.ndimage import maximum_filter, median_filter
 from scipy.stats import norm
 
 import p2_13_gates as m
-from katabasis.ambient.peterson import velocity_psd
+from katabasis.ambient.peterson import P_MIN, acceleration_db
 from katabasis.lab import PRODUCT
 from katabasis.runs import RESULTS, Run
 from sarsim.acquisition import DwellGeometry
@@ -74,14 +74,16 @@ def sample(interp, pts):
 
 def noise_asd(f):
     """Velocity amplitude spectral density (m/s/rtHz) of the ambient noise: Kottamya's median (M1-01) at the shortest
-    period it resolves, 0.13 s (20 samples a second), its acceleration held flat to f; and Peterson's high-noise model."""
+    period it resolves, 0.13 s (20 samples a second), and Peterson's high-noise model at its shortest period, 0.1 s,
+    each with its acceleration held flat to f."""
     s = json.loads((RESULTS / 'm1_01_ambient_levels' / 'summary.json').read_text())
     c = s['components']['BHZ']
     T = np.array(c['period_s'])
     i = int(np.flatnonzero(T >= 0.125)[0])
     acc = 10 ** (np.array(c['acc_db']['all_p50'], float)[i] / 10)
     return {'kottamya_median': float(np.sqrt(acc) / (2 * np.pi * f)), 'kottamya_period_s': float(T[i]),
-            'peterson_high': float(np.sqrt(velocity_psd(np.array([f]), 'high')[0]))}
+            'peterson_high': float(np.sqrt(10 ** (acceleration_db(np.array([P_MIN]), 'high')[0] / 10)) / (2 * np.pi * f)),
+            'peterson_period_s': float(P_MIN)}
 
 
 # ------------------------------------------------------------------ the satellite's products and its tracker --
@@ -206,6 +208,8 @@ def main():
         # --- geophones: the amplitude at f of each record; the favourable detector's deflection per newton
         geo = {}
         for name in ('kottamya_median', 'peterson_high'):
+            if not np.isfinite(asd[name]):
+                raise ValueError(f'no noise level for {name}')
             sigma = asd[name] / np.sqrt(T)                                       # per quadrature, from a T-second record
             geo[name] = {'sigma_m_s': float(sigma)}
             for ch in ('bench', 'favourable'):
