@@ -52,6 +52,12 @@ def model(site, chamber):
     return parse_site(raw, site.directory)
 
 
+def sci(v):
+    """7.6e-12 as 7.6 x 10^-12, for the finding."""
+    e = int(np.floor(np.log10(abs(v))))
+    return f"{v / 10 ** e:.1f} x 10^{e}"
+
+
 def window_amplitude(traces, t, f, t0, t1):
     """The complex amplitude A of each trace's steady sinusoid, v = Re(A exp(i 2 pi f t)), over [t0, t1)."""
     sel = (t >= t0) & (t < t1)
@@ -107,10 +113,10 @@ def main():
         ib, iff = imprint['bench'], imprint['favourable']
         finding = (
             f"A vertical vibrator 30 m west of the chamber's axis, at {f:.2f} Hz, moves the ground over the axis by "
-            f"{checks['none']['up_at_axis_m_s_per_n'] * 1e9:.2f} nm/s per newton of force. The bench's chamber (6 m, 15 m "
-            f"down) changes the surface motion by at most {ib['max_relative'] * 100:.2f}% of it ({ib['max_m_s_per_n'] * 1e9:.3f} "
-            f"nm/s per newton), within {ib['half_max_radius_m']:.0f} m of its axis at half that; the favourable chamber (10 m, "
-            f"roof 5 m down) by {iff['max_relative'] * 100:.1f}% ({iff['max_m_s_per_n'] * 1e9:.2f} nm/s per newton). The motion "
+            f"{sci(checks['none']['up_at_axis_m_s_per_n'])} m/s per newton of force. The bench's chamber (6 m, 15 m down) "
+            f"changes the surface motion by at most {ib['max_relative'] * 100:.1f}% of it ({sci(ib['max_m_s_per_n'])} m/s per "
+            f"newton), within {ib['half_max_radius_m']:.0f} m of its axis at half that; the favourable chamber (10 m, roof 5 m "
+            f"down) by {iff['max_relative'] * 100:.1f}% ({sci(iff['max_m_s_per_n'])} m/s per newton). The motion "
             f"is steady: successive windows differ by at most {max(c['steady_change_max'] for c in checks.values()) * 100:.1f}% "
             f"of its largest value.")
         run.save({'checks': checks, 'imprint': imprint, 'frequency_hz': f, 'finding': finding})

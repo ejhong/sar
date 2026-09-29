@@ -1,0 +1,69 @@
+{
+ "manifest": {
+  "id": "lab_khafre_ns",
+  "title": "The gated reconstruction across Khafre, north-south lines, from the 2022 image",
+  "date": "2026-09-29",
+  "started_utc": "2026-09-29T13:37:14+00:00",
+  "runtime_s": 5025.7,
+  "commit": "c232f06",
+  "params": {
+   "method": "gated",
+   "site": "giza",
+   "centre_m": [
+    0.0,
+    0.0
+   ],
+   "half_ew_m": 141.0,
+   "half_ns_m": 150.0,
+   "step_m": 3.0,
+   "supports": [
+    1,
+    4
+   ],
+   "twin_seed": 101,
+   "product": "ICEYE_X13_SLC_SLED_868226_20220715T235744.h5",
+   "lines": "ns",
+   "gated_module_sha256": "3e1154c11274b896b91e262198576ffd750732709ad08ac00c6892c4ea5e1b1d",
+   "gated_profile_sha256": "ae84cade31f7e5ffa9b4daa0eba152649d2afc7f1655415bad38553f4f4d69aa",
+   "geoid_m": 15.5
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  }
+ },
+ "method": "gated",
+ "results": {
+  "real": {
+   "supported_positions": {
+    "1": 1219,
+    "4": 0
+   }
+  },
+  "twin101": {
+   "supported_positions": {
+    "1": 516,
+    "4": 0
+   }
+  }
+ },
+ "cases": [
+  "real",
+  "twin101"
+ ],
+ "grid": {
+  "x0": -141.0,
+  "y0": -150.0,
+  "z_top": 208.4,
+  "step_m": 3.0,
+  "shape": [
+   95,
+   101,
+   149
+  ]
+ },
+ "finding": "The gated reconstruction, unchanged, along 95 north-south lines 3 m apart across (0, 0) on giza: real: 1,219 of 9,595 positions pass at support 1, 0 of 9,595 positions pass at support 4; twin101: 516 of 9,595 positions pass at support 1, 0 of 9,595 positions pass at support 4."
+}

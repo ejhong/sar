@@ -427,6 +427,50 @@ def export_lab(out: Path = DATA) -> list[dict]:
     return [{'site': site, 'volumes': [e['id'] for lab in labs for e in lab['volumes']]} for site, labs in by_site.items()]
 
 
+def export_survives(out: Path = DATA) -> dict | None:
+    """What survives a change of pass or of lines (P2-21): across Khafre, the lesser of two runs' fit scores wherever both
+    scored, for the two layouts on the 2022 pass and for the two passes, added to the lab's runs as choices of pass and
+    lines ('both')."""
+    rid = 'p2_21_what_survives'
+    vpath = RESULTS / rid / 'volumes.npz'
+    rj = out / 'sites' / 'giza' / 'radar.json'
+    if not (vpath.exists() and rj.exists()):
+        return None
+    from ..compose import load_site
+    from .sites import scene as site_scene
+    s = load(rid)
+    sc = site_scene(load_site('giza'))
+    v = np.load(vpath)
+    h = float(v['step'])
+    d = out / 'sites' / 'giza'
+    run = f"{rid} · {s['manifest']['date']} · {s['manifest']['commit']}"
+    radar = json.loads(rj.read_text())
+    labs = [x for x in radar.get('lab', []) if not x['name'].startswith('agree_')]
+    vols = []
+    for pair, name, title, pas, lines in (
+            ('ew22_ns22', 'agree_lines', 'Where the east-west and north-south layouts agree, across Khafre, from the 2022 image', '2022', 'both'),
+            ('ew22_ew25', 'agree_pass', 'Where the 2022 and 2025 passes agree, across Khafre, east-west lines', 'both', 'ew')):
+        V = v[f'{pair}_agree'].astype(np.float32)
+        z = v[f'{pair}_z']
+        keep = z >= sc['extent']['z'][0] + h / 2
+        V = V[:, :, keep]
+        u8 = np.where(np.isfinite(V), 1 + np.round(254 * np.clip(np.nan_to_num(V, nan=0.0), 0, 1)), 0).astype(np.uint8)
+        vid = f"radar-agree-{pair.replace('_', '-')}"
+        vols.append(_write_volume(d, vid, V, u8, [float(v[f'{pair}_x'][0]), float(v[f'{pair}_y'][0])], h, {
+            'label': f'Satellite · {title}',
+            'method': 'The lesser of two runs\' fit scores wherever both scored (P2-21), support 1',
+            'quantity': 'conditional adjusted R2 at each nominal depth below the surface, where both runs scored',
+            'units': '0 to 1', 'range': [0.0, 1.0], 'run': run, 'tint': 'gated',
+            'caption': 'the lesser of two fit scores; empty unless both runs scored'}, ztop=float(z[keep][0])))
+        labs.append({'name': name, 'title': title, 'pass': pas, 'lines': lines,
+                     'volumes': [{'id': vid, 'case': 'real', 'support': 1}],
+                     'focus': [0.0, 0.0, float(np.median(z[keep][:1]))], 'radius_m': 620.0, 'note': s['finding'], 'run': run})
+    _merge_volumes(d, vols, drop=lambda q: q['id'].startswith('radar-agree-'))
+    radar['lab'] = labs
+    rj.write_text(json.dumps(radar, separators=(',', ':')))
+    return {'site': 'giza', 'volumes': [x['id'] for x in vols]}
+
+
 def export_radar(out: Path = DATA) -> list[dict]:
     return [r for r in (export_bench(out), export_bench_gated(out), export_claim(out), export_real(out), export_khufu_gated(out))
-            if r] + export_lab(out)
+            if r] + export_lab(out) + [r for r in (export_survives(out),) if r]

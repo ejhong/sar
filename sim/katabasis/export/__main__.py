@@ -1,10 +1,10 @@
 from .radar import export_radar
 from .runs import export_runs
 from .sites import export_sites
-from .volumes import export_p1_02, export_p1_03, export_p1_04, export_p1_05
+from .volumes import export_p1_02, export_p1_03, export_p1_04, export_p1_05, export_p2_22
 
 if __name__ == '__main__':
-    for fn in (export_p1_02, export_p1_03, export_p1_04, export_p1_05):
+    for fn in (export_p1_02, export_p1_03, export_p1_04, export_p1_05, export_p2_22):
         try:
             for v in fn():
                 print(f"volume {v['id']}")

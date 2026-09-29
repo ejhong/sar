@@ -96,6 +96,41 @@ def export_p1_03(out: Path = DATA) -> list[dict]:
     return vols
 
 
+def export_p2_22(out: Path = DATA) -> list[dict]:
+    """The one shaking (P2-22): the vibrator's steady vertical motion over the bench with its chamber, and the chamber's
+    imprint on it (with minus without), three cycles each, added to the site's waves."""
+    rid = 'p2_22_one_shaking'
+    fpath = RESULTS / rid / 'fields.npz'
+    if not fpath.exists():
+        return []
+    s = json.loads((RESULTS / rid / 'summary.json').read_text())
+    a = np.load(fpath)
+    x, y, f = a['x'], a['y'], float(a['f_hz'])
+    up0, up1 = a['U_none'][..., 2], a['U_bench'][..., 2]
+    n = 72                                                      # three cycles, 24 frames each
+    ph = np.exp(2j * np.pi * 3 * np.arange(n) / n)
+    movie = np.real(up1[None] * ph[:, None, None])
+    imprint = np.real((up1 - up0)[None] * ph[:, None, None])
+    vmax = float(np.percentile(np.abs(movie), 99.0))              # the vibrator's own spot would swamp the scale
+    emax = float(np.percentile(np.abs(imprint), 99.8))
+    d = out / 'sites' / s['manifest']['params']['site']
+    path = d / 'wavefields.json'
+    waves = [w for w in (json.loads(path.read_text()) if path.exists() else []) if not w['id'].startswith('vibrator')]
+    src = [float(v) for v in a['source']]
+    for wid, frames, m, label, caption, kind in (
+            ('vibrator', movie, vmax, 'A vibrator, steady',
+             f'{f:.2f} Hz, 30 m from the chamber: the one shaking geophones and the satellite both read', 'motion'),
+            ('vibrator-imprint', imprint, emax, "The chamber's imprint on it",
+             f'with minus without the chamber, amplified {vmax / emax:.0f}×', 'echo')):
+        (d / f'wave-{wid}.u8').write_bytes(np.ascontiguousarray(_signed_u8(frames, m).transpose(0, 2, 1)).tobytes())
+        waves.append({'id': wid, 'label': label, 'caption': caption, 'file': f'wave-{wid}.u8',
+                      'shape': [int(frames.shape[0]), int(frames.shape[1]), int(frames.shape[2])],
+                      'origin': [float(x[0]), float(y[0])], 'spacing': float(x[1] - x[0]), 'z': 0.0,
+                      'dt_ms': 1e3 / f / 24, 'kind': kind, 'shot': [src[0], src[1], src[2]]})
+    path.write_text(json.dumps(waves, indent=1))
+    return [{'id': w['id']} for w in waves if w['id'].startswith('vibrator')]
+
+
 def export_p1_04(out: Path = DATA) -> list[dict]:
     rid = 'p1_04_ambient'
     summ = RESULTS / rid / 'summary.json'

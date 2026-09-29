@@ -15,7 +15,8 @@ PUBLISHED = ['p1_01_forward_validation', 'p1_02_traveltime', 'p1_03_scattered', 
              'p2_07_whole_chain', 'p2_08_pillars_and_boxes', 'p2_09_virtual_sensors', 'p2_11_every_way_in', 'p2_12_real_pass',
              'p2_13_gates', 'p2_14_own_lines', 'p2_15_pair_response',
              'p2_16_khufu_volume', 'p2_17_plateau_control',
-             'p2_18_echo_validation', 'p2_19_known_vibration', 'p2_20_bench_gated']
+             'p2_18_echo_validation', 'p2_19_known_vibration', 'p2_20_bench_gated', 'p2_21_what_survives',
+             'p2_22_one_shaking', 'p2_23_every_reader', 'p2_24_gated_on_the_shaking']
 
 EXPERIMENTS = Path(__file__).resolve().parents[2] / 'experiments'
 
