@@ -55,7 +55,7 @@ const gatedRuns = runIndex.filter((r) => 'gated_module_sha256' in r.params).leng
         <span class="tag simulated">P2-06, P2-07 · algebra, checked in code</span>
         <h3>The depth axis is a frequency axis</h3>
         <p>The steering wavenumber grows linearly with slow time, so the published focusing is a Fourier transform over time: 6.76 m of depth per hertz on the real geometry, whatever lies below.</p>
-        <p class="check">Checked: the pipeline’s own code reproduces the rule to the grid, folds where predicted, and draws identical profiles over a chamber at 15 m, at 30 m and over rock; run whole (P2-07), its sections with and without the chamber differ by 10<sup>−8</sup>. Limit: the scale depends on the sound wavelength, which only relabels it; the relation itself holds whatever the ground does.</p>
+        <p class="check">Checked: the pipeline’s own code reproduces the rule to the grid, folds where predicted, and draws identical profiles over a chamber at 15 m, at 30 m and over rock; run whole (P2-07), its sections with and without the chamber differ by 10<sup>−8</sup>. Limit: the scale depends on the sound wavelength, which rescales it without changing the fit (a calibration ambiguity); the relation makes absolute depth uncalibrated, and does not by itself decide whether horizontal location or shape survive.</p>
       </div>
     </div>
     <p class="sub">

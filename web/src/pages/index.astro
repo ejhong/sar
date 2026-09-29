@@ -189,9 +189,9 @@ const explore = [
           <p class="verdict-label">The published method, as it stands</p>
           <h3>Its pictures come from the image and the processing, not from what lies below</h3>
           <ul>
-            <li>Its “depth” is a frequency of the processing, whatever is underground.</li>
-            <li>Over a known room it draws the same picture with the room and without it; so does the stricter version.</li>
+            <li>Over a known room, at the ground’s real shaking, it draws the same picture with the room and without it; so does the stricter version.</li>
             <li>Its patterns appear in motionless copies of an image and over open ground.</li>
+            <li>Its depth scale is set by the processing (a frequency of the registration), so absolute depth is uncalibrated and repeats. That alone does not decide whether it finds where things are, or their shape: that is tested separately.</li>
             {survivesPass === false && <li>What it draws across Khafre changes from one satellite pass to the next.</li>}
             {gatedReads === false && <li>Where the data demonstrably hold a chamber, shaken hard enough for reflectors to find it, the stricter version still does not read it.</li>}
           </ul>
@@ -412,12 +412,16 @@ const explore = [
     <section id="frequency" class="step">
       <div class="words">
         <p class="num">7</p>
-        <h2>What it calls depth is really how fast something wobbles</h2>
+        <h2>What it calls depth is set by how fast the ground moves: an uncalibrated scale, not by itself a useless one</h2>
         <p>
-          Why can the depth pictures not show depth? Because of how they are made. The method’s depth scale is a frequency
-          scale in disguise: a slow wobble comes out shallow and a fast one deep, {mph.toFixed(1)} metres for every wobble
-          per second, whatever lies below. Give it the exact motion of the ground, which it never has, and it draws the
-          trembling at the same depth over our room, over a room twice as deep, and over solid rock.
+          The method’s depth scale is a frequency scale in disguise: a slow wobble comes out shallow and a fast one deep,
+          {' '}{mph.toFixed(1)} metres for every wobble per second, whatever lies below, repeating further down. Give it the exact
+          motion of the ground, which it never has, and it draws the trembling at the same depth over our room, over a room
+          twice as deep and over solid rock, but brighter where the ground moves more. So absolute depth is ambiguous and
+          uncalibrated; changing the method’s sound wavelength stretches the whole scale without changing the fit. That does
+          not show that where something is, or its outline, is lost: a method that found the right layout at the wrong depth
+          would still be a major success. Whether it does is tested on its own (the shape test, and
+          {' '}<a href={`${base}/proof/#claims`}>five claims scored apart</a>).
         </p>
       </div>
       <div class="wide">
@@ -519,10 +523,12 @@ const explore = [
           with the room and without, and its best is known exactly, whatever the texture: under the ground’s own trembling at
           most <Sci v={orAmb} p={0} />. The one regime this leaves open is strong shaking close by, known exactly: a lorry
           bouncing beside the room all pass gives such an oracle {orWorst.tv_exact.toFixed(2)}, still
-          {' '}{orWorst.growth_to_target.toFixed(0)} times short of a reliable detection, a margin too thin to call closed. Depth is
-          harder still: small rooms spread 15 metres down leave the mark of a room 30 metres down to within
+          {' '}{orWorst.growth_to_target.toFixed(0)} times short of a reliable detection, a margin too thin to call closed. Where a room
+          is and its shape are bounded the same way, since telling two layouts apart is harder than telling either from none.
+          Absolute depth is the hardest claim: small rooms spread 15 metres down leave the mark of a room 30 metres down to within
           {' '}{(100 * orc.depth.residual_fraction).toFixed(0)}%, so telling the two apart takes
-          {' '}{Math.round(orc.depth.signal_factor_depth_over_detection)} times the signal that detecting either takes.
+          {' '}{Math.round(orc.depth.signal_factor_depth_over_detection)} times the signal that detecting either takes; but a method that
+          found a layout at the wrong depth would still be useful, so the claims are scored apart.
         </p>
       </div>
       <div class="wide routes-wrap"><Routes /></div>

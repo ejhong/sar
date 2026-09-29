@@ -101,6 +101,7 @@ const d30 = dp.results['hollow_30_phase_2'];
   state="status · proved within a stated model; physical inputs not certified · 29 September 2026"
   index={[
     { id: 'answer', label: 'The answer' },
+    { id: 'claims', label: 'Five claims, apart' },
     { id: 'layers', label: 'Three layers' },
     { id: 'theorems', label: 'The theorems' },
     { id: 'mechanism', label: 'What a mechanism must supply' },
@@ -127,6 +128,31 @@ const d30 = dp.results['hollow_30_phase_2'];
       magnitude in how little, which is what their different assumptions buy.
     </p>
     <Routes />
+  </section>
+
+  <section id="claims">
+    <h2>The question is broader than detection: presence, horizontal location, shape, relative vertical geometry and absolute depth are scored apart</h2>
+    <p class="sub">
+      Does one complex SAR acquisition hold reproducible information about what is actually underground, where it is or its
+      shape, that survives controls and predicts withheld ground, even if its depth stays uncertain? A method that drew a
+      branching tunnel or a room’s layout at one of two possible depths would be a major success, so an uncalibrated or
+      aliased depth scale does not by itself dismiss a method. Each claim is judged on its own evidence.
+    </p>
+    <table class="data compact">
+      <thead><tr><th>claim</th><th>what bounds or tests it</th><th>where it stands</th></tr></thead>
+      <tbody>
+        <tr><td>Presence: a room here or not</td><td>the three layers below, which bound every processor within the model</td><td>under the ground’s own trembling, no useful detection ({pctp(micro.tpr_upper_at_fpr_005, 3)} found at 5% false alarms, at most); under strong shaking close by, known exactly, open</td></tr>
+        <tr><td>Horizontal location</td><td>the same bounds: telling a room here from a room there is a test between two worlds, and TV(A, B) ≤ TV(A, none) + TV(none, B)</td><td>bounded wherever presence is; where the data hold the room (boosted), the published picture changes most over it in a paired comparison (P2-07); blind recovery is the shape test’s</td></tr>
+        <tr><td>Shape: a room, an L-shaped or a branching tunnel</td><td>the same inequality between any two layouts; the shape test (P2-31) on physically generated scenes, scored blind</td><td>bounded under the ground’s own trembling; the decisive experiment for the strong-signal regime, with a reference detector and a positive control</td></tr>
+        <tr><td>Relative vertical geometry</td><td>whether deeper parts are drawn deeper, whatever the scale</td><td>not shown: the published axis is the registration’s frequency (P2-06, P2-28)</td></tr>
+        <tr><td>Absolute depth</td><td>the axis’s calibration, and whether different depths leave different marks</td><td>uncalibrated and aliased in the published method; physically, rooms spread shallower can mimic a deeper room (below)</td></tr>
+      </tbody>
+    </table>
+    <p class="note">
+      A bound on detection rate − false-alarm rate is a bound at every operating point: found ≤ false alarms + TV. Under the
+      regional microseism envelope that leaves no prospecting value within the model, even for ranking sites (TV ≤ {sci(micro.tv_upper)});
+      where TV is large, as in the open regime, a method could have prospecting value short of 95% at 5%, and it is not excluded.
+    </p>
   </section>
 
   <section id="layers">
@@ -255,7 +281,7 @@ const d30 = dp.results['hollow_30_phase_2'];
   </section>
 
   <section id="depth">
-    <h2>Depth needs far more than detection: rooms spread 15 m down leave the mark of a room 30 m down to {(100 * orc.depth.residual_fraction).toFixed(1)}%</h2>
+    <h2>Absolute depth is the hardest of the five claims, and its ambiguity does not decide the others: rooms spread 15 m down leave the mark of a room 30 m down to {(100 * orc.depth.residual_fraction).toFixed(1)}%</h2>
     <div class="grid-2">
       <div class="note-card">
         <span class="tag">any method · P2-29, P2-30</span>
@@ -272,7 +298,9 @@ const d30 = dp.results['hollow_30_phase_2'];
         <p>Run whole over the bench room 15 m down, the same room 30 m down and a granite block, each imprint boosted to 2 rad, the
         published focusing spreads each change over its whole axis: {pctp(d15.share_12_18_m, 0)} of the 15 m room’s change lies between 12 and 18 m
         and {pctp(d30.share_27_33_m, 0)} of the 30 m room’s between 27 and 33 m, where {pctp(d15.axis_share_12_18_m, 0)} and {pctp(d30.axis_share_27_33_m, 0)} of the axis lie.
-        Its depth coordinate is an uncalibrated focus coordinate: the frequency of the registration series (P2-06).</p>
+        Its depth coordinate is an uncalibrated focus coordinate, the frequency of the registration series (P2-06): a calibration
+        and aliasing problem, which a method that recovered the right layout would survive. Whether it recovers the layout is
+        the shape test’s question.</p>
       </div>
     </div>
   </section>

@@ -17,7 +17,7 @@ PUBLISHED = ['p1_01_forward_validation', 'p1_02_traveltime', 'p1_03_scattered', 
              'p2_16_khufu_volume', 'p2_17_plateau_control',
              'p2_18_echo_validation', 'p2_19_known_vibration', 'p2_20_bench_gated', 'p2_21_what_survives',
              'p2_22_one_shaking', 'p2_23_every_reader', 'p2_24_gated_on_the_shaking',
-             'p2_25_information_bound', 'p2_26_imprint_spectrum', 'p2_27_requirement', 'p2_28_two_depths', 'p2_29_oracle', 'p2_30_finite_certificates']
+             'p2_25_information_bound', 'p2_26_imprint_spectrum', 'p2_27_requirement', 'p2_28_two_depths', 'p2_29_oracle', 'p2_30_finite_certificates', 'p2_31_shape_test']
 
 EXPERIMENTS = Path(__file__).resolve().parents[2] / 'experiments'
 

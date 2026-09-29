@@ -358,6 +358,7 @@ const bSurf = bd.dynamic.find((d) => d.case === 'surface')!;
 const bFav = bd.dynamic.find((d) => d.case === 'surface_favourable')!;
 const bA = bd.checks.estimator.A_compact;
 const bB = bd.checks.estimator.B_smooth;
+const chainSweepRatio = Math.max(...(chain.sweep as { over_chamber: number; elsewhere: number }[]).map((r) => r.over_chamber / r.elsewhere));
 const cont = bd.checks.continuum;
 const contSpread = [Math.min(...cont.map((c) => c.ratio)), Math.max(...cont.map((c) => c.ratio))];
 const det = bd.checks.detection;
@@ -730,7 +731,8 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
     <table class="data compact">
       <thead><tr><th>claim</th><th>status</th><th>rests on</th><th>what would change it</th></tr></thead>
       <tbody>
-        <tr><td>The published and reconstructed depth axes are frequency axes of the registration, with a repeat and a mirror</td><td>established</td><td>the processing’s algebra (P2-06), its code (P2-13, P2-14), an independent check</td><td>a physical model deriving depth from the registration, validated on known voids</td></tr>
+        <tr><td>The published and reconstructed depth axes are frequency axes of the registration, with a repeat and a mirror: absolute depth is uncalibrated and not unique</td><td>established</td><td>the processing’s algebra (P2-06), its code (P2-13, P2-14), an independent check</td><td>a physical model deriving depth from the registration, validated on known voids; it does not decide horizontal location or shape</td></tr>
+        <tr><td>Whether the method recovers horizontal location or outline where the data hold them, at any depth</td><td>open; the shape test runs next</td><td>boosted, the published picture changes most over the chamber (P2-07, paired); P2-31 scores layouts blind</td><td>a frozen method recovering withheld layouts, with the same depth freedom given to nulls</td></tr>
         <tr><td>Correlating one image’s looks registers little of ordinary ground’s motion</td><td>measured, for that estimator</td><td>P2-03 on real texture; an exact identity for whole images, an approximation for patches</td><td>an estimator shown to recover planted ground motion on real texture</td></tr>
         <tr><td>The six-second pairs register little of a vibration</td><td>measured in simulation</td><td>P2-15, confirmed pulse by pulse (P2-18)</td><td>shaker and reflector data showing more</td></tr>
         <tr><td>The gated reconstruction does not respond to a known vibration a standard tracker measures</td><td>measured in simulation</td><td>synthetic products through its own loader (P2-19)</td><td>a frozen setting at which it recovers a planted vibration’s frequency, place and amplitude</td></tr>
@@ -764,8 +766,9 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
       <div class="note-card">
         <span class="tag simulated">simulated · P2-06, P1-04</span>
         <h3>If every pixel’s vibration were known perfectly, would it show a chamber?</h3>
-        <p>Not by the published method: its depth is the frequency of the motion, so given the exact motion at every pixel it
-        draws the same picture over rock and over a chamber. Nor, in our simulations, by passive seismic imaging within one pass: the ground’s
+        <p>Not at the right depth by the published method: its depth is the frequency of the motion, so given the exact motion
+        at every pixel it puts the trembling at one depth over rock and over a chamber alike; it would still draw it brighter
+        where the chamber changes the motion, so where the chamber is could survive with its depth wrong (P2-06). Nor, in our simulations, by passive seismic imaging within one pass: the ground’s
         trembling comes in waves kilometres long, too coarse to outline a room, and a pass lasts {gz.aperture_s.toFixed(1)} s.
         Even with short waves, perfect instruments on the ground and the rock known exactly, passive imaging shows the chamber
         no brighter than its surroundings after a minute of recording
@@ -1095,7 +1098,16 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
       page uses the paper’s 0.48 m, and an independent review notes that the paper is inconsistent on it, its text implying
       0.48 m and a displayed expression 0.24 m, the value the reconstruction uses. With 0.24 m every depth halves and nothing
       else changes. Given the exact motion at every pair, the focusing draws the same peak over two chambers and over open
-      ground (Fig. S6).
+      ground (Fig. S6), differing only in brightness.
+    </p>
+    <p class="sub">
+      What this shows is that depth is not identified: it is uncalibrated, it repeats and mirrors, and changing λ<sub>s</sub>
+      rescales it without changing the fit. It does not show that a recovered horizontal position or outline is an artefact:
+      brightness still changes where the motion changes, and a method that drew the right layout at an aliased depth would
+      be useful. Horizontal location, shape, relative vertical geometry and absolute depth are scored as separate claims
+      (<a href={`${base}/proof/#claims`}>the proof page</a>); run whole with the chamber’s imprint boosted, the published
+      picture changes {(chainSweepRatio).toFixed(1)} times more over the chamber than elsewhere (P2-07), a paired comparison
+      the method never has.
     </p>
     <div class="grid-2 charts">
       <LineChart
@@ -1136,7 +1148,7 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
       chamber changes the image by <Sci v={chain.A_vs_B.image_relative_difference} p={0} /> of itself (its imprint is{' '}
       <Sci v={chain.A_vs_B.imprint_phase_rad} p={0} /> rad of phase) and the depth section by{' '}
       <Sci v={chain.A_vs_B.method_relative_difference} p={0} />. The dashed outline is the chamber; with the published
-      λ<sub>s</sub> the axis ends at {czmax.toFixed(1)} m, and any other λ<sub>s</sub> relabels the same pixels (P2-06).
+      λ<sub>s</sub> the axis ends at {czmax.toFixed(1)} m, and any other λ<sub>s</sub> rescales depth without changing the fit (P2-06): a calibration ambiguity.
     </p>
     <div class="grid-4">
       <Figure compact src={cfig('method_A.png')} alt="Depth section with the chamber" label="With the chamber" caption="" aspect="4 / 5" yTop="0 m" yBottom={`${czmax.toFixed(1)} m`}><svg viewBox="0 0 100 100" preserveAspectRatio="none"><rect x={croom.x} y={croom.y} width={croom.w} height={102 - croom.y} fill="none" stroke="#82b3ff" stroke-width="0.5" stroke-dasharray="1.6 1.1" vector-effect="non-scaling-stroke" /></svg></Figure>
