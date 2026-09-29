@@ -573,7 +573,11 @@ export class Underworld {
         if (s.radar?.sensors) items.push(['sensor', 'true motion']);
         items.push(['radar', vol ? `the satellite’s picture: ${sel!.method.quantity}` : s.radar?.sensors ? 'what the image reports' : 'the satellite']);
       }
-      legend.innerHTML = items.map(([dot, label]) => `<span><span class="uw-dot ${dot}"></span>${esc(label)}</span>`).join('');
+      legend.innerHTML =
+        items.map(([dot, label]) => `<span><span class="uw-dot ${dot}"></span>${esc(label)}</span>`).join('') +
+        (vol
+          ? `<span class="uw-ramp ${this.mode === 'satellite' ? 'radar' : 'recovered'}" title="${esc(vol.quantity)}"><i></i>lower · higher</span>`
+          : '');
     }
   }
 

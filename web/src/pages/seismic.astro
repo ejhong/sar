@@ -36,7 +36,7 @@ const fwSurfXZ = (fw.stations.receivers as number[][]).filter((p) => Math.abs(p[
 const dur = (s: number) => (s < 60 ? `${s.toFixed(0)} s` : s < 3600 ? `${(s / 60).toFixed(0)} min` : s < 86400 ? `${(s / 3600).toFixed(s < 36000 ? 1 : 0)} h` : `${(s / 86400).toFixed(0)} days`);
 ---
 <Doc
-  title="Seismic tomography, simulated"
+  title="Geophones: what instruments on the ground see"
   kicker="From the ground · what the right instruments see"
   current="seismic"
   lede="Before judging a satellite, ask what the instruments built for the job can see. Geophysicists image the shallow ground with arrays of geophones and a source, hammer blows or the ambient hum, and invert the records into a three-dimensional tomogram. Here that is done in simulation, over the same ground the satellite was flown over. Boreholes, echo imaging and full-waveform inversion find the chamber; the lab’s tools find it when the physics allows, so the satellite’s failure is the satellite’s."

@@ -20,8 +20,8 @@ import type { VolumeInfo } from '../data/types';
  * A voxel volume (a tomogram) ray-marched inside its box, in site
  * coordinates. Values are 0..255: 0 is background, 255 the strongest
  * anomaly the exporter mapped. What an instrument recovered glows in
- * verdigris, what the published radar method draws in cinnabar; the section
- * plane cuts it like everything else.
+ * verdigris, what the satellite's processing computes in cinnabar, each with its
+ * lightness following the value; the section plane cuts it like everything else.
  */
 export class Volume {
   readonly mesh: Mesh;
@@ -145,7 +145,9 @@ void main() {
     float v = texture(uTex, uvw).r;
     float a = smoothstep(uThreshold, 1.0, v) * uDensity * dt / max(size.x, size.y) * 18.0;
     a = clamp(a, 0.0, 1.0);
-    vec3 c = mix(uColor * 0.55, uColor * 1.35, smoothstep(uThreshold, 1.0, v));
+    // one hue, its lightness the value: dim and deep for the lowest shown, near white (by day, near ink) for the highest
+    float s = smoothstep(uThreshold, 1.0, v);
+    vec3 c = uDay > 0.5 ? mix(mix(uColor, vec3(1.0), 0.55), uColor * 0.55, s) : mix(uColor * 0.45, mix(uColor, vec3(1.0), 0.6), s);
     acc.rgb += (1.0 - acc.a) * a * c;
     acc.a += (1.0 - acc.a) * a;
   }

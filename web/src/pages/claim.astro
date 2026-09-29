@@ -1,106 +1,21 @@
 ---
-import Doc from '../layouts/Doc.astro';
-import Timeline from '../components/Timeline.astro';
-import Term from '../components/Term.astro';
+/** This page is now part of the overview; old links, anchors included, are forwarded there. */
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const to = `${base}/`;
 ---
-<Doc
-  title="The claim under test"
-  kicker="What was published, and by whom"
-  current="claim"
-  lede="The idea is that a single satellite radar image, reprocessed as a set of sub-apertures, holds the vibration of the ground, and that the vibration can be focused into a picture of what lies hundreds of metres beneath it. This page keeps apart the four things that are easily blurred: the published claims, the public protocol derived from them, this lab's own work, and the difference between simulation and measurement."
-  index={[
-    { id: 'timeline', label: 'Timeline' },
-    { id: 'published', label: 'Published claims' },
-    { id: 'protocol', label: 'Replications' },
-    { id: 'ours', label: 'This lab' },
-    { id: 'honesty', label: 'Simulated and measured' },
-  ]}
->
-  <section id="timeline">
-    <h2>Four years from the method to its retraction</h2>
-    <Timeline />
-  </section>
-
-  <section id="published">
-    <h2>The method was published in 2022 and retracted in 2026</h2>
-    <div class="grid-2">
-      <div class="note-card">
-        <span class="tag claimed">claimed</span>
-        <h3>Single-image <Term k="doppler-tomography">Doppler tomography</Term></h3>
-        <p>
-          Biondi and Malanga described the method in 2022, applied to the Great Pyramid
-          (<a href="https://arxiv.org/abs/2208.00811">arXiv:2208.00811</a>). The paper was retracted by <em>Remote
-          Sensing</em> on 10 August 2026 (<a href="https://www.mdpi.com/2072-4292/18/16/2679">retraction notice</a>).
-        </p>
-      </div>
-      <div class="note-card">
-        <span class="tag claimed">claimed</span>
-        <h3>The Khafre announcement</h3>
-        <p>
-          At a briefing in Bologna on 15 March 2025, the Khafre Project described eight vertical structures reaching more
-          than 2,000 feet beneath the pyramid and further structures near 4,000 feet. The claim has not appeared in a
-          peer-reviewed paper. Its geometry, as far as it was stated, is placed in the ground in
-          <a href={`${base}/underworld/#bench-khafre-claim`}>the claimed underworld</a>.
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <section id="protocol">
-    <h2>Replications reconstruct the method, with choices of their own</h2>
-    <p class="sub">
-      Since 2025 the method has been reconstructed from its paper by others, filling missing details with choices of
-      their own. This lab tests the method as published and the general idea behind it, and keeps any reconstruction's
-      choices apart from the original's. Where a reconstruction adds stricter selection before its depth focus, the lab
-      runs it unchanged beside controls: <a href={`${base}/satellite/#gates`}>motionless copies of the image pass its gates
-      too, and planted vibrations do not come back</a>.
-    </p>
-  </section>
-
-  <section id="ours">
-    <h2>This lab reimplements, simulates and measures, and says which is which</h2>
-    <div class="grid-2">
-      <div class="note-card">
-        <span class="tag measured">the first investigation</span>
-        <h3>The published pipeline on real dwells</h3>
-        <p>
-          Reimplemented as described, tested on scenes with known contents, and run on two ICEYE Spotlight Dwell products
-          over Giza and Sacsayhuamán. <a href={`${base}/archive/`}>The full record is archived.</a>
-        </p>
-      </div>
-      <div class="note-card">
-        <span class="tag simulated">underworld</span>
-        <h3>Known ground, simulated instruments</h3>
-        <p>
-          Seismic arrays and the satellite over the same compositions, so the radar is judged against the best ground
-          instruments on identical ground. What we found: the ground instruments find the chamber; the satellite methods tested do not.
-          <a href={`${base}/pictures/`}>In pictures</a> · <a href={`${base}/satellite/`}>The satellite</a> ·
-          <a href={`${base}/seismic/`}>The ground</a>
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <section id="honesty">
-    <h2>Every figure says whether it is simulated or measured</h2>
-    <div class="honesty">
-      <span class="tag simulated">simulated</span><span>computed over a composition whose contents are known</span>
-      <span class="tag measured">measured</span><span>computed from a real acquisition</span>
-      <span class="tag claimed">claimed</span><span>stated by others, placed as stated, never treated as found</span>
-      <span class="tag planned">planned</span><span>designed, not yet run</span>
-    </div>
-  </section>
-</Doc>
-
-<style>
-  .honesty {
-    display: grid;
-    grid-template-columns: max-content 1fr;
-    gap: 10px 16px;
-    align-items: center;
-    font-family: var(--font-serif);
-    font-size: 13px;
-    color: var(--body);
-  }
-</style>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Underworld</title>
+    <link rel="canonical" href={to} />
+    <meta http-equiv="refresh" content={`0; url=${to}#claim`} />
+    <script is:inline define:vars={{ to, fallback: '#claim' }}>
+      location.replace(to + (location.hash || fallback));
+    </script>
+  </head>
+  <body>
+    <p>This page is now part of <a href={`${to}#claim`}>the overview</a>.</p>
+  </body>
+</html>

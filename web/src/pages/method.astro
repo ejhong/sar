@@ -26,6 +26,7 @@ const gatedRuns = runIndex.filter((r) => 'gated_module_sha256' in r.params).leng
   lede="How what we found is known, how sure each part is, and how to check it. Everything on this site is generated from the repository by code anyone can run: the compositions from their JSON, the simulations from their scripts, the figures and volumes from the runs that made them. Nothing is edited by hand, and every number carries its source or is marked as assumed."
   index={[
     { id: 'proof', label: 'How sure' },
+    { id: 'labels', label: 'Labels' },
     { id: 'materials', label: 'Materials' },
     { id: 'glossary', label: 'Glossary' },
     { id: 'run', label: 'Run it' },
@@ -62,6 +63,16 @@ const gatedRuns = runIndex.filter((r) => 'gated_module_sha256' in r.params).leng
       every run’s parameters, code and data are linked from its details panel on the <a href={`${base}/satellite/`}>satellite page</a>.
     </p>
   </section>
+  <section id="labels">
+    <h2>Every figure says whether it is simulated, measured, claimed or planned</h2>
+    <div class="honesty">
+      <span class="tag simulated">simulated</span><span>computed over a composition whose contents are known</span>
+      <span class="tag measured">measured</span><span>computed from a real acquisition</span>
+      <span class="tag claimed">claimed</span><span>stated by others, placed as stated, never treated as found</span>
+      <span class="tag planned">planned</span><span>designed, not yet run</span>
+    </div>
+  </section>
+
   <section id="materials">
     <h2>Every material property is sourced, derived from a source, or marked assumed</h2>
     <p class="sub">P and S wave speeds in m/s; ′ derived from a source by a stated ratio; * assumed. Densities are assumed throughout until an open source is found.</p>
@@ -179,6 +190,15 @@ uv run python -m katabasis.export                      # the run appears in the 
   }
   .runs .nowrap {
     white-space: nowrap;
+  }
+  .honesty {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 10px 16px;
+    align-items: center;
+    font-family: var(--font-serif);
+    font-size: 13px;
+    color: var(--body);
   }
   .glossary {
     display: grid;

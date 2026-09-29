@@ -896,6 +896,29 @@ const { mode = 'full', initial } = Astro.props;
   .uw-legend:empty {
     display: none;
   }
+  .uw-ramp {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .uw-ramp i {
+    display: inline-block;
+    width: 54px;
+    height: 7px;
+    border-radius: 4px;
+  }
+  .uw-ramp.recovered i {
+    background: linear-gradient(90deg, #1f5c4f, #74d8bc, #e3f7f0);
+  }
+  .uw-ramp.radar i {
+    background: linear-gradient(90deg, #6b3a2c, #f0906f, #fde6dd);
+  }
+  .uw[data-theme='day'] .uw-ramp.recovered i {
+    background: linear-gradient(90deg, #a5d6c9, #16876e, #0c4a3c);
+  }
+  .uw[data-theme='day'] .uw-ramp.radar i {
+    background: linear-gradient(90deg, #e6b8aa, #aa4b33, #5e2519);
+  }
   /* words over the lit ground stay legible */
   .uw[data-theme='night'] .uw-title,
   .uw[data-theme='night'] .uw-foot {

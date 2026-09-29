@@ -15,16 +15,14 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const groups = [
   [
     { id: 'home', href: `${base}/`, label: 'Overview' },
-    { id: 'pictures', href: `${base}/pictures/`, label: 'In pictures' },
     { id: 'underworld', href: `${base}/underworld/`, label: 'Lab' },
   ],
   [
-    { id: 'seismic', href: `${base}/seismic/`, label: 'Seismic' },
-    { id: 'ambient', href: `${base}/ambient/`, label: 'Ambient' },
+    { id: 'seismic', href: `${base}/seismic/`, label: 'Geophones' },
     { id: 'satellite', href: `${base}/satellite/`, label: 'Satellite' },
+    { id: 'ambient', href: `${base}/ambient/`, label: 'Ambient' },
   ],
   [
-    { id: 'claim', href: `${base}/claim/`, label: 'Claim' },
     { id: 'method', href: `${base}/method/`, label: 'Method' },
   ],
 ];
