@@ -30,6 +30,10 @@ def command(rid: str, manifest: dict) -> str | None:
                  f"--step {prm['step_m']:g}", '--supports ' + ','.join(str(x) for x in prm['supports'])]
         if prm.get('twin_seed') is not None:
             parts.append(f"--twin {prm['twin_seed']}")
+        if prm.get('lines', 'ew') != 'ew':
+            parts.append(f"--lines {prm['lines']}")
+        if prm.get('product') and prm['product'] != 'ICEYE_X13_SLC_SLED_868226_20220715T235744.h5':
+            parts.append(f"--product <path to {prm['product']}>")
         return ' '.join(parts)
     src = EXPERIMENTS / f'{rid}.py'
     if not src.exists():

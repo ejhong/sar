@@ -36,3 +36,19 @@ def test_a_real_product_has_no_synthetic_mapping(tmp_path):
     with h5py.File(path, 'w') as h:
         h['s_i'] = np.zeros((2, 2), np.float32)
     assert synthetic_mapping(path) is None
+
+
+def test_curtains_land_where_their_lines_ran():
+    """A score at the first position of the middle line: the east end for east-west lines, the north end for
+    north-south lines; volumes run west to east, south to north."""
+    from katabasis.lab import curtains_to_volume
+    z_m = np.arange(0, 30.01, 0.1)
+    F = np.full((3, 5, len(z_m)), np.nan)
+    F[1, 0, 100] = 0.7                                   # 10 m down
+    z_surf = np.zeros((3, 5))
+    zc = -3.0 * np.arange(10)
+    ew = curtains_to_volume(F, z_m, z_surf, zc, 3.0, 'ew')
+    ns = curtains_to_volume(F, z_m, z_surf, zc, 3.0, 'ns')
+    assert ew.shape == (5, 3, 10) and ns.shape == (3, 5, 10)
+    assert np.argwhere(np.isfinite(ew)).tolist() == [[4, 1, 3]]
+    assert np.argwhere(np.isfinite(ns)).tolist() == [[1, 4, 3]]

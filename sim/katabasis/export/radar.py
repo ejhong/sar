@@ -13,6 +13,7 @@ volumes.json with status 'radar' (drawn in cinnabar).
 from __future__ import annotations
 
 import json
+import re
 import shutil
 from pathlib import Path
 
@@ -413,8 +414,10 @@ def export_lab(out: Path = DATA) -> list[dict]:
                 entries.append({'id': vid, 'case': short, 'support': int(P)})
         _merge_volumes(sd, vols, drop=lambda q, name=name: q['id'].startswith(f'radar-lab-{name}-'))
         cx, cy = prm['centre_m']
+        stamp = re.search(r'_(\d{4})\d{4}T', prm.get('product', ''))
         by_site.setdefault(site, []).append({
             'name': name, 'title': s['manifest']['title'], 'volumes': entries,
+            'pass': stamp.group(1) if stamp else 'synthetic', 'lines': prm.get('lines', 'ew'),
             'focus': [cx, cy, float(np.median(v['z_surface']))], 'radius_m': 620.0, 'note': s['finding'], 'run': run})
     for site, labs in by_site.items():
         rj = out / 'sites' / site / 'radar.json'

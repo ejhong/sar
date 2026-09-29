@@ -6,10 +6,12 @@
 Methods:
 
   gated   the stricter gated reconstruction, its source imported as published and hashed, its profile unchanged but for
-          the input paths and the supports reported (1 and 4 by default). Lines run east to west across the area, `step`
-          metres apart, each placed through the product's RPC over the site's surface with the EGM96 undulation; the
-          curtains each line yields are stacked into a volume on a `step`-metre grid: the method's fit score at each
-          nominal depth below the surface point above, unsmoothed, empty where nothing passed.
+          the input paths and the supports reported (1 and 4 by default). Lines run east to west across the area (or
+          north to south, --lines ns), `step` metres apart, each placed through the product's RPC over the site's
+          surface with the EGM96 undulation; the curtains each line yields are stacked into a volume on a `step`-metre
+          grid: the method's fit score at each nominal depth below the surface point above, unsmoothed, empty where
+          nothing passed. The reconstruction compares each position with its neighbours along its line, so the way the
+          lines are laid is one of the things a real feature should survive.
 
 Every run writes sim/results/lab_<name>/ (summary.json with its manifest, volumes.npz), which `katabasis.export` adds
 to the site's viewer. With --twin SEED the same raster is also run on a motionless twin of the crop.
@@ -86,44 +88,48 @@ def flat_project(m, x, y, z):
     return m['centre_row'] + a / m['dx'], m['centre_col'] + (gr * np.sin(th) - z * np.cos(th)) / m['dr']
 
 
-def raster(product, sc, centre, half_ew, half_ns, step, positions=101):
-    """East-west lines across a square of the site, placed through the product's RPC over the site's surface, or through
-    a synthetic product's own flat mapping."""
+def raster(product, sc, centre, half_ew, half_ns, step, positions=101, lines='ew'):
+    """Lines across a square of the site, east to west (or north to south), placed through the product's RPC over the
+    site's surface, or through a synthetic product's own flat mapping. Returns the geometry, the positions along a line,
+    each line's offset across, and the surface height at every [line, position]."""
     from sarsim.ortho import frame_to_lla, project, surface
     syn = synthetic_mapping(product)
     if syn is None:
         from sarsim.dwell import DwellProduct
         dp = DwellProduct(product)
     cx, cy = centre
-    ys = np.arange(-half_ns, half_ns + 1e-6, step)
-    xs_trace = np.linspace(half_ew, -half_ew, TRACE_POINTS)
-    xs = xs_trace[np.linspace(0, TRACE_POINTS - 1, positions).round().astype(int)]
+    ew = lines == 'ew'
+    offs = np.arange(-half_ns, half_ns + 1e-6, step) if ew else np.arange(-half_ew, half_ew + 1e-6, step)
+    trace = np.linspace(half_ew, -half_ew, TRACE_POINTS) if ew else np.linspace(half_ns, -half_ns, TRACE_POINTS)
+    sel = np.linspace(0, TRACE_POINTS - 1, positions).round().astype(int)
+    pos = trace[sel]
     o = syn['origin'] if syn else sc['frame']['origin']
-    geom = {'title': f"East-west lines {step:g} m apart across ({cx:g}, {cy:g})",
+    geom = {'title': f"{'East-west' if ew else 'North-south'} lines {step:g} m apart across ({cx:g}, {cy:g})",
             'coordinate_order': 'Geographic endpoints are [latitude, longitude]. Native pixels are [column, row].',
             'tracks': {}}
-    heights, z_surf = [], np.zeros((len(ys), positions))
-    for j, y in enumerate(ys):
-        X = cx + xs_trace
-        Y = np.full_like(X, cy + y)
+    heights, z_surf = [], np.zeros((len(offs), positions))
+    for j, o in enumerate(offs):
+        X = cx + trace if ew else np.full_like(trace, cx + o)
+        Y = np.full_like(trace, cy + o) if ew else cy + trace
         Z = surface(sc, X, Y)
         if syn:
             r, c = flat_project(syn, X, Y, Z)
         else:
             r, c = project(dp, sc, X, Y, Z, GEOID_M)
         heights.append(syn['height_m'] if syn else float(np.mean(Z)) + GEOID_M)
-        z_surf[j] = surface(sc, cx + xs, np.full_like(xs, cy + y))
+        z_surf[j] = Z[sel]
         lat, lon = frame_to_lla(o, X[[0, -1]], Y[[0, -1]])
         geom['tracks'][f'L{j:03d}'] = {
             'native_trace_col_row': np.stack([np.round(c), np.round(r)], 1).astype(int).tolist(),
             'geographic_endpoint_lat_lon': [[float(lat[0]), float(lon[0])], [float(lat[1]), float(lon[1])]]}
     geom['projection'] = {'height_m': float(np.mean(heights))}
-    return geom, xs, ys, z_surf
+    return geom, pos, offs, z_surf
 
 
-def curtains_to_volume(F, z_m, z_surf, zc, step):
+def curtains_to_volume(F, z_m, z_surf, zc, step, lines='ew'):
     """Each position's depth profile hung below its surface point, sampled at the voxel centres after taking the largest
-    score within half a voxel either way; NaN where the method gave no score. Returns (x west to east, y, z down)."""
+    score within half a voxel either way; NaN where the method gave no score. F is [line, position, depth], positions
+    running east to west (or north to south); returns (x west to east, y south to north, z down)."""
     dz = float(z_m[1] - z_m[0])
     half = int(round(step / 2 / dz))
     filled = np.where(np.isfinite(F), F, -np.inf)
@@ -132,26 +138,30 @@ def curtains_to_volume(F, z_m, z_surf, zc, step):
     depth = z_surf[:, :, None] - zc[None, None, :]
     idx = np.round((depth - z_m[0]) / dz).astype(int)
     valid = (idx >= 0) & (idx < len(z_m))
-    vals = np.where(valid, np.take_along_axis(peak, np.clip(idx, 0, len(z_m) - 1), axis=2), np.nan)
-    return vals[:, ::-1, :].transpose(1, 0, 2).astype(np.float32)
+    vals = np.where(valid, np.take_along_axis(peak, np.clip(idx, 0, len(z_m) - 1), axis=2), np.nan)[:, ::-1, :]
+    return (vals.transpose(1, 0, 2) if lines == 'ew' else vals).astype(np.float32)
 
 
 def run_gated(name, site='giza', centre=(0.0, 0.0), half_ew=150.0, half_ns=141.0, step=3.0, supports=(1, 4),
-              twin=None, product=PRODUCT, title=None):
+              twin=None, product=PRODUCT, title=None, lines='ew'):
     from sarsim.looks import motionless_twin
     if not re.fullmatch(r'[a-z0-9_]+', name):
         raise SystemExit('a run name is lower-case letters, digits and underscores')
-    if abs(2 * half_ew / 100 - step) > 1e-9:
-        raise SystemExit(f'positions along a line are 2 x half_ew / 100 apart; for a {step:g} m grid use --half-ew {50 * step:g}')
+    if lines not in ('ew', 'ns'):
+        raise SystemExit('lines run east-west (ew) or north-south (ns)')
+    along = half_ew if lines == 'ew' else half_ns
+    if abs(2 * along / 100 - step) > 1e-9:
+        flag = '--half-ew' if lines == 'ew' else '--half-ns'
+        raise SystemExit(f'positions along a line are 2 x {flag[2:]} / 100 apart; for a {step:g} m grid use {flag} {50 * step:g}')
     sc = site_scene(load_site(site))
     profile = json.loads(PROFILE.read_text())
     profile['gates'] = dict(profile['gates'], pixel_support_variants=list(supports))
     rid = f'lab_{name}'
     params = {'method': 'gated', 'site': site, 'centre_m': list(centre), 'half_ew_m': half_ew, 'half_ns_m': half_ns,
-              'step_m': step, 'supports': list(supports), 'twin_seed': twin, 'product': Path(product).name,
+              'step_m': step, 'supports': list(supports), 'twin_seed': twin, 'product': Path(product).name, 'lines': lines,
               'gated_module_sha256': sha256(MODULE), 'gated_profile_sha256': sha256(PROFILE), 'geoid_m': GEOID_M}
     with Run(rid, title or f'The gated reconstruction across ({centre[0]:g}, {centre[1]:g}) on {site}', params) as run:
-        geom, xs, ys, z_surf = raster(product, sc, centre, half_ew, half_ns, step)
+        geom, pos, offs, z_surf = raster(product, sc, centre, half_ew, half_ns, step, lines=lines)
         gdir = ROOT / 'sim' / 'data' / rid
         gdir.mkdir(parents=True, exist_ok=True)
         (gdir / 'geometry.json').write_text(json.dumps(geom))
@@ -177,19 +187,22 @@ def run_gated(name, site='giza', centre=(0.0, 0.0), half_ew=150.0, half_ns=141.0
             zc = z_top - step * np.arange(int(np.ceil((z_top - (z_surf.min() - z_m[-1])) / step)) + 1)
             results[case] = {'supported_positions': {P: int(np.isfinite(audit[f'focus_p{P}']).any(axis=2).sum()) for P in supports}}
             for P in supports:
-                vols[f'{case}_p{P}'] = curtains_to_volume(audit[f'focus_p{P}'], z_m, z_surf, zc, step)
+                vols[f'{case}_p{P}'] = curtains_to_volume(audit[f'focus_p{P}'], z_m, z_surf, zc, step, lines)
             print(f"  {case}: supported positions " + ', '.join(f"P{P} {results[case]['supported_positions'][P]}" for P in supports),
                   flush=True)
         gated.load_source_and_preflight = original
+        ew = lines == 'ew'
+        x = centre[0] + (pos[::-1] if ew else offs)
+        y = centre[1] + (offs if ew else pos[::-1])
         np.savez_compressed(Path(run.dir) / 'volumes.npz', **{k: v.astype(np.float16) for k, v in vols.items()},
-                            x=centre[0] + xs[::-1], y=centre[1] + ys, z=zc, z_surface=z_surf[:, ::-1].T, step=step)
-        n = len(ys) * len(xs)
-        finding = (f"The gated reconstruction, unchanged, along {len(ys)} east-west lines {step:g} m apart across "
+                            x=x, y=y, z=zc, z_surface=(z_surf[:, ::-1].T if ew else z_surf[:, ::-1]), step=step)
+        n = len(offs) * len(pos)
+        finding = (f"The gated reconstruction, unchanged, along {len(offs)} {'east-west' if ew else 'north-south'} lines {step:g} m apart across "
                    f"({centre[0]:g}, {centre[1]:g}) on {site}: " + '; '.join(
                        f"{case}: " + ', '.join(f"{results[case]['supported_positions'][P]:,} of {n:,} positions pass at support {P}"
                                                for P in supports) for case in cases) + '.')
         run.save({'method': 'gated', 'results': results, 'cases': cases,
-                  'grid': {'x0': float(centre[0] + xs[-1]), 'y0': float(centre[1] + ys[0]), 'z_top': float(zc[0]),
+                  'grid': {'x0': float(x[0]), 'y0': float(y[0]), 'z_top': float(zc[0]),
                            'step_m': step, 'shape': list(vols['real_p1' if 1 in supports else f'real_p{supports[0]}'].shape)},
                   'finding': finding})
         print(finding)
@@ -209,10 +222,11 @@ def main(argv=None):
     g.add_argument('--twin', type=int, default=None, help='also run a motionless twin with this seed')
     g.add_argument('--product', default=str(PRODUCT))
     g.add_argument('--title', default=None)
+    g.add_argument('--lines', default='ew', choices=['ew', 'ns'], help='lines east-west (default) or north-south')
     a = ap.parse_args(argv)
     cx, cy = (float(v) for v in a.centre.split(','))
     run_gated(a.name, a.site, (cx, cy), a.half_ew, a.half_ns, a.step, tuple(int(s) for s in a.supports.split(',')),
-              a.twin, Path(a.product), a.title)
+              a.twin, Path(a.product), a.title, a.lines)
 
 
 if __name__ == '__main__':

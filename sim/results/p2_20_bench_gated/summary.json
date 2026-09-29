@@ -1,0 +1,243 @@
+{
+ "manifest": {
+  "id": "p2_20_bench_gated",
+  "title": "The gated reconstruction over the known bench",
+  "date": "2026-09-29",
+  "started_utc": "2026-09-29T12:57:25+00:00",
+  "runtime_s": 2250.7,
+  "commit": "3c68cdf",
+  "params": {
+   "acquisition": "giza-20220715",
+   "shape": [
+    8192,
+    640
+   ],
+   "step_m": 2.4,
+   "half_m": 60.0,
+   "cases": [
+    [
+     "without",
+     0.0
+    ],
+    [
+     "with",
+     1.0
+    ],
+    [
+     "null",
+     null
+    ],
+    [
+     "boost_1e4",
+     10000.0
+    ],
+    [
+     "boost_1e8",
+     100000000.0
+    ]
+   ],
+   "bands": [
+    {
+     "frequency_hz": 0.2,
+     "strain": 1.09e-11,
+     "vertical_velocity_m_s": 4.9e-08
+    },
+    {
+     "frequency_hz": 2.138297,
+     "strain": 1.145e-11,
+     "vertical_velocity_m_s": 2.9e-08
+    }
+   ],
+   "band_sources": [
+    "M1-01 median, 0.1-0.3 Hz; phase speed sites/ambient.json",
+    "M1-01 median; the rock's own Rayleigh speed, slower than the real waves, so the strain is generous; placed on the gates' mode 2"
+   ],
+   "taper_m": 10.0,
+   "near_m": 12.0,
+   "supports": [
+    1,
+    4
+   ],
+   "gated_module_sha256": "3e1154c11274b896b91e262198576ffd750732709ad08ac00c6892c4ea5e1b1d",
+   "gated_profile_sha256": "ae84cade31f7e5ffa9b4daa0eba152649d2afc7f1655415bad38553f4f4d69aa"
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  }
+ },
+ "results": {
+  "without": {
+   "boost": 0.0,
+   "supported_positions": {
+    "1": 275,
+    "4": 0
+   },
+   "values_changed": 0,
+   "image_change_max_rel": 0.0
+  },
+  "with": {
+   "boost": 1.0,
+   "supported_positions": {
+    "1": 277,
+    "4": 0
+   },
+   "values_changed": 4875,
+   "image_change_max_rel": 7.111e-10,
+   "p1": {
+    "identical": false,
+    "positions_changed": 178,
+    "positions_changed_near": 6,
+    "passes_flipped": 8,
+    "passes_flipped_near": 0,
+    "max_score_change": 0.433797,
+    "near_changes_at_chamber_depth": 0,
+    "depths_of_largest_change_near_m": [
+     9.9,
+     0.1,
+     20.7,
+     2.8,
+     5.9,
+     11.3
+    ]
+   },
+   "p4": {
+    "identical": true,
+    "positions_changed": 0,
+    "positions_changed_near": 0,
+    "passes_flipped": 0,
+    "passes_flipped_near": 0,
+    "max_score_change": 0.0,
+    "near_changes_at_chamber_depth": 0,
+    "depths_of_largest_change_near_m": []
+   }
+  },
+  "null": {
+   "boost": null,
+   "supported_positions": {
+    "1": 276,
+    "4": 0
+   },
+   "values_changed": 4796,
+   "image_change_max_rel": 7.111e-10,
+   "p1": {
+    "identical": false,
+    "positions_changed": 182,
+    "positions_changed_near": 4,
+    "passes_flipped": 7,
+    "passes_flipped_near": 0,
+    "max_score_change": 0.495531,
+    "near_changes_at_chamber_depth": 0,
+    "depths_of_largest_change_near_m": [
+     9.9,
+     20.7,
+     19.0,
+     20.4
+    ]
+   },
+   "p4": {
+    "identical": true,
+    "positions_changed": 0,
+    "positions_changed_near": 0,
+    "passes_flipped": 0,
+    "passes_flipped_near": 0,
+    "max_score_change": 0.0,
+    "near_changes_at_chamber_depth": 0,
+    "depths_of_largest_change_near_m": []
+   }
+  },
+  "boost_1e4": {
+   "boost": 10000.0,
+   "supported_positions": {
+    "1": 277,
+    "4": 0
+   },
+   "values_changed": 316018,
+   "image_change_max_rel": 7.111e-06,
+   "p1": {
+    "identical": false,
+    "positions_changed": 242,
+    "positions_changed_near": 6,
+    "passes_flipped": 14,
+    "passes_flipped_near": 0,
+    "max_score_change": 0.485834,
+    "near_changes_at_chamber_depth": 0,
+    "depths_of_largest_change_near_m": [
+     24.8,
+     8.6,
+     293.0,
+     3.6,
+     35.6,
+     292.7
+    ]
+   },
+   "p4": {
+    "identical": true,
+    "positions_changed": 0,
+    "positions_changed_near": 0,
+    "passes_flipped": 0,
+    "passes_flipped_near": 0,
+    "max_score_change": 0.0,
+    "near_changes_at_chamber_depth": 0,
+    "depths_of_largest_change_near_m": []
+   }
+  },
+  "boost_1e8": {
+   "boost": 100000000.0,
+   "supported_positions": {
+    "1": 280,
+    "4": 0
+   },
+   "values_changed": 496149,
+   "image_change_max_rel": 0.071188,
+   "p1": {
+    "identical": false,
+    "positions_changed": 300,
+    "positions_changed_near": 9,
+    "passes_flipped": 45,
+    "passes_flipped_near": 3,
+    "max_score_change": 0.60493,
+    "near_changes_at_chamber_depth": 1,
+    "depths_of_largest_change_near_m": [
+     9.8,
+     35.3,
+     7.9,
+     276.3,
+     21.6,
+     4.9,
+     14.9,
+     3.9,
+     1.4
+    ]
+   },
+   "p4": {
+    "identical": true,
+    "positions_changed": 0,
+    "positions_changed_near": 0,
+    "passes_flipped": 0,
+    "passes_flipped_near": 0,
+    "max_score_change": 0.0,
+    "near_changes_at_chamber_depth": 0,
+    "depths_of_largest_change_near_m": []
+   }
+  }
+ },
+ "near_share": 0.02922,
+ "mode_hz": 2.138297,
+ "imprint_los_velocity_boost_1e8_m_s": 0.003646,
+ "grid": {
+  "x0": -60.0,
+  "y0": -60.0,
+  "z_top": -0.0,
+  "step_m": 2.4,
+  "shape": [
+   51,
+   51,
+   126
+  ]
+ },
+ "finding": "Over the one-chamber bench, on synthetic products the unchanged gated pipeline reads as it reads a real one, shaken as Giza shakes (0.2 Hz, and the measured 1-3 Hz level on its mode 2, 2.14 Hz), 275 of 2,601 positions pass at a support of one without the chamber and 277 with it. The chamber's real imprint changes 4,875 of the 10.5 million values the pipeline reads and the fit scores at 178 (6 within 12 m of the chamber) of the positions, where 3% of positions lie so near; a random perturbation of the same size at the same pixels changes 182 (4 within 12 m of the chamber). Boosted ten thousand times the imprint changes 242 (6 within 12 m of the chamber); a hundred million times, 3.6 mm/s of line-of-sight motion over the chamber at 2.14 Hz, 300 (9 within 12 m of the chamber), 1 of them largest at the chamber's depth. At no boost do the changes gather over the chamber: what the method draws over the bench does not depend on it."
+}
