@@ -3,6 +3,7 @@
  "name": "Khafre claim",
  "kind": "test",
  "summary": "The structures announced beneath Khafre in March 2025, placed in the ground as if they were real: eight vertical shafts reaching about 640 m, and a deeper structure near 1,220 m. If they existed, would ordinary seismology see them?",
+ "listed": false,
  "frame": {
   "axes": "x east, y north, z up; metres",
   "vertical": "z = 0 at Khafre's base"
@@ -239,6 +240,7 @@
   "euronews2025": "Economou, A. (26 March 2025). Going underground: Experts clash over 'hidden city' beneath Egypt pyramids. Euronews. \"massive vertical shafts, spiral staircases ... more than 2,000 feet (610m) beneath the surface\"."
  },
  "notes": [
+   "Not listed in the lab: the claim is drawn to scale on the overview; its geometry returns as a claimed layer of the real site.",
   "Only the count and the depths are published, and only in press accounts of the 15 March 2025 briefing; the claim has not appeared in a peer-reviewed paper.",
   "Diameters, layout and the size of the deeper structure are not published: they are representative choices (10 m shafts in two rows of four; an 80 m block) and marked so.",
   "Spiral paths around the shafts are omitted: at the wavelengths that reach 640 m they are far below resolution."

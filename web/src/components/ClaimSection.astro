@@ -1,0 +1,91 @@
+---
+/**
+ * The claim at true scale, from its composition (sites/bench-khafre-claim): the pyramid, the eight shafts and the deep
+ * structure as stated in press accounts of the March 2025 briefing, in a vertical section through Khafre. No vertical
+ * exaggeration, so the depths read against the pyramid's own height.
+ */
+import claim from '../../public/data/sites/bench-khafre-claim/scene.json';
+
+type Shape = { type: string; centre: number[]; size?: number[]; radius?: number; height?: number; base?: number };
+const feats = claim.features as unknown as { id: string; shape: Shape }[];
+const pyr = (claim.structures as unknown as { shape: Shape }[])[0].shape;
+const wells = feats.filter((f) => f.shape.type === 'cylinder');
+const deep = feats.find((f) => f.shape.type === 'box')!.shape;
+// one row of shafts as the section cuts them: those with the same north coordinate as the first
+const row = wells.filter((w) => w.shape.centre[1] === wells[0].shape.centre[1]);
+const shaftBottom = Math.max(...wells.map((w) => -(w.shape.centre[2] - w.shape.height! / 2)));
+const deepTop = -(deep.centre[2] + deep.size![2] / 2);
+const deepBottom = -(deep.centre[2] - deep.size![2] / 2);
+
+const W = 360;
+const H = 330;
+const top = 42;
+const zMax = 1400;
+const k = (H - top - 14) / zMax; // px per metre, both ways
+const cx = W / 2 - 20;
+const X = (x: number) => cx + x * k;
+const Y = (depth: number) => top + depth * k;
+const ticks = [0, 500, 1000];
+const pyrBase = pyr.base as number;
+const pyrHeight = pyr.height as number;
+const deepSize = deep.size as number[];
+const lastShaftX = row[row.length - 1].shape.centre[0];
+const pyrPoints = `${X(-pyrBase / 2)},${Y(0)} ${X(0)},${Y(-pyrHeight)} ${X(pyrBase / 2)},${Y(0)}`;
+const shafts = row.map((w) => ({ x: X(w.shape.centre[0] - (w.shape.radius as number)), w: Math.max(1.4, 2 * (w.shape.radius as number) * k) }));
+---
+<figure class="claim-section">
+  <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="The claimed structures beneath Khafre, drawn to scale in a vertical section">
+    <rect x="0" y={Y(0)} width={W} height={H - Y(0)} fill="var(--band)" />
+    <line x1="0" x2={W} y1={Y(0)} y2={Y(0)} stroke="var(--stone)" stroke-width="1" />
+    <polygon points={pyrPoints} fill="none" stroke="var(--text)" stroke-width="1" />
+    {shafts.map((r) => (
+      <rect x={r.x} y={Y(0)} width={r.w} height={shaftBottom * k} fill="none" stroke="var(--porphyry)" stroke-width="1" stroke-dasharray="3 2" />
+    ))}
+    <rect x={X(deep.centre[0] - deepSize[0] / 2)} y={Y(deepTop)} width={deepSize[0] * k} height={(deepBottom - deepTop) * k} fill="none" stroke="var(--porphyry)" stroke-width="1" stroke-dasharray="3 2" />
+    {ticks.map((t) => (
+      <g>
+        <line x1={W - 60} x2={W - 54} y1={Y(t)} y2={Y(t)} stroke="var(--muted)" />
+        <text x={W - 50} y={Y(t) + 3.5} class="tk">{t.toLocaleString('en-US')} m</text>
+      </g>
+    ))}
+    <text x={X(pyrBase / 2) + 8} y={Y(-pyrHeight / 2)} class="lab">Khafre, {Math.round(pyrHeight)} m tall</text>
+    <text x={X(lastShaftX) + 10} y={Y(shaftBottom * 0.55)} class="lab claimed">eight shafts to {Math.round(shaftBottom)} m</text>
+    <text x={X(deepSize[0] / 2) + 10} y={Y((deepTop + deepBottom) / 2) + 4} class="lab claimed">a structure near {Math.round(-deep.centre[2]).toLocaleString('en-US')} m</text>
+  </svg>
+  <figcaption>
+    The claim to scale, as stated in press accounts of the March 2025 briefing (shaft widths and layout are not published and
+    are drawn as a representative choice). At this scale the X-band radar’s reach, about 30 cm into the driest sand, is
+    thinner than the ground’s line.
+  </figcaption>
+</figure>
+
+<style>
+  .claim-section {
+    margin: 0;
+  }
+  .claim-section svg {
+    width: 100%;
+    max-width: 420px;
+    height: auto;
+    display: block;
+  }
+  .tk {
+    font: 10px var(--font-mono);
+    fill: var(--muted);
+  }
+  .lab {
+    font: 600 11px var(--font-sans);
+    fill: var(--text);
+  }
+  .lab.claimed {
+    fill: var(--porphyry);
+  }
+  figcaption {
+    font-family: var(--font-serif);
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--muted);
+    margin-top: 6px;
+    max-width: 420px;
+  }
+</style>

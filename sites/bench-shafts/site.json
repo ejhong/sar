@@ -3,6 +3,7 @@
  "name": "Shaft tombs",
  "kind": "test",
  "summary": "Twelve narrow burial shafts, 8 to 30 m deep, each ending in a small chamber, in fractured limestone over sound bedrock. The scale of Giza's cemeteries: the positive control any claim must pass.",
+ "listed": false,
  "frame": {
   "axes": "x east, y north, z up; metres",
   "vertical": "z = 0 at the ground"
@@ -618,6 +619,7 @@
  ],
  "generator": "katabasis.compose.benches.shaft_field",
  "notes": [
+   "Not listed in the lab while no method runs on it; kept for the detectability sweeps.",
   "Shaft and chamber dimensions follow Idu (G 7102 C: 1.72 m square shaft to 8.05 m) and Hetepheres I (G 7000 X: 1.30 x 1.14 m shaft to 27.42 m; chamber 2.72 x 5.22 m); the layout is representative."
  ]
 }

@@ -10,9 +10,13 @@ const scene = (id: string): SiteScene => JSON.parse(readFileSync(join(DATA, id, 
 describe('exported sites', () => {
   const index = JSON.parse(readFileSync(join(DATA, 'index.json'), 'utf8')).sites as { id: string }[];
 
-  it('lists every scene that was written', () => {
+  it('lists every scene that was written, save compositions kept out of the lab', () => {
     const dirs = readdirSync(DATA, { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => d.name).sort();
-    expect(index.map((s) => s.id).sort()).toEqual(dirs);
+    for (const { id } of index) expect(dirs).toContain(id);
+    for (const id of dirs.filter((d) => !index.some((s) => s.id === d))) {
+      const site = JSON.parse(readFileSync(join(__dirname, '../../../../sites', id, 'site.json'), 'utf8'));
+      expect(site.listed).toBe(false);
+    }
   });
 
   it('gives every feature a source and every material a colour', () => {

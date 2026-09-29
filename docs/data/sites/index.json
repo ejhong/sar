@@ -29,62 +29,6 @@
    }
   },
   {
-   "id": "bench-shafts",
-   "name": "Shaft tombs",
-   "kind": "test",
-   "summary": "Twelve narrow burial shafts, 8 to 30 m deep, each ending in a small chamber, in fractured limestone over sound bedrock. The scale of Giza's cemeteries: the positive control any claim must pass.",
-   "extent": {
-    "x": [
-     -60,
-     60
-    ],
-    "y": [
-     -60,
-     60
-    ],
-    "z": [
-     -50,
-     4
-    ]
-   },
-   "features": {
-    "representative": 24
-   },
-   "volumes": 0,
-   "instruments": {
-    "geophones": 0,
-    "satellite": 0
-   }
-  },
-  {
-   "id": "bench-khafre-claim",
-   "name": "Khafre claim",
-   "kind": "test",
-   "summary": "The structures announced beneath Khafre in March 2025, placed in the ground as if they were real: eight vertical shafts reaching about 640 m, and a deeper structure near 1,220 m. If they existed, would ordinary seismology see them?",
-   "extent": {
-    "x": [
-     -800,
-     800
-    ],
-    "y": [
-     -800,
-     800
-    ],
-    "z": [
-     -1500,
-     150
-    ]
-   },
-   "features": {
-    "claimed": 9
-   },
-   "volumes": 1,
-   "instruments": {
-    "geophones": 0,
-    "satellite": 1
-   }
-  },
-  {
    "id": "giza",
    "name": "Giza plateau",
    "kind": "real",

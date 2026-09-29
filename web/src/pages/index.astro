@@ -8,6 +8,7 @@ import LineChart from '../components/LineChart.astro';
 import SizeLadder from '../components/SizeLadder.astro';
 import Sci from '../components/Sci.astro';
 import Boundary from '../components/Boundary.astro';
+import ClaimSection from '../components/ClaimSection.astro';
 import { GATED_CODE } from '../data/credits';
 import every from '../../public/data/runs/p2_23_every_reader.json';
 import routes from '../../public/data/runs/p2_11_every_way_in.json';
@@ -116,18 +117,16 @@ const seasons = (routes as unknown as { C_between_passes: { rooms: { bench: { he
   .breathing_over_imprint;
 
 const stops: TourStop[] = [
-  { site: 'bench-shafts', caption: '<b>Test bench</b>Twelve burial shafts, 5 to 30 m deep, in fractured limestone: the scale of Giza’s cemeteries.' },
-  { site: 'bench-void', mode: 'geophones', item: 'tt-crosshole', caption: '<b>Test bench · recovered</b>One chamber, and what four boreholes recover of it: a shadow, 11% slower than the rock.' },
-  { site: 'bench-void', mode: 'geophones', item: 'echo', seconds: 8, caption: '<b>Test bench · the echo</b>A hammer blow at the surface, and what comes back from the chamber: too faint to see on any single record.' },
-  { site: 'bench-khafre-claim', caption: '<b>The claim, placed as stated</b>Eight shafts to 640 m beneath Khafre, and a deeper structure near 1,220 m.' },
+  { site: 'bench-void', caption: '<b>Test bench</b>One room, 6 m across and 15 m down in limestone: the truth every instrument is scored against.' },
+  { site: 'bench-void', mode: 'geophones', item: 'tt-crosshole', caption: '<b>Geophones · recovered</b>What four boreholes recover of the room: a shadow, 11% slower than the rock.' },
+  { site: 'bench-void', mode: 'geophones', item: 'vibrator-imprint', seconds: 8, caption: '<b>One shaking</b>A vibrator beside the room, and the room’s imprint on the ground’s motion: what both instruments must read.' },
   { site: 'giza', caption: '<b>Real site</b>Giza on Copernicus terrain, with the chambers already surveyed inside and beneath the pyramids.' },
+  { site: 'giza', mode: 'satellite', seconds: 10, caption: '<b>The satellite over Giza</b>The stricter reconstruction’s columns across Khufu, Khafre and open plateau: the same kind of picture everywhere.' },
 ];
 
 const explore = [
-  { site: 'bench-void', name: 'One chamber', text: 'The test ground: a 6 m room, 15 m down in limestone. Every instrument on this site was scored against it.' },
-  { site: 'bench-shafts', name: 'Shaft tombs', text: 'Twelve burial shafts, 5 to 30 m deep: the scale of Giza’s cemeteries, where the method, run on the real image, found none of the hundreds surveyed.' },
-  { site: 'bench-khafre-claim', name: 'Khafre claim', text: 'Eight shafts to 640 m and a structure near 1,220 m, placed exactly as announced in 2025, beside what physics lets anything see.' },
-  { site: 'giza', name: 'Giza plateau', text: 'The real ground: Copernicus terrain, the three pyramids, and the chambers actually surveyed inside and beneath them.' },
+  { site: 'bench-void', name: 'One chamber', text: 'The test ground: a 6 m room, 15 m down in limestone. Every instrument here is scored against it: geophones, the satellite, and the one shaking both read.' },
+  { site: 'giza', name: 'Giza plateau', text: 'The real ground: Copernicus terrain, the three pyramids, the chambers surveyed inside and beneath them, and every picture the satellite methods drew there.' },
 ];
 ---
 <Base current="home">
@@ -183,11 +182,12 @@ const explore = [
           contents are known.
         </p>
         <p class="refs">
-          Biondi and Malanga, 2022 (<a href="https://arxiv.org/abs/2208.00811">arXiv:2208.00811</a>), retracted by
+          Biondi and Malanga, 2022 (<a href="https://arxiv.org/abs/2208.00811">arXiv:2208.00811</a>), retracted by{' '}
           <em>Remote Sensing</em> on 10 August 2026 (<a href="https://www.mdpi.com/2072-4292/18/16/2679">notice</a>). The
           Khafre Project’s briefing in Bologna, 15 March 2025, has not appeared in a peer-reviewed paper; its geometry, as far
-          as it was stated, is placed in <a href={`${base}/underworld/#bench-khafre-claim`}>the claimed underworld</a>.
+          as it was stated, is drawn below.
         </p>
+        <ClaimSection />
       </div>
       <Timeline />
     </section>
@@ -882,7 +882,7 @@ const explore = [
   }
   .gallery {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 16px;
   }
   .tile {

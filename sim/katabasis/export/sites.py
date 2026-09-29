@@ -74,6 +74,8 @@ def export_sites(out: Path = DATA) -> list[dict]:
         if rad.exists():                  # the satellite's pass over the site (export/radar.py)
             sc['radar'] = json.loads(rad.read_text())
         (d / 'scene.json').write_text(json.dumps(sc, separators=(',', ':'), ensure_ascii=False))
+        if site.raw.get('listed', True) is False:        # composed and exported, but not offered in the lab
+            continue
         counts = {}
         for f in site.features:
             counts[f['status']] = counts.get(f['status'], 0) + 1
