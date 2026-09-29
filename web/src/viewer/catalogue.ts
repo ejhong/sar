@@ -243,7 +243,7 @@ export function satelliteMethods(s: SiteScene): Method[] {
                   ? 'the same shaking, no chamber'
                   : 'the same without the chamber, changed by random noise the size of the chamber’s own change'
               : sub,
-        note: g.note,
+        note: v.note ?? g.note,
         stats,
         run: vol(v.id)?.run,
         focus: r.kind === 'bench' ? undefined : (v.focus ?? g.focus),

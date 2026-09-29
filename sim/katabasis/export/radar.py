@@ -362,7 +362,31 @@ def export_bench_gated(out: Path = DATA) -> dict | None:
                 'quantity': 'conditional adjusted R2 at each nominal depth below the surface', 'units': '0 to 1',
                 'range': [0.0, 1.0], 'run': run, 'tint': 'gated',
                 'caption': 'fit scores, unsmoothed; empty where nothing passed'}, ztop=float(v['z'][keep][0])))
-            entries.append({'id': vid, 'case': kind, 'support': int(P), **({'boost': float(boost)} if kind == 'boosted' else {})})
+            entries.append({'id': vid, 'case': kind, 'support': int(P), 'shaking': 'ambient',
+                            **({'boost': float(boost)} if kind == 'boosted' else {})})
+    # the one shaking (P2-24): the vibrator at the force where reflectors let the favourable detector find the chamber
+    rid24 = 'p2_24_gated_on_the_shaking'
+    v24path = RESULTS / rid24 / 'volumes.npz'
+    if v24path.exists():
+        s24 = load(rid24)
+        v24 = np.load(v24path)
+        keep24 = v24['z'] >= sc['extent']['z'][0] + h / 2
+        run24 = f"{rid24} · {s24['manifest']['date']} · {s24['manifest']['commit']}"
+        F = s24['manifest']['params']['forces_n'][0]
+        tag = f'F{F:.0e}'.replace('+', '')
+        for case, kind in (('without', 'without'), ('with', 'with'), ('null', 'null')):
+            for P in s24['manifest']['params']['supports']:
+                V = v24[f'{tag}_{case}_p{P}'].astype(np.float32)[:, :, keep24]
+                u8 = np.where(np.isfinite(V), 1 + np.round(254 * np.clip(np.nan_to_num(V, nan=0.0), 0, 1)), 0).astype(np.uint8)
+                vid = f'radar-gated-vibrator-{case}-p{P}'
+                vols.append(_write_volume(d, vid, V, u8, [float(v24['x'][0]), float(v24['y'][0])], h, {
+                    'label': f'Satellite · the gated reconstruction over the bench, shaken by a vibrator, {kind}, support {P}',
+                    'method': ("Synthetic products of the bench shaken by P2-22's vibrator at the reflectors' boundary force, with the "
+                               "reflectors and the real image's bright points, through the gated reconstruction's own code, unchanged"),
+                    'quantity': 'conditional adjusted R2 at each nominal depth below the surface', 'units': '0 to 1',
+                    'range': [0.0, 1.0], 'run': run24, 'tint': 'gated',
+                    'caption': 'fit scores, unsmoothed; empty where nothing passed'}, ztop=float(v24['z'][keep24][0])))
+                entries.append({'id': vid, 'case': kind, 'support': int(P), 'shaking': 'vibrator', 'note': s24['finding']})
     _merge_volumes(d, vols, drop=lambda q: q['id'].startswith('radar-gated-'))
     radar = json.loads(rj.read_text())
     radar['gated'] = {

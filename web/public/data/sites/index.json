@@ -22,10 +22,10 @@
    "features": {
     "truth": 1
    },
-   "volumes": 18,
+   "volumes": 24,
    "instruments": {
     "geophones": 10,
-    "satellite": 12
+    "satellite": 18
    }
   },
   {

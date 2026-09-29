@@ -482,5 +482,167 @@
   "run": "p2_20_bench_gated \u00b7 2026-09-29 \u00b7 3c68cdf",
   "tint": "gated",
   "caption": "fit scores, unsmoothed; empty where nothing passed"
+ },
+ {
+  "id": "radar-gated-vibrator-without-p1",
+  "status": "radar",
+  "file": "vol-radar-gated-vibrator-without-p1.u8",
+  "shape": [
+   51,
+   51,
+   25
+  ],
+  "origin": [
+   -60.0,
+   -60.0,
+   -0.0
+  ],
+  "spacing": 2.4,
+  "label": "Satellite \u00b7 the gated reconstruction over the bench, shaken by a vibrator, without, support 1",
+  "method": "Synthetic products of the bench shaken by P2-22's vibrator at the reflectors' boundary force, with the reflectors and the real image's bright points, through the gated reconstruction's own code, unchanged",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "p2_24_gated_on_the_shaking \u00b7 2026-09-29 \u00b7 6e4e32e",
+  "tint": "gated",
+  "caption": "fit scores, unsmoothed; empty where nothing passed"
+ },
+ {
+  "id": "radar-gated-vibrator-without-p4",
+  "status": "radar",
+  "file": "vol-radar-gated-vibrator-without-p4.u8",
+  "shape": [
+   51,
+   51,
+   25
+  ],
+  "origin": [
+   -60.0,
+   -60.0,
+   -0.0
+  ],
+  "spacing": 2.4,
+  "label": "Satellite \u00b7 the gated reconstruction over the bench, shaken by a vibrator, without, support 4",
+  "method": "Synthetic products of the bench shaken by P2-22's vibrator at the reflectors' boundary force, with the reflectors and the real image's bright points, through the gated reconstruction's own code, unchanged",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "p2_24_gated_on_the_shaking \u00b7 2026-09-29 \u00b7 6e4e32e",
+  "tint": "gated",
+  "caption": "fit scores, unsmoothed; empty where nothing passed"
+ },
+ {
+  "id": "radar-gated-vibrator-with-p1",
+  "status": "radar",
+  "file": "vol-radar-gated-vibrator-with-p1.u8",
+  "shape": [
+   51,
+   51,
+   25
+  ],
+  "origin": [
+   -60.0,
+   -60.0,
+   -0.0
+  ],
+  "spacing": 2.4,
+  "label": "Satellite \u00b7 the gated reconstruction over the bench, shaken by a vibrator, with, support 1",
+  "method": "Synthetic products of the bench shaken by P2-22's vibrator at the reflectors' boundary force, with the reflectors and the real image's bright points, through the gated reconstruction's own code, unchanged",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "p2_24_gated_on_the_shaking \u00b7 2026-09-29 \u00b7 6e4e32e",
+  "tint": "gated",
+  "caption": "fit scores, unsmoothed; empty where nothing passed"
+ },
+ {
+  "id": "radar-gated-vibrator-with-p4",
+  "status": "radar",
+  "file": "vol-radar-gated-vibrator-with-p4.u8",
+  "shape": [
+   51,
+   51,
+   25
+  ],
+  "origin": [
+   -60.0,
+   -60.0,
+   -0.0
+  ],
+  "spacing": 2.4,
+  "label": "Satellite \u00b7 the gated reconstruction over the bench, shaken by a vibrator, with, support 4",
+  "method": "Synthetic products of the bench shaken by P2-22's vibrator at the reflectors' boundary force, with the reflectors and the real image's bright points, through the gated reconstruction's own code, unchanged",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "p2_24_gated_on_the_shaking \u00b7 2026-09-29 \u00b7 6e4e32e",
+  "tint": "gated",
+  "caption": "fit scores, unsmoothed; empty where nothing passed"
+ },
+ {
+  "id": "radar-gated-vibrator-null-p1",
+  "status": "radar",
+  "file": "vol-radar-gated-vibrator-null-p1.u8",
+  "shape": [
+   51,
+   51,
+   25
+  ],
+  "origin": [
+   -60.0,
+   -60.0,
+   -0.0
+  ],
+  "spacing": 2.4,
+  "label": "Satellite \u00b7 the gated reconstruction over the bench, shaken by a vibrator, null, support 1",
+  "method": "Synthetic products of the bench shaken by P2-22's vibrator at the reflectors' boundary force, with the reflectors and the real image's bright points, through the gated reconstruction's own code, unchanged",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "p2_24_gated_on_the_shaking \u00b7 2026-09-29 \u00b7 6e4e32e",
+  "tint": "gated",
+  "caption": "fit scores, unsmoothed; empty where nothing passed"
+ },
+ {
+  "id": "radar-gated-vibrator-null-p4",
+  "status": "radar",
+  "file": "vol-radar-gated-vibrator-null-p4.u8",
+  "shape": [
+   51,
+   51,
+   25
+  ],
+  "origin": [
+   -60.0,
+   -60.0,
+   -0.0
+  ],
+  "spacing": 2.4,
+  "label": "Satellite \u00b7 the gated reconstruction over the bench, shaken by a vibrator, null, support 4",
+  "method": "Synthetic products of the bench shaken by P2-22's vibrator at the reflectors' boundary force, with the reflectors and the real image's bright points, through the gated reconstruction's own code, unchanged",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "p2_24_gated_on_the_shaking \u00b7 2026-09-29 \u00b7 6e4e32e",
+  "tint": "gated",
+  "caption": "fit scores, unsmoothed; empty where nothing passed"
  }
 ]

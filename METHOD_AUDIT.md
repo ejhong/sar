@@ -467,6 +467,15 @@ investigation's record, and what it leaves open follow.
     known to about 0.1%. Limits: one chamber, one source position and frequency, the speckle around the reflectors held
     still, a flat bench; the record length is the dwell's, and longer geophone records would lower their boundary further.
 
+16. **Where the data hold the chamber, the gated reconstruction does not read it (P2-24).** Synthetic products of the
+    bench shaken by P2-22's vibrator, the row of corner reflectors and the real image's bright points in them, the motion
+    entered exactly (Bessel terms of the phase history), at the force where P2-23's favourable detector finds the chamber
+    (2.5 x 10^10 N) and at a thousandth of it; each with the chamber, without it, and with random noise the size of the
+    chamber's change at the same pixels. Strong shaking at the method's own tenth mode makes it pass more positions (633
+    at support one, 67 at four, against 275 and none under Giza's own shaking in P2-20). The chamber changes its scores at
+    646 positions, 32 within 12 m of the axis; the random noise at 648, also 32. At a thousandth of the force, 454 and 456.
+    The chamber changes the method's picture exactly as noise of its size does.
+
 These reasons differ in kind and strength. 4 is algebraic and holds whatever the ground does: the depth axis is a
 frequency axis with a repeat and a mirror, and no validated model turns it into a physical depth. 1 and 12 are
 measured, for particular estimators and configurations; 13 is a known-truth test of one of them, on synthetic products. 2, 3 and 8 are models with stated assumptions (a small chamber

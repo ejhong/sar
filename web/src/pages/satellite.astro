@@ -28,6 +28,7 @@ import bench from '../../public/data/runs/p2_20_bench_gated.json';
 import Boundary from '../components/Boundary.astro';
 import { GATED_CODE } from '../data/credits';
 import readers from '../../public/data/runs/p2_23_every_reader.json';
+import onShaking from '../../public/data/runs/p2_24_gated_on_the_shaking.json';
 import shaking from '../../public/data/runs/p2_22_one_shaking.json';
 import passive from '../../public/data/runs/p1_04_ambient.json';
 import echo from '../../public/data/runs/p1_03_scattered.json';
@@ -297,6 +298,19 @@ const svRows: [string, SCmp][] = [
   ['for scale: the 2022 image, then its motionless copy', svC],
 ];
 const svPct = (x: number) => `${Math.round(x * 100)}%`;
+// ---- P2-24: the gated reconstruction on the one shaking
+type R24 = { force_n: number; supported_positions: Record<string, number>; p1?: { positions_changed: number; positions_changed_near: number; max_score_change: number } };
+const r24 = onShaking.results as unknown as Record<string, R24>;
+// the record's own tags for the two forces, strongest first
+const tags24 = [...new Set(Object.keys(r24).map((k) => k.split('_')[0]))].sort((a, b) => r24[`${b}_without`].force_n - r24[`${a}_without`].force_n);
+const s24 = onShaking.near_share as number;
+const g24 = (r?: R24['p1']) => !!r && r.positions_changed_near >= 5 && r.positions_changed_near > 3 * s24 * r.positions_changed;
+const reads24 = g24(r24[`${tags24[0]}_with`].p1) && !g24(r24[`${tags24[0]}_null`].p1);
+const rows24: [string, string][] = tags24.flatMap((t, i) => [
+  [`${t}_without`, `${i === 0 ? 'at the reflectors’ boundary' : 'a thousandth of that force'}, no chamber`],
+  [`${t}_with`, 'the chamber in it'],
+  [`${t}_null`, 'random noise of the chamber’s size'],
+]);
 // ---- P2-22, P2-23: one shaking, read by geophones and by the satellite
 const e23 = readers as unknown as { geophones: Record<string, { bench: { force_n: number } }>; satellite: { reflectors: { bench: { force_n: number } } } };
 const vibRatio = e23.satellite.reflectors.bench.force_n / e23.geophones.kottamya_median.bench.force_n;
@@ -494,7 +508,27 @@ const lk = labKhafre.results as unknown as LRes;
     <RunDetails manifest={pulses.manifest} />
     <RunDetails manifest={known.manifest} />
     <RunDetails manifest={bench.manifest} />
+    <div class="note-card wide">
+      <span class="tag simulated">synthetic products · P2-24</span>
+      <h3>{reads24 ? 'Where the data hold the chamber, the gated reconstruction’s picture changes over it' : 'Where the data hold the chamber, the gated reconstruction’s picture does not change over it'}</h3>
+      <table class="data compact">
+        <thead><tr><th>the bench shaken by the vibrator</th><th class="num">passing, support 1</th><th class="num">support 4</th><th class="num">scores changed</th><th class="num">of them within 12 m</th></tr></thead>
+        <tbody>
+          {rows24.map(([k, label]) => {
+            const r = r24[k];
+            return <tr><td>{label}</td><td class="num">{r.supported_positions['1']}</td><td class="num">{r.supported_positions['4']}</td><td class="num">{r.p1 ? r.p1.positions_changed : '–'}</td><td class="num">{r.p1 ? r.p1.positions_changed_near : '–'}</td></tr>;
+          })}
+        </tbody>
+      </table>
+      <p>The same shaking P2-23 reads, at the force where the corner reflectors let the favourable detector find the chamber:
+      speckle, the real image’s bright points and the row of reflectors, all moving with the vibrator at the method’s own tenth
+      mode, run through the public <a href={GATED_CODE.url}>{GATED_CODE.name}</a> unchanged. Strong shaking makes it pass more
+      positions, some of them at its own support of four; the question is whether the chamber changes its picture over the
+      chamber more than random noise of the chamber’s size does. {Math.round(s24 * 100)}% of the positions lie within 12 m of
+      the chamber’s axis.</p>
+    </div>
     <RunDetails manifest={shaking.manifest} />
+    <RunDetails manifest={onShaking.manifest} />
     <RunDetails manifest={readers.manifest} />
   </section>
 

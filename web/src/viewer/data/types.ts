@@ -136,6 +136,8 @@ export interface RadarInfo {
       boost?: number;
       /** On a bench: what shook it, Giza's ambient motion (P2-20) or a vibrator beside it (P2-24). */
       shaking?: 'ambient' | 'vibrator';
+      /** This picture's own run, where it differs from the study's. */
+      note?: string;
       focus?: [number, number, number];
     }[];
     focus: [number, number, number];

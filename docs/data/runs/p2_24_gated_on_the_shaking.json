@@ -1,0 +1,122 @@
+{
+ "manifest": {
+  "id": "p2_24_gated_on_the_shaking",
+  "title": "The gated reconstruction on the one shaking",
+  "date": "2026-09-29",
+  "started_utc": "2026-09-29T15:44:15+00:00",
+  "runtime_s": 2822.1,
+  "commit": "6e4e32e",
+  "params": {
+   "acquisition": "giza-20220715",
+   "shape": [
+    8192,
+    640
+   ],
+   "frequency_hz": 10.691485,
+   "forces_n": [
+    25173358363.113262,
+    25173358.363113
+   ],
+   "supports": [
+    1,
+    4
+   ],
+   "source_clear_m": 10.0,
+   "p2_23_commit": "7e1138f",
+   "step_m": 2.4,
+   "half_m": 60.0,
+   "gated_module_sha256": "3e1154c11274b896b91e262198576ffd750732709ad08ac00c6892c4ea5e1b1d",
+   "gated_profile_sha256": "ae84cade31f7e5ffa9b4daa0eba152649d2afc7f1655415bad38553f4f4d69aa"
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  }
+ },
+ "results": {
+  "F3e10_without": {
+   "force_n": 25173358363.113262,
+   "bessel_terms": 14,
+   "supported_positions": {
+    "1": 633,
+    "4": 67
+   }
+  },
+  "F3e10_with": {
+   "force_n": 25173358363.113262,
+   "bessel_terms": 14,
+   "supported_positions": {
+    "1": 635,
+    "4": 71
+   },
+   "p1": {
+    "positions_changed": 646,
+    "positions_changed_near": 32,
+    "max_score_change": 0.723427
+   }
+  },
+  "F3e10_null": {
+   "force_n": 25173358363.113262,
+   "bessel_terms": 14,
+   "supported_positions": {
+    "1": 639,
+    "4": 67
+   },
+   "p1": {
+    "positions_changed": 648,
+    "positions_changed_near": 32,
+    "max_score_change": 1.075004
+   }
+  },
+  "F3e07_without": {
+   "force_n": 25173358.363113,
+   "bessel_terms": 5,
+   "supported_positions": {
+    "1": 465,
+    "4": 54
+   }
+  },
+  "F3e07_with": {
+   "force_n": 25173358.363113,
+   "bessel_terms": 5,
+   "supported_positions": {
+    "1": 465,
+    "4": 54
+   },
+   "p1": {
+    "positions_changed": 454,
+    "positions_changed_near": 54,
+    "max_score_change": 0.543428
+   }
+  },
+  "F3e07_null": {
+   "force_n": 25173358.363113,
+   "bessel_terms": 5,
+   "supported_positions": {
+    "1": 464,
+    "4": 54
+   },
+   "p1": {
+    "positions_changed": 456,
+    "positions_changed_near": 54,
+    "max_score_change": 0.602032
+   }
+  }
+ },
+ "near_share": 0.02922,
+ "finding": "At the force where corner reflectors let the favourable detector find the bench's chamber (2.5e+10 N), the gated reconstruction, unchanged, passes 633 positions at a support of one without the chamber and 635 with it; the chamber changes the scores at 646 positions (32 within 12 m of it, where 3% of positions lie), random noise of the same size at 648 (32). Its changes do not gather over the chamber: where the data hold the chamber, the reconstruction does not read it.",
+ "grid": {
+  "x0": -60.0,
+  "y0": -60.0,
+  "z_top": -0.0,
+  "step_m": 2.4,
+  "shape": [
+   51,
+   51,
+   126
+  ]
+ }
+}

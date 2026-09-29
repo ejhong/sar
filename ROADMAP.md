@@ -83,7 +83,8 @@ Then (29 September):
   chamber, read over the same 24.6 s by geophones and by the satellite. Geophones find the chamber with 11 kN; the
   satellite, with 21 corner reflectors and a detector that knows both answers, needs 2.5 x 10^10 N (a floor: at that
   force its tracker keeps 4% of the motion); natural ground offers nothing to track. P2-24 runs the gated reconstruction
-  on the same shaking.
+  on the same shaking at that force: the chamber changes its picture exactly as random noise of the chamber's size does
+  (646 and 648 positions changed, 32 and 32 within 12 m).
 - **The site made concise** (the owner's request): one overview with the assessment (the pictures and claim pages folded
   in), six tabs, the hero's headline under the site's name, the lab's hero without mouse capture.
 - **The lab's command** runs the gated reconstruction over any area: across Khafre (`lab_khafre`) the real image passes

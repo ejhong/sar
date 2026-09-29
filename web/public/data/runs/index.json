@@ -1479,6 +1479,44 @@
   },
   "command": "uv run --with scikit-image python experiments/p2_23_every_reader.py"
  },
+ "p2_24_gated_on_the_shaking": {
+  "id": "p2_24_gated_on_the_shaking",
+  "title": "The gated reconstruction on the one shaking",
+  "date": "2026-09-29",
+  "started_utc": "2026-09-29T15:44:15+00:00",
+  "runtime_s": 2822.1,
+  "commit": "6e4e32e",
+  "params": {
+   "acquisition": "giza-20220715",
+   "shape": [
+    8192,
+    640
+   ],
+   "frequency_hz": 10.691485,
+   "forces_n": [
+    25173358363.113262,
+    25173358.363113
+   ],
+   "supports": [
+    1,
+    4
+   ],
+   "source_clear_m": 10.0,
+   "p2_23_commit": "7e1138f",
+   "step_m": 2.4,
+   "half_m": 60.0,
+   "gated_module_sha256": "3e1154c11274b896b91e262198576ffd750732709ad08ac00c6892c4ea5e1b1d",
+   "gated_profile_sha256": "ae84cade31f7e5ffa9b4daa0eba152649d2afc7f1655415bad38553f4f4d69aa"
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  },
+  "command": "uv run --with scikit-image python experiments/p2_24_gated_on_the_shaking.py"
+ },
  "lab_khafre": {
   "id": "lab_khafre",
   "title": "The gated reconstruction across Khafre, from the 2022 image",
