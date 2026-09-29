@@ -1,1 +1,0 @@
-import{t as e}from"./Underworld.D4Pc9bGy.js";for(let t of document.querySelectorAll(`.uw`))new e({root:t,initial:t.dataset.initial,hash:t.dataset.hash===`1`,embedded:t.classList.contains(`embed`)}).start().catch(e=>{console.error(e);let n=t.querySelector(`[data-uw=title]`);n&&(n.textContent=`The viewer could not start: `+(e?.message??e))});

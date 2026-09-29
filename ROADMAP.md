@@ -60,9 +60,22 @@ Since then (still 28 September):
   and registration on simulated images: each image moves by 0.06 to 45 times the boxcar value depending on frequency,
   and a pair catches 3-46% of the shift between its images for a bright point, 0.6-2.8% for texture; at 2 mm/s the
   pair shifts change by at most about one 0.01 px step. It replaces the boxcar numbers the site had quoted.
-- **The viewer's satellite data** is exported (`sim/katabasis/export/radar.py`: the track, the draped image, the
-  virtual sensors, the method's volumes with and without the chamber over one whole period of its depth axis, and the
-  Khafre volume); the viewer's Satellite mode that draws them is next.
+
+Then (29 September):
+
+- **P2-16, P2-17** hang the gated reconstruction's fit scores in 3-D across the Great Pyramid (95 lines 3 m apart,
+  9,595 positions): at a support of one the real image passes 1,355, a motionless copy 660, the same raster over open
+  plateau 1,059; at its own support of four, 4, 4 and 0. The scores are no higher inside the surveyed chambers than at
+  the same depths elsewhere. The image's texture, not the monument, sets how much passes.
+- **P2-18** checks the radar simulator against a pulse-by-pulse one (`sarsim/echo.py`): a Doppler slice is a stretch of
+  the pass, shown by a calculation that never assumes it; the fast injection agrees where shifts are resolvable.
+- **P2-19** writes synthetic products in the ICEYE layout (`sarsim/slcfile.py`) that the gated reconstruction reads
+  unchanged: a corner reflector vibrating at 5 to 20 mm/s is read by a standard tracker and not registered by the
+  pipeline, which passes nothing at the reflector.
+- **The lab's command** runs the gated reconstruction over any area: across Khafre (`lab_khafre`) the real image passes
+  1,218 of 9,595 positions at a support of one and none at four, its motionless copy 539 and none, Khufu's pattern.
+- **The lab reorganised by instrument** (the owner found "instruments" beside "satellite" confusing): the ground,
+  geophones, satellite; methods as cards with their controls one click away; colour by instrument.
 
 - **Start here:** `CLAUDE.md`, this file, `web/DESIGN.md`. `cd sim && uv sync` then `uv run pytest` (≈35 s here);
   `cd web && npm ci && npm run check && npm test && npm run build`. On this Mac, scikit-fmm builds only with
@@ -137,33 +150,41 @@ The lab does it by simulation over ground whose contents are known, in two phase
 - **The real pass on the ground** (P2-12, `#giza/satellite`): the 2025 image resampled onto the Giza terrain, the
   method's volumes from it at Khafre, Khufu, Menkaure and open plateau south of Khafre; a pyramid's picture differs from
   open plateau's by no more than two stretches of open plateau differ from each other.
-- **The viewer's Satellite mode** (`web/src/viewer/scene/Radar.ts`, key `s`, `#bench-void/satellite`): the ICEYE
-  satellite and its spotlight beam over the site (not to scale), the simulated image draped on the ground, the image's
-  virtual sensors each carrying the true motion (ochre) beside what the image reports (cinnabar, complex or magnitudes),
-  and the method's volume with and without the chamber in cinnabar. Radar volumes are listed apart in Recovered mode;
-  the Khafre claim carries the method's real-image volume. P2-08, P2-09 and P2-11 are on `/satellite/`.
+- **The lab** (`/underworld/`, `web/src/viewer/`): arranged as the lab works. The site, then what to look with: the
+  ground as it is, the geophones on it, or the satellite over it (keys t, g, s). Each instrument lists its methods as
+  cards built from the exported scene (`web/src/viewer/catalogue.ts`, tested against the exports); the open card picks
+  where the method ran, what went in and its control (controls dashed), and says why its picture looks as it does. The
+  stage names the picture in one line, the legend shows only what is drawn, colour follows the instrument (verdigris for
+  the geophones, cinnabar for the satellite, whichever method), and the badge says what the voxels hold. Old links
+  (`recovered`, `waves`) still open. The satellite's pass, the draped image and the image's virtual sensors
+  (`scene/Radar.ts`) sit under the satellite; the waves sit under the geophones.
+- **The lab's command** (`python -m katabasis.lab gated`, `sim/katabasis/lab.py`): the gated reconstruction, unchanged,
+  over any area of a real product (placed through its RPC) or a synthetic one (through the mapping its file records),
+  with a motionless twin; each run writes `sim/results/lab_<name>/` and the export adds it to the lab. The method page's
+  run table lists every published run and lab run with its record and the command that repeats it.
 
 ## Next, in order
 
-1. **P2-10, Khufu on two real passes** (run locally, in `sim/private/`, not yet published): lines across the east
+1. **The end-to-end benchmark** (the independent review's plan): one elastic simulation shakes the bench, the same
+   shaking read by geophones and by the satellite (pulse-level simulator, synthetic products), then every method,
+   geophone and satellite, scored on the same truth, with a favourable physical-template detector for the satellite
+   beside the gated reconstruction and the paper-style pipeline, and a sweep of chamber size, depth and shaking to map
+   where each succeeds. P2-18 (the simulator against pulses), P2-19 (a known vibration) and P2-20 (the known bench) are
+   its first pieces.
+2. **The lab's own reading**: the best single-image estimator this lab can build (magnitude tracking of bright
+   scatterers, the template detector), in the lab beside the published ones, scored the same way.
+3. **The paper-style pipeline in the lab's command**, so its pictures too can be made over any area of any product.
+4. **The whole plateau** with the gated reconstruction, area by area, each beside its motionless copy.
+5. **P2-10, Khufu on two real passes** (run locally, in `sim/private/`, not yet published): lines across the east
    face on the 2022 and 2025 images, with a motionless twin of each. Pre-stated tests: the two passes must agree, and
    the real image must differ from its twin.
-2. **A viewer that takes real radar data** (the owner's end goal, bounded by P2-11). Built for the 2025 Giza pass
-   (P2-12; the Giza site's Satellite mode): the pass from the product, the image resampled onto the terrain
-   (`sarsim.ortho`: RPC over terrain and pyramids, residual offset fitted on predicted brightness), the X-band reach,
-   and the published method's volumes at the pyramids and open plateau (the first investigation's patch runner). Any
-   product goes through the same steps; next, a command that takes a product path and a site. Then, for low-frequency
-   data over dry ground (Biomass P band, NISAR or ALOS-2 L band), a shallow mode that shows buried features within the
-   top metres, the one place radar does see underground.
-3. **Known-chamber tests on the real image**, each with its outcome stated in advance (a method that scores the
-   surveyed chambers above matched controls, blind, would weaken our conclusions; one that does not, strengthen them): the Khufu known-chamber
+6. **Known-chamber tests on the real image**, each with its outcome stated in advance: the Khufu known-chamber
    positive control (metre-level registration on surveyed base corners, then the King's and Queen's Chambers and the
    Grand Gallery under the published chain).
-4. **Tidy the first investigation's record**: rerun or retire R7 (its script and results disagree); mark R9 and R10
-   on the archive as identities of the looks rather than measurements of the ground.
-5. Phase 1, if it continues for its own sake: full-waveform inversion beyond the inverse crime; the ambient field in
-   every site; symmetric near-air stencils; detectability sweeps; the shaft field and Giza; the claimed underworld
-   at low frequency. None bears on the radar question.
+7. **Low-frequency data over dry ground** (Biomass P band, NISAR or ALOS-2 L band): a shallow mode that shows buried
+   features within the top metres, the one place radar does see underground.
+8. **Tidy the first investigation's record**: rerun or retire R7; mark R9 and R10 on the archive as identities of the
+   looks rather than measurements of the ground.
 
 ## Open decisions
 

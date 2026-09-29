@@ -9,6 +9,15 @@ const materials = (await import('../../public/data/materials.json')).default as 
 const fmtR = (p: { value: number; range: number[] | null }) =>
   p.value === 0 ? '0' : p.range ? `${p.range[0].toLocaleString('en-US')}–${p.range[1].toLocaleString('en-US')}` : p.value.toLocaleString('en-US');
 const mark = (s: string) => (s === 'sourced' || s === 'definition' ? '' : s === 'derived' ? ' ′' : ' *');
+type RunRecord = { id: string; title: string; date: string; runtime_s: number; commit: string; command?: string; reused?: boolean; params: Record<string, unknown> };
+// the experiments in order, then the runs made with the lab's command
+const runIndex = Object.values((await import('../../public/data/runs/index.json')).default as Record<string, RunRecord>).sort(
+  (a, b) => Number(a.id.startsWith('lab_')) - Number(b.id.startsWith('lab_')) || a.id.localeCompare(b.id, 'en', { numeric: true }),
+);
+const fmtRuntime = (s: number) => (s < 60 ? `${s.toFixed(s < 10 ? 1 : 0)} s` : s < 3600 ? `${Math.round(s / 60)} min` : `${(s / 3600).toFixed(1)} h`);
+const commandOf = (r: RunRecord) => r.command ?? `uv run python experiments/${r.id}.py`;
+const dirty = runIndex.filter((r) => r.commit.endsWith('+')).length;
+const gatedRuns = runIndex.filter((r) => 'gated_module_sha256' in r.params).length;
 ---
 <Doc
   title="Method and sources"
@@ -20,6 +29,8 @@ const mark = (s: string) => (s === 'sourced' || s === 'definition' ? '' : s === 
     { id: 'materials', label: 'Materials' },
     { id: 'glossary', label: 'Glossary' },
     { id: 'run', label: 'Run it' },
+    { id: 'lab', label: 'The lab command' },
+    { id: 'runs', label: 'Every run' },
     { id: 'layout', label: 'Layout' },
   ]}
 >
@@ -106,6 +117,46 @@ cd ../web && npm ci && npm run build                   # the site, into docs/</c
     <p class="sub">The lab’s Python package keeps its first name, <span class="mono">katabasis</span>. Real-image steps need the ICEYE products, which are not in the repository; their acquisition records are, so everything else reruns anywhere.</p>
   </section>
 
+  <section id="lab">
+    <h2>One command runs a method over any area of a product and adds the result to the lab</h2>
+    <pre><code>cd sim
+uv run --with scikit-image python -m katabasis.lab gated --name khafre --site giza --centre 0,0 --twin 101
+uv run python -m katabasis.export                      # the run appears in the lab, under the satellite</code></pre>
+    <p class="sub"><span class="mono">gated</span> runs the stricter gated reconstruction’s own code, unchanged but for its
+      input paths, along east–west lines <span class="mono">--step</span> metres apart across a square of the site
+      (<span class="mono">--half-ew</span>, <span class="mono">--half-ns</span>), each line placed through the product’s RPC
+      over the site’s surface. Its fit scores are hung below the surface into a volume, unsmoothed and empty where nothing
+      passed; <span class="mono">--twin SEED</span> runs the same raster on a motionless copy of the image, the control
+      every picture needs. Each run writes <span class="mono">sim/results/lab_&lt;name&gt;/</span>: its record (date,
+      commit, the method’s source hash, every parameter) and its volumes, which the export adds to the lab with the record
+      attached. More methods will join it as they are built.</p>
+  </section>
+
+  <section id="runs">
+    <h2>Every picture on this site comes from one of these {runIndex.length} runs, and each can be made again</h2>
+    <p class="sub">The record each run wrote: when, from which commit, how long it took, and the command that repeats it
+      (from <span class="mono">sim/</span>). {dirty > 0 && <>A commit marked <span class="mono">+</span> had uncommitted
+      changes to the lab’s code when the run saved ({dirty} of {runIndex.length}); rerunning at that commit may differ in
+      small ways. </>}Runs that read a real ICEYE product need it on disk, and the {gatedRuns} runs of the gated
+      reconstruction need its code, whose hash each of those records carries.</p>
+    <table class="data runs">
+      <thead><tr><th>Run</th><th>What it does, and the command that repeats it</th><th>Date</th><th>Commit</th><th class="num">Took</th></tr></thead>
+      <tbody>
+        {
+          runIndex.map((r) => (
+            <tr>
+              <td class="mono nowrap">{r.id.startsWith('lab_') ? `lab · ${r.id.slice(4)}` : r.id.split('_').slice(0, 2).join('-').toUpperCase()}</td>
+              <td>{r.title}<span class="cmd">{commandOf(r)}</span></td>
+              <td class="mono nowrap">{r.date}</td>
+              <td class="mono">{r.commit}</td>
+              <td class="num mono" title={r.reused ? 'reused the pipeline run of an earlier record with identical inputs' : undefined}>{fmtRuntime(r.runtime_s)}{r.reused && <span class="cmd">reused</span>}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </section>
+
   <section id="layout">
     <h2>One repository, three parts</h2>
     <div class="grid-3">
@@ -117,6 +168,16 @@ cd ../web && npm ci && npm run build                   # the site, into docs/</c
 </Doc>
 
 <style>
+  .runs .cmd {
+    display: block;
+    font: 10.5px/1.45 var(--font-mono);
+    color: var(--muted);
+    margin-top: 2px;
+    overflow-wrap: anywhere;
+  }
+  .runs .nowrap {
+    white-space: nowrap;
+  }
   .glossary {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));

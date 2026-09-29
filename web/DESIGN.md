@@ -13,7 +13,8 @@ underworld. Cool and muted: mist for reading, deep slate-blue where the drama an
 - **Type.** IBM Plex Sans (UI, section headings), IBM Plex Mono (data, labels, captions), Newsreader (display titles and
   prose), all self-hosted through fontsource so every reader sees the same page. Headings are statements.
 - **Colour roles — one each, everywhere, 2-D and 3-D.** lapis = voids and chambers; verdigris = what an instrument
-  recovered; ochre = sensors and sources; porphyry = claimed structures, always dashed; cinnabar = the radar; gold = the gated reconstruction's fit scores (viewer only, beside cinnabar). Three sets:
+  recovered; ochre = sensors and sources; porphyry = claimed structures, always dashed; cinnabar = the radar, whichever method reads it (the lab says in words whether a volume holds a
+  material property, focused power or a fit score). Three sets:
   on mist (`#2c5aa0 #16876e #a8741f #7a55a6 #aa4b33`), on deep water (`#5b8fe0 #23a07f #be8a2e #9a78d3 #d46e50`), both
   passing the dataviz six checks; and emissive glows in the viewer (`#82b3ff #74d8bc #e8b95c #c0a6da #f0906f`).
 - **Front page.** An introduction, not an instrument: the hero tours the underworld on its own (no controls, never
@@ -22,8 +23,10 @@ underworld. Cool and muted: mist for reading, deep slate-blue where the drama an
 - **The underworld.** Each site a geological block diagram: terrain lit low with contours, strata on the faces in their
   conventional patterns, depth ticks, a section plane with a patterned cut face, chambers glowing through the rock with
   plumb lines, pyramids as survey outlines, recovered volumes ray-marched in verdigris, stations in ochre, the wavefield
-  as a sheet of light (the echo alone in lapis). The panel leads with the site and a Show control (truth · recovered ·
-  waves); features pin on click; a live scale bar; keyboard shortcuts; the view lives in the URL.
+  as a sheet of light (the echo alone in lapis). The panel is arranged as the lab works: the site, then what to look with
+  (the ground · geophones · satellite), then each instrument's methods as cards; the open card picks where the method ran,
+  what went in and its control (controls dashed). The stage says in one line what the picture is, and its legend shows
+  only what is drawn. Features pin on click; a live scale bar; keyboard shortcuts; the view lives in the URL.
 - **Reading pages.** One mist sheet with a quiet index; a scoreboard first where there are results; numbered figures;
   every run with a collapsible details panel linking its data and code; terms from the other community underlined with
   their definition on hover (`src/data/glossary.ts`).

@@ -97,9 +97,9 @@ export class Volume {
   }
 }
 
-/** A volume's colour role: the gated reconstruction in gold, other radar in cinnabar, an instrument's recovery in verdigris. */
+/** A volume's colour is its instrument's: the satellite's in cinnabar whichever method drew it, the geophones' in
+ * verdigris. What the voxels hold (a material property, focused power or a fit score) the lab says in words. */
 function tint(info: VolumeInfo, t: SceneTheme): number {
-  if (info.tint === 'gated') return t.gated;
   return info.status === 'radar' ? t.radar : t.recovered;
 }
 

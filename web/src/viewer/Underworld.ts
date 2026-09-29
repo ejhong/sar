@@ -3,19 +3,18 @@ import { Engine } from './engine/Engine';
 import { THEMES, type ThemeName } from './engine/theme';
 import { loadIndex, loadScene, loadVolume } from './data/load';
 import type { Feature, SiteIndexEntry, SiteScene } from './data/types';
+import { defaultChoice, dimensions, findChoice, methodsOf, step, supportName, type Choice, type Instrument, type Method } from './catalogue';
 import { Block } from './scene/Block';
 import type { Wavefield } from './scene/Wavefield';
 import { featureDepth, fmtM } from './ui/format';
 
-export type Mode = 'truth' | 'recovered' | 'waves' | 'satellite';
+/** What to look with: the ground as it is, the geophones on it, or the satellite over it. */
+export type Mode = 'truth' | 'geophones' | 'satellite';
 
-/** What a volume holds, said in one or two words beside its name: the truth, a material property, or a method's score. */
-function badge(v: { status: string; tint?: string; quantity?: string }): string {
-  const what = v.status === 'truth' ? 'the truth' : v.status === 'radar' ? (v.tint === 'gated' ? 'fit score' : 'focused power') : 'material property';
-  return `<span class="uw-badge" title="${esc(v.quantity ?? '')}">${what}</span>`;
-}
-
-const MODES: Mode[] = ['truth', 'recovered', 'waves', 'satellite'];
+const MODES: Mode[] = ['truth', 'geophones', 'satellite'];
+/** Names the lab used before it was arranged by instrument, still honoured in links. */
+const LEGACY: Record<string, Mode> = { recovered: 'geophones', waves: 'geophones', instruments: 'geophones', ground: 'truth' };
+const INSTRUMENT_NAME: Record<Mode, string> = { truth: 'The ground', geophones: 'Geophones', satellite: 'Satellite' };
 
 export interface TourStop {
   site: string;
@@ -56,6 +55,11 @@ export class Underworld {
   private current = '';
   private mode: Mode = 'truth';
   private item: Partial<Record<Mode, string>> = {};
+  private methods: Record<Instrument, Method[]> = { geophones: [], satellite: [] };
+  /** The display threshold, kept across one method's pictures so a picture and its control are drawn alike. */
+  private threshold = { method: '', value: 0.18 };
+  /** A mode named in an old link, resolved once the site's methods are known. */
+  private legacy?: string;
   private themeName: ThemeName = 'night';
   private ray = new Raycaster();
   private pointer = new Vector2(2, 2);
@@ -148,13 +152,14 @@ export class Underworld {
     const first = this.sites.find((s) => s.id === h?.site)?.id ?? this.opts.initial ?? this.sites[0].id;
     if (h?.mode) this.mode = h.mode;
     if (h?.item && h.mode) this.item[h.mode] = h.item;
+    this.legacy = h?.legacy;
     await this.show(first, false);
     if (this.opts.hash)
       addEventListener('hashchange', () => {
         const p = parseHash();
         if (!p) return;
         if (p.site !== this.current) void this.show(p.site);
-        else if (p.mode && p.mode !== this.mode) this.setMode(p.mode, p.item);
+        else if (p.mode && p.mode !== this.mode) this.setMode(p.legacy ?? p.mode, p.item);
       });
     (window as any).viewerReady = true;
     (window as any).underworld = this;
@@ -189,14 +194,15 @@ export class Underworld {
     if (cut) cut.value = '0';
     const ex = this.$<HTMLInputElement>('[data-uw=exaggeration]');
     if (ex) ex.value = String(block.verticalExaggeration);
+    this.methods = { geophones: methodsOf(scene, 'geophones'), satellite: methodsOf(scene, 'satellite') };
+    this.threshold.method = '';
     this.renderSiteInfo(scene);
     this.markCurrent();
-    const available = this.availableModes();
-    this.setMode(available.includes(this.mode) ? this.mode : 'truth', this.item[this.mode]);
-    const g = scene.radar?.gated;
-    // a gated reconstruction's volume is small beside the site: open on it, not on the whole block
-    const gsel = g?.volumes.find((v) => v.id === this.item.satellite);
-    if (this.mode === 'satellite' && g && gsel) this.frameOn(gsel.focus ?? g.focus, g.radius_m, animate);
+    this.setMode(this.legacy ?? this.mode, this.item[this.mode], false);
+    this.legacy = undefined;
+    // a picture small beside the site opens on its own place, not on the whole block
+    const sel = this.selected()?.choice;
+    if (sel?.focus && sel.radius_m) this.frameOn(sel.focus, sel.radius_m, animate);
     else this.frame(animate);
     this.setLoading(false);
   }
@@ -205,74 +211,76 @@ export class Underworld {
     const s = this.scene;
     if (!s) return ['truth'];
     const m: Mode[] = ['truth'];
-    if (s.volumes.length) m.push('recovered');
-    if (s.wavefields?.length) m.push('waves');
-    if (s.radar) m.push('satellite');
+    if (this.methods.geophones.length) m.push('geophones');
+    if (this.methods.satellite.length || s.radar) m.push('satellite');
     return m;
+  }
+
+  /** The picture on show: its method and its choice, or nothing. */
+  private selected(): { method: Method; choice: Choice } | undefined {
+    if (this.mode === 'truth') return undefined;
+    return findChoice(this.methods[this.mode], this.item[this.mode]);
   }
 
   // ---------- modes ----------
 
-  setMode(mode: Mode, item?: string) {
+  setMode(mode: Mode | string, item?: string, reframe = true) {
     const b = this.block;
     const s = this.scene;
     if (!b || !s) return;
-    let focusGated = false;
-    if (!this.availableModes().includes(mode)) mode = 'truth';
-    const refit = (mode === 'satellite') !== (this.mode === 'satellite') && !!b.radar;
-    this.mode = mode;
-    const vols = s.volumes;
-    const waves = s.wavefields ?? [];
-    if (mode === 'recovered') {
-      const id = vols.find((v) => v.id === item)?.id ?? this.item.recovered ?? vols[0].id;
-      this.item.recovered = id;
-      b.showVolume(id);
-      const v = vols.find((x) => x.id === id);
-      b.showSurvey(s.surveys?.find((sv) => sv.id === v?.survey) ?? null);
-    } else if (mode === 'satellite' && s.radar) {
-      const rv = s.radar.volumes;
-      if (Array.isArray(rv)) {
-        // a real site: one of the methods' volumes, or none; the gated reconstruction's real-image volume first
-        const gated = s.radar.gated?.volumes.map((g) => g.id) ?? [];
-        const allowed = [...gated, ...rv];
-        const first = s.radar.gated?.volumes.find((g) => g.case === 'real')?.id ?? rv[0];
-        const was = this.item.satellite;
-        const which = item === 'none' || allowed.includes(item ?? '') ? item! : was && (was === 'none' || allowed.includes(was)) ? was : first;
-        this.item.satellite = which;
-        b.showVolume(which === 'none' ? null : which);
-        const gg = s.radar.gated;
-        const at = (id?: string) => JSON.stringify(gg?.volumes.find((g) => g.id === id)?.focus ?? gg?.focus);
-        focusGated = gated.includes(which) && (!gated.includes(was ?? '') || refit || at(which) !== at(was));
-      } else {
-        const which = item === 'with' || item === 'without' ? item : this.item.satellite === 'without' ? 'without' : 'with';
-        this.item.satellite = which;
-        b.showVolume(rv[which as 'with' | 'without']);
+    let m: Mode = LEGACY[mode] ?? (MODES.includes(mode as Mode) ? (mode as Mode) : 'truth');
+    // links from before the lab was arranged by instrument: a radar picture once sat under the instruments
+    if (m === 'geophones' && item && findChoice(this.methods.satellite, item)) m = 'satellite';
+    if (mode === 'recovered' && !this.methods.geophones.length && this.methods.satellite.length) m = 'satellite';
+    if (mode === 'waves' && !findChoice(this.methods.geophones, item)) item = this.methods.geophones.find((x) => x.key === 'waves')?.choices[0]?.id;
+    if (m === 'satellite' && s.radar && !Array.isArray(s.radar.volumes) && (item === 'with' || item === 'without')) item = s.radar.volumes[item];
+    if (!this.availableModes().includes(m)) m = 'truth';
+    const was = this.selected();
+    const refit = (m === 'satellite') !== (this.mode === 'satellite') && !!b.radar;
+    this.mode = m;
+    let choice: Choice | undefined;
+    if (m !== 'truth') {
+      const methods = this.methods[m];
+      if (m === 'satellite' && (item === 'none' || (item === undefined && this.item.satellite === 'none'))) this.item.satellite = 'none';
+      else {
+        choice = (findChoice(methods, item) ?? findChoice(methods, this.item[m]))?.choice ?? defaultChoice(methods);
+        this.item[m] = choice?.id;
       }
-      b.showSurvey(null);
-    } else {
-      b.showVolume(null);
-      b.showSurvey(null);
     }
-    if (mode === 'waves') {
-      const id = waves.find((w) => w.id === item)?.id ?? this.item.waves ?? waves[0].id;
-      this.item.waves = id;
-      this.wave = b.showWavefield(id);
+    const vol = choice?.kind === 'volume' ? s.volumes.find((v) => v.id === choice!.id) : undefined;
+    b.showVolume(vol?.id ?? null);
+    b.showSurvey(vol?.survey ? (s.surveys?.find((sv) => sv.id === vol.survey) ?? null) : null);
+    if (choice?.kind === 'wave') {
+      this.wave = b.showWavefield(choice.id);
       this.wave?.setFrame(0);
       if (this.wave) this.wave.playing = true;
     } else {
       b.showWavefield(null);
       this.wave = undefined;
     }
-    b.showRadar(mode === 'satellite');
-    b.setFeatureEmphasis(mode === 'truth' || mode === 'satellite' ? 1 : 0.35);
-    this.renderModeUI();
-    this.writeHash();
-    if (!this.opts.tour) {
-      const g = s.radar?.gated;
-      if (focusGated && g) this.frameOn(g.volumes.find((v) => v.id === this.item.satellite)?.focus ?? g.focus, g.radius_m);
-      else if (refit) this.frame(true);
+    b.showRadar(m === 'satellite');
+    b.setFeatureEmphasis(m === 'geophones' ? 0.35 : 1);
+    const sel = this.selected();
+    if (sel && vol) {
+      if (this.threshold.method !== sel.method.key) this.threshold = { method: sel.method.key, value: sel.choice.threshold };
+      b.setVolumeThreshold(this.threshold.value);
     }
+    this.renderModeUI();
+    this.renderNow();
+    this.writeHash();
+    if (reframe && !this.opts.tour) this.reframe(was?.choice, choice, refit);
     this.engine.poke();
+  }
+
+  /** Move the camera only when the place in question changes: to a picture's own place, or back to the whole block. */
+  private reframe(from: Choice | undefined, to: Choice | undefined, refit: boolean) {
+    const f = to?.focus;
+    if (f && to?.radius_m) {
+      const g = from?.focus;
+      const near =
+        !!g && !!from?.radius_m && Math.hypot(f[0] - g[0], f[1] - g[1], f[2] - g[2]) < 0.3 * to.radius_m && Math.abs(Math.log(from.radius_m / to.radius_m)) < 0.4;
+      if (!near || refit) this.frameOn(f, to.radius_m);
+    } else if (refit || from?.focus) this.frame(true);
   }
 
   private renderModeUI() {
@@ -283,7 +291,7 @@ export class Underworld {
       const m = b.dataset.mode as Mode;
       b.setAttribute('aria-pressed', String(m === this.mode));
       b.disabled = !available.includes(m);
-      b.title = b.disabled ? 'No runs on this site yet' : '';
+      b.title = b.disabled ? `No ${m === 'geophones' ? 'geophone' : 'satellite'} runs on this site yet` : '';
     });
     const ctx = this.$('[data-uw=mode-context]');
     if (!ctx) return;
@@ -291,65 +299,177 @@ export class Underworld {
       const counts = s.features.reduce<Record<string, number>>((a, f) => ((a[f.status] = (a[f.status] ?? 0) + 1), a), {});
       ctx.innerHTML = `<p class="uw-ctx-note">What is really in the ground: ${Object.entries(counts)
         .map(([k, v]) => `<span class="uw-inline"><span class="uw-dot ${k}"></span>${v} ${STATUS_LABEL[k] ?? k}</span>`)
-        .join(' ')}. Click one to pin its details.</p>`;
+        .join(' ')}. Click one to pin its details. Every picture the instruments make is scored against this.</p>`;
       return;
     }
-    if (this.mode === 'satellite' && s.radar) {
-      this.renderSatelliteUI(ctx, s);
-      return;
-    }
-    if (this.mode === 'recovered') {
-      const groups: [string, typeof s.volumes][] = [
-        ['Instruments on the ground', s.volumes.filter((v) => v.status !== 'radar')],
-        ['The satellite, read by the paper-style method', s.volumes.filter((v) => v.status === 'radar' && v.tint !== 'gated')],
-      ];
-      const shown = groups.filter(([, g]) => g.length);
-      ctx.innerHTML =
-        shown
-          .map(
-            ([label, g]) =>
-              (shown.length > 1 ? `<div class="uw-subhead">${label}</div>` : '') +
-              g
-                .map(
-                  (v) => `<label class="uw-radio"><input type="radio" name="vol" value="${v.id}" ${v.id === this.item.recovered ? 'checked' : ''}/>
-          <span><span class="uw-opt-name">${esc(v.label)}${badge(v)}</span><span class="uw-opt-sub">${esc(v.caption ?? v.method)}</span></span></label>`,
-                )
-                .join(''),
-          )
-          .join('') +
-        `<label class="uw-range"><span>Show anomalies stronger than</span><input type="range" min="0.02" max="0.9" step="0.01" value="0.18" data-uw="threshold" /></label>`;
-      ctx.querySelectorAll<HTMLInputElement>('input[name=vol]').forEach((el) =>
-        el.addEventListener('change', () => this.setMode('recovered', el.value)),
-      );
-      const th = ctx.querySelector<HTMLInputElement>('[data-uw=threshold]')!;
-      th.addEventListener('input', () => this.block?.setVolumeThreshold(Number(th.value)));
-      this.block?.setVolumeThreshold(Number(th.value));
-      return;
-    }
-    const waves = s.wavefields ?? [];
-    ctx.innerHTML =
-      waves
-        .map(
-          (w) => `<label class="uw-radio"><input type="radio" name="wave" value="${w.id}" ${w.id === this.item.waves ? 'checked' : ''}/>
-        <span><span class="uw-opt-name">${esc(w.label)}</span><span class="uw-opt-sub">${esc(w.caption)}</span></span></label>`,
-        )
-        .join('') +
-      `<div class="uw-timeline">
-        <button type="button" class="uw-play" data-uw="play" aria-label="Pause">❚❚</button>
-        <input type="range" min="0" max="1" step="0.001" value="0" data-uw="scrub" aria-label="Time" />
-        <span class="uw-time" data-uw="time">0.0 ms</span>
-      </div>`;
-    ctx.querySelectorAll<HTMLInputElement>('input[name=wave]').forEach((el) =>
-      el.addEventListener('change', () => this.setMode('waves', el.value)),
+    this.renderInstrument(ctx, s, this.mode);
+  }
+
+  /** An instrument: what it is, then each method as a card; the open card picks where, what went in, and its control. */
+  private renderInstrument(ctx: HTMLElement, s: SiteScene, inst: Instrument) {
+    const methods = this.methods[inst];
+    const sel = this.selected();
+    const waves = methods.filter((m) => m.dot === 'wave');
+    const pictures = methods.filter((m) => m.dot !== 'wave');
+    const intro =
+      inst === 'geophones'
+        ? `<p class="uw-ctx-note">Geophones on the ground or down boreholes record waves from a hammer, or the ground’s own hum.
+            Each method below turns those records into a picture of the rock, drawn in green.</p>`
+        : this.passHTML(s);
+    ctx.innerHTML = `${intro}
+      ${waves.length ? `<div class="uw-subhead">What they record</div>${waves.map((m) => this.methodHTML(m, sel)).join('')}` : ''}
+      <div class="uw-subhead">${inst === 'geophones' ? 'What each method recovers' : 'What each method draws from the image'}</div>
+      ${pictures.map((m) => this.methodHTML(m, sel)).join('')}
+      ${
+        inst === 'satellite'
+          ? `<p class="uw-more">${sel ? '<button type="button" class="uw-link" data-choice="none">Hide the picture</button> · ' : ''}more methods join as they are built</p>`
+          : ''
+      }
+      ${
+        sel?.choice.kind === 'volume'
+          ? `<label class="uw-range"><span>Show values above · ${esc(sel.method.quantity)}</span><input type="range" min="0.02" max="0.95" step="0.01" value="${this.threshold.value}" data-uw="threshold" /></label>`
+          : ''
+      }`;
+    ctx.querySelectorAll<HTMLButtonElement>('[data-open]').forEach((el) =>
+      el.addEventListener('click', () => {
+        const m = methods.find((x) => x.key === el.dataset.open);
+        if (!m) return;
+        const keep = sel?.method.key === m.key ? sel.choice : undefined;
+        this.setMode(inst, (keep ?? m.choices.find((c) => !c.control) ?? m.choices[0]).id);
+      }),
     );
-    const play = ctx.querySelector<HTMLButtonElement>('[data-uw=play]')!;
+    ctx.querySelectorAll<HTMLButtonElement>('[data-dim]').forEach((el) =>
+      el.addEventListener('click', () => {
+        if (!sel) return;
+        const key = el.dataset.dim as 'area' | 'input' | 'support';
+        const value = key === 'support' ? Number(el.dataset.value) : el.dataset.value!;
+        this.setMode(inst, step(sel.method, sel.choice, key, value).id);
+      }),
+    );
+    ctx.querySelector('[data-choice=none]')?.addEventListener('click', () => this.setMode(inst, 'none'));
+    const th = ctx.querySelector<HTMLInputElement>('[data-uw=threshold]');
+    th?.addEventListener('input', () => {
+      this.threshold.value = Number(th.value);
+      this.block?.setVolumeThreshold(this.threshold.value);
+      this.engine.poke();
+    });
+    if (inst === 'satellite') this.bindPass(ctx);
+    if (sel?.choice.kind === 'wave') this.bindTimeline(ctx);
+  }
+
+  private methodHTML(m: Method, sel?: { method: Method; choice: Choice }): string {
+    const c = sel?.method.key === m.key ? sel.choice : undefined;
+    const chips = c
+      ? dimensions(m, c)
+          .map(
+            (d) =>
+              `<div class="uw-chips" role="group" aria-label="${d.key === 'area' ? 'where' : d.key === 'input' ? 'what went in' : 'support'}">${d.values
+                .map((v) => {
+                  const control = m.choices.filter((x) => x[d.key] === v).every((x) => x.control);
+                  const label = d.key === 'support' ? supportName(v as number) : String(v);
+                  return `<button type="button" class="uw-chip${control ? ' control' : ''}" data-dim="${d.key}" data-value="${esc(String(v))}" aria-pressed="${c[d.key] === v}"${
+                    control ? ' title="a control: nothing here for the method to find"' : ''
+                  }>${esc(label)}</button>`;
+                })
+                .join('')}</div>`,
+          )
+          .join('')
+      : '';
+    return `<div class="uw-method${c ? ' open' : ''}">
+      <button type="button" class="uw-method-head" data-open="${esc(m.key)}" aria-expanded="${!!c}">
+        <span class="uw-dot ${m.dot}"></span><span class="uw-method-name">${esc(m.name)}</span><span class="uw-badge">${m.quantity}</span>
+      </button>
+      <p class="uw-method-line">${esc(m.line)}</p>
+      ${
+        c
+          ? `${chips}
+        <p class="uw-ctx-note">${c.control ? '<span class="uw-tag">control</span> ' : ''}${esc(c.sub)}</p>
+        ${c.note ? `<p class="uw-ctx-note">${esc(c.note)}</p>` : ''}
+        ${c.stats ? `<p class="uw-ctx-note">${esc(c.stats)}</p>` : ''}
+        ${m.why ? `<p class="uw-why"><b>Why it looks like this.</b> ${esc(m.why)}</p>` : ''}
+        ${
+          c.kind === 'wave'
+            ? `<div class="uw-timeline">
+          <button type="button" class="uw-play" data-uw="play" aria-label="Pause">❚❚</button>
+          <input type="range" min="0" max="1" step="0.001" value="0" data-uw="scrub" aria-label="Time" />
+          <span class="uw-time" data-uw="time">0.0 ms</span>
+        </div>`
+            : ''
+        }
+        ${c.run ? `<p class="uw-run">run ${esc(c.run)}</p>` : ''}`
+          : ''
+      }
+    </div>`;
+  }
+
+  /** The satellite's pass: what it is, and on a bench the image's virtual sensors beside the true motion. */
+  private passHTML(s: SiteScene): string {
+    const r = s.radar;
+    if (!r)
+      return `<p class="uw-ctx-note">No pass is drawn over this bench: its picture comes from a real image of Giza, placed where the
+        claim places what it shows.</p>`;
+    const a = r.acquisition;
+    if (r.sensors) {
+      const sv = r.sensors;
+      const pct = (g: number) => `${Math.round(g * 100)}%`;
+      const reading = this.block?.radar?.reading ?? 'complex';
+      return `<p class="uw-ctx-note">An ICEYE dwell on the real Giza geometry: ${a.aperture_s.toFixed(1)} s, ${a.track_km.toFixed(1)} km
+          of track, ${Math.round(a.slant_range_km)} km away, looking ${Math.round(a.incidence_deg)}° from straight down (satellite and
+          beam not to scale). On the ground lies the image it makes of this shaking desert.</p>
+        <details class="uw-sub"><summary>The image’s virtual sensors: the true motion beside what it reports</summary>
+          <p class="uw-ctx-note"><span class="uw-inline"><span class="uw-dot sensor"></span>the true motion</span> under each sensor
+            (a test wave ${sv.test_wave.wavelength_m} m long, put into the image itself) beside
+            <span class="uw-inline"><span class="uw-dot radar"></span>what the image reports</span> there, read by</p>
+          <label class="uw-radio"><input type="radio" name="reading" value="complex" ${reading === 'complex' ? 'checked' : ''}/>
+            <span><span class="uw-opt-name">Complex correlation</span><span class="uw-opt-sub">the published way: recovers ${pct(sv.gains.complex)} of the motion</span></span></label>
+          <label class="uw-radio"><input type="radio" name="reading" value="magnitude" ${reading === 'magnitude' ? 'checked' : ''}/>
+            <span><span class="uw-opt-name">Magnitudes</span><span class="uw-opt-sub">the best tracker tried: ${pct(sv.gains.magnitude)} on this ground</span></span></label>
+          <div class="uw-timeline">
+            <button type="button" class="uw-play" data-uw="look-play" aria-label="Pause">❚❚</button>
+            <span class="uw-time" data-uw="look">look 1 of ${sv.looks_s.length}</span>
+            <span></span>
+          </div>
+        </details>`;
+    }
+    return `<p class="uw-ctx-note">The real ${esc(a.satellite ?? 'ICEYE')} pass of ${esc(a.date ?? '')}: ${a.aperture_s.toFixed(1)} s,
+        ${a.track_km.toFixed(1)} km of track, ${Math.round(a.slant_range_km)} km away, looking ${Math.round(a.incidence_deg)}° from straight
+        down (satellite and beam not to scale). On the ground lies the image it made, resampled onto the terrain; it reaches about
+        ${Math.round((r.reach_m ?? 0.3) * 100)} cm into the driest sand, less into rock.</p>
+      <label class="uw-check"><input type="checkbox" data-uw="sat-image" checked /><span class="uw-dot radar"></span>Show the image</label>`;
+  }
+
+  private bindPass(ctx: HTMLElement) {
+    ctx.querySelectorAll<HTMLInputElement>('input[name=reading]').forEach((el) =>
+      el.addEventListener('change', () => {
+        this.block?.radar?.setReading(el.value as 'complex' | 'magnitude');
+        this.engine.poke();
+      }),
+    );
+    const play = ctx.querySelector<HTMLButtonElement>('[data-uw=look-play]');
+    play?.addEventListener('click', () => {
+      const rd = this.block?.radar;
+      if (!rd) return;
+      rd.playing = !rd.playing;
+      play.textContent = rd.playing ? '❚❚' : '▶';
+      play.setAttribute('aria-label', rd.playing ? 'Pause' : 'Play');
+    });
+    const img = ctx.querySelector<HTMLInputElement>('[data-uw=sat-image]');
+    img?.addEventListener('change', () => {
+      this.block?.radar?.setImageVisible(img.checked);
+      this.engine.poke();
+    });
+  }
+
+  private bindTimeline(ctx: HTMLElement) {
+    const play = ctx.querySelector<HTMLButtonElement>('[data-uw=play]');
+    const scrub = ctx.querySelector<HTMLInputElement>('[data-uw=scrub]');
+    if (!play || !scrub) return;
     play.addEventListener('click', () => {
       if (!this.wave) return;
       this.wave.playing = !this.wave.playing;
       play.textContent = this.wave.playing ? '❚❚' : '▶';
       play.setAttribute('aria-label', this.wave.playing ? 'Pause' : 'Play');
     });
-    const scrub = ctx.querySelector<HTMLInputElement>('[data-uw=scrub]')!;
     scrub.addEventListener('input', () => {
       if (!this.wave) return;
       this.wave.playing = false;
@@ -359,122 +479,41 @@ export class Underworld {
     });
   }
 
-  /** The satellite's pass: what it is, the image's virtual sensors, and the method's picture with and without the chamber. */
-  private renderSatelliteUI(ctx: HTMLElement, s: SiteScene) {
-    const r = s.radar!;
-    if (!r.sensors) return this.renderRealPassUI(ctx, s);
-    const a = r.acquisition;
-    const sv = r.sensors;
-    const pct = (g: number) => `${Math.round(g * 100)}%`;
-    const reading = this.block?.radar?.reading ?? 'complex';
-    const which = this.item.satellite ?? 'with';
-    ctx.innerHTML = `
-      <p class="uw-ctx-note">An ICEYE dwell on the real Giza geometry: ${a.aperture_s.toFixed(1)} s, ${a.track_km.toFixed(1)} km
-        of track, ${Math.round(a.slant_range_km)} km away, looking ${Math.round(a.incidence_deg)}° from straight down. The satellite
-        and its beam are not to scale. On the ground lies the image it makes of this shaking desert.</p>
-      <div class="uw-subhead">The image's virtual sensors</div>
-      <p class="uw-ctx-note"><span class="uw-inline"><span class="uw-dot sensor"></span>the true motion</span> under each sensor
-        (a test wave ${sv.test_wave.wavelength_m} m long, put into the image itself) beside
-        <span class="uw-inline"><span class="uw-dot radar"></span>what the image reports</span> there, read by</p>
-      <label class="uw-radio"><input type="radio" name="reading" value="complex" ${reading === 'complex' ? 'checked' : ''}/>
-        <span><span class="uw-opt-name">Complex correlation</span><span class="uw-opt-sub">the published way: recovers ${pct(sv.gains.complex)} of the motion</span></span></label>
-      <label class="uw-radio"><input type="radio" name="reading" value="magnitude" ${reading === 'magnitude' ? 'checked' : ''}/>
-        <span><span class="uw-opt-name">Magnitudes</span><span class="uw-opt-sub">the best tracker tried: ${pct(sv.gains.magnitude)} on this ground</span></span></label>
-      <div class="uw-timeline">
-        <button type="button" class="uw-play" data-uw="look-play" aria-label="Pause">❚❚</button>
-        <span class="uw-time" data-uw="look">look 1 of ${sv.looks_s.length}</span>
-        <span></span>
-      </div>
-      <div class="uw-subhead">What the published method draws</div>
-      <label class="uw-radio"><input type="radio" name="sat-vol" value="with" ${which === 'with' ? 'checked' : ''}/>
-        <span><span class="uw-opt-name">With the chamber</span><span class="uw-opt-sub">pillars and streaks everywhere, the chamber nowhere</span></span></label>
-      <label class="uw-radio"><input type="radio" name="sat-vol" value="without" ${which === 'without' ? 'checked' : ''}/>
-        <span><span class="uw-opt-name">Without it</span><span class="uw-opt-sub">the same picture, to one part in a hundred million</span></span></label>
-      <label class="uw-range"><span>Show power stronger than</span><input type="range" min="0.02" max="0.95" step="0.01" value="0.6" data-uw="threshold" /></label>`;
-    ctx.querySelectorAll<HTMLInputElement>('input[name=reading]').forEach((el) =>
-      el.addEventListener('change', () => {
-        this.block?.radar?.setReading(el.value as 'complex' | 'magnitude');
-        this.engine.poke();
-      }),
-    );
-    ctx.querySelectorAll<HTMLInputElement>('input[name=sat-vol]').forEach((el) =>
-      el.addEventListener('change', () => this.setMode('satellite', el.value)),
-    );
-    const play = ctx.querySelector<HTMLButtonElement>('[data-uw=look-play]')!;
-    play.addEventListener('click', () => {
-      const rd = this.block?.radar;
-      if (!rd) return;
-      rd.playing = !rd.playing;
-      play.textContent = rd.playing ? '❚❚' : '▶';
-      play.setAttribute('aria-label', rd.playing ? 'Pause' : 'Play');
-    });
-    const th = ctx.querySelector<HTMLInputElement>('[data-uw=threshold]')!;
-    th.addEventListener('input', () => this.block?.setVolumeThreshold(Number(th.value)));
-    this.block?.setVolumeThreshold(Number(th.value));
-  }
-
-  /** A real product over a real site: the pass, the image on the ground, the wave's reach, the method's volumes. */
-  private renderRealPassUI(ctx: HTMLElement, s: SiteScene) {
-    const r = s.radar!;
-    const a = r.acquisition;
-    const vols = (Array.isArray(r.volumes) ? r.volumes : []).map((id) => s.volumes.find((v) => v.id === id)).filter(Boolean) as SiteScene['volumes'];
-    const gv = r.gated;
-    const which = this.item.satellite ?? gv?.volumes.find((g) => g.case === 'real')?.id ?? vols[0]?.id ?? 'none';
-    const st = r.stats;
-    const fmt = (v: number | null | undefined) => (v === null || v === undefined ? '–' : v.toFixed(2));
-    const gatedBlock = gv
-      ? `<div class="uw-subhead"><span class="uw-dot gated"></span>${esc(gv.title)}</div>
-      <p class="uw-ctx-note">${esc(gv.note)}</p>
-      <p class="uw-why"><b>Why it looks like this.</b> A column hangs wherever a position passed the gates; along it the
-        score peaks where the depth fit’s phase turns a whole number of times across a window, about 6 m per turn, and at
-        the mirror of that depth. The depth is the frequency the gates chose, not a measured depth.</p>
-      ${[...gv.volumes]
-        .sort((a, b) => a.support - b.support || ['real', 'twin', 'plateau'].indexOf(a.case) - ['real', 'twin', 'plateau'].indexOf(b.case))
-        .map(
-          (g) => `<label class="uw-radio"><input type="radio" name="sat-vol" value="${g.id}" ${g.id === which ? 'checked' : ''}/>
-        <span><span class="uw-opt-name">${g.case === 'real' ? 'The real image' : g.case === 'twin' ? 'A motionless copy' : 'Open plateau, the same image'} · ${g.support === 1 ? 'one position' : `${g.support} positions in a row`}<span class="uw-badge">fit score</span></span><span class="uw-opt-sub">${g.case === 'real' ? `the ${esc(gv.date)} image, through the unchanged code` : g.case === 'twin' ? 'the same crop with nothing moving and nothing inside' : 'the same raster south-west of Menkaure, where no monument stands'}</span></span></label>`,
-        )
-        .join('')}
-      ${gv.chambers ? `<p class="uw-ctx-note">Inside the surveyed chambers and passages (blue) the real image scores ${fmt(gv.chambers.real[0])} on average, against ${fmt(gv.chambers.real[1])} at the same depths elsewhere; the motionless copy ${fmt(gv.chambers.twin[0])} and ${fmt(gv.chambers.twin[1])}.</p>` : ''}`
-      : '';
-    ctx.innerHTML = `
-      <p class="uw-ctx-note">The real ${esc(a.satellite ?? 'ICEYE')} pass of ${esc(a.date ?? '')}: ${a.aperture_s.toFixed(1)} s,
-        ${a.track_km.toFixed(1)} km of track, ${Math.round(a.slant_range_km)} km away, looking ${Math.round(a.incidence_deg)}° from straight
-        down (satellite and beam not to scale). On the ground lies the image it made, resampled onto the terrain: each
-        pyramid’s top lands on the ground in front of it, toward the radar, as the radar records it.</p>
-      <label class="uw-check"><input type="checkbox" data-uw="sat-image" checked /><span class="uw-dot radar"></span>Show the image</label>
-      <div class="uw-subhead">How far down it can see</div>
-      <p class="uw-ctx-note">About ${Math.round((r.reach_m ?? 0.3) * 100)} cm into the driest sand, less into rock: at this scale, thinner than the
-        line of the ground itself. Everything below the surface is out of its reach.</p>
-      ${gatedBlock}
-      <div class="uw-subhead"><span class="uw-dot radar"></span>What the paper-style pipeline draws from it</div>
-      <p class="uw-ctx-note">The 2025 image through the pipeline as the 2022 paper describes it: 50 half-band pairs, no selection
-        gates, focused power on a log scale, depth relabelled so it repeats at 648 m as the claim does, and smoothed for
-        display. It is not the stricter gated reconstruction.</p>
-      <p class="uw-why"><b>Why it looks like this.</b> Pillars: a pixel whose registration wanders is bright at every depth.
-        Bands: along a pillar the power rises and falls once per step of the axis’s resolution. Blocks: at the surface and
-        at each repeat depth every steering phase coincides, so the power there is the pixel’s average offset. Open plateau
-        draws the same shapes.</p>
-      ${vols
-        .map(
-          (v) => `<label class="uw-radio"><input type="radio" name="sat-vol" value="${v.id}" ${v.id === which ? 'checked' : ''}/>
-        <span><span class="uw-opt-name">${esc(v.label.replace('Satellite · the published method ', ''))}<span class="uw-badge">focused power</span></span><span class="uw-opt-sub">${esc(v.caption ?? '')}</span></span></label>`,
-        )
-        .join('')}
-      <label class="uw-radio"><input type="radio" name="sat-vol" value="none" ${which === 'none' ? 'checked' : ''}/><span><span class="uw-opt-name">None</span></span></label>
-      ${st ? `<p class="uw-ctx-note">Over the pyramids and over empty plateau its depth profiles correlate at ${st.monument_vs_control_profile_corr.toFixed(3)}; at every pixel its power follows how much the registration wandered (${st.pillar_power_vs_energy_min.toFixed(3)}).</p>` : ''}
-      <label class="uw-range"><span>Show values above</span><input type="range" min="0.02" max="0.95" step="0.01" value="${gv && gv.volumes.some((g) => g.id === which) ? '0.08' : '0.8'}" data-uw="threshold" /></label>`;
-    ctx.querySelectorAll<HTMLInputElement>('input[name=sat-vol]').forEach((el) =>
-      el.addEventListener('change', () => this.setMode('satellite', el.value)),
-    );
-    const img = ctx.querySelector<HTMLInputElement>('[data-uw=sat-image]')!;
-    img.addEventListener('change', () => {
-      this.block?.radar?.setImageVisible(img.checked);
-      this.engine.poke();
-    });
-    const th = ctx.querySelector<HTMLInputElement>('[data-uw=threshold]')!;
-    th.addEventListener('input', () => this.block?.setVolumeThreshold(Number(th.value)));
-    this.block?.setVolumeThreshold(Number(th.value));
+  /** On the stage: what the picture is, in one line, and a legend of only what is drawn. */
+  private renderNow() {
+    const s = this.scene;
+    if (!s) return;
+    const sel = this.selected();
+    const now = this.$('[data-uw=now]');
+    if (now) {
+      if (this.mode === 'truth') now.innerHTML = `<span class="uw-dot surveyed"></span><b>The ground</b><span>what is really there</span>`;
+      else if (!sel) now.innerHTML = `<span class="uw-dot radar"></span><b>${INSTRUMENT_NAME[this.mode]}</b><span>the pass, no picture</span>`;
+      else {
+        const { method: m, choice: c } = sel;
+        const parts = [m.name, c.area, c.input !== m.name ? c.input : undefined, c.support ? supportName(c.support) : undefined].filter(Boolean) as string[];
+        now.innerHTML = `<span class="uw-dot ${m.dot}"></span><b>${INSTRUMENT_NAME[this.mode]}</b><span>${parts.map(esc).join(' · ')}</span>${
+          c.control ? '<span class="uw-tag">control</span>' : ''
+        }${c.kind === 'volume' ? `<span class="uw-badge">${m.quantity}</span>` : ''}`;
+      }
+    }
+    const legend = this.$('[data-uw=legend]');
+    if (legend) {
+      const items: [string, string][] = [];
+      if (s.features.some((f) => f.status !== 'claimed')) items.push(['surveyed', 'chamber or void']);
+      if (s.features.some((f) => f.status === 'claimed')) items.push(['claimed', 'claimed']);
+      if (s.structures.length) items.push(['structure', 'monument']);
+      const vol = sel?.choice.kind === 'volume' ? s.volumes.find((v) => v.id === sel.choice.id) : undefined;
+      if (this.mode === 'geophones') {
+        if (sel?.choice.kind === 'wave') items.push(['wave', 'the wave']);
+        if (vol) items.push(['recovered', `what the method recovered: ${vol.quantity}`]);
+        if (vol?.survey) items.push(['sensor', 'geophones and sources']);
+      }
+      if (this.mode === 'satellite') {
+        if (s.radar?.sensors) items.push(['sensor', 'true motion']);
+        items.push(['radar', vol ? `the satellite’s picture: ${sel!.method.quantity}` : s.radar?.sensors ? 'what the image reports' : 'the satellite']);
+      }
+      legend.innerHTML = items.map(([dot, label]) => `<span><span class="uw-dot ${dot}"></span>${esc(label)}</span>`).join('');
+    }
   }
 
   private updateLookLabel() {
@@ -616,7 +655,7 @@ export class Underworld {
     const n = Number(e.key);
     if (n >= 1 && n <= this.sites.length) void this.show(this.sites[n - 1].id);
     else if (e.key === 't') this.setMode('truth');
-    else if (e.key === 'v') this.setMode('recovered');
+    else if (e.key === 'g' || e.key === 'v') this.setMode('geophones');
     else if (e.key === 'w') this.setMode('waves');
     else if (e.key === 's') this.setMode('satellite');
     else if (e.key === 'r') this.frame(true);
@@ -724,7 +763,15 @@ export class Underworld {
         ${g
           .map((s) => {
             n++;
-            const runs = s.volumes ? `<span class="uw-site-runs" title="recovered volumes">${s.volumes}</span>` : '';
+            const ins = s.instruments;
+            const runs = ins
+              ? [
+                  ins.geophones ? `<span class="uw-dot recovered" title="${ins.geophones} from geophones"></span>` : '',
+                  ins.satellite ? `<span class="uw-dot radar" title="${ins.satellite} from the satellite"></span>` : '',
+                ].join('')
+              : s.volumes
+                ? `<span class="uw-site-runs" title="pictures">${s.volumes}</span>`
+                : '';
             return `<button class="uw-site" data-site="${s.id}" type="button">
               <span class="uw-site-key">${n}</span>
               <span class="uw-site-text"><span class="uw-site-name">${esc(s.name)}${runs}</span>
@@ -786,11 +833,13 @@ export class Underworld {
   }
 }
 
-function parseHash(): { site: string; mode?: Mode; item?: string } | null {
+function parseHash(): { site: string; mode?: Mode; item?: string; legacy?: string } | null {
   const h = decodeURIComponent(location.hash.slice(1));
   if (!h) return null;
   const [site, mode, item] = h.split('/');
-  return { site, mode: MODES.includes(mode as Mode) ? (mode as Mode) : undefined, item };
+  const m = LEGACY[mode] ?? (MODES.includes(mode as Mode) ? (mode as Mode) : undefined);
+  // an old link's picture resolves in setMode, which knows the site's methods
+  return { site, mode: m, item: mode === 'waves' && !item ? undefined : item, legacy: mode in LEGACY ? mode : undefined };
 }
 
 function isVisible(o: { visible: boolean; parent: any }): boolean {

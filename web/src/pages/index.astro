@@ -17,8 +17,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 const stops: TourStop[] = [
   { site: 'bench-shafts', caption: '<b>Test bench</b>Twelve burial shafts, 5 to 30 m deep, in fractured limestone: the scale of Giza’s cemeteries.' },
-  { site: 'bench-void', mode: 'recovered', item: 'tt-crosshole', caption: '<b>Test bench · recovered</b>One chamber, and what four boreholes recover of it: a shadow, 11% slower than the rock.' },
-  { site: 'bench-void', mode: 'waves', item: 'echo', seconds: 8, caption: '<b>Test bench · the echo</b>A hammer blow at the surface, and what comes back from the chamber: too faint to see on any single record.' },
+  { site: 'bench-void', mode: 'geophones', item: 'tt-crosshole', caption: '<b>Test bench · recovered</b>One chamber, and what four boreholes recover of it: a shadow, 11% slower than the rock.' },
+  { site: 'bench-void', mode: 'geophones', item: 'echo', seconds: 8, caption: '<b>Test bench · the echo</b>A hammer blow at the surface, and what comes back from the chamber: too faint to see on any single record.' },
   { site: 'bench-khafre-claim', caption: '<b>The claim, placed as stated</b>Eight shafts to 640 m beneath Khafre, and a deeper structure near 1,220 m.' },
   { site: 'giza', caption: '<b>Real site</b>Giza on Copernicus terrain, with the chambers already surveyed inside and beneath the pyramids.' },
 ];
@@ -157,11 +157,12 @@ const explore = [
       <div class="head">
         <p class="label">The lab</p>
         <h2>A lab for looking underground: known ground, every instrument, every method, and why each draws what it draws</h2>
-        <p class="sub">Every site is a block diagram you can turn, cut and play waves through. Look with the truth, with
-          instruments on the ground (travel times, echoes, ambient noise, full waveforms), or with the satellite read by each
-          method: the paper-style pipeline and a stricter gated reconstruction, run unchanged, each beside its controls, with a
-          note on why it draws the pillars, bands and columns it draws. Simulated passes and synthetic products run through
-          the same code as the real images, so every artifact can be reproduced and traced.</p>
+        <p class="sub">Every site is a block diagram you can turn, cut and play waves through. Look at the ground as it is,
+          or look with an instrument: geophones on the ground (travel times, echoes, ambient noise, full waveforms, and the
+          waves they record), or the satellite overhead, read by the paper-style pipeline and by a stricter gated
+          reconstruction run unchanged. Each method’s picture sits one click from its controls, with a note on why it draws
+          the pillars, bands and columns it draws. Simulated passes and synthetic products run through the same code as the
+          real images, and every run records the command that repeats it.</p>
       </div>
       <div class="gallery">
         {explore.map((e) => (

@@ -18,7 +18,8 @@
    "numba": "0.67.0",
    "threads": 4,
    "cpus": 4
-  }
+  },
+  "command": "uv run python experiments/p1_01_forward_validation.py"
  },
  "p1_02_traveltime": {
   "id": "p1_02_traveltime",
@@ -64,7 +65,8 @@
    "numba": "0.67.0",
    "threads": 4,
    "cpus": 4
-  }
+  },
+  "command": "uv run python experiments/p1_02_traveltime.py [--reuse]"
  },
  "p1_03_scattered": {
   "id": "p1_03_scattered",
@@ -101,7 +103,8 @@
    "numba": "0.67.0",
    "threads": 4,
    "cpus": 4
-  }
+  },
+  "command": "uv run python experiments/p1_03_scattered.py [--reuse]"
  },
  "p1_04_ambient": {
   "id": "p1_04_ambient",
@@ -130,7 +133,8 @@
    "numba": "0.67.0",
    "threads": 4,
    "cpus": 4
-  }
+  },
+  "command": "uv run python experiments/p1_04_ambient.py [--reuse]"
  },
  "m1_01_ambient_levels": {
   "id": "m1_01_ambient_levels",
@@ -193,7 +197,8 @@
    "numba": "0.67.0",
    "threads": 4,
    "cpus": 4
-  }
+  },
+  "command": "uv run python experiments/m1_01_ambient_levels.py"
  },
  "p2_00_ambient_giza": {
   "id": "p2_00_ambient_giza",
@@ -231,7 +236,8 @@
    "numba": "0.67.0",
    "threads": 4,
    "cpus": 4
-  }
+  },
+  "command": "uv run python experiments/p2_00_ambient_giza.py"
  },
  "p1_05_fwi": {
   "id": "p1_05_fwi",
@@ -284,7 +290,8 @@
    "numba": "0.67.0",
    "threads": 4,
    "cpus": 4
-  }
+  },
+  "command": "uv run python experiments/p1_05_fwi.py [--reuse]"
  },
  "p2_01_geometry": {
   "id": "p2_01_geometry",
@@ -317,7 +324,8 @@
    "numba": "0.67.0",
    "threads": 16,
    "cpus": 16
-  }
+  },
+  "command": "uv run python experiments/p2_01_geometry.py"
  },
  "p2_03_what_a_dwell_sees": {
   "id": "p2_03_what_a_dwell_sees",
@@ -358,7 +366,8 @@
    "numba": "0.67.0",
    "threads": 16,
    "cpus": 16
-  }
+  },
+  "command": "uv run python experiments/p2_03_what_a_dwell_sees.py"
  },
  "p2_04_chamber_imprint": {
   "id": "p2_04_chamber_imprint",
@@ -403,7 +412,8 @@
    "numba": "0.67.0",
    "threads": 16,
    "cpus": 16
-  }
+  },
+  "command": "uv run python experiments/p2_04_chamber_imprint.py"
  },
  "p2_05_budget": {
   "id": "p2_05_budget",
@@ -430,7 +440,8 @@
    "numba": "0.67.0",
    "threads": 16,
    "cpus": 16
-  }
+  },
+  "command": "uv run python experiments/p2_05_budget.py"
  },
  "p2_06_depth_is_frequency": {
   "id": "p2_06_depth_is_frequency",
@@ -466,7 +477,8 @@
    "numba": "0.67.0",
    "threads": 16,
    "cpus": 16
-  }
+  },
+  "command": "uv run python experiments/p2_06_depth_is_frequency.py"
  },
  "p2_07_whole_chain": {
   "id": "p2_07_whole_chain",
@@ -511,7 +523,8 @@
    "numba": "0.67.0",
    "threads": 16,
    "cpus": 16
-  }
+  },
+  "command": "uv run python experiments/p2_07_whole_chain.py"
  },
  "p2_08_pillars_and_boxes": {
   "id": "p2_08_pillars_and_boxes",
@@ -541,7 +554,8 @@
    "numba": "0.67.0",
    "threads": 16,
    "cpus": 16
-  }
+  },
+  "command": "uv run python experiments/p2_08_pillars_and_boxes.py"
  },
  "p2_09_virtual_sensors": {
   "id": "p2_09_virtual_sensors",
@@ -573,7 +587,8 @@
    "numba": "0.67.0",
    "threads": 16,
    "cpus": 16
-  }
+  },
+  "command": "uv run python experiments/p2_09_virtual_sensors.py"
  },
  "p2_11_every_way_in": {
   "id": "p2_11_every_way_in",
@@ -655,7 +670,8 @@
    "numba": "0.67.0",
    "threads": 16,
    "cpus": 16
-  }
+  },
+  "command": "uv run python experiments/p2_11_every_way_in.py"
  },
  "p2_12_real_pass": {
   "id": "p2_12_real_pass",
@@ -706,7 +722,8 @@
    "numba": "0.67.0",
    "threads": 16,
    "cpus": 16
-  }
+  },
+  "command": "uv run python experiments/p2_12_real_pass.py"
  },
  "p2_13_gates": {
   "id": "p2_13_gates",
@@ -765,7 +782,8 @@
    "numba": "0.67.0",
    "threads": 16,
    "cpus": 16
-  }
+  },
+  "command": "uv run --with scikit-image python experiments/p2_13_gates.py"
  },
  "p2_14_own_lines": {
   "id": "p2_14_own_lines",
@@ -818,7 +836,8 @@
    "numba": "0.67.0",
    "threads": 16,
    "cpus": 16
-  }
+  },
+  "command": "uv run --with scikit-image python experiments/p2_14_own_lines.py"
  },
  "p2_15_pair_response": {
   "id": "p2_15_pair_response",
@@ -864,7 +883,8 @@
    "numba": "0.67.0",
    "threads": 16,
    "cpus": 16
-  }
+  },
+  "command": "uv run --with scikit-image python experiments/p2_15_pair_response.py"
  },
  "p2_16_khufu_volume": {
   "id": "p2_16_khufu_volume",
@@ -897,7 +917,9 @@
    "numba": "0.67.0",
    "threads": 16,
    "cpus": 16
-  }
+  },
+  "command": "uv run --with scikit-image python experiments/p2_16_khufu_volume.py",
+  "reused": true
  },
  "p2_17_plateau_control": {
   "id": "p2_17_plateau_control",
@@ -929,7 +951,8 @@
    "numba": "0.67.0",
    "threads": 16,
    "cpus": 16
-  }
+  },
+  "command": "uv run --with scikit-image python experiments/p2_17_plateau_control.py"
  },
  "p2_18_echo_validation": {
   "id": "p2_18_echo_validation",
@@ -952,7 +975,8 @@
    "numba": "0.67.0",
    "threads": 16,
    "cpus": 16
-  }
+  },
+  "command": "uv run --with scikit-image python experiments/p2_18_echo_validation.py"
  },
  "p2_19_known_vibration": {
   "id": "p2_19_known_vibration",
@@ -1012,6 +1036,43 @@
    "numba": "0.67.0",
    "threads": 16,
    "cpus": 16
-  }
+  },
+  "command": "uv run --with scikit-image python experiments/p2_19_known_vibration.py"
+ },
+ "lab_khafre": {
+  "id": "lab_khafre",
+  "title": "The gated reconstruction across Khafre, from the 2022 image",
+  "date": "2026-09-29",
+  "started_utc": "2026-09-29T12:30:50+00:00",
+  "runtime_s": 2309.9,
+  "commit": "4af4a3c",
+  "params": {
+   "method": "gated",
+   "site": "giza",
+   "centre_m": [
+    0.0,
+    0.0
+   ],
+   "half_ew_m": 150.0,
+   "half_ns_m": 141.0,
+   "step_m": 3.0,
+   "supports": [
+    1,
+    4
+   ],
+   "twin_seed": 101,
+   "product": "ICEYE_X13_SLC_SLED_868226_20220715T235744.h5",
+   "gated_module_sha256": "3e1154c11274b896b91e262198576ffd750732709ad08ac00c6892c4ea5e1b1d",
+   "gated_profile_sha256": "ae84cade31f7e5ffa9b4daa0eba152649d2afc7f1655415bad38553f4f4d69aa",
+   "geoid_m": 15.5
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  },
+  "command": "uv run --with scikit-image python -m katabasis.lab gated --name khafre --site giza --centre 0,0 --half-ew 150 --half-ns 141 --step 3 --supports 1,4 --twin 101"
  }
 }

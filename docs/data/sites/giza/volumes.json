@@ -264,5 +264,113 @@
   "run": "p2_17_plateau_control \u00b7 2026-09-29 \u00b7 96d5a6a",
   "tint": "gated",
   "caption": "the in-image control: no monument stands here"
+ },
+ {
+  "id": "radar-lab-khafre-real-p1",
+  "status": "radar",
+  "file": "vol-radar-lab-khafre-real-p1.u8",
+  "shape": [
+   101,
+   95,
+   109
+  ],
+  "origin": [
+   -150.0,
+   -141.0,
+   208.4
+  ],
+  "spacing": 3.0,
+  "label": "Satellite \u00b7 lab run khafre, the real image, support 1",
+  "method": "The gated reconstruction, unchanged, along 95 east-west lines 3 m apart across (0, 0) on giza: real: 1,218 of 9,595 positions pass at support 1, 0 of 9,595 positions pass at support 4; twin101: 539 of 9,595 positions pass at support 1, 0 of 9,595 positions pass at support 4.",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "lab_khafre \u00b7 2026-09-29 \u00b7 4af4a3c",
+  "tint": "gated",
+  "caption": "fit scores, unsmoothed; empty where nothing passed"
+ },
+ {
+  "id": "radar-lab-khafre-real-p4",
+  "status": "radar",
+  "file": "vol-radar-lab-khafre-real-p4.u8",
+  "shape": [
+   101,
+   95,
+   109
+  ],
+  "origin": [
+   -150.0,
+   -141.0,
+   208.4
+  ],
+  "spacing": 3.0,
+  "label": "Satellite \u00b7 lab run khafre, the real image, support 4",
+  "method": "The gated reconstruction, unchanged, along 95 east-west lines 3 m apart across (0, 0) on giza: real: 1,218 of 9,595 positions pass at support 1, 0 of 9,595 positions pass at support 4; twin101: 539 of 9,595 positions pass at support 1, 0 of 9,595 positions pass at support 4.",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "lab_khafre \u00b7 2026-09-29 \u00b7 4af4a3c",
+  "tint": "gated",
+  "caption": "fit scores, unsmoothed; empty where nothing passed"
+ },
+ {
+  "id": "radar-lab-khafre-twin-p1",
+  "status": "radar",
+  "file": "vol-radar-lab-khafre-twin-p1.u8",
+  "shape": [
+   101,
+   95,
+   109
+  ],
+  "origin": [
+   -150.0,
+   -141.0,
+   208.4
+  ],
+  "spacing": 3.0,
+  "label": "Satellite \u00b7 lab run khafre, a motionless copy, support 1",
+  "method": "The gated reconstruction, unchanged, along 95 east-west lines 3 m apart across (0, 0) on giza: real: 1,218 of 9,595 positions pass at support 1, 0 of 9,595 positions pass at support 4; twin101: 539 of 9,595 positions pass at support 1, 0 of 9,595 positions pass at support 4.",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "lab_khafre \u00b7 2026-09-29 \u00b7 4af4a3c",
+  "tint": "gated",
+  "caption": "fit scores, unsmoothed; empty where nothing passed"
+ },
+ {
+  "id": "radar-lab-khafre-twin-p4",
+  "status": "radar",
+  "file": "vol-radar-lab-khafre-twin-p4.u8",
+  "shape": [
+   101,
+   95,
+   109
+  ],
+  "origin": [
+   -150.0,
+   -141.0,
+   208.4
+  ],
+  "spacing": 3.0,
+  "label": "Satellite \u00b7 lab run khafre, a motionless copy, support 4",
+  "method": "The gated reconstruction, unchanged, along 95 east-west lines 3 m apart across (0, 0) on giza: real: 1,218 of 9,595 positions pass at support 1, 0 of 9,595 positions pass at support 4; twin101: 539 of 9,595 positions pass at support 1, 0 of 9,595 positions pass at support 4.",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "lab_khafre \u00b7 2026-09-29 \u00b7 4af4a3c",
+  "tint": "gated",
+  "caption": "fit scores, unsmoothed; empty where nothing passed"
  }
 ]

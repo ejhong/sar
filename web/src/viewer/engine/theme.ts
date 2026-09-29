@@ -18,7 +18,6 @@ export interface SceneTheme {
   sensor: number; // ochre: sensors and sources
   claimed: number; // porphyry: claimed structures
   radar: number; // cinnabar: the radar
-  gated: number; // gold: the gated reconstruction's fit scores
   // ground
   terrainLow: number;
   terrainHigh: number;
@@ -44,7 +43,6 @@ export const THEMES: Record<ThemeName, SceneTheme> = {
     sensor: 0xe8b95c,
     claimed: 0xc0a6da,
     radar: 0xf0906f,
-    gated: 0xf2c14e,
     terrainLow: 0x223140,
     terrainHigh: 0x56636f,
     terrainLight: 0xe8f0f7,
@@ -67,7 +65,6 @@ export const THEMES: Record<ThemeName, SceneTheme> = {
     sensor: 0xa8741f,
     claimed: 0x7a55a6,
     radar: 0xaa4b33,
-    gated: 0x9a6b12,
     terrainLow: 0xc9c2b2,
     terrainHigh: 0xefe9dc,
     terrainLight: 0xffffff,

@@ -1,0 +1,305 @@
+import type { SiteScene, VolumeInfo } from './data/types';
+
+/**
+ * What the lab offers on a site, arranged as it works: an instrument (geophones on the ground, or the satellite), the
+ * methods that turn its records into a picture, and each picture's choices (where it was run, what went in, which of
+ * them are controls). Built from the exported scene alone, so a new run appears without code here changing.
+ */
+
+export type Instrument = 'geophones' | 'satellite';
+
+export interface Choice {
+  /** The volume or wavefield shown. */
+  id: string;
+  kind: 'volume' | 'wave';
+  /** Where the method was run, when it was run over several places. */
+  area?: string;
+  /** What went in: the real image, a motionless copy, the ground with the chamber, … */
+  input: string;
+  /** A control: a picture that should hold nothing, drawn beside the one that might. */
+  control: boolean;
+  /** The gated reconstruction's support: how many positions in a row must agree. */
+  support?: number;
+  /** One line about this picture. */
+  sub: string;
+  /** The run behind it, and what was run there. */
+  note?: string;
+  stats?: string;
+  run?: string;
+  /** Where to stand to see it, when it is small beside the site. */
+  focus?: [number, number, number];
+  radius_m?: number;
+  /** A starting threshold for the volume's display (0..1 of its scale). */
+  threshold: number;
+  /** Order among a method's choices: the picture that might hold something first, its controls after. */
+  rank?: number;
+}
+
+export interface Method {
+  key: string;
+  instrument: Instrument;
+  name: string;
+  /** The colour it is drawn in: the instrument's. */
+  dot: 'recovered' | 'radar' | 'wave';
+  /** What its voxels hold. */
+  quantity: 'material property' | 'focused power' | 'fit score' | 'wave motion';
+  /** What it is, in one line. */
+  line: string;
+  /** Why its picture looks the way it does. */
+  why?: string;
+  choices: Choice[];
+}
+
+const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+const head = (caption?: string) => (caption ?? '').split(' · ')[0];
+
+/** The place a title names: "… at Khufu", "… across Khafre, from …". */
+export function areaOf(title: string): string | undefined {
+  const m = title.match(/\b(?:at|across|over|beneath|under)\s+(?:the\s+)?([A-Z][\w-]*(?:\s+[A-Z][\w-]*)*)/);
+  return m?.[1];
+}
+
+const SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+const power = (b: number) => `×10${String(Math.round(Math.log10(b))).replace(/\d/g, (d) => SUP[+d])}`;
+
+/** Each input the gated reconstruction was fed: its name, whether it is a control, a line about it, and its order. */
+function gatedInput(kind: string, boost?: number): [string, boolean, string, number] {
+  switch (kind) {
+    case 'real':
+      return ['Real image', false, 'the real image, through the unchanged code', 0];
+    case 'with':
+      return ['With the chamber', false, 'a synthetic image of this ground, shaken as Giza shakes, the chamber’s imprint in it', 1];
+    case 'without':
+      return ['Without it', true, 'the same image with no chamber', 2];
+    case 'null':
+      return ['Random, same size', true, 'a random perturbation the size of the chamber’s imprint, at the same pixels', 3];
+    case 'boosted':
+      return [`Imprint ${power(boost ?? 1)}`, false, `the chamber’s imprint made ${(boost ?? 1).toLocaleString('en-US')} times stronger`, 4 + Math.log10(boost ?? 1) / 100];
+    case 'twin':
+      return ['Motionless copy', true, 'the same crop with nothing moving and nothing inside', 5];
+    case 'plateau':
+      return ['Open plateau', true, 'the same raster over open plateau, where no monument stands', 6];
+    default:
+      return [cap(kind), false, '', 7];
+  }
+}
+
+export const supportName = (p: number) => (p === 1 ? 'one position' : `${p} in a row`);
+
+export function geophoneMethods(s: SiteScene): Method[] {
+  const out: Method[] = [];
+  const waves = s.wavefields ?? [];
+  if (waves.length)
+    out.push({
+      key: 'waves',
+      instrument: 'geophones',
+      name: 'The waves they record',
+      dot: 'wave',
+      quantity: 'wave motion',
+      line: 'a hammer blow spreading through the ground, and what the chamber sends back',
+      choices: waves.map((w) => ({ id: w.id, kind: 'wave', input: w.label, control: false, sub: w.caption, threshold: 0 })),
+    });
+  const groups = new Map<string, VolumeInfo[]>();
+  for (const v of s.volumes.filter((v) => v.status !== 'radar')) {
+    const k = `${v.survey ?? ''}|${v.method}`;
+    groups.set(k, [...(groups.get(k) ?? []), v]);
+  }
+  for (const [k, vs] of groups) {
+    const several = vs.length > 1;
+    out.push({
+      key: `g:${k}`,
+      instrument: 'geophones',
+      name: several ? vs[0].label.split(', ')[0] : vs[0].label,
+      dot: 'recovered',
+      quantity: 'material property',
+      line: several ? vs.map((v) => `${v.label.split(', ').slice(1).join(', ')}: ${head(v.caption)}`).join('; ') : head(vs[0].caption) || vs[0].method,
+      choices: vs.map((v) => ({
+        id: v.id,
+        kind: 'volume',
+        input: several ? cap(v.label.split(', ').slice(1).join(', ')) : v.label,
+        control: false,
+        sub: `${v.method}. ${cap(v.caption ?? '')}`,
+        run: v.run,
+        threshold: 0.18,
+      })),
+    });
+  }
+  return out;
+}
+
+export function satelliteMethods(s: SiteScene): Method[] {
+  const out: Method[] = [];
+  const r = s.radar;
+  const vol = (id: string) => s.volumes.find((v) => v.id === id);
+  // the pipeline as the 2022 paper describes it
+  const paper: Choice[] = [];
+  if (r && !Array.isArray(r.volumes)) {
+    for (const [id, input, control] of [
+      [r.volumes.with, 'With the chamber', false],
+      [r.volumes.without, 'Without it', true],
+    ] as const) {
+      const v = vol(id);
+      if (v) paper.push({ id, kind: 'volume', input, control, sub: cap(v.caption ?? ''), run: v.run, threshold: 0.6 });
+    }
+  } else {
+    const ids = r && Array.isArray(r.volumes) ? r.volumes : s.volumes.filter((v) => v.status === 'radar' && v.tint !== 'gated').map((v) => v.id);
+    for (const id of ids) {
+      const v = vol(id);
+      if (!v) continue;
+      const where = v.label.replace(/^Satellite · the published method\s*/, '').replace(/^(at|over|on)\s+/, '');
+      const control = /\(control\)/.test(where);
+      const place = where.replace(/\s*\(control\)/, '').split(',')[0].replace(/\s+pyramid$/, '');
+      const single = ids.length === 1;
+      paper.push({
+        id,
+        kind: 'volume',
+        area: single ? undefined : cap(place),
+        input: single ? cap(place) : r?.acquisition.date ? `The ${r.acquisition.date.slice(0, 4)} image` : 'The real image',
+        control,
+        sub: cap(v.caption ?? ''),
+        run: v.run,
+        threshold: 0.8,
+      });
+    }
+  }
+  const real = r?.kind !== 'bench';
+  if (paper.length)
+    out.push({
+      key: 'paper',
+      instrument: 'satellite',
+      name: 'Paper-style pipeline',
+      dot: 'radar',
+      quantity: 'focused power',
+      line: 'as the 2022 paper describes it: sub-aperture pairs registered and focused, no selection gates',
+      why: real
+        ? 'Pillars: a pixel whose registration wanders is bright at every depth. Bands: along a pillar the power rises and falls once per step of the axis’s resolution. Blocks: at the surface and at each repeat depth every steering phase coincides. Open plateau draws the same shapes.'
+        : 'Pillars where a pixel’s registration wanders, bands at each step of the axis’s resolution, blocks where every steering phase coincides; none of it depends on what is below.',
+      choices: paper.map((c) =>
+        real && r?.stats
+          ? {
+              ...c,
+              note: 'The 2025 image through the pipeline as the 2022 paper describes it: 50 half-band pairs, no selection gates, focused power on a log scale, depth relabelled so it repeats at 648 m as the claim does, and smoothed for display.',
+              stats: `Over the pyramids and over empty plateau its depth profiles correlate at ${r.stats.monument_vs_control_profile_corr.toFixed(3)}; at every pixel its power follows how much the registration wandered (${r.stats.pillar_power_vs_energy_min.toFixed(3)}).`,
+            }
+          : c,
+      ),
+    });
+  // the stricter gated reconstruction: one study and any lab runs, each over its own area
+  const gated: Choice[] = [];
+  const fmt = (v: number | null | undefined) => (v === null || v === undefined ? '–' : v.toFixed(2));
+  if (r?.gated) {
+    const g = r.gated;
+    const area = r.kind === 'bench' ? undefined : areaOf(g.title);
+    const stats = g.chambers
+      ? `Inside the surveyed chambers and passages the real image scores ${fmt(g.chambers.real[0])} on average, against ${fmt(g.chambers.real[1])} at the same depths elsewhere; the motionless copy ${fmt(g.chambers.twin[0])} and ${fmt(g.chambers.twin[1])}.`
+      : undefined;
+    for (const v of g.volumes) {
+      const [input, control, sub, rank] = gatedInput(v.case, v.boost);
+      gated.push({
+        rank,
+        id: v.id,
+        kind: 'volume',
+        area,
+        input,
+        control,
+        support: v.support,
+        sub: v.case === 'real' ? `the ${g.date} image, through the unchanged code` : sub,
+        note: g.note,
+        stats,
+        run: vol(v.id)?.run,
+        focus: r.kind === 'bench' ? undefined : (v.focus ?? g.focus),
+        radius_m: r.kind === 'bench' ? undefined : g.radius_m,
+        threshold: 0.08,
+      });
+    }
+  }
+  for (const lab of r?.lab ?? []) {
+    for (const v of lab.volumes) {
+      const [input, control, sub, rank] = gatedInput(v.case);
+      gated.push({
+        rank,
+        id: v.id,
+        kind: 'volume',
+        area: areaOf(lab.title) ?? cap(lab.name),
+        input,
+        control,
+        support: v.support,
+        sub,
+        note: lab.note,
+        run: lab.run,
+        focus: lab.focus,
+        radius_m: lab.radius_m,
+        threshold: 0.08,
+      });
+    }
+  }
+  if (gated.length)
+    out.push({
+      key: 'gated',
+      instrument: 'satellite',
+      name: 'Gated reconstruction',
+      dot: 'radar',
+      quantity: 'fit score',
+      line: 'a stricter version with selection gates and a depth fit, its own code run unchanged',
+      why:
+        r?.kind === 'bench'
+          ? 'A column wherever a position passed the gates, banded where the fit’s phase turns whole times across a window. The speckle alone decides where; the chamber’s imprint is far below what the pipeline reads.'
+          : 'A column hangs wherever a position passed the gates; along it the score peaks where the depth fit’s phase turns a whole number of times across a window, about 6 m per turn, and at the mirror of that depth. The depth is the frequency the gates chose, not a measured depth.',
+      choices: ordered(gated),
+    });
+  return out;
+}
+
+/** Areas in the order they were run, then the picture before its controls, then support. */
+function ordered(cs: Choice[]): Choice[] {
+  const areas = [...new Set(cs.map((c) => c.area ?? ''))];
+  return [...cs].sort(
+    (a, b) =>
+      areas.indexOf(a.area ?? '') - areas.indexOf(b.area ?? '') || (a.rank ?? 9) - (b.rank ?? 9) || (a.support ?? 0) - (b.support ?? 0),
+  );
+}
+
+export function methodsOf(s: SiteScene, instrument: Instrument): Method[] {
+  return instrument === 'geophones' ? geophoneMethods(s) : satelliteMethods(s);
+}
+
+export function findChoice(methods: Method[], id: string | undefined): { method: Method; choice: Choice } | undefined {
+  if (!id) return undefined;
+  for (const method of methods) {
+    const choice = method.choices.find((c) => c.id === id);
+    if (choice) return { method, choice };
+  }
+  return undefined;
+}
+
+/** The instrument's first picture: a real image before its controls, a picture before the waves. */
+export function defaultChoice(methods: Method[]): Choice | undefined {
+  const pictures = methods.filter((m) => m.dot !== 'wave');
+  const pool = pictures.length ? pictures : methods;
+  const preferred = pool.find((m) => m.key === 'gated' && m.choices.some((c) => c.focus)) ?? pool[0];
+  return preferred?.choices.find((c) => !c.control) ?? preferred?.choices[0];
+}
+
+/** The dimensions a method's choices vary over, each with its values in order of first appearance; given the current
+ * choice, what went in and the support are those run in its area. */
+export function dimensions(m: Method, current?: Choice): { key: 'area' | 'input' | 'support'; values: (string | number)[] }[] {
+  const dims: { key: 'area' | 'input' | 'support'; values: (string | number)[] }[] = [];
+  for (const key of ['area', 'input', 'support'] as const) {
+    const values: (string | number)[] = [];
+    const pool = key === 'area' || !current ? m.choices : m.choices.filter((c) => c.area === current.area);
+    for (const c of pool) {
+      const v = c[key];
+      if (v !== undefined && !values.includes(v)) values.push(v);
+    }
+    if (values.length > 1) dims.push({ key, values });
+  }
+  return dims;
+}
+
+/** Step from the current choice along one dimension, keeping the others where they are when such a picture exists. */
+export function step(m: Method, current: Choice, key: 'area' | 'input' | 'support', value: string | number): Choice {
+  const pool = m.choices.filter((c) => c[key] === value);
+  const score = (c: Choice) =>
+    (c.area === current.area ? 4 : 0) + (c.input === current.input ? 2 : 0) + (c.support === current.support ? 1 : 0);
+  return pool.reduce((best, c) => (score(c) > score(best) ? c : best), pool[0]);
+}

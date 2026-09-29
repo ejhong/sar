@@ -127,12 +127,30 @@ export interface RadarInfo {
   gated?: {
     title: string;
     date: string;
-    volumes: { id: string; case: 'real' | 'twin' | 'plateau'; support: number; focus?: [number, number, number] }[];
+    volumes: {
+      id: string;
+      /** What went in: the real image or its motionless copy or open plateau; on a bench, the chamber, none, its imprint
+       * boosted `boost` times, or a random perturbation of the imprint's size. */
+      case: 'real' | 'twin' | 'plateau' | 'with' | 'without' | 'boosted' | 'null';
+      support: number;
+      boost?: number;
+      focus?: [number, number, number];
+    }[];
     focus: [number, number, number];
     radius_m: number;
     chambers?: { real: [number | null, number | null]; twin: [number | null, number | null] };
     note: string;
   };
+  /** Runs made with the lab's processing command (katabasis.lab), each over its own area. */
+  lab?: {
+    name: string;
+    title: string;
+    volumes: { id: string; case: 'real' | 'twin'; support: number }[];
+    focus: [number, number, number];
+    radius_m: number;
+    note: string;
+    run?: string;
+  }[];
 }
 
 export interface Extent {
@@ -172,4 +190,6 @@ export interface SiteIndexEntry {
   extent: Extent;
   features: Record<string, number>;
   volumes: number;
+  /** How many pictures (and, for the geophones, recorded waves) each instrument has on the site. */
+  instruments?: { geophones: number; satellite: number };
 }

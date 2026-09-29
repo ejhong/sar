@@ -176,7 +176,7 @@ export class Block {
     this.layers.waves.add(w.mesh);
   }
 
-  /** The satellite's pass over the site (P2-07, P2-09), hidden until the Satellite mode shows it. */
+  /** The satellite's pass over the site (P2-07, P2-09), hidden until the lab looks with the satellite. */
   addRadar() {
     const info = this.scene.radar;
     if (!info) return;

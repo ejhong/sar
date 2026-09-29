@@ -22,6 +22,7 @@ import khufu from '../../public/data/runs/p2_16_khufu_volume.json';
 import plateau from '../../public/data/runs/p2_17_plateau_control.json';
 import pulses from '../../public/data/runs/p2_18_echo_validation.json';
 import known from '../../public/data/runs/p2_19_known_vibration.json';
+import labKhafre from '../../public/data/runs/lab_khafre.json';
 import passive from '../../public/data/runs/p1_04_ambient.json';
 import echo from '../../public/data/runs/p1_03_scattered.json';
 import Figure from '../components/Figure.astro';
@@ -249,6 +250,9 @@ type KRow = { v_m_s: number; f_hz: number; tracker: { recovered_m_s: number; tru
 const kRows = Object.entries(known.results as unknown as Record<string, KRow>);
 const kMoving = kRows.filter(([, r]) => r.v_m_s > 0);
 const kElsewhere = kRows.flatMap(([, r]) => Object.values(r.passing_positions['1']).map((v) => v.length));
+// ---- the lab's Khafre run
+type LRes = Record<string, { supported_positions: Record<string, number> }>;
+const lk = labKhafre.results as unknown as LRes;
 ---
 <Doc
   title="The satellite over the same ground"
@@ -649,7 +653,7 @@ const kElsewhere = kRows.flatMap(([, r]) => Object.values(r.passing_positions['1
     <p class="note">
       Rendered as the published pictures are: a thick slab, a log scale and a rainbow palette. The claimed chambers near
       1,220 m sit close to the second repeat, {(2 * rep1).toLocaleString('en-US')} m relabelled; that is suggestive only, since the
-      published relabelling is not known exactly. In the <a href={`${base}/underworld/#bench-khafre-claim/recovered`}>3-D view</a>{' '}
+      published relabelling is not known exactly. In the <a href={`${base}/underworld/#bench-khafre-claim/satellite`}>3-D view</a>{' '}
       the method’s Khafre volume stands beside the claim. A published slice along a line is a row of pixels, each focused from its
       own shifts alone, so a volume is every row. The method’s “inversion” is only a Fourier transform of each pixel’s own shifts,
       with no waves modelled through the ground: for the Khafre patch’s
@@ -799,8 +803,9 @@ const kElsewhere = kRows.flatMap(([, r]) => Object.values(r.passing_positions['1
       east-face lines do, runs the 2022 image through its unchanged code, and stacks the curtains into a volume on a
       {' '}{khufu.manifest.params.step_m} m grid, with the same calculation on a motionless copy of the image beside it. The volume
       holds the method’s fit scores, unsmoothed, and is empty where nothing passed: it is what the method computes, not a
-      detection and not a validated depth. <a href={`${base}/underworld/#giza/satellite`}>Open it in the 3-D view</a>, where it
-      is drawn in gold beside the surveyed chambers in blue.
+      detection and not a validated depth. <a href={`${base}/underworld/#giza/satellite`}>Open it in the lab</a>, under the
+      satellite’s gated reconstruction, where it is drawn beside the surveyed chambers in blue, with its motionless copy and
+      open plateau a click away.
     </p>
     <div class="grid-2">
       <div class="note-card">
@@ -832,8 +837,16 @@ const kElsewhere = kRows.flatMap(([, r]) => Object.values(r.passing_positions['1
         run, not a verdict on its own.</p>
       </div>
     </div>
+    <p class="sub">The lab’s command runs the same raster over any area of the image. Across Khafre, where the claim places
+      its shafts, the real image passes {lk.real.supported_positions['1'].toLocaleString('en-US')} positions at a support of one
+      and {lk.real.supported_positions['4']} at four, and a motionless copy of the image
+      {' '}{lk.twin101.supported_positions['1'].toLocaleString('en-US')} and {lk.twin101.supported_positions['4']}: the pattern of
+      Khufu ({kRes.real.supported_positions['1'].toLocaleString('en-US')} and {kRes.twin101.supported_positions['1'].toLocaleString('en-US')}
+      at a support of one) and of open plateau ({kP['1'].toLocaleString('en-US')}), where nothing is claimed.
+      {' '}<a href={`${base}/underworld/#giza/satellite/radar-lab-khafre-real-p1`}>Open Khafre in the lab</a>.</p>
     <RunDetails manifest={khufu.manifest} />
     <RunDetails manifest={plateau.manifest} />
+    <RunDetails manifest={labKhafre.manifest} />
   </section>
 
   <section id="sensors">
@@ -954,9 +967,9 @@ const kElsewhere = kRows.flatMap(([, r]) => Object.values(r.passing_positions['1
       <div class="note-card">
         <span class="tag measured">real image · P2-12</span>
         <h3>In the 3-D view</h3>
-        <p>The <a href={`${base}/underworld/#giza/satellite`}>Giza site’s satellite mode</a> shows the pass over the plateau, this
-        image draped on the terrain, and the method’s volume at Khafre, Khufu, Menkaure and open plateau, side by side with the
-        chambers surveyed inside the pyramids.</p>
+        <p><a href={`${base}/underworld/#giza/satellite`}>Giza in the lab</a>, looked at with the satellite, shows the pass over
+        the plateau, this image draped on the terrain, and the paper-style pipeline’s volume at Khafre, Khufu, Menkaure and open
+        plateau, side by side with the chambers surveyed inside the pyramids.</p>
         <p>The same steps take any product: its geolocation and orbit give the pass and the image on the ground, and its band gives
         the reach. For X band that reach is a skin; long wavelengths over dry sand reach a few metres, which is where a radar image
         can show something underground.</p>

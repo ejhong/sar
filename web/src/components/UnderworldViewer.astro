@@ -1,10 +1,11 @@
 ---
 /**
- * The lab: a deep-water panel beside the block diagram. The first choice is
- * the site; the second is what to look with — the truth in the ground, the
- * instruments on the ground, the satellite read by each method, or the waves
- * themselves. Every volume says what it is: the truth, a material property,
- * or a method's fit score.
+ * The lab: a deep-water panel beside the block diagram, arranged as the lab
+ * works. The first choice is the site; the second what to look with: the
+ * ground as it is, the geophones on it, or the satellite over it. Each
+ * instrument lists its methods as cards; the open card picks where the method
+ * ran, what went in and its control. The stage says in one line what the
+ * picture is, and its legend shows only what is drawn.
  */
 interface Props {
   mode?: 'full' | 'embed';
@@ -29,9 +30,8 @@ const { mode = 'full', initial } = Astro.props;
       <section class="uw-block">
         <div class="uw-label">Look with</div>
         <div class="uw-modes" role="group" aria-label="What to look with">
-          <button type="button" data-mode="truth" aria-pressed="true"><span class="uw-dot surveyed"></span>Truth</button>
-          <button type="button" data-mode="recovered" aria-pressed="false"><span class="uw-dot recovered"></span>Instruments</button>
-          <button type="button" data-mode="waves" aria-pressed="false"><span class="uw-dot wave"></span>Waves</button>
+          <button type="button" data-mode="truth" aria-pressed="true"><span class="uw-dot surveyed"></span>The ground</button>
+          <button type="button" data-mode="geophones" aria-pressed="false"><span class="uw-dot recovered"></span>Geophones</button>
           <button type="button" data-mode="satellite" aria-pressed="false"><span class="uw-dot radar"></span>Satellite</button>
         </div>
         <div class="uw-mode-context" data-uw="mode-context"></div>
@@ -48,7 +48,7 @@ const { mode = 'full', initial } = Astro.props;
         <label class="uw-check"><input type="checkbox" data-layer="features" checked /><span class="uw-dot surveyed"></span>Chambers and voids</label>
         <label class="uw-check"><input type="checkbox" data-layer="claimed" checked /><span class="uw-dot claimed"></span>Claimed structures</label>
         <label class="uw-check"><input type="checkbox" data-layer="structures" checked /><span class="uw-dot structure"></span>Monuments</label>
-        <label class="uw-check"><input type="checkbox" data-layer="volumes" checked /><span class="uw-dot recovered"></span>Recovered volume</label>
+        <label class="uw-check"><input type="checkbox" data-layer="volumes" checked /><span class="uw-dot recovered"></span>The method’s picture</label>
         <label class="uw-check"><input type="checkbox" data-layer="stations" checked /><span class="uw-dot sensor"></span>Sensors and sources</label>
         <label class="uw-check"><input type="checkbox" data-layer="waves" checked /><span class="uw-dot wave"></span>Waves</label>
         <label class="uw-check"><input type="checkbox" data-layer="walls" checked /><span class="uw-dot strata"></span>Strata on the faces</label>
@@ -62,25 +62,19 @@ const { mode = 'full', initial } = Astro.props;
         <summary class="uw-label">Notes</summary>
         <div class="uw-notes" data-uw="notes"></div>
       </details>
-      <p class="uw-keys">keys · 1–4 site · t truth · v instruments · w waves · s satellite · space play · r reset · esc unpin</p>
+      <p class="uw-keys">keys · 1–4 site · t ground · g geophones · w their waves · s satellite · space play · r reset · esc unpin</p>
     </div>
   </aside>
   <div class="uw-stage">
     <canvas aria-label="Three-dimensional block diagram of the selected site"></canvas>
     <div class="uw-title" data-uw="title"></div>
+    <div class="uw-now" data-uw="now" aria-live="polite"></div>
     <div class="uw-card" data-uw="card" hidden>
       <button type="button" class="uw-unpin" data-uw="unpin" aria-label="Unpin">×</button>
       <div data-uw="card-body"></div>
     </div>
     <div class="uw-foot">
-      <span class="uw-legend">
-        <span><span class="uw-dot surveyed"></span>chamber or void</span>
-        <span><span class="uw-dot claimed"></span>claimed</span>
-        <span><span class="uw-dot recovered"></span>recovered</span>
-        <span><span class="uw-dot radar"></span>radar, paper-style</span>
-        <span><span class="uw-dot gated"></span>radar, gated fit score</span>
-        <span><span class="uw-dot sensor"></span>sensor</span>
-      </span>
+      <span class="uw-legend" data-uw="legend"></span>
       <span class="uw-scalebar" data-uw="scalebar"><i></i><span></span></span>
       <span class="uw-scale" data-uw="scale"></span>
     </div>
@@ -260,7 +254,7 @@ const { mode = 'full', initial } = Astro.props;
   }
   .uw-modes {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 4px;
     background: var(--panel-head);
     border: 1px solid var(--panel-line);
@@ -434,10 +428,6 @@ const { mode = 'full', initial } = Astro.props;
     background: var(--cinnabar-night);
     box-shadow: 0 0 6px rgba(240, 144, 111, 0.5);
   }
-  .uw-dot.gated {
-    background: #f2c14e;
-    box-shadow: 0 0 6px rgba(242, 193, 78, 0.55);
-  }
   .uw-badge {
     display: inline-block;
     margin-left: 6px;
@@ -451,6 +441,132 @@ const { mode = 'full', initial } = Astro.props;
     text-transform: uppercase;
     color: var(--panel-muted);
     vertical-align: 1px;
+  }
+  .uw-method {
+    margin: 0 -8px 4px;
+    padding: 7px 8px 6px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+  }
+  .uw-method.open {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: var(--panel-line);
+  }
+  .uw-method-head {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--panel-text);
+    font: 600 12px/1.3 var(--font-sans);
+    text-align: left;
+    cursor: pointer;
+  }
+  .uw-method-head:hover .uw-method-name {
+    text-decoration: underline;
+    text-decoration-color: var(--panel-faint);
+    text-underline-offset: 3px;
+  }
+  .uw-method-name {
+    flex: 1;
+    min-width: 0;
+  }
+  .uw-method-line {
+    font-size: 10.5px;
+    line-height: 1.4;
+    color: var(--panel-muted);
+    margin: 2px 0 0 14px;
+  }
+  .uw-method.open .uw-method-line {
+    margin-bottom: 6px;
+  }
+  .uw-method .uw-ctx-note {
+    font-size: 11.5px;
+    margin-top: 6px;
+  }
+  .uw-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin: 6px 0 0;
+  }
+  .uw-chip {
+    font: 500 10.5px/1 var(--font-sans);
+    color: var(--panel-muted);
+    background: transparent;
+    border: 1px solid var(--panel-line);
+    border-radius: 999px;
+    padding: 5px 9px;
+    cursor: pointer;
+  }
+  .uw-chip:hover {
+    color: var(--panel-text);
+  }
+  .uw-chip.control {
+    border-style: dashed;
+  }
+  .uw-chip[aria-pressed='true'] {
+    color: #0f1822;
+    background: #dfe6ec;
+    border-color: #dfe6ec;
+  }
+  .uw-tag {
+    display: inline-block;
+    font: 600 8.5px/1 var(--font-mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--panel-text);
+    border: 1px dashed var(--panel-faint);
+    border-radius: 3px;
+    padding: 2px 4px;
+    vertical-align: 1px;
+  }
+  .uw-run {
+    font: 9.5px/1.4 var(--font-mono);
+    color: var(--panel-faint);
+    margin-top: 6px;
+    word-break: break-word;
+  }
+  .uw-more {
+    font: 10px/1.5 var(--font-mono);
+    color: var(--panel-faint);
+    margin: 6px 0 2px;
+  }
+  .uw-link {
+    font: inherit;
+    color: var(--panel-muted);
+    background: transparent;
+    border: 0;
+    padding: 0;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    cursor: pointer;
+  }
+  .uw-link:hover {
+    color: var(--panel-text);
+  }
+  details.uw-sub {
+    margin: 8px 0 2px;
+  }
+  details.uw-sub > summary {
+    font: 600 9.5px/1.3 var(--font-mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--panel-faint);
+    cursor: pointer;
+    list-style: none;
+  }
+  details.uw-sub > summary::-webkit-details-marker {
+    display: none;
+  }
+  details.uw-sub > summary::before {
+    content: '▸ ';
+  }
+  details.uw-sub[open] > summary::before {
+    content: '▾ ';
   }
   .uw-why {
     margin: 6px 0 2px;
@@ -560,6 +676,38 @@ const { mode = 'full', initial } = Astro.props;
     text-transform: uppercase;
     opacity: 0.62;
   }
+  .uw-now {
+    position: absolute;
+    top: 16px;
+    right: 18px;
+    max-width: min(420px, 44%);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px 7px;
+    padding: 7px 10px;
+    background: rgba(18, 28, 39, 0.78);
+    border: 1px solid var(--panel-line);
+    border-radius: 9px;
+    backdrop-filter: blur(6px);
+    font: 11.5px/1.35 var(--font-sans);
+    color: var(--panel-muted);
+    pointer-events: none;
+  }
+  .uw-now:empty {
+    display: none;
+  }
+  .uw-now b {
+    color: var(--panel-text);
+    font-weight: 600;
+  }
+  .uw-now .uw-dot {
+    margin-right: 0;
+  }
+  .uw-now .uw-badge {
+    margin-left: 0;
+  }
   .uw-title h2 {
     font-family: var(--font-serif);
     font-size: 22px;
@@ -652,6 +800,40 @@ const { mode = 'full', initial } = Astro.props;
     display: flex;
     gap: 12px;
     flex-wrap: wrap;
+    padding: 4px 8px;
+    margin-left: -8px;
+    border-radius: 6px;
+    background: rgba(15, 24, 34, 0.62);
+  }
+  .uw-scalebar,
+  .uw-scale {
+    padding: 4px 8px;
+    border-radius: 6px;
+    background: rgba(15, 24, 34, 0.62);
+  }
+  .uw[data-theme='day'] .uw-legend,
+  .uw[data-theme='day'] .uw-scalebar,
+  .uw[data-theme='day'] .uw-scale {
+    background: rgba(245, 248, 250, 0.72);
+  }
+  .uw-title {
+    padding: 8px 12px 10px;
+    margin: -8px -12px 0;
+    border-radius: 10px;
+    background: radial-gradient(ellipse at 20% 30%, rgba(15, 24, 34, 0.7), rgba(15, 24, 34, 0) 75%);
+  }
+  .uw[data-theme='day'] .uw-title {
+    background: radial-gradient(ellipse at 20% 30%, rgba(232, 238, 242, 0.75), rgba(232, 238, 242, 0) 75%);
+  }
+  .uw-legend:empty {
+    display: none;
+  }
+  /* words over the lit ground stay legible */
+  .uw[data-theme='night'] .uw-title,
+  .uw[data-theme='night'] .uw-foot {
+    text-shadow:
+      0 1px 8px rgba(8, 14, 20, 0.95),
+      0 0 2px rgba(8, 14, 20, 0.9);
   }
   .uw-scalebar {
     display: inline-flex;
@@ -740,6 +922,17 @@ const { mode = 'full', initial } = Astro.props;
     .uw-scale,
     .uw-keys {
       display: none;
+    }
+    .uw-now {
+      top: auto;
+      bottom: 36px;
+      left: 10px;
+      right: 10px;
+      max-width: none;
+      justify-content: flex-start;
+      gap: 2px 6px;
+      padding: 5px 8px;
+      font-size: 10.5px;
     }
   }
 </style>

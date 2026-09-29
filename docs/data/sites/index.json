@@ -22,7 +22,11 @@
    "features": {
     "truth": 1
    },
-   "volumes": 8
+   "volumes": 8,
+   "instruments": {
+    "geophones": 8,
+    "satellite": 2
+   }
   },
   {
    "id": "bench-shafts",
@@ -46,7 +50,11 @@
    "features": {
     "representative": 24
    },
-   "volumes": 0
+   "volumes": 0,
+   "instruments": {
+    "geophones": 0,
+    "satellite": 0
+   }
   },
   {
    "id": "bench-khafre-claim",
@@ -70,7 +78,11 @@
    "features": {
     "claimed": 9
    },
-   "volumes": 1
+   "volumes": 1,
+   "instruments": {
+    "geophones": 0,
+    "satellite": 1
+   }
   },
   {
    "id": "giza",
@@ -94,7 +106,11 @@
    "features": {
     "surveyed": 12
    },
-   "volumes": 10
+   "volumes": 14,
+   "instruments": {
+    "geophones": 0,
+    "satellite": 14
+   }
   }
  ]
 }
