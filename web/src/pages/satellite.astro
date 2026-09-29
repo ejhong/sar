@@ -35,6 +35,7 @@ import echo from '../../public/data/runs/p1_03_scattered.json';
 import bound from '../../public/data/runs/p2_25_information_bound.json';
 import spectrum from '../../public/data/runs/p2_26_imprint_spectrum.json';
 import requirement from '../../public/data/runs/p2_27_requirement.json';
+import oracle from '../../public/data/runs/p2_29_oracle.json';
 import Figure from '../components/Figure.astro';
 import Ceiling from '../components/Ceiling.astro';
 import Routes from '../components/Routes.astro';
@@ -412,7 +413,7 @@ type RqF = { f_hz: number; exact: RqRow[]; linear: RqLin[] };
 const rq = requirement as unknown as {
   acquisitions: Record<string, { look_angle_deg: number; frequencies: RqF[] }>;
   ambient: { label: string; f_hz: number; displacement_amplitude_m: number; note: string; least_necessary_m: number; constrained_short_by: number }[];
-  constrained: { ratio: number; case: string; f_hz: number };
+  constrained: { ratio: number; modelled_ratio: number; case: string; f_hz: number };
   imprints: { label: string; f_hz: number; area_half_m2: number; peak_m: number; necessary_m: number; short_by: number }[];
   checks: { largest_nonlinearity: number; largest_psi_swing: number; lines_over_image: Record<string, number[]> };
 };
@@ -422,7 +423,21 @@ const rqColours = ['var(--lapis)', 'var(--verdigris)', 'var(--ochre)', 'var(--po
 const rqAt = (f: number, L: number) => rqMain.find((r) => r.f_hz === f)!.exact.find((e) => e.L_m === L)!;
 const rqStatic = rq.imprints.find((i) => i.label.includes('static') && i.label.includes('microseisms'))!;
 const rqDyn = rq.imprints.filter((i) => i.label.includes('dynamic'));
-const rqLeast = Math.min(...rq.ambient.map((a) => a.constrained_short_by));
+const rqLeast = Math.min(...rq.ambient.filter((a) => a.label.includes('regional')).map((a) => a.constrained_short_by));
+const rqLeastAll = Math.min(...rq.ambient.map((a) => a.constrained_short_by));
+// P2-29: the oracle, told everything but the answer
+type OrRow = { case: string; kind: string; delta: number; tv_exact: number; growth_to_target: number; growth_after_allowances: number; open: boolean; note: string };
+const orc = oracle as unknown as {
+  raw_echo_check: { scatterers: number; pulses: number; summary: Record<string, { mean: number; se: number; spread: number }> };
+  chamber: OrRow[];
+  allowance_product: number;
+  open_cases: string[];
+  depth: { residual_fraction: number; signal_factor_depth_over_detection: number; best_single_bench_room_residual: number; rooms_used: number; total_volume_m3: number; volume_30m_room_m3: number; pair_interaction_fraction: number; spacing_m: number };
+  manifest: { params: { snr_db: number; nesz_best_db: number } };
+};
+const orAmb = orc.chamber.filter((r) => r.kind === 'ambient');
+const orWorst = orc.chamber.filter((r) => r.kind === 'cultural').reduce((a, r) => (r.tv_exact > a.tv_exact ? r : a));
+const orChk = orc.raw_echo_check.summary;
 const um = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m >= 1e-6 ? `${+(m * 1e6).toPrecision(2)} µm` : `${+(m * 1e9).toPrecision(2)} nm`);
 ---
 <Doc
@@ -605,14 +620,61 @@ const um = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m >= 
         those amplitudes; the 2022 acquisition (look angle {rq.acquisitions['giza-20220715'].look_angle_deg.toFixed(0)}°) gives
         {' '}{um(rqOld.find((r) => r.f_hz === 0.2)!.exact.find((e) => e.L_m === 8)!.D_necessary_m['0.9'])} and
         {' '}{um(rqOld.find((r) => r.f_hz === 80)!.exact.find((e) => e.L_m === 8)!.D_necessary_m['0.9'])}.</p>
-        <p>Any mechanism that acts through the surface’s motion must put such motion on the ground, whatever drives it. One that
-        only redistributes the ambient motion, giving the room at most {rq.constrained.ratio.toFixed(1)} times it (the largest
-        in P2-26’s rooms), would need the ambient levels here raised at least {sci(rqLeast)} times. Outside the curve: changes
+        <p>Any mechanism that acts through the surface’s motion must put such motion on the ground, whatever drives it, linear
+        or not. A change of the ambient motion’s phase alone, of any size, moves the ground by at most twice that motion; P2-26’s
+        rooms scatter at most {rq.constrained.modelled_ratio.toFixed(1)} times it. A mechanism limited so would need Giza’s regional
+        levels raised at least {sci(rqLeast)} times ({sci(rqLeastAll)} for a lorry bouncing 15 m away all pass); one with gain,
+        gathering energy over the room for the whole pass, would have to be specified before it could be computed. Outside the curve: changes
         of the surface’s reflectivity during the pass, the echo from beneath, scatterers that are not speckle, and more than
         one image. A corner reflector on the footprint’s peak needs {um(rqMain[0].linear[0].D_reflector_m['0.9'])} whatever
         the footprint; a method handed the ground’s reflectivity, far less.</p>
       </div>
     </div>
+
+    <h3 class="bound-h">Told everything but the answer, an oracle still gains at most {sci(Math.max(...orAmb.map((r) => r.tv_exact)))} under the ambient levels; the open regime is strong shaking close by, known exactly</h3>
+    <div class="grid-2">
+      <div class="note-card">
+        <span class="tag">exact · any texture · P2-29</span>
+        <h3>The oracle</h3>
+        <p>Give a detector more than any method has: the exact reflectivity of every scatterer, the background motion, the
+        shaking’s realisation and both physical models, with the room and without. All it lacks is which is true, and the
+        receiver noise. Its raw echoes under the two hypotheses are then Gaussian with the same covariance and means that differ
+        by the echo of the room-specific motion alone, so its best test is known exactly, with no Pinsker step: detection −
+        false alarm = 2Φ(Δ/2) − 1, Δ² = 2‖μ₁ − μ₀‖²/σ². A method told less does no better, whatever the ground’s texture:
+        only independent, uniform phases are needed, and the background motion, however large, cancels exactly:
+        E Δ² = 8 Σ<sub><i>j</i></sub> SNR<sub><i>j</i></sub> ⟨sin²(<i>k</i>₀δ<sub><i>j</i></sub>/2)⟩, δ the motion the room adds.
+        Pulse by pulse on the real dwell ({orc.raw_echo_check.scatterers} scatterers, {orc.raw_echo_check.pulses.toLocaleString('en-US')} pulses) the formula
+        holds to {orChk.background_x1.mean.toFixed(3)} ± {orChk.background_x1.se.toFixed(3)}, and to {orChk.background_x10.mean.toFixed(3)} ± {orChk.background_x10.se.toFixed(3)} with the
+        background ten times larger. Each pixel is taken {orc.manifest.params.snr_db} dB over the receiver noise, above the
+        brightest natural ground over ICEYE’s best Dwell noise floor ({orc.manifest.params.nesz_best_db} dB).</p>
+      </div>
+      <div class="note-card">
+        <span class="tag">depth · any method</span>
+        <h3>Depth needs far more than detection</h3>
+        <p>Small rooms 15 m down, spread over the ground, leave the same mark as the bench room 30 m down to within
+        {(100 * orc.depth.residual_fraction).toFixed(1)}% (the lab’s solver, each small room’s imprint added; two solved together
+        agree with the sum to {(100 * orc.depth.pair_interaction_fraction).toFixed(1)}%). The bench room 15 m down alone matches it
+        only to {Math.round(100 * orc.depth.best_single_bench_room_residual)}%. So even the oracle, told everything else, needs
+        {Math.round(orc.depth.signal_factor_depth_over_detection)} times the signal to tell those two depths apart that it needs to
+        detect either: over a class that admits spread-out voids, no method can recover depth reliably wherever it can barely
+        detect. This is separate from the published depth axis being a frequency axis (P2-06, P2-28).</p>
+      </div>
+    </div>
+    <table class="data compact">
+      <thead><tr><th>the oracle, the bench room</th><th>Δ</th><th>detection − false alarm</th><th>motion must grow, for 95% at 5%</th><th>after allowances (×{Math.round(orc.allowance_product)})</th></tr></thead>
+      <tbody>
+        {orc.chamber.map((r) => (
+          <tr><td>{r.case}</td><td>{sci(r.delta)}</td><td>{sci(r.tv_exact)}</td><td>{r.growth_to_target >= 100 ? sci(r.growth_to_target) : r.growth_to_target.toFixed(1)}×</td><td>{r.open ? 'open' : `${r.growth_after_allowances >= 100 ? sci(r.growth_after_allowances) : r.growth_after_allowances.toFixed(1)}×`}</td></tr>
+        ))}
+      </tbody>
+    </table>
+    <p class="note">
+      The allowances are assumptions, stated so the margin can be judged: the local ambient level ten times the regional,
+      site amplification three times, and 10 dB more signal-to-noise. Where the margin does not survive them the case is
+      open, and it is reported as open: strong shaking close to the room for the whole pass, with the oracle told that
+      shaking exactly and the scattered wave carried unattenuated across the whole scene. That regime needs a physical limit on
+      how much motion a room can add, which the statistics cannot supply.
+    </p>
 
     <h3 class="bound-h">{sharpAny ? 'Faster shaking reaches a room better; some responses peak sharply' : `In the rooms modelled the responses are broad: rung on its ceiling, the longest-lived mode resolved has Q ${ringQ.toFixed(0)}; a room under a 5 m roof moves the ground over it up to ${spF.peak_value.toFixed(1)} times the passing motion`}</h3>
     <div class="grid-2 charts">

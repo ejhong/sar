@@ -22,6 +22,7 @@ import dep from '../../public/data/runs/p2_06_depth_is_frequency.json';
 import bound from '../../public/data/runs/p2_25_information_bound.json';
 import requirement from '../../public/data/runs/p2_27_requirement.json';
 import spectrum from '../../public/data/runs/p2_26_imprint_spectrum.json';
+import oracle from '../../public/data/runs/p2_29_oracle.json';
 import lib from '../../public/data/ambient.json';
 import labKhafre from '../../public/data/runs/lab_khafre.json';
 import type { TourStop } from '../viewer/Underworld';
@@ -140,6 +141,12 @@ const rq = requirement as unknown as {
 const rqAt = (f: number, L: number) => rq.acquisitions['giza-20250827'].frequencies.find((r) => r.f_hz === f)!.exact.find((e) => e.L_m === L)!.D_necessary_m['0.9'];
 const rqTruck = rq.imprints.filter((i) => i.label.startsWith('bench room, dynamic')).reduce((a, i) => (i.short_by < a.short_by ? i : a));
 const um = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} millimetres` : `${+(m * 1e6).toPrecision(2)} micrometres`);
+// P2-29: the oracle, told everything but the answer
+type OrRow = { kind: string; tv_exact: number; growth_to_target: number; open: boolean };
+const orc = oracle as unknown as { chamber: OrRow[]; depth: { residual_fraction: number; signal_factor_depth_over_detection: number } };
+const orAmb = Math.max(...orc.chamber.filter((r) => r.kind === 'ambient').map((r) => r.tv_exact));
+const orWorst = orc.chamber.filter((r) => r.kind === 'cultural').reduce((a, r) => (r.tv_exact > a.tv_exact ? r : a));
+const phaseShort = (requirement as unknown as { ambient: { label: string; constrained_short_by: number }[] }).ambient.filter((r) => r.label.includes('regional')).reduce((a, r) => Math.min(a, r.constrained_short_by), Infinity);
 // P2-26: how long the modelled rooms ring
 type RRec = { largest_resolved_q: number | null };
 const ringQ = Math.max(...Object.values((spectrum as unknown as { rings: Record<string, { records: Record<string, RRec> }> }).rings).flatMap((r) => Object.values(r.records).map((x) => x.largest_resolved_q ?? 0)));
@@ -507,6 +514,16 @@ const explore = [
           requirement under stated conditions, not a proof about every conceivable mechanism: it covers anything that acts
           through the ground’s motion in one image, and says nothing of other routes.
         </p>
+        <p>
+          Hand a detector more than any method has, the exact texture of the ground, the shaking and both physical models,
+          with the room and without, and its best is known exactly, whatever the texture: under the ground’s own trembling at
+          most <Sci v={orAmb} p={0} />. The one regime this leaves open is strong shaking close by, known exactly: a lorry
+          bouncing beside the room all pass gives such an oracle {orWorst.tv_exact.toFixed(2)}, still
+          {' '}{orWorst.growth_to_target.toFixed(0)} times short of a reliable detection, a margin too thin to call closed. Depth is
+          harder still: small rooms spread 15 metres down leave the mark of a room 30 metres down to within
+          {' '}{(100 * orc.depth.residual_fraction).toFixed(0)}%, so telling the two apart takes
+          {' '}{Math.round(orc.depth.signal_factor_depth_over_detection)} times the signal that detecting either takes.
+        </p>
       </div>
       <div class="wide routes-wrap"><Routes /></div>
       <div class="wide narrow"><Ceiling compact /></div>
@@ -530,6 +547,10 @@ const explore = [
         <details class="q">
           <summary>What about a cleverer way to read the image?</summary>
           <p>That is step 10: it bounds every way of reading one image at once, within a model. For ordinary ground, as radar texture is modelled, motion shared by the whole scene leaves the texture’s statistics unchanged, and what survives of the room’s mark lets no method, however clever, raise its rate of finding the room above its false alarms by more than one in {inWords(1 / microEdge)}; on small test images the best possible detector comes within {detOver.toFixed(1)} times of that bound. Bright points can be tracked, and a corner reflector over the room raises the cap only to <Sci v={bd.points.find((p) => p.scr_db > 40 && p.shaking === 'microseisms')!.ceiling} p={0} />. What the model leaves out (the echo at longer wavelengths, reflectivity changing during the pass, many images) is listed with the bound. <a href={`${base}/satellite/#bound`}>The bound, derived and checked</a>.</p>
+        </details>
+        <details class="q">
+          <summary>What if the room works nonlinearly, or shifts the phase of the ground’s vibration without a new tone?</summary>
+          <p>Our solver is linear, so it cannot rule out an unspecified nonlinear or parametric mechanism. But any mechanism, linear or not, reaches the image only through the motion it adds to the ground over the room, and step 10’s requirement counts that motion whatever made it. A change of phase alone, of any size, moves the ground by at most twice the vibration it acts on; at Giza’s regional levels that falls short of the requirement {inWords(phaseShort)} times over. A mechanism would need gain, drawing energy together over the room for the whole pass, and it would have to be specified well enough to compute before it could be tested.</p>
         </details>
         <details class="q">
           <summary>Then why do the published pictures look so convincing?</summary>
