@@ -349,8 +349,8 @@ def export_bench_gated(out: Path = DATA) -> dict | None:
     vols, entries = [], []
     for case, boost in s['manifest']['params']['cases']:
         kind = 'null' if boost is None else 'without' if boost == 0 else 'with' if boost == 1 else 'boosted'
-        name = {'null': "a random perturbation of the imprint's size", 'without': 'without the chamber',
-                'with': 'with the chamber', 'boosted': f"with the chamber's imprint boosted {boost:,.0f} times"}[kind]
+        name = ("a random perturbation of the imprint's size" if kind == 'null' else 'without the chamber' if kind == 'without'
+                else 'with the chamber' if kind == 'with' else f"with the chamber's imprint boosted {boost:,.0f} times")
         for P in s['manifest']['params']['supports']:
             V = v[f'{case}_p{P}'].astype(np.float32)[:, :, keep]
             u8 = np.where(np.isfinite(V), 1 + np.round(254 * np.clip(np.nan_to_num(V, nan=0.0), 0, 1)), 0).astype(np.uint8)
