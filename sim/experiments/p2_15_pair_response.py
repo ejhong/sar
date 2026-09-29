@@ -154,24 +154,47 @@ def main():
             out['scenes'][name] = {'still_windows_passing': int(gate0['window_pass'].sum()),
                                    'still_exact_zero': float(np.mean(Y0 == 0)), 'rows': rows_out}
 
-        # the finding, from the measurements
-        def row(scene, v, f):
-            return next(r for r in out['scenes'][scene]['rows'] if r['v_m_s'] == v and abs(r['f_hz'] - f) < 1e-3)
-        pr = [row('point', 2e-3, f) for f in (0.26, 3.66)]
-        m1 = row('point', 2e-2, round(mode_hz[0], 4))
-        tx = [row('texture', 2e-3, f) for f in (0.26, 3.66)]
-        ratios = [r['trace_width_ratio'] for s in out['scenes'].values() for r in s['rows'] if r['v_m_s'] == 2e-2]
+        # the finding, from the measurements: what each image carries (read against its twin), what the pair
+        # registration catches of the shift between its two images, and what the first gate makes of it
+        RESOLVE = 0.05                                    # px: shifts well above the 0.01 px rounding step
+        for sc_ in out['scenes'].values():
+            for r in sc_['rows']:
+                present = r['paired_amp_px'] * 2 * abs(np.sin(np.pi * r['f_hz'] * dt))
+                r['present_between_images_px'] = float(present)
+                r['pair_share_of_present'] = float(r['pair_amp_px']['azimuth'] / present) if present >= RESOLVE else None
+                r['image_over_boxcar'] = (float(r['paired_amp_px'] / r['paired_boxcar_px'])
+                                          if r['paired_amp_px'] >= RESOLVE and r['paired_boxcar_px'] > 0 else None)
+
+        def rows(scene, v=None):
+            return [r for r in out['scenes'][scene]['rows'] if v is None or r['v_m_s'] == v]
+
+        def span(vals):
+            vals = [x for x in vals if x is not None]
+            return (min(vals), max(vals)) if vals else (None, None)
+
+        img_pt = span(r['image_over_boxcar'] for r in rows('point'))
+        share_pt = span(r['pair_share_of_present'] for r in rows('point'))
+        share_tx = span(r['pair_share_of_present'] for r in rows('texture'))
+        max_pt2 = max(r['pair_amp_px']['azimuth'] for r in rows('point', 2e-3))
+        max_tx2 = max(r['pair_amp_px']['azimuth'] for r in rows('texture', 2e-3))
+        point_windows = sum(r['windows_passing'] for r in rows('point'))
+        widths = [r['trace_width_ratio'] for sc_ in ('point_on_clutter', 'texture') for r in rows(sc_)
+                  if r['pair_amp_px']['azimuth'] >= 0.005]
+        eg = next(r for r in rows('point', 2e-3) if abs(r['f_hz'] - 0.5) < 1e-3)
         finding = (
-            f"Through the reconstruction's own masks and registration, on simulated images of the 2022 geometry, a bright "
-            f"point swaying at 2 mm/s along the line of sight moves the pair shifts by {pr[0]['pair_amp_px']['azimuth']:.4f} "
-            f"px at 0.26 Hz and {pr[1]['pair_amp_px']['azimuth']:.4f} px at 3.66 Hz, where a boxcar average predicts "
-            f"{pr[0]['boxcar_px']:.4f} and {pr[1]['boxcar_px']:.4f} px and a tracker reading each pair's two moments "
-            f"instantaneously {pr[0]['instantaneous_px']:.4f} and {pr[1]['instantaneous_px']:.4f} px; at 20 mm/s and mode 1 "
-            f"({mode_hz[0]:.2f} Hz) it registers {m1['gain_vs_instantaneous'] * 100:.1f}% of the instantaneous tracker's "
-            f"shift. Read against its motionless twin, each image does carry the motion: {m1['paired_amp_px']:.3f} px "
-            f"against a boxcar {m1['paired_boxcar_px']:.3f} px at mode 1. A 20 m block of texture at 2 mm/s moves the pair "
-            f"shifts by {tx[0]['pair_amp_px']['azimuth']:.4f} and {tx[1]['pair_amp_px']['azimuth']:.4f} px. The registered "
-            f"traces are {min(ratios):.2g} to {max(ratios):.2g} as wide as they are long.")
+            f"Measured through the reconstruction's own masks and registration, on simulated images of the 2022 geometry "
+            f"with motion put in through the Doppler-time mapping, the six-second images do carry a vibration, but not as "
+            f"a boxcar average: read against its motionless twin, a lone bright point's image moves by "
+            f"{img_pt[0]:.2g} to {img_pt[1]:.2g} times the boxcar value, depending on frequency (at 2 mm/s and 0.5 Hz, "
+            f"{eg['paired_amp_px']:.3f} px where the boxcar gives {eg['paired_boxcar_px']:.4f} px). The pair registration "
+            f"then catches only part of the shift between its two images: {share_pt[0] * 100:.0f}% to "
+            f"{share_pt[1] * 100:.0f}% for the bright point and {share_tx[0] * 100:.1f}% to {share_tx[1] * 100:.1f}% for a "
+            f"20 m block of texture, where that shift is resolvable. At 2 mm/s, some 40,000 times Giza's microseisms, the "
+            f"pair shifts change by at most {max_pt2:.3f} px for the point, about the 0.01 px rounding step, and "
+            f"{max_tx2:.4f} px for texture. The moving point passes {point_windows} of the first gate's windows at every "
+            f"frequency and both speeds, its trace a line; with clutter or texture the traces large enough to measure are "
+            f"at most {max(widths):.2f} as wide as they are long, under the gate's 0.1, while still texture alone passes "
+            f"{out['scenes']['texture']['still_windows_passing']} windows.")
         run.save({**out, 'finding': finding})
         print(finding)
 
