@@ -1110,6 +1110,375 @@
   },
   "command": "uv run --with scikit-image python experiments/p2_20_bench_gated.py"
  },
+ "p2_21_what_survives": {
+  "id": "p2_21_what_survives",
+  "title": "What survives a change of pass or of lines",
+  "date": "2026-09-29",
+  "started_utc": "2026-09-29T15:05:25+00:00",
+  "runtime_s": 0.5,
+  "commit": "c232f06",
+  "params": {
+   "runs": {
+    "ew22": "lab_khafre",
+    "ns22": "lab_khafre_ns",
+    "ew25": "lab_khafre_2025"
+   },
+   "run_commits": {
+    "ew22": "4af4a3c",
+    "ns22": "c232f06",
+    "ew25": "c232f06"
+   },
+   "pairs": [
+    [
+     "ew22",
+     "ns22",
+     "lines"
+    ],
+    [
+     "ew22",
+     "ew25",
+     "pass"
+    ],
+    [
+     "ns22",
+     "ew25",
+     "both"
+    ]
+   ],
+   "cycle_m": 6.17,
+   "shuffles": 1000,
+   "support": 1
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  },
+  "command": "uv run python experiments/p2_21_what_survives.py"
+ },
+ "p2_22_one_shaking": {
+  "id": "p2_22_one_shaking",
+  "title": "One shaking: a vibrator beside the bench, with the chamber and without it",
+  "date": "2026-09-29",
+  "started_utc": "2026-09-29T15:16:36+00:00",
+  "runtime_s": 1473.2,
+  "commit": "110d416+",
+  "params": {
+   "site": "bench-void",
+   "frequency_hz": 10.691485,
+   "mode": 10,
+   "source_m": [
+    -30.0,
+    0.0,
+    0.0
+   ],
+   "extent_m": [
+    [
+     -150.0,
+     150.0
+    ],
+    [
+     -150.0,
+     150.0
+    ],
+    [
+     -100.0,
+     3.0
+    ]
+   ],
+   "spacing_m": 1.0,
+   "pml_cells": 20,
+   "cycles": [
+    3,
+    12
+   ],
+   "cases": {
+    "none": null,
+    "bench": {
+     "centre": [
+      0,
+      0,
+      -15
+     ],
+     "size": [
+      6,
+      6,
+      6
+     ]
+    },
+    "favourable": {
+     "centre": [
+      0,
+      0,
+      -10
+     ],
+     "size": [
+      10,
+      10,
+      10
+     ]
+    }
+   },
+   "recorded_half_m": 60.0
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  },
+  "command": "uv run python experiments/p2_22_one_shaking.py"
+ },
+ "p2_23_every_reader": {
+  "id": "p2_23_every_reader",
+  "title": "One shaking, read by geophones and by the satellite",
+  "date": "2026-09-29",
+  "started_utc": "2026-09-29T15:41:41+00:00",
+  "runtime_s": 130.1,
+  "commit": "7e1138f",
+  "params": {
+   "acquisition": "giza-20220715",
+   "frequency_hz": 10.691485,
+   "record_s": 24.56232,
+   "alpha": 0.01,
+   "power": 0.9,
+   "geophones": [
+    [
+     -24.0,
+     -24.0
+    ],
+    [
+     -24.0,
+     -16.0
+    ],
+    [
+     -24.0,
+     -8.0
+    ],
+    [
+     -24.0,
+     0.0
+    ],
+    [
+     -24.0,
+     8.0
+    ],
+    [
+     -24.0,
+     16.0
+    ],
+    [
+     -24.0,
+     24.0
+    ],
+    [
+     -16.0,
+     -24.0
+    ],
+    [
+     -16.0,
+     -16.0
+    ],
+    [
+     -16.0,
+     -8.0
+    ],
+    [
+     -16.0,
+     0.0
+    ],
+    [
+     -16.0,
+     8.0
+    ],
+    [
+     -16.0,
+     16.0
+    ],
+    [
+     -16.0,
+     24.0
+    ],
+    [
+     -8.0,
+     -24.0
+    ],
+    [
+     -8.0,
+     -16.0
+    ],
+    [
+     -8.0,
+     -8.0
+    ],
+    [
+     -8.0,
+     0.0
+    ],
+    [
+     -8.0,
+     8.0
+    ],
+    [
+     -8.0,
+     16.0
+    ],
+    [
+     -8.0,
+     24.0
+    ],
+    [
+     0.0,
+     -24.0
+    ],
+    [
+     0.0,
+     -16.0
+    ],
+    [
+     0.0,
+     -8.0
+    ],
+    [
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     8.0
+    ],
+    [
+     0.0,
+     16.0
+    ],
+    [
+     0.0,
+     24.0
+    ],
+    [
+     8.0,
+     -24.0
+    ],
+    [
+     8.0,
+     -16.0
+    ],
+    [
+     8.0,
+     -8.0
+    ],
+    [
+     8.0,
+     0.0
+    ],
+    [
+     8.0,
+     8.0
+    ],
+    [
+     8.0,
+     16.0
+    ],
+    [
+     8.0,
+     24.0
+    ],
+    [
+     16.0,
+     -24.0
+    ],
+    [
+     16.0,
+     -16.0
+    ],
+    [
+     16.0,
+     -8.0
+    ],
+    [
+     16.0,
+     0.0
+    ],
+    [
+     16.0,
+     8.0
+    ],
+    [
+     16.0,
+     16.0
+    ],
+    [
+     16.0,
+     24.0
+    ],
+    [
+     24.0,
+     -24.0
+    ],
+    [
+     24.0,
+     -16.0
+    ],
+    [
+     24.0,
+     -8.0
+    ],
+    [
+     24.0,
+     0.0
+    ],
+    [
+     24.0,
+     8.0
+    ],
+    [
+     24.0,
+     16.0
+    ],
+    [
+     24.0,
+     24.0
+    ]
+   ],
+   "noise_asd_m_s_rthz": {
+    "kottamya_median": 4.195e-09,
+    "kottamya_period_s": 0.1297,
+    "peterson_high": 3.961e-07,
+    "peterson_period_s": 0.1
+   },
+   "look_s": 0.02,
+   "cal_scr_db": [
+    30.0,
+    40.0,
+    50.0
+   ],
+   "cal_v_m_s": 0.05,
+   "cal_seeds": [
+    230,
+    231,
+    232
+   ],
+   "reflector_scr_db": 50.0,
+   "reflector_step_m": 3.0,
+   "reflector_half_m": 30.0,
+   "plateau_m": [
+    -470.0,
+    -600.0
+   ],
+   "p2_22_commit": "110d416+"
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  },
+  "command": "uv run --with scikit-image python experiments/p2_23_every_reader.py"
+ },
  "lab_khafre": {
   "id": "lab_khafre",
   "title": "The gated reconstruction across Khafre, from the 2022 image",
@@ -1145,5 +1514,79 @@
    "cpus": 16
   },
   "command": "uv run --with scikit-image python -m katabasis.lab gated --name khafre --site giza --centre 0,0 --half-ew 150 --half-ns 141 --step 3 --supports 1,4 --twin 101"
+ },
+ "lab_khafre_2025": {
+  "id": "lab_khafre_2025",
+  "title": "The gated reconstruction across Khafre, from the 2025 image",
+  "date": "2026-09-29",
+  "started_utc": "2026-09-29T13:37:14+00:00",
+  "runtime_s": 5285.0,
+  "commit": "c232f06",
+  "params": {
+   "method": "gated",
+   "site": "giza",
+   "centre_m": [
+    0.0,
+    0.0
+   ],
+   "half_ew_m": 150.0,
+   "half_ns_m": 141.0,
+   "step_m": 3.0,
+   "supports": [
+    1,
+    4
+   ],
+   "twin_seed": 101,
+   "product": "ICEYE_X33_SLC_SLEDF_951562307_20250827T202654.h5",
+   "lines": "ew",
+   "gated_module_sha256": "3e1154c11274b896b91e262198576ffd750732709ad08ac00c6892c4ea5e1b1d",
+   "gated_profile_sha256": "ae84cade31f7e5ffa9b4daa0eba152649d2afc7f1655415bad38553f4f4d69aa",
+   "geoid_m": 15.5
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  },
+  "command": "uv run --with scikit-image python -m katabasis.lab gated --name khafre_2025 --site giza --centre 0,0 --half-ew 150 --half-ns 141 --step 3 --supports 1,4 --twin 101 --product <path to ICEYE_X33_SLC_SLEDF_951562307_20250827T202654.h5>"
+ },
+ "lab_khafre_ns": {
+  "id": "lab_khafre_ns",
+  "title": "The gated reconstruction across Khafre, north-south lines, from the 2022 image",
+  "date": "2026-09-29",
+  "started_utc": "2026-09-29T13:37:14+00:00",
+  "runtime_s": 5025.7,
+  "commit": "c232f06",
+  "params": {
+   "method": "gated",
+   "site": "giza",
+   "centre_m": [
+    0.0,
+    0.0
+   ],
+   "half_ew_m": 141.0,
+   "half_ns_m": 150.0,
+   "step_m": 3.0,
+   "supports": [
+    1,
+    4
+   ],
+   "twin_seed": 101,
+   "product": "ICEYE_X13_SLC_SLED_868226_20220715T235744.h5",
+   "lines": "ns",
+   "gated_module_sha256": "3e1154c11274b896b91e262198576ffd750732709ad08ac00c6892c4ea5e1b1d",
+   "gated_profile_sha256": "ae84cade31f7e5ffa9b4daa0eba152649d2afc7f1655415bad38553f4f4d69aa",
+   "geoid_m": 15.5
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  },
+  "command": "uv run --with scikit-image python -m katabasis.lab gated --name khafre_ns --site giza --centre 0,0 --half-ew 141 --half-ns 150 --step 3 --supports 1,4 --twin 101 --lines ns"
  }
 }

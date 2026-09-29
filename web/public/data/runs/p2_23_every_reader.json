@@ -1,0 +1,641 @@
+{
+ "manifest": {
+  "id": "p2_23_every_reader",
+  "title": "One shaking, read by geophones and by the satellite",
+  "date": "2026-09-29",
+  "started_utc": "2026-09-29T15:41:41+00:00",
+  "runtime_s": 130.1,
+  "commit": "7e1138f",
+  "params": {
+   "acquisition": "giza-20220715",
+   "frequency_hz": 10.691485,
+   "record_s": 24.56232,
+   "alpha": 0.01,
+   "power": 0.9,
+   "geophones": [
+    [
+     -24.0,
+     -24.0
+    ],
+    [
+     -24.0,
+     -16.0
+    ],
+    [
+     -24.0,
+     -8.0
+    ],
+    [
+     -24.0,
+     0.0
+    ],
+    [
+     -24.0,
+     8.0
+    ],
+    [
+     -24.0,
+     16.0
+    ],
+    [
+     -24.0,
+     24.0
+    ],
+    [
+     -16.0,
+     -24.0
+    ],
+    [
+     -16.0,
+     -16.0
+    ],
+    [
+     -16.0,
+     -8.0
+    ],
+    [
+     -16.0,
+     0.0
+    ],
+    [
+     -16.0,
+     8.0
+    ],
+    [
+     -16.0,
+     16.0
+    ],
+    [
+     -16.0,
+     24.0
+    ],
+    [
+     -8.0,
+     -24.0
+    ],
+    [
+     -8.0,
+     -16.0
+    ],
+    [
+     -8.0,
+     -8.0
+    ],
+    [
+     -8.0,
+     0.0
+    ],
+    [
+     -8.0,
+     8.0
+    ],
+    [
+     -8.0,
+     16.0
+    ],
+    [
+     -8.0,
+     24.0
+    ],
+    [
+     0.0,
+     -24.0
+    ],
+    [
+     0.0,
+     -16.0
+    ],
+    [
+     0.0,
+     -8.0
+    ],
+    [
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     8.0
+    ],
+    [
+     0.0,
+     16.0
+    ],
+    [
+     0.0,
+     24.0
+    ],
+    [
+     8.0,
+     -24.0
+    ],
+    [
+     8.0,
+     -16.0
+    ],
+    [
+     8.0,
+     -8.0
+    ],
+    [
+     8.0,
+     0.0
+    ],
+    [
+     8.0,
+     8.0
+    ],
+    [
+     8.0,
+     16.0
+    ],
+    [
+     8.0,
+     24.0
+    ],
+    [
+     16.0,
+     -24.0
+    ],
+    [
+     16.0,
+     -16.0
+    ],
+    [
+     16.0,
+     -8.0
+    ],
+    [
+     16.0,
+     0.0
+    ],
+    [
+     16.0,
+     8.0
+    ],
+    [
+     16.0,
+     16.0
+    ],
+    [
+     16.0,
+     24.0
+    ],
+    [
+     24.0,
+     -24.0
+    ],
+    [
+     24.0,
+     -16.0
+    ],
+    [
+     24.0,
+     -8.0
+    ],
+    [
+     24.0,
+     0.0
+    ],
+    [
+     24.0,
+     8.0
+    ],
+    [
+     24.0,
+     16.0
+    ],
+    [
+     24.0,
+     24.0
+    ]
+   ],
+   "noise_asd_m_s_rthz": {
+    "kottamya_median": 4.195e-09,
+    "kottamya_period_s": 0.1297,
+    "peterson_high": 3.961e-07,
+    "peterson_period_s": 0.1
+   },
+   "look_s": 0.02,
+   "cal_scr_db": [
+    30.0,
+    40.0,
+    50.0
+   ],
+   "cal_v_m_s": 0.05,
+   "cal_seeds": [
+    230,
+    231,
+    232
+   ],
+   "reflector_scr_db": 50.0,
+   "reflector_step_m": 3.0,
+   "reflector_half_m": 30.0,
+   "plateau_m": [
+    -470.0,
+    -600.0
+   ],
+   "p2_22_commit": "110d416+"
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  }
+ },
+ "noise": {
+  "kottamya_median": 4.195e-09,
+  "kottamya_period_s": 0.1297,
+  "peterson_high": 3.961e-07,
+  "peterson_period_s": 0.1
+ },
+ "geophones": {
+  "kottamya_median": {
+   "sigma_m_s": 8.465e-10,
+   "bench": {
+    "deflection_per_n": 0.0003207,
+    "force_n": 11249.484676236561,
+    "ground_up_m_s": 8.509843238101305e-08,
+    "imprint_max_m_s": 1.5063023652670062e-09,
+    "largest_residual_from_axis_m": 8.0
+   },
+   "favourable": {
+    "deflection_per_n": 0.001206,
+    "force_n": 2990.4180134106896,
+    "ground_up_m_s": 2.2621470443242335e-08,
+    "imprint_max_m_s": 1.8605036397415495e-09,
+    "largest_residual_from_axis_m": 8.0
+   },
+   "check_power": 0.8815
+  },
+  "peterson_high": {
+   "sigma_m_s": 7.992e-08,
+   "bench": {
+    "deflection_per_n": 3.397e-06,
+    "force_n": 1062019.8361212944,
+    "ground_up_m_s": 8.03381006441775e-06,
+    "imprint_max_m_s": 1.4220411309055273e-07,
+    "largest_residual_from_axis_m": 8.0
+   },
+   "favourable": {
+    "deflection_per_n": 1.278e-05,
+    "force_n": 282313.66502017033,
+    "ground_up_m_s": 2.1356045209523456e-06,
+    "imprint_max_m_s": 1.7564286964675556e-07,
+    "largest_residual_from_axis_m": 8.0
+   },
+   "check_power": 0.887
+  }
+ },
+ "tracker": {
+  "look_gain_sinc": 0.926467,
+  "calibration": {
+   "30": {
+    "gain": [
+     0.1136,
+     -0.0001781
+    ],
+    "sigma_m_s": 0.009336,
+    "scatter_m_s": 0.008327,
+    "n": 24
+   },
+   "40": {
+    "gain": [
+     0.626457,
+     -0.003084
+    ],
+    "sigma_m_s": 0.004445,
+    "scatter_m_s": 0.006461,
+    "n": 24
+   },
+   "50": {
+    "gain": [
+     0.892503,
+     0.009228
+    ],
+    "sigma_m_s": 0.001436,
+    "scatter_m_s": 0.001712,
+    "n": 24
+   }
+  },
+  "smear_rows": 1413,
+  "smear_m": 65.234252,
+  "noise_db_slope": -0.813112
+ },
+ "satellite": {
+  "reflectors": {
+   "count": 21,
+   "sigma_m_s": 0.001532,
+   "bench": {
+    "deflection_per_n": 1.433e-10,
+    "force_n": 25173358363.113262,
+    "ground_up_m_s": 0.19042768590028128,
+    "imprint_max_los_m_s": 0.0026120312409866017,
+    "direct_los_max_m_s": 0.7641373327938727
+   },
+   "favourable": {
+    "deflection_per_n": 6.033e-10,
+    "force_n": 5980426780.613828,
+    "ground_up_m_s": 0.04523984508150135,
+    "imprint_max_los_m_s": 0.00287076293382059,
+    "direct_los_max_m_s": 0.1815358643526707
+   }
+  },
+  "chain": {
+   "within_tracking": {
+    "force_n": 1647175009.174942,
+    "direct_los_max_m_s": 0.05,
+    "deflection": 0.236077,
+    "none": {
+     "statistic": -0.894103,
+     "threshold": 2.20831,
+     "direct_motion_recovered": 0.989871
+    },
+    "bench": {
+     "statistic": -2.302001,
+     "threshold": 2.20831,
+     "direct_motion_recovered": 0.972287
+    }
+   },
+   "at_boundary": {
+    "force_n": 25173358363.113262,
+    "direct_los_max_m_s": 0.7641373327938727,
+    "deflection": 3.607899,
+    "none": {
+     "statistic": -295.657864,
+     "threshold": 0.522398,
+     "direct_motion_recovered": 0.035805
+    },
+    "bench": {
+     "statistic": -302.221413,
+     "threshold": 0.522398,
+     "direct_motion_recovered": 0.026391
+    }
+   }
+  },
+  "natural": {
+   "per_m2": {
+    "10": 0.002292,
+    "15": 0.0,
+    "20": 0.0,
+    "25": 0.0,
+    "30": 0.0,
+    "40": 0.0
+   },
+   "counts": {
+    "10": 33,
+    "15": 0,
+    "20": 0,
+    "25": 0,
+    "30": 0,
+    "40": 0
+   },
+   "speckle_alone": {
+    "10": 32.094482,
+    "15": 1.306e-08,
+    "20": 2.63e-38,
+    "25": 3.261e-132,
+    "30": 0.0,
+    "40": 0.0
+   },
+   "brightest_db": 12.227432,
+   "area_m2": 14400.0,
+   "scr_db": [],
+   "bench": {
+    "points": 0,
+    "readings": 0,
+    "deflection_per_n": 0.0,
+    "force_n": null,
+    "ground_up_m_s": null
+   },
+   "favourable": {
+    "points": 0,
+    "readings": 0,
+    "deflection_per_n": 0.0,
+    "force_n": null,
+    "ground_up_m_s": null
+   }
+  }
+ },
+ "forces": [
+  100.0,
+  177.827941,
+  316.227766,
+  562.341325,
+  1000.0,
+  1778.27941,
+  3162.27766,
+  5623.413252,
+  10000.0,
+  17782.7941,
+  31622.776602,
+  56234.132519,
+  100000.0,
+  177827.941004,
+  316227.766017,
+  562341.32519,
+  1000000.0,
+  1778279.410039,
+  3162277.660168,
+  5623413.251903,
+  10000000.0,
+  17782794.100389,
+  31622776.601684,
+  56234132.519035,
+  100000000.0,
+  177827941.003892,
+  316227766.016838,
+  562341325.190349,
+  1000000000.0,
+  1778279410.038923,
+  3162277660.168379,
+  5623413251.903491,
+  10000000000.0,
+  17782794100.38923,
+  31622776601.683792,
+  56234132519.034904,
+  100000000000.0,
+  177827941003.89227,
+  316227766016.83795,
+  562341325190.3491,
+  1000000000000.0
+ ],
+ "curves": {
+  "geophones, quiet site": [
+   0.010887,
+   0.011625,
+   0.013043,
+   0.015937,
+   0.022448,
+   0.039542,
+   0.094734,
+   0.300548,
+   0.810793,
+   0.999633,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ],
+  "geophones, noisy site": [
+   0.010009,
+   0.010016,
+   0.010029,
+   0.010051,
+   0.010091,
+   0.010162,
+   0.01029,
+   0.010521,
+   0.010942,
+   0.011728,
+   0.013246,
+   0.016368,
+   0.023482,
+   0.042514,
+   0.105275,
+   0.33872,
+   0.857883,
+   0.999898,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ],
+  "satellite, reflectors": [
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.010001,
+   0.010001,
+   0.010002,
+   0.010004,
+   0.010007,
+   0.010012,
+   0.010022,
+   0.010038,
+   0.010068,
+   0.010121,
+   0.010217,
+   0.010388,
+   0.0107,
+   0.011273,
+   0.01236,
+   0.014517,
+   0.019157,
+   0.030526,
+   0.064207,
+   0.185895,
+   0.587968,
+   0.986304,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ],
+  "satellite, natural ground": [
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01,
+   0.01
+  ]
+ },
+ "axis_up_m_s_per_n": 7.565e-12,
+ "finding": "One vibrator at 10.69 Hz, 30 m from the bench's chamber, read over the same 24.6 s. Geophones over the chamber find it with 11.2 kN of force at a quiet site and 1,062 kN at a noisy one, when the ground over it moves at 85 and 8.0 um/s. The satellite, with 21 corner reflectors laid across the chamber, needs 2.52e+10 N, the ground moving at 190 mm/s: 2.2e+06 times the geophones' force. On natural ground there is nothing to track: over open plateau the real image's brightest point stands 12 dB over the speckle, and its 33 points of 10 dB or more are what speckle alone gives (32). Run whole, the chain recovers 99% of the vibrator's own motion at 1.6e+09 N, where the reflectors move at up to 50 mm/s (the measurement control), while the chamber stays out of reach there; at the boundary the reflectors move at up to 0.76 m/s and the tracker recovers 4% of it, so that boundary is a floor."
+}

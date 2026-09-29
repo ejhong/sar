@@ -23,7 +23,11 @@ import plateau from '../../public/data/runs/p2_17_plateau_control.json';
 import pulses from '../../public/data/runs/p2_18_echo_validation.json';
 import known from '../../public/data/runs/p2_19_known_vibration.json';
 import labKhafre from '../../public/data/runs/lab_khafre.json';
+import survives from '../../public/data/runs/p2_21_what_survives.json';
 import bench from '../../public/data/runs/p2_20_bench_gated.json';
+import Boundary from '../components/Boundary.astro';
+import readers from '../../public/data/runs/p2_23_every_reader.json';
+import shaking from '../../public/data/runs/p2_22_one_shaking.json';
 import passive from '../../public/data/runs/p1_04_ambient.json';
 import echo from '../../public/data/runs/p1_03_scattered.json';
 import Figure from '../components/Figure.astro';
@@ -272,6 +276,30 @@ const bHeading = bFirst === undefined
   : bFirst === 'with'
     ? 'Over the known chamber, the gated pipeline’s picture changes where the chamber is'
     : `Over the known chamber, the gated pipeline’s picture changes over it only once its imprint is boosted ${bFirst === 'boost_1e4' ? 'ten thousand' : 'a hundred million'} times`;
+// ---- P2-21: what survives a change of pass or of lines
+type SCmp = { passing: number[]; both: number; chance_both: number; ratio: number; same_depth_share: number; same_depth_chance: number; same_depth_chance_p95: number };
+const sv = survives.results as unknown as Record<string, Record<string, SCmp>>;
+const svL = sv.ew22_ns22.real;
+const svP = sv.ew22_ew25.real;
+const svC = sv.ew22_ew25.ew22_vs_copy;
+const svAbove = (r: SCmp) => r.ratio > 1.5 && r.same_depth_share > r.same_depth_chance_p95;
+const svBeyondCopy = (r: SCmp) => r.ratio > svC.ratio && r.same_depth_share > svC.same_depth_share;
+const svHeading =
+  svAbove(svP) && svBeyondCopy(svP)
+    ? 'Across Khafre, what the gated reconstruction draws survives a change of pass beyond chance'
+    : svAbove(svP)
+      ? 'Across Khafre, two passes agree beyond chance, but no more than an image agrees with its own motionless copy'
+      : 'Across Khafre, what the gated reconstruction draws does not survive a change of pass';
+const svRows: [string, SCmp][] = [
+  ['lines laid east–west, then north–south (2022)', svL],
+  ['the 2022 pass, then the 2025 pass (east–west)', svP],
+  ['for scale: the 2022 image, then its motionless copy', svC],
+];
+const svPct = (x: number) => `${Math.round(x * 100)}%`;
+// ---- P2-22, P2-23: one shaking, read by geophones and by the satellite
+const e23 = readers as unknown as { geophones: Record<string, { bench: { force_n: number } }>; satellite: { reflectors: { bench: { force_n: number } } } };
+const vibRatio = e23.satellite.reflectors.bench.force_n / e23.geophones.kottamya_median.bench.force_n;
+const vibMillions = `${Math.round(vibRatio / 1e6).toLocaleString('en-US')} million`;
 // ---- the lab's Khafre run
 type LRes = Record<string, { supported_positions: Record<string, number> }>;
 const lk = labKhafre.results as unknown as LRes;
@@ -280,12 +308,14 @@ const lk = labKhafre.results as unknown as LRes;
   title="The satellite over the same ground"
   kicker="From orbit · what one radar image can show, and what it has not"
   current="satellite"
-  lede="Can one satellite radar image show chambers under the ground? Here the real ICEYE passes over Giza are simulated over ground whose contents are known, and the published method and a stricter reconstruction of it are run on the real images beside controls. The methods tested here do not establish subsurface imaging: their depth axis is a frequency axis of the image registration, with a repeat and a mirror, not a validated depth; the patterns their gates select also appear in images with nothing moving and nothing inside; and in our models the motion a small chamber adds at Giza's ambient level lies far below what these registrations pick up. Single images can measure strong vibration of bright targets. Where these conclusions rest on models, and what would test them, is set out below."
+  lede="Can one satellite radar image show chambers under the ground? The real ICEYE passes over Giza are simulated over ground whose contents are known, and the published method and a stricter reconstruction of it are run on real and simulated images beside controls. The methods tested do not show chambers, while single images can measure strong vibration of bright targets. Where this rests on models, and what would test it, is set out below."
   state="status · tested, not closed · 29 September 2026 · revised after an independent review"
   index={[
     { id: 'verdict', label: 'Where it stands' },
     { id: 'sure', label: 'How sure' },
     { id: 'questions', label: 'Four questions' },
+    { id: 'benchmark', label: 'The benchmark, begun' },
+    { id: 'settle', label: 'What would settle it' },
     { id: 'geometry', label: 'The real geometry' },
     { id: 'blind', label: 'What one dwell sees' },
     { id: 'imprint', label: 'The chamber’s imprint' },
@@ -299,14 +329,13 @@ const lk = labKhafre.results as unknown as LRes;
     { id: 'every', label: 'Other routes' },
     { id: 'real', label: 'The real pass' },
     { id: 'rescue', label: 'What could change it' },
-    { id: 'settle', label: 'What would settle it' },
-    { id: 'benchmark', label: 'The benchmark, begun' },
     { id: 'record', label: 'Corrections' },
   ]}
 >
   <section id="verdict">
-    <h2>The methods tested here do not show chambers; the reasons differ in how much weight they bear</h2>
-    <div class="stat-row">
+    <h2>The methods tested here do not show chambers; read from one shaking, the satellite needs {vibMillions} times the force geophones need</h2>
+    <Boundary />
+    <div class="stat-row spaced">
       <div class="stat"><span class="value">{mph.toFixed(2)}<small>m/Hz</small></span><span class="what">of published “depth” per hertz of the registration’s oscillation, whatever lies below: the depth axis is a frequency axis, with a repeat and a mirror</span><span class="src">P2-06 · the published focusing, its algebra</span></div>
       <div class="stat"><span class="value">{pct(blk.gain_complex)}</span><span class="what">of a stretch of real ground’s planted motion recovered by correlating one image’s looks against each other, the published way</span><span class="src">P2-03 · measured on the real Giza image, for that estimator</span></div>
       <div class="stat"><span class="value"><Sci v={imp.cases[0].imprint_over_motion} /></span><span class="what">the fraction of the ground’s own motion a 6 m chamber 15 m down changes as a microseism passes, in uniform rock</span><span class="src">P2-04 · a quasi-static model</span></div>
@@ -336,6 +365,8 @@ const lk = labKhafre.results as unknown as LRes;
         <tr><td>The six-second pairs register little of a vibration</td><td>measured in simulation</td><td>P2-15, confirmed pulse by pulse (P2-18)</td><td>shaker and reflector data showing more</td></tr>
         <tr><td>The gated reconstruction does not respond to a known vibration a standard tracker measures</td><td>measured in simulation</td><td>synthetic products through its own loader (P2-19)</td><td>a frozen setting at which it recovers a planted vibration’s frequency, place and amplitude</td></tr>
         <tr><td>{bFirst === undefined ? 'Over a known chamber, the gated reconstruction’s picture does not depend on the chamber' : 'Over a known chamber, the gated reconstruction’s picture changes where the chamber is'}</td><td>measured in simulation</td><td>the one-chamber bench as synthetic products, shaken inside the band it reads, the chamber boosted up to ×10⁸, beside a null (P2-20)</td><td>real ground over a known void, or a forward model with more physics, that behaves otherwise</td></tr>
+        <tr><td>Shaken by one vibrator, geophones find a chamber the satellite could find only with {vibMillions} times the force, reflectors laid over it</td><td>measured in simulation</td><td>the elastic solver (P1-01), the pulse-checked radar simulator (P2-18), a tracker calibrated on known reflectors (P2-22, P2-23)</td><td>a single-image reading far more precise than tracking bright points, or ground carrying far brighter points than open plateau</td></tr>
+        <tr><td>What the gated reconstruction draws across Khafre {svAbove(svP) ? 'survives' : 'does not survive'} a change of pass</td><td>measured on real images</td><td>three runs of one square, each beside a motionless copy (P2-21)</td><td>agreement beyond chance and beyond an image’s own copy, over surveyed voids and matched controls</td></tr>
         <tr><td>The gated reconstruction’s patterns also appear with nothing moving and nothing inside</td><td>measured, not a calibrated rate</td><td>two synthetic twins and open desert (P2-13, P2-14)</td><td>a frozen recipe that beats nulls with the same correlations on withheld truth</td></tr>
         <tr><td>A small chamber changes ambient motion by under a ten-thousandth; one dwell falls far short</td><td>modelled</td><td>uniform rock, quasi-static strain, regional ambient level (P2-04, P2-05)</td><td>motion measured on the plateau during a pass; resonant or larger structures</td></tr>
         <tr><td>Other routes carry far too little at X band</td><td>modelled estimates</td><td>penetration, loads, heat, surface (P2-11)</td><td>measured penetration in Mokattam limestone; deformation over known voids</td></tr>
@@ -393,8 +424,93 @@ const lk = labKhafre.results as unknown as LRes;
     </div>
   </section>
 
-  <section id="geometry">
-    <h2>The real dwell has three speeds, and the simulator now has all three</h2>
+  <section id="benchmark">
+    <h2>The benchmark has begun: the simulator holds up against pulses, a vibration a tracker measures leaves the gated pipeline silent, and {bFirst === undefined ? 'over a known chamber its picture does not depend on the chamber' : 'over a known chamber its picture responds only when the chamber is boosted'}</h2>
+    <div class="grid-2">
+      <div class="note-card">
+        <span class="tag simulated">simulated pulse by pulse · P2-18</span>
+        <h3>The radar simulator, checked against pulses</h3>
+        <p>A second simulator computes what the radar records pulse by pulse, from every scatterer’s exact distance at each
+        moment, displaced by its own motion, and forms the image by back-projection on the product’s grid. It focuses a point
+        to {(eRes.azimuth_m * 100).toFixed(2)} cm in azimuth against {(eRes.azimuth_theory_m * 100).toFixed(2)} cm in theory. Its frequency
+        slices match the images formed from only the matching stretches of pulses, {Math.min(...eSame).toFixed(3)} to
+        {' '}{Math.max(...eSame).toFixed(3)} in complex correlation, with the mirrored slices at {eMirror.toFixed(3)}: a Doppler slice is a
+        stretch of the pass, shown by a calculation that never assumes it. The fast synthesizer’s image of the same scatterers
+        matches it to {(pulses.fast_vs_pulses as { corr_complex: number }).corr_complex.toFixed(2)}, and a steady
+        {' '}{((pulses.steady_velocity as { v_m_s: number }).v_m_s * 1e3).toFixed(0)} mm/s recession shifts the image
+        {' '}{Math.abs((pulses.steady_velocity as { shift_m: number }).shift_m * 100).toFixed(1)} cm against
+        {' '}{Math.abs((pulses.steady_velocity as { theory_m: number }).theory_m * 100).toFixed(1)} cm from theory. Through the six-second
+        pairs, pulses and the fast injection agree where the shifts are resolvable
+        ({eBig.map((x) => `${x.pulses_px.toFixed(3)} and ${x.injection_px.toFixed(3)} px at ${(x.v_m_s * 1e3).toFixed(0)} mm/s, ${x.f_hz.toFixed(2)} Hz`).join('; ')}),
+        and the rest sit at or below one rounding step in both.</p>
+      </div>
+      <div class="note-card">
+        <span class="tag simulated">synthetic products · P2-19</span>
+        <h3>A known vibration: a tracker measures it, the gated pipeline does not register it</h3>
+        <table class="data compact">
+          <thead><tr><th>the reflector vibrates</th><th class="num">tracker reads</th><th class="num">pipeline’s shift</th><th class="num">passes there</th></tr></thead>
+          <tbody>
+            {kMoving.map(([, r]) => <tr><td>{(r.v_m_s * 1e3).toFixed(0)} mm/s at {r.f_hz.toFixed(2)} Hz</td><td class="num">{(r.tracker!.recovered_m_s * 1e3).toFixed(1)} ± {(r.tracker!.se_m_s * 1e3).toFixed(1)} of {(r.tracker!.truth_look_average_m_s * 1e3).toFixed(1)} mm/s</td><td class="num">{r.pipeline_shift_amp_px!.azimuth.toFixed(4)} px</td><td class="num">{r.passes_at_reflector['1']}</td></tr>)}
+          </tbody>
+        </table>
+        <p>Synthetic products in the ICEYE layout, read by the reconstruction’s own loader unchanged, hold static speckle and a
+        corner reflector 50 dB above it, simulated pulse by pulse. The same files carry a vibration a standard tracker reads
+        through 50 ms looks. The gated pipeline’s shifts at the reflector move by about a thousandth of a pixel at its own
+        modes’ frequencies, it passes nothing at the reflector at any support, and it passes {Math.min(...kElsewhere)} to
+        {' '}{Math.max(...kElsewhere)} positions per line in the static speckle around it. As a measurement control it fails
+        at these settings: it does not respond to a vibration that is there and measurable.</p>
+      </div>
+    </div>
+    <div class="note-card wide">
+      <span class="tag simulated">synthetic products · P2-20</span>
+      <h3>{bHeading}</h3>
+      <table class="data compact">
+        <thead><tr><th>the bench’s product</th><th class="num">values changed</th><th class="num">positions passing</th><th class="num">scores changed</th><th class="num">of them within 12 m</th></tr></thead>
+        <tbody>
+          {bRows.map(([k, label]) => {
+            const r = bRes[k];
+            return <tr><td>{label}</td><td class="num">{r.values_changed.toLocaleString('en-US')}</td><td class="num">{r.supported_positions['1']}</td><td class="num">{r.p1 ? r.p1.positions_changed : '–'}</td><td class="num">{r.p1 ? r.p1.positions_changed_near : '–'}</td></tr>;
+          })}
+        </tbody>
+      </table>
+      <p>The one-chamber bench as a synthetic product the reconstruction reads unchanged: speckle shaken as Giza shakes, at
+      0.2 Hz and with the measured 1–3 Hz level placed on the method’s own second mode, {(bench.mode_hz as number).toFixed(2)} Hz,
+      where it looks. The chamber’s imprint (P2-04) rides on that shaking at its real level, then boosted until it moves the
+      ground over the chamber by {bV8.toFixed(1)} mm/s. Each product is compared with the one without the chamber, beside a random
+      perturbation the size of the real-level imprint; {Math.round(bShare * 100)}% of the 2,601 positions lie within 12 m of the
+      chamber’s axis, so changes that gather over it would show there first. Changes in the last digits of the numbers the
+      pipeline reads move its fit scores at a position by up to {bJump.toFixed(2)} on its scale of 0 to 1, the chamber’s and the
+      random perturbation’s alike. The positions that pass at all are set by the speckle, and at the method’s own support
+      of four none pass. <a href={`${base}/underworld/#bench-void/satellite`}>Open the
+      volumes in the lab</a>, under the satellite’s gated reconstruction.</p>
+    </div>
+    <RunDetails manifest={pulses.manifest} />
+    <RunDetails manifest={known.manifest} />
+    <RunDetails manifest={bench.manifest} />
+    <RunDetails manifest={shaking.manifest} />
+    <RunDetails manifest={readers.manifest} />
+  </section>
+
+  <section id="settle">
+    <h2>What would settle it: one frozen recipe reproduced, a motion test with ground truth, and a blind test on known voids</h2>
+    <div class="grid-3">
+      <div class="note-card"><h3>Reproduce one nominated result</h3><p>Take one figure the method’s proponents consider successful, with its image, exact geometry, code version, settings and plotting frozen and hashed, and have an independent reviewer regenerate it. Then run that frozen recipe on motionless copies, open ground and a planted motion. So far, attractive figures and negative tests have concerned different recipes.</p></div>
+      <div class="note-card"><h3>Show that the estimator measures motion</h3><p>Run the frozen pipeline on stationary scenes, on moving targets simulated from independent physics, and preferably on shaker or corner-reflector data with instruments on them at the same time. Sweep frequency and amplitude, 0.26 and 3.66 Hz included, and score recovery before the gates as well as after, beside an estimator already validated for vibrometry, so that a faulty injection is not mistaken for a failed method. Begun below with synthetic products (P2-19).</p></div>
+      <div class="note-card"><h3>Predict known voids blind</h3><p>Choose known voids and matched surveyed controls and withhold their labels. Fix the wavelength, line placement, gates and scoring in advance; predict places, depths and sizes with tolerances; count false positives as well as hits; use a site or pass not used for calibration. Before reading stairs or spirals, a forward model built on independent wave and radar physics should tell a plain column, a spiral and nothing apart.</p></div>
+    </div>
+    <p class="note">
+      What would change this page: a frozen recipe that passes these tests, or measurements that contradict our models, such as
+      motion measured on the plateau during a pass, penetration measured in Mokattam limestone, or a pulse-level simulation of
+      the pairs that registers more than ours. A bounded validation of this kind is worth more than further compelling
+      pictures, whichever way it comes out.
+    </p>
+  </section>
+
+  <p class="fold-note mono">The evidence in detail · each section opens on its heading</p>
+
+  <section id="geometry" class="folded">
+    <details class="fold">
+      <summary><h2>The real dwell has three speeds, and the simulator now has all three</h2></summary>
     <p class="sub">
       A <Term k="dwell">Spotlight Dwell</Term> holds the beam on Giza for {gz.aperture_s.toFixed(1)} s. The platform moves at
       {' '}{kms(gz.speeds_m_s.platform)} m/s, the image’s rows sweep the ground at {kms(gz.speeds_m_s.ground_sweep)} m/s,
@@ -422,10 +538,12 @@ const lk = labKhafre.results as unknown as LRes;
       centres ({(gz.reference_bank_centre_span_m / 1e3).toFixed(1)} km), not the platform’s travel.
     </p>
     <RunDetails manifest={geo.manifest} />
+    </details>
   </section>
 
-  <section id="blind">
-    <h2>Correlating one image’s looks registers little of ordinary ground’s motion</h2>
+  <section id="blind" class="folded">
+    <details class="fold">
+      <summary><h2>Correlating one image’s looks registers little of ordinary ground’s motion</h2></summary>
     <p class="sub">
       Every single-image method, published or ours, reads motion by registering one image’s looks against each other. Two
       such looks share the spectrum they overlap. For whole images and real, non-negative masks their cross-spectrum is then
@@ -493,10 +611,12 @@ const lk = labKhafre.results as unknown as LRes;
       </div>
     </div>
     <RunDetails manifest={sees.manifest} />
+    </details>
   </section>
 
-  <section id="imprint">
-    <h2>In our model, a chamber changes the ground’s own motion by less than a ten-thousandth of it</h2>
+  <section id="imprint" class="folded">
+    <details class="fold">
+      <summary><h2>In our model, a chamber changes the ground’s own motion by less than a ten-thousandth of it</h2></summary>
     <p class="sub">
       Whatever a satellite could use to find a chamber passively would have to be its <Term k="imprint">imprint</Term>: the
       difference it makes to how the surface moves. Ambient waves are far longer than the chamber and its depth, so the rock
@@ -535,10 +655,12 @@ const lk = labKhafre.results as unknown as LRes;
       </div>
     </div>
     <RunDetails manifest={imp.manifest} />
+    </details>
   </section>
 
-  <section id="budget">
-    <h2>Within our model, allowing every advantage we could name, one dwell falls short by ten thousand to a hundred million</h2>
+  <section id="budget" class="folded">
+    <details class="fold">
+      <summary><h2>Within our model, allowing every advantage we could name, one dwell falls short by ten thousand to a hundred million</h2></summary>
     <p class="sub">
       The smallest imprint a dwell could detect, from what P2-03 measured: every one of its independent looks counted as a
       full measurement, a 3-sigma threshold, the look’s gain at the imprint’s frequency (a boxcar value; near 0.2 Hz it is
@@ -565,10 +687,12 @@ const lk = labKhafre.results as unknown as LRes;
       recorded 67 km away, and the imprint is P2-04’s model.
     </p>
     <RunDetails manifest={bud.manifest} />
+    </details>
   </section>
 
-  <section id="depth">
-    <h2>The published depth is the frequency of the registration series: {mph.toFixed(2)} m per hertz, with a repeat and a mirror</h2>
+  <section id="depth" class="folded">
+    <details class="fold">
+      <summary><h2>The published depth is the frequency of the registration series: {mph.toFixed(2)} m per hertz, with a repeat and a mirror</h2></summary>
     <p class="sub">
       The published focusing projects each patch’s trajectory on a steering wave whose wavenumber grows with the platform’s
       offset, and on a dwell the offset grows steadily with time. So the focusing is a Fourier transform over time, and motion
@@ -607,10 +731,12 @@ const lk = labKhafre.results as unknown as LRes;
       />
     </div>
     <RunDetails manifest={dep.manifest} />
+    </details>
   </section>
 
-  <section id="chain">
-    <h2>Run whole on our simulated ground, the chain does not tell the chamber is there</h2>
+  <section id="chain" class="folded">
+    <details class="fold">
+      <summary><h2>Run whole on our simulated ground, the chain does not tell the chamber is there</h2></summary>
     <p class="sub">
       P2-07 runs the claim as it would have it: simulated desert over the one-chamber bench, shaking at Giza’s measured
       microseism level with the chamber’s imprint from P2-04, imaged on the real dwell in double precision, and put through
@@ -652,10 +778,12 @@ const lk = labKhafre.results as unknown as LRes;
       />
     </div>
     <RunDetails manifest={chain.manifest} />
+    </details>
   </section>
 
-  <section id="pillars">
-    <h2>The published pictures’ pillars and boxes are the method’s own arithmetic</h2>
+  <section id="pillars" class="folded">
+    <details class="fold">
+      <summary><h2>The published pictures’ pillars and boxes are the method’s own arithmetic</h2></summary>
     <p class="sub">
       The published Khafre renderings show tall columns, banded like spirals, with blocks at their feet. P2-08 draws the same
       shapes from the real Khafre image with the published focusing, and each has a plain cause. <b>Pillars:</b> averaged over
@@ -686,10 +814,12 @@ const lk = labKhafre.results as unknown as LRes;
       upsampling whole patches, so that patch took minutes, where every pixel of the whole image would take about two months.
     </p>
     <RunDetails manifest={pill.manifest} />
+    </details>
   </section>
 
-  <section id="gates">
-    <h2>Stricter gates select a pattern that also appears without motion; by themselves they certify neither vibration nor depth</h2>
+  <section id="gates" class="folded">
+    <details class="fold">
+      <summary><h2>Stricter gates select a pattern that also appears without motion; by themselves they certify neither vibration nor depth</h2></summary>
     <p class="sub">
       Later versions of the method put selection gates between the shifts and the depth focus. Pairs of images are cut from
       the Doppler band, each {Math.round(gates.manifest.params.bank.mask_width_hz).toLocaleString('en-US')} Hz of it, which for every
@@ -816,10 +946,12 @@ const lk = labKhafre.results as unknown as LRes;
       </div>
     </div>
     <RunDetails manifest={own.manifest} />
+    </details>
   </section>
 
-  <section id="khufu3d">
-    <h2>{kHeading}</h2>
+  <section id="khufu3d" class="folded">
+    <details class="fold">
+      <summary><h2>{kHeading}</h2></summary>
     <p class="sub">
       The reconstruction’s tomograms are curtains: along each line, a score at every nominal depth below every position. P2-16
       lays {khufu.manifest.params.lines} lines across Khufu, {khufu.manifest.params.step_m} m apart, running east to west as its own
@@ -867,13 +999,32 @@ const lk = labKhafre.results as unknown as LRes;
       Khufu ({kRes.real.supported_positions['1'].toLocaleString('en-US')} and {kRes.twin101.supported_positions['1'].toLocaleString('en-US')}
       at a support of one) and of open plateau ({kP['1'].toLocaleString('en-US')}), where nothing is claimed.
       {' '}<a href={`${base}/underworld/#giza/satellite/radar-lab-khafre-real-p1`}>Open Khafre in the lab</a>.</p>
+    <div class="note-card wide">
+      <span class="tag measured">real images · P2-21</span>
+      <h3>{svHeading}</h3>
+      <table class="data compact">
+        <thead><tr><th>the same square, run two ways</th><th class="num">positions passing</th><th class="num">passing both</th><th class="num">× chance</th><th class="num">same depth</th><th class="num">by chance</th></tr></thead>
+        <tbody>
+          {svRows.map(([label, r]) => <tr><td>{label}</td><td class="num">{r.passing[0].toLocaleString('en-US')} · {r.passing[1].toLocaleString('en-US')}</td><td class="num">{r.both.toLocaleString('en-US')}</td><td class="num">{r.ratio.toFixed(2)}</td><td class="num">{svPct(r.same_depth_share)}</td><td class="num">{svPct(r.same_depth_chance)}</td></tr>)}
+        </tbody>
+      </table>
+      <p>Something under Khafre would not move with the pass that looked at it or with the way the lines were laid; what the
+      processing makes of an image would. The lab’s command ran the same square three ways, each beside a motionless copy.
+      “Same depth” is the share of positions passing both ways whose best depths lie within half the fit’s cycle, against
+      the same pairs shuffled. A real image and its own motionless copy, which keeps only its smoothed brightness and has
+      nothing under it, set the scale for agreement that owes nothing to what is below. In the lab, the pass and the
+      lines are choices under the gated reconstruction, with the voxels where two runs agree.</p>
+    </div>
     <RunDetails manifest={khufu.manifest} />
     <RunDetails manifest={plateau.manifest} />
     <RunDetails manifest={labKhafre.manifest} />
+    <RunDetails manifest={survives.manifest} />
+    </details>
   </section>
 
-  <section id="sensors">
-    <h2>Read the published way, a radar image did not act as a dense seismic array in our test</h2>
+  <section id="sensors" class="folded">
+    <details class="fold">
+      <summary><h2>Read the published way, a radar image did not act as a dense seismic array in our test</h2></summary>
     <p class="sub">
       Every patch of an image can be read as a virtual seismometer, and there are millions of them, far denser than any real
       array; stacking many sensors does shrink their noise. P2-09 asks the prior question: do they hear? A test wave (60 m long,
@@ -918,10 +1069,12 @@ const lk = labKhafre.results as unknown as LRes;
       </div>
     </div>
     <RunDetails manifest={vsens.manifest} />
+    </details>
   </section>
 
-  <section id="every">
-    <h2>Other routes from a buried room to an X-band radar, as we estimate them, carry far too little</h2>
+  <section id="every" class="folded">
+    <details class="fold">
+      <summary><h2>Other routes from a buried room to an X-band radar, as we estimate them, carry far too little</h2></summary>
     <p class="sub">
       A radar records echoes, and an echo depends on how strongly each scatterer returns the wave and where each scatterer is
       while it is watched. We group the ways a buried room could reach the record into four. P2-11 estimates each, with its
@@ -966,10 +1119,12 @@ const lk = labKhafre.results as unknown as LRes;
       <ul>{Object.values(every.sources as Record<string, string>).map((s) => <li>{s}</li>)}</ul>
     </details>
     <RunDetails manifest={every.manifest} />
+    </details>
   </section>
 
-  <section id="real">
-    <h2>The real pass, laid on the ground: what a viewer given radar data can honestly show</h2>
+  <section id="real" class="folded">
+    <details class="fold">
+      <summary><h2>The real pass, laid on the ground: what a viewer given radar data can honestly show</h2></summary>
     <p class="sub">
       P2-12 takes the real 2025 image and puts it where it belongs: each metre of the Giza site is found in the image through
       the product’s own geolocation over the terrain and the pyramids, with the residual offset fitted against the brightness the
@@ -999,10 +1154,12 @@ const lk = labKhafre.results as unknown as LRes;
       </div>
     </div>
     <RunDetails manifest={realpass.manifest} />
+    </details>
   </section>
 
-  <section id="rescue">
-    <h2>What could change the answer, and where each stands</h2>
+  <section id="rescue" class="folded">
+    <details class="fold">
+      <summary><h2>What could change the answer, and where each stands</h2></summary>
     <div class="grid-3">
       <div class="note-card"><h3>More motion</h3><p>Peterson’s high-noise model, 71 times Giza’s microseisms, leaves the plateau short by {order(noisyGround)}. Traffic exceeds 77 µm/s within 25 m of a road (P2-00), but at 10–30 Hz, where a look must be under 33 ms and resolves 33 m; short by {order(truckGround)} on ground. Khafre is 199 m from the nearest road.</p></div>
       <div class="note-card"><h3>Brighter targets</h3><p>Magnitude tracking follows an isolated bright scatterer in full (P2-03), so the best case is a stone or a placed corner reflector above the chamber: short by {order(brightShort)} and {order(reflShort)} under Giza’s microseisms, {order(noisyRefl)} for the reflector at the noisiest stations.</p></div>
@@ -1013,90 +1170,12 @@ const lk = labKhafre.results as unknown as LRes;
       <div class="note-card"><h3>Vibration measured from orbit, 2026</h3><p>The method’s authors first applied this kind of tracking to bridges in Italy and to the Mosul Dam in 2020, without instruments on the structures at the same time. Two 2026 papers (Vattulainen et al., IEEE Access; Lotti et al., Structural Control and Health Monitoring) measure vibration from single spaceborne images against ground truth: corner reflectors on shakers in open fields, and a steel footbridge chosen because it is bright. They track isolated bright targets moving at 0.7 mm/s and up, with errors near 1 mm/s: what P2-03 says works. Their smallest motion is {Math.round(eB.measured_over_trembling).toLocaleString('en-US')} times Giza’s whole microseism motion and <Sci v={eB.measured_over_imprint} p={0} /> times the chamber’s imprint.</p></div>
       <div class="note-card"><h3>Only simulation?</h3><p>The coherence identity holds on the real crop to 10<sup>−9</sup>; the blindness is measured on real texture (1 ± 1%); the geometry is read from the product and reproduces its declared numbers; and the first investigation’s real-data controls found nothing at Giza or Sacsayhuamán.</p></div>
     </div>
+    </details>
   </section>
 
-  <section id="settle">
-    <h2>What would settle it: one frozen recipe reproduced, a motion test with ground truth, and a blind test on known voids</h2>
-    <div class="grid-3">
-      <div class="note-card"><h3>Reproduce one nominated result</h3><p>Take one figure the method’s proponents consider successful, with its image, exact geometry, code version, settings and plotting frozen and hashed, and have an independent reviewer regenerate it. Then run that frozen recipe on motionless copies, open ground and a planted motion. So far, attractive figures and negative tests have concerned different recipes.</p></div>
-      <div class="note-card"><h3>Show that the estimator measures motion</h3><p>Run the frozen pipeline on stationary scenes, on moving targets simulated from independent physics, and preferably on shaker or corner-reflector data with instruments on them at the same time. Sweep frequency and amplitude, 0.26 and 3.66 Hz included, and score recovery before the gates as well as after, beside an estimator already validated for vibrometry, so that a faulty injection is not mistaken for a failed method. Begun below with synthetic products (P2-19).</p></div>
-      <div class="note-card"><h3>Predict known voids blind</h3><p>Choose known voids and matched surveyed controls and withhold their labels. Fix the wavelength, line placement, gates and scoring in advance; predict places, depths and sizes with tolerances; count false positives as well as hits; use a site or pass not used for calibration. Before reading stairs or spirals, a forward model built on independent wave and radar physics should tell a plain column, a spiral and nothing apart.</p></div>
-    </div>
-    <p class="note">
-      What would change this page: a frozen recipe that passes these tests, or measurements that contradict our models, such as
-      motion measured on the plateau during a pass, penetration measured in Mokattam limestone, or a pulse-level simulation of
-      the pairs that registers more than ours. A bounded validation of this kind is worth more than further compelling
-      pictures, whichever way it comes out.
-    </p>
-  </section>
-
-  <section id="benchmark">
-    <h2>The benchmark has begun: the simulator holds up against pulses, a vibration a tracker measures leaves the gated pipeline silent, and {bFirst === undefined ? 'over a known chamber its picture does not depend on the chamber' : 'over a known chamber its picture responds only when the chamber is boosted'}</h2>
-    <div class="grid-2">
-      <div class="note-card">
-        <span class="tag simulated">simulated pulse by pulse · P2-18</span>
-        <h3>The radar simulator, checked against pulses</h3>
-        <p>A second simulator computes what the radar records pulse by pulse, from every scatterer’s exact distance at each
-        moment, displaced by its own motion, and forms the image by back-projection on the product’s grid. It focuses a point
-        to {(eRes.azimuth_m * 100).toFixed(2)} cm in azimuth against {(eRes.azimuth_theory_m * 100).toFixed(2)} cm in theory. Its frequency
-        slices match the images formed from only the matching stretches of pulses, {Math.min(...eSame).toFixed(3)} to
-        {' '}{Math.max(...eSame).toFixed(3)} in complex correlation, with the mirrored slices at {eMirror.toFixed(3)}: a Doppler slice is a
-        stretch of the pass, shown by a calculation that never assumes it. The fast synthesizer’s image of the same scatterers
-        matches it to {(pulses.fast_vs_pulses as { corr_complex: number }).corr_complex.toFixed(2)}, and a steady
-        {' '}{((pulses.steady_velocity as { v_m_s: number }).v_m_s * 1e3).toFixed(0)} mm/s recession shifts the image
-        {' '}{Math.abs((pulses.steady_velocity as { shift_m: number }).shift_m * 100).toFixed(1)} cm against
-        {' '}{Math.abs((pulses.steady_velocity as { theory_m: number }).theory_m * 100).toFixed(1)} cm from theory. Through the six-second
-        pairs, pulses and the fast injection agree where the shifts are resolvable
-        ({eBig.map((x) => `${x.pulses_px.toFixed(3)} and ${x.injection_px.toFixed(3)} px at ${(x.v_m_s * 1e3).toFixed(0)} mm/s, ${x.f_hz.toFixed(2)} Hz`).join('; ')}),
-        and the rest sit at or below one rounding step in both.</p>
-      </div>
-      <div class="note-card">
-        <span class="tag simulated">synthetic products · P2-19</span>
-        <h3>A known vibration: a tracker measures it, the gated pipeline does not register it</h3>
-        <table class="data compact">
-          <thead><tr><th>the reflector vibrates</th><th class="num">tracker reads</th><th class="num">pipeline’s shift</th><th class="num">passes there</th></tr></thead>
-          <tbody>
-            {kMoving.map(([, r]) => <tr><td>{(r.v_m_s * 1e3).toFixed(0)} mm/s at {r.f_hz.toFixed(2)} Hz</td><td class="num">{(r.tracker!.recovered_m_s * 1e3).toFixed(1)} ± {(r.tracker!.se_m_s * 1e3).toFixed(1)} of {(r.tracker!.truth_look_average_m_s * 1e3).toFixed(1)} mm/s</td><td class="num">{r.pipeline_shift_amp_px!.azimuth.toFixed(4)} px</td><td class="num">{r.passes_at_reflector['1']}</td></tr>)}
-          </tbody>
-        </table>
-        <p>Synthetic products in the ICEYE layout, read by the reconstruction’s own loader unchanged, hold static speckle and a
-        corner reflector 50 dB above it, simulated pulse by pulse. The same files carry a vibration a standard tracker reads
-        through 50 ms looks. The gated pipeline’s shifts at the reflector move by about a thousandth of a pixel at its own
-        modes’ frequencies, it passes nothing at the reflector at any support, and it passes {Math.min(...kElsewhere)} to
-        {' '}{Math.max(...kElsewhere)} positions per line in the static speckle around it. As a measurement control it fails
-        at these settings: it does not respond to a vibration that is there and measurable.</p>
-      </div>
-    </div>
-    <div class="note-card wide">
-      <span class="tag simulated">synthetic products · P2-20</span>
-      <h3>{bHeading}</h3>
-      <table class="data compact">
-        <thead><tr><th>the bench’s product</th><th class="num">values changed</th><th class="num">positions passing</th><th class="num">scores changed</th><th class="num">of them within 12 m</th></tr></thead>
-        <tbody>
-          {bRows.map(([k, label]) => {
-            const r = bRes[k];
-            return <tr><td>{label}</td><td class="num">{r.values_changed.toLocaleString('en-US')}</td><td class="num">{r.supported_positions['1']}</td><td class="num">{r.p1 ? r.p1.positions_changed : '–'}</td><td class="num">{r.p1 ? r.p1.positions_changed_near : '–'}</td></tr>;
-          })}
-        </tbody>
-      </table>
-      <p>The one-chamber bench as a synthetic product the reconstruction reads unchanged: speckle shaken as Giza shakes, at
-      0.2 Hz and with the measured 1–3 Hz level placed on the method’s own second mode, {(bench.mode_hz as number).toFixed(2)} Hz,
-      where it looks. The chamber’s imprint (P2-04) rides on that shaking at its real level, then boosted until it moves the
-      ground over the chamber by {bV8.toFixed(1)} mm/s. Each product is compared with the one without the chamber, beside a random
-      perturbation the size of the real-level imprint; {Math.round(bShare * 100)}% of the 2,601 positions lie within 12 m of the
-      chamber’s axis, so changes that gather over it would show there first. Changes in the last digits of the numbers the
-      pipeline reads move its fit scores at a position by up to {bJump.toFixed(2)} on its scale of 0 to 1, the chamber’s and the
-      random perturbation’s alike. The positions that pass at all are set by the speckle, and at the method’s own support
-      of four none pass. <a href={`${base}/underworld/#bench-void/satellite`}>Open the
-      volumes in the lab</a>, under the satellite’s gated reconstruction.</p>
-    </div>
-    <RunDetails manifest={pulses.manifest} />
-    <RunDetails manifest={known.manifest} />
-    <RunDetails manifest={bench.manifest} />
-  </section>
-
-  <section id="record">
-    <h2>What this corrects, in the first investigation and in this lab’s own later work, and what still stands</h2>
+  <section id="record" class="folded">
+    <details class="fold">
+      <summary><h2>What this corrects, in the first investigation and in this lab’s own later work, and what still stands</h2></summary>
     <div class="grid-2">
       <div class="note-card">
         <span class="tag measured">ours · corrected</span>
@@ -1159,7 +1238,9 @@ const lk = labKhafre.results as unknown as LRes;
         <p>The published axis folds within metres and repeats by an algebraic identity (P2-06 gives it a frequency); a look short enough to follow a wave through the ground resolves tens of metres at best.</p>
       </div>
     </div>
+    </details>
   </section>
+
 </Doc>
 
 <style>
@@ -1179,7 +1260,66 @@ const lk = labKhafre.results as unknown as LRes;
     font-size: 0.78rem;
     padding: 0.28rem 0.45rem;
   }
+  .stat-row.spaced {
+    margin-top: 18px;
+  }
   .note-card.wide {
     margin-top: 16px;
   }
+  .fold-note {
+    font-size: 10.5px;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 34px 0 6px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border-strong);
+  }
+  section.folded {
+    padding: 0;
+    margin: 0;
+    border-top: 1px solid var(--border);
+  }
+  details.fold > summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 14px 0 12px 22px;
+    position: relative;
+  }
+  details.fold > summary::-webkit-details-marker {
+    display: none;
+  }
+  details.fold > summary::before {
+    content: '+';
+    position: absolute;
+    left: 0;
+    top: 14px;
+    font-family: var(--font-mono);
+    color: var(--faint);
+  }
+  details.fold[open] > summary::before {
+    content: '−';
+  }
+  details.fold > summary h2 {
+    display: inline;
+    font-size: 15.5px;
+    margin: 0;
+  }
+  details.fold[open] > summary {
+    padding-bottom: 16px;
+  }
+  details.fold > :not(summary) {
+    margin-bottom: 18px;
+  }
 </style>
+
+<script is:inline>
+  // following a link to a folded section opens it
+  function openFold() {
+    const el = location.hash && document.getElementById(location.hash.slice(1));
+    const d = el && el.querySelector('details.fold');
+    if (d) d.open = true;
+  }
+  addEventListener('hashchange', openFold);
+  openFold();
+</script>

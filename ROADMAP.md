@@ -76,6 +76,16 @@ Then (29 September):
   shakes, inside the band it reads: with the chamber at its real level, boosted ten thousand and a hundred million
   times, and beside a random perturbation of the imprint's size, the changes never gather over the chamber (6, 6 and
   9 of 178, 242 and 300 changed positions lie within 12 m, where chance puts 5 to 9; the null, 4 of 182).
+- **P2-21**: across Khafre, run from the 2022 pass (lines east-west and north-south) and the 2025 pass, what the gated
+  reconstruction draws does not survive a change of pass beyond chance (1.33 times chance in positions, 27% of depths
+  agreeing against 25%), while two layouts on one image agree strongly: each picture belongs to its image.
+- **P2-22, P2-23, the decisive benchmark**: one vibrator beside the bench (10.69 Hz, 30 m), solved with and without the
+  chamber, read over the same 24.6 s by geophones and by the satellite. Geophones find the chamber with 11 kN; the
+  satellite, with 21 corner reflectors and a detector that knows both answers, needs 2.5 x 10^10 N (a floor: at that
+  force its tracker keeps 4% of the motion); natural ground offers nothing to track. P2-24 runs the gated reconstruction
+  on the same shaking.
+- **The site made concise** (the owner's request): one overview with the assessment (the pictures and claim pages folded
+  in), six tabs, the hero's headline under the site's name, the lab's hero without mouse capture.
 - **The lab's command** runs the gated reconstruction over any area: across Khafre (`lab_khafre`) the real image passes
   1,218 of 9,595 positions at a support of one and none at four, its motionless copy 539 and none, Khufu's pattern.
 - **The lab reorganised by instrument** (the owner found "instruments" beside "satellite" confusing): the ground,
@@ -193,6 +203,34 @@ The lab does it by simulation over ground whose contents are known, in two phase
    features within the top metres, the one place radar does see underground.
 8. **Tidy the first investigation's record**: rerun or retire R7; mark R9 and R10 on the archive as identities of the
    looks rather than measurements of the ground.
+
+## Long term: the owner's ideas, kept for later (29 September 2026)
+
+Not being built now; recorded so they are designed for, not lost.
+
+1. **An atlas of the underworld.** A 3-D map of the real world, terrain and imagery on top, with what is known of the
+   ground beneath: published models, borehole logs, seismic and other surveys, each a layer carrying its source, method,
+   date, resolution and uncertainty, added to as surveys are done. Design: every subsurface object is a statement with
+   provenance, not a fact; surveys that disagree are shown side by side and scored where a truth exists, never merged
+   silently; "no data" stays distinct from "nothing there"; interpolation is visible when switched on. Ingest from the
+   usual formats (GeoTIFF, SEG-Y, LAS, GeoJSON, glTF) into each site's frame (x east, y north, z up); large areas stream
+   as tiles. The site compositions already hold the seed of this: features with a source and a status (surveyed,
+   representative, claimed, truth).
+2. **Every subsurface method in the simulation lab.** Ground-penetrating radar, electrical resistivity, microgravity,
+   magnetics, muon tomography, InSAR time series, low-frequency radar, alongside the seismic methods and the satellite
+   methods already here: each run over the same known ground and scored the same way, the claim's method one among many.
+3. **One common layer for every reader:** the evidence each gives for a void at each place (a detector's likelihood),
+   drawn in one colour, so that different instruments can finally be compared on the same quantity.
+4. **The whole plateau** with the gated reconstruction, area by area, filling the mosaic; and every area from both passes
+   and both line layouts, so P2-21's test runs everywhere.
+5. **A known-target test at the Osiris Shaft**, once its position and levels are taken from a published survey: the
+   frozen recipe beside the shaft, beside ground with no shaft, and on a motionless copy.
+6. **The success boundary in full:** P2-22/23 swept over chamber depth and size, source frequency and distance, and
+   geophone record length (P2-23 matches the satellite's 24.6 s; longer records help geophones as the square root).
+7. **A colour-scale lesson in the lab:** the same volume in a perceptually ordered scale and in a rainbow scale, to show
+   how hue bands make structure appear.
+8. **The mechanism the method's proponents propose** (an air column resonating in the chamber), once its excitation,
+   damping and coupling are specified well enough to compute the surface motion.
 
 ## Open decisions
 

@@ -24,7 +24,7 @@
    },
    "volumes": 18,
    "instruments": {
-    "geophones": 8,
+    "geophones": 10,
     "satellite": 12
    }
   },
@@ -106,10 +106,10 @@
    "features": {
     "surveyed": 12
    },
-   "volumes": 14,
+   "volumes": 24,
    "instruments": {
     "geophones": 0,
-    "satellite": 14
+    "satellite": 24
    }
   }
  ]

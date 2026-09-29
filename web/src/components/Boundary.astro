@@ -1,0 +1,183 @@
+---
+/**
+ * The decisive benchmark in one figure. One vibrator shakes the one-chamber bench (P2-22); each reader's boundary is
+ * the smallest force at which the favourable detector tells the chamber from none, 90% of the time with 1% false
+ * alarms (P2-23), and the gated reconstruction is run where the data hold the chamber (P2-24). The force axis has a
+ * second scale beneath it: how fast the ground over the chamber moves at that force.
+ */
+import every from '../../public/data/runs/p2_23_every_reader.json';
+
+type Reader = { name: string; sub: string; force: number | null; kind: 'geo' | 'sat' | 'gated'; note?: string };
+const geo = every.geophones as unknown as Record<string, { bench: { force_n: number } }>;
+const sat = every.satellite as unknown as {
+  reflectors: { count: number; bench: { force_n: number } };
+  natural: { bench: { force_n: number | null }; brightest_db: number | null };
+};
+const perN = every.axis_up_m_s_per_n as number;
+// the whole chain (P2-23): within the tracker's range it must follow the vibrator; at the boundary, how much it keeps
+type Chain = Record<string, { force_n: number; direct_los_max_m_s: number; none: { direct_motion_recovered: number } }>;
+const chain = (every.satellite as unknown as { chain: Chain | Record<string, unknown> }).chain as Chain;
+const control = chain.within_tracking;
+const atBound = chain.at_boundary;
+// P2-24, once run: does the gated reconstruction read the chamber where the reflectors' data hold it?
+type G24 = { results: Record<string, { p1?: { positions_changed: number; positions_changed_near: number } }>; near_share: number };
+const gated = Object.values(import.meta.glob('../../public/data/runs/p2_24_gated_on_the_shaking.json', { eager: true, import: 'default' }))[0] as G24 | undefined;
+const tag = gated ? Object.keys(gated.results).find((k) => k.endsWith('_with')) : undefined;
+const w = tag ? gated!.results[tag].p1 : undefined;
+const gatedReads = !!w && w.positions_changed_near >= 5 && w.positions_changed_near > 3 * gated!.near_share * w.positions_changed;
+
+const readers: Reader[] = [
+  { name: 'Geophones', sub: '49 over the chamber, a quiet site', force: geo.kottamya_median.bench.force_n, kind: 'geo' },
+  { name: 'Geophones', sub: 'the same, a noisy site', force: geo.peterson_high.bench.force_n, kind: 'geo' },
+  { name: 'Satellite', sub: `${sat.reflectors.count} corner reflectors laid across it`, force: sat.reflectors.bench.force_n, kind: 'sat' },
+  {
+    name: 'Satellite',
+    sub: 'natural ground',
+    force: sat.natural.bench.force_n,
+    kind: 'sat',
+    note: 'nothing bright enough to track, at any force',
+  },
+];
+if (w)
+  readers.push({
+    name: 'Gated reconstruction',
+    sub: 'on the reflectors’ data',
+    force: gatedReads ? sat.reflectors.bench.force_n : null,
+    kind: 'gated',
+    note: 'does not read it where the data hold it',
+  });
+
+const LO = 2;
+const HI = 12;
+const W = 680;
+const L = 196;
+const R = 18;
+const top = 10;
+const rowH = 36;
+const H = top + readers.length * rowH + 58;
+const x = (f: number) => L + ((Math.log10(f) - LO) / (HI - LO)) * (W - L - R);
+const decades = Array.from({ length: HI - LO + 1 }, (_, i) => LO + i);
+const PREFIX: Record<number, string> = { 0: '', 3: 'k', 6: 'M', 9: 'G', 12: 'T' };
+const force = (e: number) => `${10 ** (e % 3)} ${PREFIX[e - (e % 3)]}N`;
+const speed = (v: number) =>
+  v >= 1 ? `${+v.toPrecision(2)} m/s` : v >= 1e-3 ? `${+(v * 1e3).toPrecision(2)} mm/s` : v >= 1e-6 ? `${+(v * 1e6).toPrecision(2)} µm/s` : `${+(v * 1e9).toPrecision(2)} nm/s`;
+const fmtForce = (f: number) => {
+  const e = Math.floor(Math.log10(f) / 3) * 3;
+  const p = Math.min(Math.max(e, 0), 12);
+  return `${+(f / 10 ** p).toPrecision(2)} ${PREFIX[p]}N`;
+};
+const colour = { geo: 'var(--verdigris)', sat: 'var(--cinnabar)', gated: 'var(--cinnabar)' };
+---
+<figure class="boundary">
+  <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="The force each reader needs to find the chamber, on a logarithmic scale">
+    {decades.map((e) => (
+      <g>
+        <line x1={x(10 ** e)} x2={x(10 ** e)} y1={top - 4} y2={top + readers.length * rowH} class="grid" />
+        {e % 3 === 0 && <text x={x(10 ** e)} y={top + readers.length * rowH + 16} text-anchor="middle" class="tick">{force(e)}</text>}
+        {e % 3 === 0 && <text x={x(10 ** e)} y={top + readers.length * rowH + 44} text-anchor="middle" class="tick sub">{speed(10 ** e * perN)}</text>}
+      </g>
+    ))}
+    <text x={L - 10} y={top + readers.length * rowH + 16} text-anchor="end" class="axis">vibrator force</text>
+    <text x={L - 10} y={top + readers.length * rowH + 44} text-anchor="end" class="axis">ground over the chamber</text>
+    {readers.map((r, i) => {
+      const y = top + i * rowH + rowH / 2;
+      const c = colour[r.kind];
+      return (
+        <g>
+          <text x={L - 10} y={y - 2} text-anchor="end" class="name">{r.name}</text>
+          <text x={L - 10} y={y + 11} text-anchor="end" class="sub">{r.sub}</text>
+          <line x1={L} x2={W - R} y1={y} y2={y} class="base" />
+          {r.force ? (
+            <g>
+              <rect x={x(r.force)} y={y - 5} width={W - R - x(r.force)} height="10" rx="5" fill={c} opacity={r.kind === 'gated' ? 0.35 : 0.85} />
+              <circle cx={x(r.force)} cy={y} r="6" fill="var(--sheet)" stroke={c} stroke-width="2.5" />
+              <text x={x(r.force) - 10} y={y + 4} text-anchor="end" class="value">{fmtForce(r.force)}</text>
+            </g>
+          ) : (
+            <g>
+              <line x1={L} x2={W - R} y1={y} y2={y} stroke={c} stroke-width="1.5" stroke-dasharray="3 4" opacity="0.8" />
+              <text x={W - R} y={y - 7} text-anchor="end" class="note" fill={c}>{r.note}</text>
+            </g>
+          )}
+        </g>
+      );
+    })}
+  </svg>
+  <figcaption>
+    One vibrator at the gated method’s own frequency, 30 m from the bench’s chamber, read over the same 24.6 s. Each bar starts at
+    the smallest force at which that reader tells the chamber from no chamber, nine times in ten with one false alarm in a hundred,
+    using a detector that already knows both answers: the best any method could do with those readings.
+    {control && atBound && (
+      <>
+        {' '}Run whole, the satellite’s chain follows the vibrator where its motion is modest ({Math.round(control.none.direct_motion_recovered * 100)}% of it
+        recovered at {Math.round(control.direct_los_max_m_s * 1e3)} mm/s), but at its bar’s force the reflectors move at up to{' '}
+        {atBound.direct_los_max_m_s.toFixed(1)} m/s and it keeps {Math.round(atBound.none.direct_motion_recovered * 100)}%: the satellite’s bar is a floor.
+      </>
+    )}
+  </figcaption>
+</figure>
+
+<style>
+  .boundary {
+    margin: 8px 0 4px;
+  }
+  .boundary svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  /* on a phone the chart keeps a legible size and scrolls sideways */
+  @media (max-width: 640px) {
+    .boundary {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .boundary svg {
+      min-width: 600px;
+    }
+  }
+  .grid {
+    stroke: var(--border);
+    stroke-width: 1;
+  }
+  .base {
+    stroke: var(--border-strong);
+    stroke-width: 1;
+  }
+  .tick {
+    font: 10px var(--font-mono);
+    fill: var(--muted);
+  }
+  .tick.sub {
+    font-size: 9.5px;
+  }
+  .axis {
+    font: 600 9.5px var(--font-mono);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    fill: var(--muted);
+  }
+  .name {
+    font: 600 12.5px var(--font-sans);
+    fill: var(--text);
+  }
+  .sub {
+    font: 11px var(--font-sans);
+    fill: var(--muted);
+  }
+  .value {
+    font: 600 11px var(--font-mono);
+    fill: var(--text);
+  }
+  .note {
+    font: italic 11.5px var(--font-serif);
+  }
+  figcaption {
+    font-family: var(--font-serif);
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--body);
+    margin-top: 8px;
+    max-width: 80ch;
+  }
+</style>

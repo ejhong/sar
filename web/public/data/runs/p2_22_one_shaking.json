@@ -1,0 +1,113 @@
+{
+ "manifest": {
+  "id": "p2_22_one_shaking",
+  "title": "One shaking: a vibrator beside the bench, with the chamber and without it",
+  "date": "2026-09-29",
+  "started_utc": "2026-09-29T15:16:36+00:00",
+  "runtime_s": 1473.2,
+  "commit": "110d416+",
+  "params": {
+   "site": "bench-void",
+   "frequency_hz": 10.691485,
+   "mode": 10,
+   "source_m": [
+    -30.0,
+    0.0,
+    0.0
+   ],
+   "extent_m": [
+    [
+     -150.0,
+     150.0
+    ],
+    [
+     -150.0,
+     150.0
+    ],
+    [
+     -100.0,
+     3.0
+    ]
+   ],
+   "spacing_m": 1.0,
+   "pml_cells": 20,
+   "cycles": [
+    3,
+    12
+   ],
+   "cases": {
+    "none": null,
+    "bench": {
+     "centre": [
+      0,
+      0,
+      -15
+     ],
+     "size": [
+      6,
+      6,
+      6
+     ]
+    },
+    "favourable": {
+     "centre": [
+      0,
+      0,
+      -10
+     ],
+     "size": [
+      10,
+      10,
+      10
+     ]
+    }
+   },
+   "recorded_half_m": 60.0
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  }
+ },
+ "checks": {
+  "none": {
+   "steady_change_max": 0.003627,
+   "steady_change_median": 0.003633,
+   "up_at_axis_m_s_per_n": 7.565e-12,
+   "runtime_s": 687.6
+  },
+  "bench": {
+   "steady_change_max": 0.003627,
+   "steady_change_median": 0.003633,
+   "up_at_axis_m_s_per_n": 7.584e-12,
+   "runtime_s": 415.6
+  },
+  "favourable": {
+   "steady_change_max": 0.003627,
+   "steady_change_median": 0.003633,
+   "up_at_axis_m_s_per_n": 7.647e-12,
+   "runtime_s": 370.0
+  }
+ },
+ "imprint": {
+  "bench": {
+   "max_m_s_per_n": 1.339e-13,
+   "max_relative": 0.013704,
+   "relative_at_axis": 0.004684,
+   "half_max_radius_m": 18.681542,
+   "up_max_m_s_per_n": 1.339e-13
+  },
+  "favourable": {
+   "max_m_s_per_n": 6.222e-13,
+   "max_relative": 0.064958,
+   "relative_at_axis": 0.014386,
+   "half_max_radius_m": 14.866069,
+   "up_max_m_s_per_n": 6.222e-13
+  }
+ },
+ "frequency_hz": 10.691485,
+ "finding": "A vertical vibrator 30 m west of the chamber's axis, at 10.69 Hz, moves the ground over the axis by 7.6 x 10^-12 m/s per newton of force. The bench's chamber (6 m, 15 m down) changes the surface motion by at most 1.4% of it (1.3 x 10^-13 m/s per newton), within 19 m of its axis at half that; the favourable chamber (10 m, roof 5 m down) by 6.5% (6.2 x 10^-13 m/s per newton). The motion is steady: successive windows differ by at most 0.4% of its largest value."
+}

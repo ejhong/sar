@@ -6,15 +6,16 @@ import Timeline from '../components/Timeline.astro';
 import Figure from '../components/Figure.astro';
 import LineChart from '../components/LineChart.astro';
 import SizeLadder from '../components/SizeLadder.astro';
-import UnderworldViewer from '../components/UnderworldViewer.astro';
 import Sci from '../components/Sci.astro';
+import Boundary from '../components/Boundary.astro';
+import every from '../../public/data/runs/p2_23_every_reader.json';
+import routes from '../../public/data/runs/p2_11_every_way_in.json';
 import chain from '../../public/data/runs/p2_07_whole_chain.json';
 import sees from '../../public/data/runs/p2_03_what_a_dwell_sees.json';
 import imp from '../../public/data/runs/p2_04_chamber_imprint.json';
 import bud from '../../public/data/runs/p2_05_budget.json';
 import dep from '../../public/data/runs/p2_06_depth_is_frequency.json';
 import lib from '../../public/data/ambient.json';
-import bench from '../../public/data/runs/p2_20_bench_gated.json';
 import labKhafre from '../../public/data/runs/lab_khafre.json';
 import type { TourStop } from '../viewer/Underworld';
 
@@ -81,19 +82,6 @@ const [sx0, sx1] = g.section_azimuth_m as number[];
 const roomX = (100 * (-3 - sx0)) / (sx1 - sx0);
 const roomW = (100 * 6) / (sx1 - sx0);
 const roomY = (100 * 12) / zmax;
-// P2-20: the stricter gated reconstruction over the same bench, the chamber at its real level and boosted
-type BChange = { positions_changed: number; positions_changed_near: number };
-const bR = bench.results as unknown as Record<string, { p1?: BChange }>;
-const bShare = bench.near_share as number;
-const bGathers = (r?: BChange) => !!r && r.positions_changed_near >= 5 && r.positions_changed_near > 3 * bShare * r.positions_changed;
-const bFirst = ['with', 'boost_1e4', 'boost_1e8'].find((k) => bGathers(bR[k].p1));
-const bSentence =
-  bFirst === undefined
-    ? 'A stricter version of the method, run unchanged on the same ground, is no different: what it draws does not gather over the room, even with the room’s signal made a hundred million times stronger.'
-    : bFirst === 'with'
-      ? 'A stricter version of the method, run unchanged on the same ground, draws changes over the room.'
-      : `A stricter version of the method, run unchanged on the same ground, draws changes over the room only once the room’s signal is made ${bFirst === 'boost_1e4' ? 'ten thousand' : 'a hundred million'} times stronger.`;
-
 // the stricter reconstruction, run unchanged (P2-20, P2-21, the lab's Khafre run)
 const lk = labKhafre.results as unknown as Record<string, { supported_positions: Record<string, number> }>;
 const oneIn = Math.round(9595 / lk.real.supported_positions['1']);
@@ -104,6 +92,21 @@ const survives = Object.values(import.meta.glob('../../public/data/runs/p2_21_wh
   | undefined;
 const svP = survives?.results.ew22_ew25.real;
 const survivesPass = svP ? svP.ratio > 1.5 && svP.same_depth_share > svP.same_depth_chance_p95 : undefined;
+// the decisive benchmark (P2-23): one vibrator, geophones against the satellite
+const e23 = every as unknown as {
+  geophones: Record<string, { bench: { force_n: number } }>;
+  satellite: { reflectors: { bench: { force_n: number; ground_up_m_s: number } }; natural: { brightest_db: number | null } };
+};
+const geoF = e23.geophones.kottamya_median.bench.force_n;
+const satF = e23.satellite.reflectors.bench.force_n;
+const timesMore = satF / geoF;
+const kn = (f: number) => `${Math.round(f / 1e3).toLocaleString('en-US')} kN`;
+const millions = (x: number) => (x >= 1e6 ? `${Math.round(x / 1e6).toLocaleString('en-US')} million` : Math.round(x).toLocaleString('en-US'));
+// what reaches below the surface, and what the seasons do (P2-11)
+const bands = (routes as unknown as { A_penetration: { bands: { id: string; sand_penetration_m: number }[] } }).A_penetration.bands;
+const sand = (id: string) => bands.find((b) => b.id === id)!.sand_penetration_m;
+const seasons = (routes as unknown as { C_between_passes: { rooms: { bench: { heat: { breathing_over_imprint: number } } } } }).C_between_passes.rooms.bench.heat
+  .breathing_over_imprint;
 
 const stops: TourStop[] = [
   { site: 'bench-shafts', caption: '<b>Test bench</b>Twelve burial shafts, 5 to 30 m deep, in fractured limestone: the scale of Giza’s cemeteries.' },
@@ -127,14 +130,35 @@ const explore = [
     <section id="found" class="found">
       <div class="words">
         <p class="label">What we found</p>
-        <h2>Instruments on the ground find the chamber; the satellite methods tested here do not</h2>
+        <h2>Shaken by one vibrator, geophones find the chamber with {kn(geoF)} of force; the satellite would need {millions(timesMore)} times more</h2>
         <p>
-          We built ground whose contents we know, flew the real satellite over it in simulation, and read it with geophones
-          and with the satellite. The published method draws the same picture with the chamber and without it. {bSentence}{' '}
-          {survivesPass === false &&
-            'Across Khafre, what the stricter version draws does not survive a change from one satellite pass to another: each picture belongs to its image, not to the ground. '}
-          The steps below show how we know, and which parts rest on models.
+          We built ground with a room in it, shook it with a vibrator, and read the same shaking with geophones and with a
+          satellite, giving the satellite every advantage: corner reflectors laid over the room and a detector that already
+          knows both answers. The whole comparison is simulated on the real satellite’s geometry.
         </p>
+      </div>
+      <div class="wide"><Boundary /></div>
+      <div class="verdicts">
+        <div class="verdict">
+          <p class="verdict-label">The published method, as it stands</p>
+          <h3>Its pictures come from the image and the processing, not from what lies below</h3>
+          <ul>
+            <li>Its “depth” is a frequency of the processing, whatever is underground.</li>
+            <li>Over a known room it draws the same picture with the room and without it; so does the stricter version.</li>
+            <li>Its patterns appear in motionless copies of an image and over open ground.</li>
+            {survivesPass === false && <li>What it draws across Khafre changes from one satellite pass to the next.</li>}
+          </ul>
+        </div>
+        <div class="verdict">
+          <p class="verdict-label">Can an underworld viewer be built?</p>
+          <h3>Yes, with the right instrument for the depth</h3>
+          <ul>
+            <li><b>Instruments on the ground</b> find the room: travel times, echoes, whole waveforms, and the vibrator above.</li>
+            <li><b>Long-wavelength radar</b> reaches about {sand('L')} m into the driest sand at L band and {sand('P')} m at P band (X band: {Math.round(sand('X') * 100)} cm); shuttle radar found buried valleys under the Sahara that way.</li>
+            <li><b>Many satellite passes</b> measure ground that moves, as over voids that sink or collapse; a stable room in rock moves the ground {Math.round(seasons)} times less than the ground’s own seasons do.</li>
+            <li><b>One X-band image</b> of ordinary ground: no route we could find, and none in the physics we modelled.</li>
+          </ul>
+        </div>
       </div>
     </section>
   </div>
@@ -185,10 +209,13 @@ const explore = [
         <h2>We built the ground, so we know exactly what is in it</h2>
         <p>
           Solid limestone, like the Giza plateau, with one air-filled room in it: 6 metres on each side, its centre 15
-          metres down. Because we made it, any method’s answer can be checked against the truth. Drag to turn it.
+          metres down. Because we made it, any method’s answer can be checked against the truth.
         </p>
       </div>
-      <div class="viewer-frame"><UnderworldViewer mode="embed" initial="bench-void" /></div>
+      <a class="still" href={`${base}/underworld/#bench-void`}>
+        <img src={`${base}/img/explore/bench-void.jpg`} alt="The one-chamber bench in the lab" loading="lazy" />
+        <span>Open it in the lab, where it turns and every instrument’s picture sits beside the truth →</span>
+      </a>
     </section>
 
     <section id="trembling" class="step">
@@ -208,7 +235,7 @@ const explore = [
           series={[{ name: 'up and down', x: gt.t_s as number[], y: (gt.up_m_s as number[]).map(um), color: 'var(--ochre)', width: 1.8 }]}
           xLabel="seconds"
           yLabel="µm per second"
-          height={200}
+          height={150}
           zeroLine
           directLabels={false}
           caption={`Simulated from the level measured at the nearest open seismometer, 67 km east of Giza. The largest swing here is ${round(um(trembling))} µm/s.`}
@@ -302,7 +329,7 @@ const explore = [
           ]}
           xLabel="seconds"
           yLabel="µm per second"
-          height={210}
+          height={160}
           zeroLine
           directLabels={false}
           caption={`It recovers ${Math.round(blk.gain_complex * 100)}% of the motion, though the motion is in the data: read against a copy of the same image left still, which only a simulation has, it all comes back.`}
@@ -320,29 +347,15 @@ const explore = [
           the room, and without: the same picture. The room changes the satellite’s image by{' '}
           <Sci v={chain.A_vs_B.image_relative_difference} p={0} /> of itself, and the depth picture by{' '}
           <Sci v={chain.A_vs_B.method_relative_difference} p={0} />. The streaks are the method’s own texture, and they
-          look like structure anywhere.
+          look like structure anywhere. Multiply the room’s effect {Gshow >= 1e9 ? `${Math.round(Gshow / 1e9)} billion` : Gshow.toLocaleString('en-US')}{' '}
+          times and the picture does change, but evenly at every depth ({round(spread[0])} to {round(spread[1])} times its
+          average): nothing marks the room.
         </p>
       </div>
       <div class="trio">
         <Figure compact src={fig('method_A.png')} alt="The method's depth picture with the chamber" label="With the room" caption="" aspect="4 / 5" x="along the ground, 90 m" yTop="0 m" yBottom={`${zmax.toFixed(1)} m`}><svg viewBox="0 0 100 100" preserveAspectRatio="none"><rect x={roomX} y={roomY} width={roomW} height={100 - roomY + 2} fill="none" stroke="#82b3ff" stroke-width="0.5" stroke-dasharray="1.6 1.1" vector-effect="non-scaling-stroke" /></svg></Figure>
         <Figure compact src={fig('method_B.png')} alt="The method's depth picture without the chamber: the same" label="Without the room" caption="" aspect="4 / 5" x="along the ground, 90 m" yTop="0 m" yBottom={`${zmax.toFixed(1)} m`}><svg viewBox="0 0 100 100" preserveAspectRatio="none"><rect x={roomX} y={roomY} width={roomW} height={100 - roomY + 2} fill="none" stroke="#82b3ff" stroke-width="0.5" stroke-dasharray="1.6 1.1" vector-effect="non-scaling-stroke" /></svg></Figure>
         <Figure compact src={fig('method_difference.png')} alt="The difference between the two: nothing" label="The difference" caption="" aspect="4 / 5" x="along the ground, 90 m" yTop="0 m" yBottom={`${zmax.toFixed(1)} m`}><svg viewBox="0 0 100 100" preserveAspectRatio="none"><rect x={roomX} y={roomY} width={roomW} height={100 - roomY + 2} fill="none" stroke="#82b3ff" stroke-width="0.5" stroke-dasharray="1.6 1.1" vector-effect="non-scaling-stroke" /></svg></Figure>
-      </div>
-      <div class="pair lead-fig">
-        <Figure src={fig('method_boosted.png')} alt="The depth picture with the chamber's effect multiplied ten billion times" label={`The room’s effect × ${Gshow >= 1e9 ? `${Math.round(Gshow / 1e9)} billion` : Gshow.toLocaleString('en-US')}`} caption="The dashed outline is the room; its top is 12 m down, and the picture’s depth scale ends at 13.4 m." aspect="4 / 5" x="along the ground, 90 m" yTop="0 m" yBottom={`${zmax.toFixed(1)} m`}><svg viewBox="0 0 100 100" preserveAspectRatio="none"><rect x={roomX} y={roomY} width={roomW} height={100 - roomY + 2} fill="none" stroke="#82b3ff" stroke-width="0.5" stroke-dasharray="1.6 1.1" vector-effect="non-scaling-stroke" /></svg></Figure>
-        <div class="aside-card">
-          <p class="big">×10 billion</p>
-          <p>
-            That is how much the room’s effect must be multiplied before the picture changes visibly over it. Even then
-            the change is spread evenly down the whole picture ({round(spread[0])} to {round(spread[1])} times its
-            average at every depth): the texture is shuffled, and nothing marks the room.
-          </p>
-          <p class="fine">
-            With the published settings the picture’s depth scale ends at {zmax.toFixed(1)} m, above our room. The setting
-            that fixes the scale, a declared “sound wavelength”, only relabels the same picture: another choice would
-            label it down to 650 m without changing a pixel.
-          </p>
-        </div>
       </div>
     </section>
 
@@ -366,7 +379,7 @@ const explore = [
           ]}
           xLabel="wobbles per second"
           yLabel="metres of “depth”"
-          height={220}
+          height={160}
           directLabels={false}
           caption={`Past ${(fs / 2).toFixed(0)} wobbles a second the scale folds back. Giza’s ground rings at 0.6 a second, which the method would draw at ${fold(0.6).toFixed(1)} m; Khufu’s pyramid sways at 2.3, drawn at ${fold(2.3).toFixed(1)} m.`}
         />
@@ -392,7 +405,7 @@ const explore = [
           ]}
           xLabel="seconds"
           yLabel="µm per second"
-          height={220}
+          height={160}
           zeroLine
           directLabels={false}
           caption={`The seismometer’s trace swings by ${round(um(cmp.seismometer_rms_m_s))} µm/s; the satellite’s readings scatter by ${Math.round(um(cmp.satellite_rms_m_s))} µm/s.`}
@@ -422,38 +435,38 @@ const explore = [
         <h2>Could anything change the answer?</h2>
       </div>
       <div class="qa">
-        <div class="q">
-          <h3>What if the ground shook harder?</h3>
+        <details class="q">
+          <summary>What if the ground shook harder?</summary>
           <p>At the most restless places on Earth the ground moves 70 times more than at Giza, and the chamber’s signal would still be millions of times too faint. A lorry close by shakes the ground harder, but faster than the satellite’s slices can follow; a slice short enough to follow it blurs the ground over 30 metres.</p>
-        </div>
-        <div class="q">
-          <h3>What about a shinier target?</h3>
+        </details>
+        <details class="q">
+          <summary>What about a shinier target?</summary>
           <p>A lone bright point is the satellite’s best case: it can follow a bright stone’s motion, even a metal reflector placed on purpose. The chamber’s signal under such a point is still {stoneShort} million times too faint for a stone and {reflectorShort} million for a reflector.</p>
-        </div>
-        <div class="q">
-          <h3>What about a cleverer way to read the image?</h3>
+        </details>
+        <details class="q">
+          <summary>What about a cleverer way to read the image?</summary>
           <p>For ordinary ground, as radar texture is usually modelled, the information is not in the picture: motion shared by a stretch of ground leaves the texture’s statistics unchanged, a property of speckle rather than of one method. Real ground departs from that model where it has bright points, which can be tracked (above); other departures would need tests of their own.</p>
-        </div>
-        <div class="q">
-          <h3>Then why do the published pictures look so convincing?</h3>
+        </details>
+        <details class="q">
+          <summary>Then why do the published pictures look so convincing?</summary>
           <p>Because the method draws such pictures from any image: over our flat simulated ground, with and without a room; over open desert on the real image; over hundreds of surveyed tombs at Giza, where it found none. Its tall columns are pixels whose reading wanders, drawn bright at every depth; the blocks at their feet sit where its depth scale repeats itself. <a href={`${base}/satellite/#pillars`}>How the pillars and boxes are made</a>.</p>
-        </div>
-        <div class="q">
-          <h3>What about stricter versions that filter out the noise?</h3>
+        </details>
+        <details class="q">
+          <summary>What about stricter versions that filter out the noise?</summary>
           <p>Later versions keep only readings that pass a row of tests. We ran one unchanged. Motionless copies of the image pass its tests too; across the pyramids it passes about one position in {oneIn}, as over open plateau; over our known room its picture changes no more with the room than with random noise of the room’s size{survivesPass === undefined ? '.' : `; and across Khafre what it draws, and at what depth, ${survivesPass ? 'survives' : 'does not survive'} a change from one satellite pass to another.`} <a href={`${base}/satellite/#gates`}>The gates, measured</a>.</p>
-        </div>
-        <div class="q">
-          <h3>Hasn’t vibration been measured from space?</h3>
+        </details>
+        <details class="q">
+          <summary>Hasn’t vibration been measured from space?</summary>
           <p>Yes, and we agree it can be. In 2026 two teams measured metal reflectors on shakers and a steel footbridge moving about a millimetre per second, checked against instruments on the ground. That is what radar does well: a bright point moving a lot. Ordinary ground trembles thirteen thousand times less at Giza, and one picture barely registers it.</p>
-        </div>
-        <div class="q">
-          <h3>Instruments on the ground find the room. Why doesn’t the satellite?</h3>
+        </details>
+        <details class="q">
+          <summary>Instruments on the ground find the room. Why doesn’t the satellite?</summary>
           <p>Because the ones that find it make their own waves. A hammer blow sends a short, sharp wave, about fifteen metres long, whose timing is known exactly; instruments pressed against the ground catch its echo from the room. The satellite has no hammer, listens for 25 seconds, and barely registers ordinary ground’s trembling.</p>
-        </div>
-        <div class="q">
-          <h3>Isn’t this only a simulation?</h3>
+        </details>
+        <details class="q">
+          <summary>Isn’t this only a simulation?</summary>
           <p>Each step is checked on the real satellite image. The real image’s own numbers reproduce the method’s “coherence” exactly; a patch of the real image made to sway is nearly invisible to the method’s reading ({Math.round(blk.gain_complex * 100)}%). The chamber’s mark and how far off it is are models, and only as good as the models are. <a href={`${base}/satellite/#settle`}>What would settle it</a>.</p>
-        </div>
+        </details>
       </div>
     </section>
 
@@ -1022,6 +1035,58 @@ const explore = [
   .found {
     padding: 56px 20px 8px;
   }
+  .found .wide {
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  .verdicts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    max-width: 960px;
+    margin: 30px auto 0;
+  }
+  .verdict {
+    background: var(--sheet);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 22px 16px;
+  }
+  .verdict-label {
+    font: 600 10.5px/1.4 var(--font-mono);
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 6px;
+  }
+  .verdict h3 {
+    font-family: var(--font-serif);
+    font-size: 19px;
+    font-weight: 500;
+    line-height: 1.25;
+    color: var(--text);
+    margin: 0 0 10px;
+  }
+  .verdict ul {
+    margin: 0;
+    padding-left: 18px;
+  }
+  .verdict li {
+    font-family: var(--font-serif);
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--body);
+    margin: 0 0 6px;
+  }
+  .verdict b {
+    font-weight: 600;
+    color: var(--text);
+  }
+  @media (max-width: 860px) {
+    .verdicts {
+      grid-template-columns: 1fr;
+    }
+  }
   .found .words .label,
   .opening .label {
     font-family: var(--font-mono);
@@ -1047,5 +1112,200 @@ const explore = [
     line-height: 1.6;
     color: var(--muted);
     margin-top: 10px;
+  }
+
+  /* one left edge for the whole page, and a compact rhythm: text and figures start at the same place; the reader
+     scrolls less */
+  .story,
+  .home {
+    --page: 1040px;
+  }
+  .opening,
+  .words,
+  .wide,
+  .pair,
+  .quad,
+  .trio,
+  .qa,
+  .ladder-wrap,
+  .still,
+  .verdicts,
+  .found .wide {
+    max-width: var(--page);
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .home {
+    max-width: calc(var(--page) + 40px);
+    padding: 0 20px;
+  }
+  .words p,
+  .opening p {
+    max-width: 760px;
+  }
+  .words h2 {
+    max-width: 880px;
+    font-size: clamp(20px, 2.2vw, 25px);
+  }
+  .words p {
+    font-size: 15.5px;
+    line-height: 1.62;
+  }
+  .words {
+    margin-bottom: 18px;
+  }
+  .step {
+    padding: 34px 20px;
+  }
+  .found {
+    padding: 40px 20px 4px;
+  }
+  .opening {
+    padding: 34px 20px 0;
+  }
+  .claim {
+    padding: 30px 0 26px;
+  }
+  .verdicts {
+    margin-top: 22px;
+  }
+  .pair,
+  .quad,
+  .trio {
+    gap: 16px;
+  }
+  .still {
+    display: grid;
+    grid-template-columns: minmax(0, 0.6fr) minmax(0, 1fr);
+    gap: 18px;
+    align-items: center;
+    text-decoration: none;
+  }
+  .still img {
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid #0b131c;
+    background: var(--night);
+  }
+  .still span {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--accent-dark);
+  }
+  details.q {
+    padding: 12px 16px;
+  }
+  details.q summary {
+    font-family: var(--font-sans);
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--text);
+    cursor: pointer;
+    list-style: none;
+  }
+  details.q summary::-webkit-details-marker {
+    display: none;
+  }
+  details.q summary::before {
+    content: '+ ';
+    color: var(--faint);
+    font-family: var(--font-mono);
+  }
+  details.q[open] summary::before {
+    content: '− ';
+  }
+  details.q p {
+    margin-top: 8px;
+  }
+  .qa {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    align-items: start;
+  }
+  @media (max-width: 860px) {
+    .still,
+    .qa {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* the box: each band pads itself so its content starts at the page's one left edge; blocks inside align left */
+  .step,
+  .found,
+  .opening {
+    padding-left: max(20px, calc((100% - var(--page)) / 2));
+    padding-right: max(20px, calc((100% - var(--page)) / 2));
+  }
+  .opening,
+  .words,
+  .wide,
+  .pair,
+  .quad,
+  .trio,
+  .qa,
+  .ladder-wrap,
+  .still,
+  .verdicts,
+  .found .wide {
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .step .wide {
+    max-width: 780px;
+  }
+  .found .wide,
+  .closing .ladder-wrap {
+    max-width: var(--page);
+  }
+
+  /* figures at the text column's scale: the story reads down one column */
+  .pair,
+  .quad {
+    max-width: 780px;
+  }
+  .trio {
+    max-width: 620px;
+  }
+  .pair.lead-fig {
+    max-width: 620px;
+  }
+  .step .wide {
+    max-width: 700px;
+  }
+  .still {
+    max-width: 780px;
+  }
+  .aside-card .big {
+    font-size: 32px;
+  }
+
+  /* each step: its words beside its pictures, so the story reads in half the height */
+  @media (min-width: 861px) {
+    .step:not(#rescue) {
+      display: grid;
+      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+      column-gap: 40px;
+      row-gap: 16px;
+      align-items: start;
+    }
+    .step:not(#rescue) > .words {
+      grid-column: 1;
+      grid-row: 1 / span 3;
+      margin-bottom: 0;
+    }
+    .step:not(#rescue) > :not(.words) {
+      grid-column: 2;
+      max-width: none;
+      width: 100%;
+    }
+    .step .words h2 {
+      font-size: clamp(19px, 1.9vw, 23px);
+    }
+    .step .words p {
+      font-size: 15px;
+    }
+    .step .trio {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
   }
 </style>

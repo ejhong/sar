@@ -442,6 +442,31 @@ investigation's record, and what it leaves open follow.
     by up to 0.43 (the chamber) and 0.50 (the null) on the method's scale of 0 to 1. An earlier version of this run
     shook the ground only at 0.2 Hz, below the band the method reads; it was stopped and replaced before publication.
 
+14. **What the gated reconstruction draws across Khafre does not survive a change of pass (P2-21).** The same square
+    (9,595 positions, 3 m apart) run three ways with the lab's command, each beside a motionless copy: the 2022 pass
+    with its lines east-west and north-south, and the 2025 pass east-west. Stated before the run: a response to what is
+    below would agree across the runs beyond chance and beyond an image's agreement with its own motionless copy. The two
+    layouts on one image share 4.9 times the chance number of passing positions, with best depths agreeing at 86% against
+    26% by chance: one image's texture decides both. The two passes share 1.33 times chance, depths agreeing at 27%
+    against 25%; the 2022 image and its own copy, which has nothing under it, share 1.32 times chance and agree in depth
+    at 38%. Nothing survives the change of pass beyond chance.
+
+15. **One shaking, read by geophones and by the satellite (P2-22, P2-23).** A vertical vibrator 30 m from the bench's
+    chamber, at the gated reconstruction's tenth mode (10.69 Hz), solved to steady state by the elastic solver with and
+    without the chamber (and with a larger, shallower one): the chamber changes the surface motion by up to 1.4% (6.5%
+    for the larger room), within about 19 m of its axis. Read over the same 24.6 s by 49 geophones in Kottamya's measured
+    ambient noise (or Peterson's high-noise model), and by the satellite on synthetic products of the 2022 geometry: 21
+    corner reflectors 50 dB over speckle laid across the chamber in ground range, tracked through 20 ms looks by a
+    tracker calibrated on reflectors of known motion (noise per quadrature 1.5 mm/s at 50 dB, 4.4 at 40 dB, 9.3 at 30 dB).
+    The favourable detector knows both answers. Geophones find the chamber with 11 kN (1.1 MN at a noisy site); the
+    satellite needs 2.5 x 10^10 N, 2.2 million times more, the ground over the chamber then moving at 19 cm/s. Open
+    plateau in the real 2022 image offers nothing to track (its brightest point 12 dB over the speckle; 33 points of
+    10 dB or more where speckle alone gives 32). Run whole, the chain recovers 99% of the vibrator's own motion where the
+    reflectors move at up to 50 mm/s (the measurement control) but only 4% at the idealised boundary force, so the
+    satellite's boundary is a floor; detecting a 0.3% change on the vibrator's motion would also need the tracker's gain
+    known to about 0.1%. Limits: one chamber, one source position and frequency, the speckle around the reflectors held
+    still, a flat bench; the record length is the dwell's, and longer geophone records would lower their boundary further.
+
 These reasons differ in kind and strength. 4 is algebraic and holds whatever the ground does: the depth axis is a
 frequency axis with a repeat and a mirror, and no validated model turns it into a physical depth. 1 and 12 are
 measured, for particular estimators and configurations; 13 is a known-truth test of one of them, on synthetic products. 2, 3 and 8 are models with stated assumptions (a small chamber

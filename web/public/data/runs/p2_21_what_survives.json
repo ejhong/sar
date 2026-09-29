@@ -1,0 +1,270 @@
+{
+ "manifest": {
+  "id": "p2_21_what_survives",
+  "title": "What survives a change of pass or of lines",
+  "date": "2026-09-29",
+  "started_utc": "2026-09-29T15:05:25+00:00",
+  "runtime_s": 0.5,
+  "commit": "c232f06",
+  "params": {
+   "runs": {
+    "ew22": "lab_khafre",
+    "ns22": "lab_khafre_ns",
+    "ew25": "lab_khafre_2025"
+   },
+   "run_commits": {
+    "ew22": "4af4a3c",
+    "ns22": "c232f06",
+    "ew25": "c232f06"
+   },
+   "pairs": [
+    [
+     "ew22",
+     "ns22",
+     "lines"
+    ],
+    [
+     "ew22",
+     "ew25",
+     "pass"
+    ],
+    [
+     "ns22",
+     "ew25",
+     "both"
+    ]
+   ],
+   "cycle_m": 6.17,
+   "shuffles": 1000,
+   "support": 1
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  }
+ },
+ "results": {
+  "ew22_ns22": {
+   "real": {
+    "positions": 9025,
+    "passing": [
+     1133,
+     1158
+    ],
+    "both": 719,
+    "chance_both": 145.375512,
+    "ratio": 4.945812,
+    "same_depth_share": 0.860918,
+    "same_depth_chance": 0.263483,
+    "same_depth_chance_p95": 0.289291
+   },
+   "twin101": {
+    "positions": 9025,
+    "passing": [
+     504,
+     494
+    ],
+    "both": 44,
+    "chance_both": 27.587368,
+    "ratio": 1.594933,
+    "same_depth_share": 0.454545,
+    "same_depth_chance": 0.323727,
+    "same_depth_chance_p95": 0.431818
+   },
+   "ew22_vs_copy": {
+    "positions": 9025,
+    "passing": [
+     1133,
+     504
+    ],
+    "both": 79,
+    "chance_both": 63.272244,
+    "ratio": 1.248573,
+    "same_depth_share": 0.316456,
+    "same_depth_chance": 0.252076,
+    "same_depth_chance_p95": 0.316456
+   },
+   "ns22_vs_copy": {
+    "positions": 9025,
+    "passing": [
+     1158,
+     494
+    ],
+    "both": 84,
+    "chance_both": 63.385263,
+    "ratio": 1.325229,
+    "same_depth_share": 0.452381,
+    "same_depth_chance": 0.274798,
+    "same_depth_chance_p95": 0.345833
+   },
+   "what": "lines"
+  },
+  "ew22_ew25": {
+   "real": {
+    "positions": 9595,
+    "passing": [
+     1218,
+     650
+    ],
+    "both": 110,
+    "chance_both": 82.511725,
+    "ratio": 1.333144,
+    "same_depth_share": 0.272727,
+    "same_depth_chance": 0.247555,
+    "same_depth_chance_p95": 0.3
+   },
+   "twin101": {
+    "positions": 9595,
+    "passing": [
+     539,
+     420
+    ],
+    "both": 34,
+    "chance_both": 23.593538,
+    "ratio": 1.441073,
+    "same_depth_share": 0.264706,
+    "same_depth_chance": 0.164206,
+    "same_depth_chance_p95": 0.264706
+   },
+   "ew22_vs_copy": {
+    "positions": 9595,
+    "passing": [
+     1218,
+     539
+    ],
+    "both": 90,
+    "chance_both": 68.421261,
+    "ratio": 1.315381,
+    "same_depth_share": 0.377778,
+    "same_depth_chance": 0.258844,
+    "same_depth_chance_p95": 0.322222
+   },
+   "ew25_vs_copy": {
+    "positions": 9595,
+    "passing": [
+     650,
+     420
+    ],
+    "both": 61,
+    "chance_both": 28.452319,
+    "ratio": 2.143938,
+    "same_depth_share": 0.360656,
+    "same_depth_chance": 0.192672,
+    "same_depth_chance_p95": 0.278689
+   },
+   "what": "pass"
+  },
+  "ns22_ew25": {
+   "real": {
+    "positions": 9025,
+    "passing": [
+     1158,
+     621
+    ],
+    "both": 118,
+    "chance_both": 79.680665,
+    "ratio": 1.480911,
+    "same_depth_share": 0.330508,
+    "same_depth_chance": 0.249636,
+    "same_depth_chance_p95": 0.305085
+   },
+   "twin101": {
+    "positions": 9025,
+    "passing": [
+     494,
+     399
+    ],
+    "both": 21,
+    "chance_both": 21.84,
+    "ratio": 0.961538,
+    "same_depth_share": 0.238095,
+    "same_depth_chance": 0.215143,
+    "same_depth_chance_p95": 0.333333
+   },
+   "ns22_vs_copy": {
+    "positions": 9025,
+    "passing": [
+     1158,
+     494
+    ],
+    "both": 84,
+    "chance_both": 63.385263,
+    "ratio": 1.325229,
+    "same_depth_share": 0.452381,
+    "same_depth_chance": 0.276964,
+    "same_depth_chance_p95": 0.357143
+   },
+   "ew25_vs_copy": {
+    "positions": 9025,
+    "passing": [
+     621,
+     399
+    ],
+    "both": 59,
+    "chance_both": 27.454737,
+    "ratio": 2.148992,
+    "same_depth_share": 0.372881,
+    "same_depth_chance": 0.192966,
+    "same_depth_chance_p95": 0.271186
+   },
+   "what": "both"
+  }
+ },
+ "finding": "Across Khafre, the gated reconstruction's lines laid north-south instead of east-west pass 1,158 positions against 1,133; 719 pass both ways, 4.95 times what chance gives, and at 86% of those the best depths agree within half a cycle, against 26% by chance. The 2025 pass passes 650; 110 of its positions pass in 2022 too, 1.33 times chance, their best depths agreeing at 27% against 25%. For scale, the 2022 image and its own motionless copy, which keeps only its smoothed brightness and has nothing under it, share 1.32 times chance and agree in depth at 38%. What passes, and at what depth, does not survive a change of pass beyond chance.",
+ "grids": {
+  "ew22_ns22": {
+   "x": [
+    -141.0,
+    141.0,
+    95
+   ],
+   "y": [
+    -141.0,
+    141.0,
+    95
+   ],
+   "z": [
+    208.399994,
+    -235.600006,
+    149
+   ]
+  },
+  "ew22_ew25": {
+   "x": [
+    -150.0,
+    150.0,
+    101
+   ],
+   "y": [
+    -141.0,
+    141.0,
+    95
+   ],
+   "z": [
+    208.399994,
+    -235.600006,
+    149
+   ]
+  },
+  "ns22_ew25": {
+   "x": [
+    -141.0,
+    141.0,
+    95
+   ],
+   "y": [
+    -141.0,
+    141.0,
+    95
+   ],
+   "z": [
+    208.399994,
+    -235.600006,
+    149
+   ]
+  }
+ }
+}

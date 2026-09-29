@@ -113,7 +113,9 @@ export function geophoneMethods(s: SiteScene): Method[] {
       name: 'The waves they record',
       dot: 'wave',
       quantity: 'wave motion',
-      line: 'a hammer blow spreading through the ground, and what the chamber sends back',
+      line: waves.some((w) => w.id.startsWith('vibrator'))
+        ? 'a hammer blow, a steady vibrator, and what the chamber sends back or changes'
+        : 'a hammer blow spreading through the ground, and what the chamber sends back',
       choices: waves.map((w) => ({ id: w.id, kind: 'wave', input: w.label, control: false, sub: w.caption, threshold: 0 })),
     });
   const groups = new Map<string, VolumeInfo[]>();
@@ -222,12 +224,22 @@ export function satelliteMethods(s: SiteScene): Method[] {
         id: v.id,
         kind: 'volume',
         area: plateau ? 'Open plateau' : area,
-        pass: r.kind === 'bench' ? undefined : `${g.date} pass`,
+        pass: r.kind === 'bench' ? (v.shaking === 'vibrator' ? 'A vibrator, 30 m away' : v.shaking ? 'Giza’s own shaking' : undefined) : `${g.date} pass`,
         lines: r.kind === 'bench' ? undefined : 'East–west lines',
         input,
         control: plateau || control,
         support: v.support,
-        sub: plateau ? 'the same raster over open plateau, where no monument stands' : v.case === 'real' ? `the ${g.date} image, through the unchanged code` : sub,
+        sub: plateau
+          ? 'the same raster over open plateau, where no monument stands'
+          : v.case === 'real'
+            ? `the ${g.date} image, through the unchanged code`
+            : v.shaking === 'vibrator'
+              ? v.case === 'with'
+                ? 'shaken by the vibrator at the force where the reflectors’ data hold the chamber; the chamber in it'
+                : v.case === 'without'
+                  ? 'the same shaking, no chamber'
+                  : 'the same without the chamber, changed by random noise the size of the chamber’s own change'
+              : sub,
         note: g.note,
         stats,
         run: vol(v.id)?.run,

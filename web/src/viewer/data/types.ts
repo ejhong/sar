@@ -134,6 +134,8 @@ export interface RadarInfo {
       case: 'real' | 'twin' | 'plateau' | 'with' | 'without' | 'boosted' | 'null';
       support: number;
       boost?: number;
+      /** On a bench: what shook it, Giza's ambient motion (P2-20) or a vibrator beside it (P2-24). */
+      shaking?: 'ambient' | 'vibrator';
       focus?: [number, number, number];
     }[];
     focus: [number, number, number];
