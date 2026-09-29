@@ -101,15 +101,19 @@ def main():
 
         gdir = Path(__file__).resolve().parents[1] / 'data' / RID
         gdir.mkdir(parents=True, exist_ok=True)
-        (gdir / 'geometry.json').write_text(json.dumps(geom))
         prof = dict(profile)
         prof['input'] = dict(profile['input'], hdf5_path=str(m.PRODUCT), geometry_path=str(gdir / 'geometry.json'))
-        (gdir / 'profile.json').write_text(json.dumps(prof, indent=1))
+        # the pipeline's own outputs are reused only when its inputs are byte for byte what this run would give it
+        text_geom, text_prof = json.dumps(geom), json.dumps(prof, indent=1)
+        same_inputs = ((gdir / 'geometry.json').exists() and (gdir / 'geometry.json').read_text() == text_geom
+                       and (gdir / 'profile.json').exists() and (gdir / 'profile.json').read_text() == text_prof)
+        (gdir / 'geometry.json').write_text(text_geom)
+        (gdir / 'profile.json').write_text(text_prof)
 
         gated = m.load_gated()
         original = gated.load_source_and_preflight
         gated.render_tomograms = lambda *a, **k: None                   # the 95-panel summary figure only
-        results, focus = {}, {}
+        results, focus, reused = {}, {}, {}
         for case in CASES:
             def wrapped(config, config_path, case=case):
                 out = list(original(config, config_path))
@@ -117,8 +121,14 @@ def main():
                     out[7] = motionless_twin(out[7], np.random.default_rng(int(case[4:])))
                 return tuple(out)
             gated.load_source_and_preflight = wrapped
-            gated.run_full(prof, gdir / 'profile.json', gdir / case)
-            audit = np.load(gdir / case / 'biondi_v1_8_audit.npz')
+            saved = gdir / case / 'biondi_v1_8_audit.npz'
+            if same_inputs and saved.exists():
+                made = json.loads((gdir / case / 'manifest.json').read_text())
+                reused[case] = {'audit_sha256': m.sha256(saved), 'pipeline_run_created': made.get('created_utc'),
+                                'geometry_sha256': made.get('geometry_sha256'), 'config_sha256': made.get('config_sha256')}
+            else:
+                gated.run_full(prof, gdir / 'profile.json', gdir / case)
+            audit = np.load(saved)
             z_m = audit['z_m']
             focus[case] = {P: audit[f'focus_p{P}'] for P in SUPPORTS}              # [lines, 101, depths]
             results[case] = {
@@ -138,7 +148,7 @@ def main():
             for P in SUPPORTS:
                 vols[f'{case}_p{P}'] = curtains_to_volume(focus[case][P], z_m, z_surf, zc)
         X, Y, Z = np.meshgrid(cx + xs[::-1], cy + ys, zc, indexing='ij')
-        feats = [f for f in load_site('giza')['features'] if f['id'].startswith('khufu')]
+        feats = [f for f in sc['features'] if f['id'].startswith('khufu')]
         inside = np.zeros(X.shape, bool)
         for f in feats:
             inside |= box_mask(f, X, Y, Z)
@@ -167,7 +177,7 @@ def main():
             f"on average against {fmt(s1r['mean_score_same_depths_elsewhere'])} at the same depths elsewhere (the twin: "
             f"{fmt(s1t['mean_score_in_chambers'])} and {fmt(s1t['mean_score_same_depths_elsewhere'])}), with "
             f"{s1r['chamber_voxels_with_score']} of {s1r['chamber_voxels']} chamber voxels holding any score.")
-        run.save({'results': results, 'stats': stats, 'grid': {'x0': float(cx + xs[-1]), 'y0': float(cy + ys[0]),
+        run.save({'results': results, 'stats': stats, 'reused_pipeline_outputs': reused, 'grid': {'x0': float(cx + xs[-1]), 'y0': float(cy + ys[0]),
                   'z_top': z_top, 'step_m': STEP_M, 'shape': list(vols['real_p1'].shape)},
                   'chambers': [f['id'] for f in feats], 'finding': finding})
         print(finding)
