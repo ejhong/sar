@@ -285,6 +285,26 @@ def export_khufu_gated(out: Path = DATA) -> dict | None:
                 'range': [0.0, 1.0], 'run': run, 'tint': 'gated',
                 'caption': 'fit scores, unsmoothed; empty where nothing passed'}, ztop=float(z[keep][0])))
             entries.append({'id': vid, 'case': short, 'support': int(P)})
+    # the same raster over open plateau (P2-17), where no monument stands: the in-image control
+    cpath = RESULTS / 'p2_17_plateau_control' / 'volumes.npz'
+    if cpath.exists():
+        c = load('p2_17_plateau_control')
+        w = np.load(cpath)
+        cx_, cy_ = c['manifest']['params']['centre_m']
+        ckeep = w['z'] >= sc['extent']['z'][0] + h / 2
+        crun = f"p2_17_plateau_control · {c['manifest']['date']} · {c['manifest']['commit']}"
+        for P in c['manifest']['params']['supports']:
+            V = w[f'real_p{P}'].astype(np.float32)[:, :, ckeep]
+            u8 = np.where(np.isfinite(V), 1 + np.round(254 * np.clip(np.nan_to_num(V, nan=0.0), 0, 1)), 0).astype(np.uint8)
+            vid = f'radar-khufu-gated-plateau-p{P}'
+            vols.append(_write_volume(d, vid, V, u8, [float(w['x'][0]), float(w['y'][0])], h, {
+                'label': f'Satellite · the gated reconstruction over open plateau, support {P}',
+                'method': "The same raster as at Khufu, laid on open plateau south-west of Menkaure, through the same unchanged code",
+                'quantity': 'conditional adjusted R2 at each nominal depth below the surface', 'units': '0 to 1',
+                'range': [0.0, 1.0], 'run': crun, 'tint': 'gated',
+                'caption': 'the in-image control: no monument stands here'}, ztop=float(w['z'][ckeep][0])))
+            entries.append({'id': vid, 'case': 'plateau', 'support': int(P),
+                            'focus': [cx_, cy_, float(np.median(w['z_surface']))]})
     _merge_volumes(d, vols, drop=lambda q: q['id'].startswith('radar-khufu-gated'))
     radar = json.loads(rj.read_text())
     kh = next(t for t in sc['structures'] if t['id'] == 'khufu')['shape']

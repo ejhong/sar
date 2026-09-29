@@ -127,7 +127,7 @@ export interface RadarInfo {
   gated?: {
     title: string;
     date: string;
-    volumes: { id: string; case: 'real' | 'twin'; support: number }[];
+    volumes: { id: string; case: 'real' | 'twin' | 'plateau'; support: number; focus?: [number, number, number] }[];
     focus: [number, number, number];
     radius_m: number;
     chambers?: { real: [number | null, number | null]; twin: [number | null, number | null] };

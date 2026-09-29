@@ -188,7 +188,8 @@ export class Underworld {
     this.setMode(available.includes(this.mode) ? this.mode : 'truth', this.item[this.mode]);
     const g = scene.radar?.gated;
     // a gated reconstruction's volume is small beside the site: open on it, not on the whole block
-    if (this.mode === 'satellite' && g && g.volumes.some((v) => v.id === this.item.satellite)) this.frameOn(g.focus, g.radius_m, animate);
+    const gsel = g?.volumes.find((v) => v.id === this.item.satellite);
+    if (this.mode === 'satellite' && g && gsel) this.frameOn(gsel.focus ?? g.focus, g.radius_m, animate);
     else this.frame(animate);
     this.setLoading(false);
   }
@@ -232,7 +233,9 @@ export class Underworld {
         const which = item === 'none' || allowed.includes(item ?? '') ? item! : was && (was === 'none' || allowed.includes(was)) ? was : first;
         this.item.satellite = which;
         b.showVolume(which === 'none' ? null : which);
-        focusGated = gated.includes(which) && (!gated.includes(was ?? '') || refit);
+        const gg = s.radar.gated;
+        const at = (id?: string) => JSON.stringify(gg?.volumes.find((g) => g.id === id)?.focus ?? gg?.focus);
+        focusGated = gated.includes(which) && (!gated.includes(was ?? '') || refit || at(which) !== at(was));
       } else {
         const which = item === 'with' || item === 'without' ? item : this.item.satellite === 'without' ? 'without' : 'with';
         this.item.satellite = which;
@@ -259,7 +262,7 @@ export class Underworld {
     this.writeHash();
     if (!this.opts.tour) {
       const g = s.radar?.gated;
-      if (focusGated && g) this.frameOn(g.focus, g.radius_m);
+      if (focusGated && g) this.frameOn(g.volumes.find((v) => v.id === this.item.satellite)?.focus ?? g.focus, g.radius_m);
       else if (refit) this.frame(true);
     }
     this.engine.poke();
@@ -416,10 +419,10 @@ export class Underworld {
       ? `<div class="uw-subhead">${esc(gv.title)}</div>
       <p class="uw-ctx-note">${esc(gv.note)}</p>
       ${[...gv.volumes]
-        .sort((a, b) => a.support - b.support || (a.case === 'real' ? -1 : 1))
+        .sort((a, b) => a.support - b.support || ['real', 'twin', 'plateau'].indexOf(a.case) - ['real', 'twin', 'plateau'].indexOf(b.case))
         .map(
           (g) => `<label class="uw-radio"><input type="radio" name="sat-vol" value="${g.id}" ${g.id === which ? 'checked' : ''}/>
-        <span><span class="uw-opt-name">${g.case === 'real' ? 'The real image' : 'A motionless copy'} · ${g.support === 1 ? 'one position' : `${g.support} positions in a row`}</span><span class="uw-opt-sub">${g.case === 'real' ? `the ${esc(gv.date)} image, through the unchanged code` : 'the same crop with nothing moving and nothing inside'}</span></span></label>`,
+        <span><span class="uw-opt-name">${g.case === 'real' ? 'The real image' : g.case === 'twin' ? 'A motionless copy' : 'Open plateau, the same image'} · ${g.support === 1 ? 'one position' : `${g.support} positions in a row`}</span><span class="uw-opt-sub">${g.case === 'real' ? `the ${esc(gv.date)} image, through the unchanged code` : g.case === 'twin' ? 'the same crop with nothing moving and nothing inside' : 'the same raster south-west of Menkaure, where no monument stands'}</span></span></label>`,
         )
         .join('')}
       ${gv.chambers ? `<p class="uw-ctx-note">Inside the surveyed chambers and passages (blue) the real image scores ${fmt(gv.chambers.real[0])} on average, against ${fmt(gv.chambers.real[1])} at the same depths elsewhere; the motionless copy ${fmt(gv.chambers.twin[0])} and ${fmt(gv.chambers.twin[1])}.</p>` : ''}`

@@ -1,0 +1,64 @@
+{
+ "manifest": {
+  "id": "p2_17_plateau_control",
+  "title": "The same raster over open plateau: an in-image control for P2-16",
+  "date": "2026-09-29",
+  "started_utc": "2026-09-29T04:13:45+00:00",
+  "runtime_s": 963.0,
+  "commit": "96d5a6a",
+  "params": {
+   "acquisition": "giza-20220715",
+   "gated_module_sha256": "3e1154c11274b896b91e262198576ffd750732709ad08ac00c6892c4ea5e1b1d",
+   "gated_profile_sha256": "ae84cade31f7e5ffa9b4daa0eba152649d2afc7f1655415bad38553f4f4d69aa",
+   "centre_m": [
+    -470.0,
+    -600.0
+   ],
+   "lines": 95,
+   "positions_per_line": 101,
+   "step_m": 3.0,
+   "geoid_m": 15.5,
+   "supports": [
+    1,
+    4
+   ]
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  }
+ },
+ "supported_positions": {
+  "1": 1059,
+  "4": 0
+ },
+ "stats": {
+  "real_p1": {
+   "voxels_with_score": 105940,
+   "share_above_0_5": 0.005626
+  },
+  "real_p4": {
+   "voxels_with_score": 0,
+   "share_above_0_5": null
+  }
+ },
+ "khufu_supported_positions": {
+  "1": 1355,
+  "4": 4
+ },
+ "grid": {
+  "x0": -620.0,
+  "y0": -741.0,
+  "z_top": 87.2275,
+  "step_m": 3.0,
+  "shape": [
+   101,
+   95,
+   110
+  ]
+ },
+ "finding": "Laid on open plateau south-west of Menkaure, the P2-16 raster passes 1,059 positions at a support of one and 0 at four in the real 2022 image, against 1,355 and 4 across the Great Pyramid; its volume at support one fills 105,940 voxels."
+}

@@ -210,5 +210,59 @@
   "run": "p2_16_khufu_volume \u00b7 2026-09-29 \u00b7 d8a0060",
   "tint": "gated",
   "caption": "fit scores, unsmoothed; empty where nothing passed"
+ },
+ {
+  "id": "radar-khufu-gated-plateau-p1",
+  "status": "radar",
+  "file": "vol-radar-khufu-gated-plateau-p1.u8",
+  "shape": [
+   101,
+   95,
+   69
+  ],
+  "origin": [
+   -620.0,
+   -741.0,
+   87.2275
+  ],
+  "spacing": 3.0,
+  "label": "Satellite \u00b7 the gated reconstruction over open plateau, support 1",
+  "method": "The same raster as at Khufu, laid on open plateau south-west of Menkaure, through the same unchanged code",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "p2_17_plateau_control \u00b7 2026-09-29 \u00b7 96d5a6a",
+  "tint": "gated",
+  "caption": "the in-image control: no monument stands here"
+ },
+ {
+  "id": "radar-khufu-gated-plateau-p4",
+  "status": "radar",
+  "file": "vol-radar-khufu-gated-plateau-p4.u8",
+  "shape": [
+   101,
+   95,
+   69
+  ],
+  "origin": [
+   -620.0,
+   -741.0,
+   87.2275
+  ],
+  "spacing": 3.0,
+  "label": "Satellite \u00b7 the gated reconstruction over open plateau, support 4",
+  "method": "The same raster as at Khufu, laid on open plateau south-west of Menkaure, through the same unchanged code",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "p2_17_plateau_control \u00b7 2026-09-29 \u00b7 96d5a6a",
+  "tint": "gated",
+  "caption": "the in-image control: no monument stands here"
  }
 ]

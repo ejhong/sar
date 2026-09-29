@@ -19,6 +19,7 @@ import gates from '../../public/data/runs/p2_13_gates.json';
 import own from '../../public/data/runs/p2_14_own_lines.json';
 import resp from '../../public/data/runs/p2_15_pair_response.json';
 import khufu from '../../public/data/runs/p2_16_khufu_volume.json';
+import plateau from '../../public/data/runs/p2_17_plateau_control.json';
 import passive from '../../public/data/runs/p1_04_ambient.json';
 import echo from '../../public/data/runs/p1_03_scattered.json';
 import Figure from '../components/Figure.astro';
@@ -232,6 +233,8 @@ const kLift = (st: KStat) => (st.mean_score_in_chambers ?? 0) - (st.mean_score_s
 const kHigher = kLift(kR1) > 0.05;
 const kLikeCopy = Math.abs(kRes.real.supported_positions['1'] - kRes.twin101.supported_positions['1']) < 0.5 * kRes.real.supported_positions['1'];
 const kFmt = (v: number | null) => (v === null ? '–' : v.toFixed(2));
+const kP = plateau.supported_positions as unknown as Record<string, number>;
+const kPV = (plateau.stats as unknown as Record<string, { voxels_with_score: number }>).real_p1.voxels_with_score;
 const kHeading = `Across the whole Great Pyramid, the gated reconstruction’s scores ${kHigher ? 'run higher' : 'are no higher'} inside the surveyed chambers than at the same depths elsewhere${kLikeCopy ? ', and a motionless copy draws a volume of the same kind' : ''}`;
 ---
 <Doc
@@ -793,11 +796,14 @@ const kHeading = `Across the whole Great Pyramid, the gated reconstruction’s s
           <tbody>
             <tr><td>the real image</td><td class="num">{kRes.real.supported_positions['1'].toLocaleString('en-US')}</td><td class="num">{kRes.real.supported_positions['4']}</td><td class="num">{kR1.voxels_with_score.toLocaleString('en-US')}</td></tr>
             <tr><td>a motionless copy</td><td class="num">{kRes.twin101.supported_positions['1'].toLocaleString('en-US')}</td><td class="num">{kRes.twin101.supported_positions['4']}</td><td class="num">{kT1.voxels_with_score.toLocaleString('en-US')}</td></tr>
+            <tr><td>open plateau, the same image (P2-17)</td><td class="num">{kP['1'].toLocaleString('en-US')}</td><td class="num">{kP['4']}</td><td class="num">{kPV.toLocaleString('en-US')}</td></tr>
           </tbody>
         </table>
         <p>Of {(khufu.manifest.params.lines * khufu.manifest.params.positions_per_line).toLocaleString('en-US')} positions, those that pass at
         a support of one hang full depth profiles, so the volume shows columns banded every few metres, the fit’s own cycle,
-        wherever a position passed; at the method’s own support of four almost nothing passes.</p>
+        wherever a position passed; at the method’s own support of four almost nothing passes. The same raster laid on open
+        plateau south-west of Menkaure, where no monument stands, passes nearly as much as the pyramid and far more than the
+        copy: the real image’s texture, not the pyramid, sets how much passes.</p>
       </div>
       <div class="note-card">
         <span class="tag measured">a known-chamber check · P2-16</span>
@@ -812,6 +818,7 @@ const kHeading = `Across the whole Great Pyramid, the gated reconstruction’s s
       </div>
     </div>
     <RunDetails manifest={khufu.manifest} />
+    <RunDetails manifest={plateau.manifest} />
   </section>
 
   <section id="sensors">
