@@ -8,6 +8,13 @@ import type { Wavefield } from './scene/Wavefield';
 import { featureDepth, fmtM } from './ui/format';
 
 export type Mode = 'truth' | 'recovered' | 'waves' | 'satellite';
+
+/** What a volume holds, said in one or two words beside its name: the truth, a material property, or a method's score. */
+function badge(v: { status: string; tint?: string; quantity?: string }): string {
+  const what = v.status === 'truth' ? 'the truth' : v.status === 'radar' ? (v.tint === 'gated' ? 'fit score' : 'focused power') : 'material property';
+  return `<span class="uw-badge" title="${esc(v.quantity ?? '')}">${what}</span>`;
+}
+
 const MODES: Mode[] = ['truth', 'recovered', 'waves', 'satellite'];
 
 export interface TourStop {
@@ -294,7 +301,7 @@ export class Underworld {
     if (this.mode === 'recovered') {
       const groups: [string, typeof s.volumes][] = [
         ['Instruments on the ground', s.volumes.filter((v) => v.status !== 'radar')],
-        ['The satellite, read by the published method', s.volumes.filter((v) => v.status === 'radar')],
+        ['The satellite, read by the paper-style method', s.volumes.filter((v) => v.status === 'radar' && v.tint !== 'gated')],
       ];
       const shown = groups.filter(([, g]) => g.length);
       ctx.innerHTML =
@@ -305,7 +312,7 @@ export class Underworld {
               g
                 .map(
                   (v) => `<label class="uw-radio"><input type="radio" name="vol" value="${v.id}" ${v.id === this.item.recovered ? 'checked' : ''}/>
-          <span><span class="uw-opt-name">${esc(v.label)}</span><span class="uw-opt-sub">${esc(v.caption ?? v.method)}</span></span></label>`,
+          <span><span class="uw-opt-name">${esc(v.label)}${badge(v)}</span><span class="uw-opt-sub">${esc(v.caption ?? v.method)}</span></span></label>`,
                 )
                 .join(''),
           )
@@ -416,13 +423,16 @@ export class Underworld {
     const st = r.stats;
     const fmt = (v: number | null | undefined) => (v === null || v === undefined ? '–' : v.toFixed(2));
     const gatedBlock = gv
-      ? `<div class="uw-subhead">${esc(gv.title)}</div>
+      ? `<div class="uw-subhead"><span class="uw-dot gated"></span>${esc(gv.title)}</div>
       <p class="uw-ctx-note">${esc(gv.note)}</p>
+      <p class="uw-why"><b>Why it looks like this.</b> A column hangs wherever a position passed the gates; along it the
+        score peaks where the depth fit’s phase turns a whole number of times across a window, about 6 m per turn, and at
+        the mirror of that depth. The depth is the frequency the gates chose, not a measured depth.</p>
       ${[...gv.volumes]
         .sort((a, b) => a.support - b.support || ['real', 'twin', 'plateau'].indexOf(a.case) - ['real', 'twin', 'plateau'].indexOf(b.case))
         .map(
           (g) => `<label class="uw-radio"><input type="radio" name="sat-vol" value="${g.id}" ${g.id === which ? 'checked' : ''}/>
-        <span><span class="uw-opt-name">${g.case === 'real' ? 'The real image' : g.case === 'twin' ? 'A motionless copy' : 'Open plateau, the same image'} · ${g.support === 1 ? 'one position' : `${g.support} positions in a row`}</span><span class="uw-opt-sub">${g.case === 'real' ? `the ${esc(gv.date)} image, through the unchanged code` : g.case === 'twin' ? 'the same crop with nothing moving and nothing inside' : 'the same raster south-west of Menkaure, where no monument stands'}</span></span></label>`,
+        <span><span class="uw-opt-name">${g.case === 'real' ? 'The real image' : g.case === 'twin' ? 'A motionless copy' : 'Open plateau, the same image'} · ${g.support === 1 ? 'one position' : `${g.support} positions in a row`}<span class="uw-badge">fit score</span></span><span class="uw-opt-sub">${g.case === 'real' ? `the ${esc(gv.date)} image, through the unchanged code` : g.case === 'twin' ? 'the same crop with nothing moving and nothing inside' : 'the same raster south-west of Menkaure, where no monument stands'}</span></span></label>`,
         )
         .join('')}
       ${gv.chambers ? `<p class="uw-ctx-note">Inside the surveyed chambers and passages (blue) the real image scores ${fmt(gv.chambers.real[0])} on average, against ${fmt(gv.chambers.real[1])} at the same depths elsewhere; the motionless copy ${fmt(gv.chambers.twin[0])} and ${fmt(gv.chambers.twin[1])}.</p>` : ''}`
@@ -437,14 +447,18 @@ export class Underworld {
       <p class="uw-ctx-note">About ${Math.round((r.reach_m ?? 0.3) * 100)} cm into the driest sand, less into rock: at this scale, thinner than the
         line of the ground itself. Everything below the surface is out of its reach.</p>
       ${gatedBlock}
-      <div class="uw-subhead">What the paper-style pipeline draws from it</div>
+      <div class="uw-subhead"><span class="uw-dot radar"></span>What the paper-style pipeline draws from it</div>
       <p class="uw-ctx-note">The 2025 image through the pipeline as the 2022 paper describes it: 50 half-band pairs, no selection
         gates, focused power on a log scale, depth relabelled so it repeats at 648 m as the claim does, and smoothed for
         display. It is not the stricter gated reconstruction.</p>
+      <p class="uw-why"><b>Why it looks like this.</b> Pillars: a pixel whose registration wanders is bright at every depth.
+        Bands: along a pillar the power rises and falls once per step of the axis’s resolution. Blocks: at the surface and
+        at each repeat depth every steering phase coincides, so the power there is the pixel’s average offset. Open plateau
+        draws the same shapes.</p>
       ${vols
         .map(
           (v) => `<label class="uw-radio"><input type="radio" name="sat-vol" value="${v.id}" ${v.id === which ? 'checked' : ''}/>
-        <span><span class="uw-opt-name">${esc(v.label.replace('Satellite · the published method ', ''))}</span><span class="uw-opt-sub">${esc(v.caption ?? '')}</span></span></label>`,
+        <span><span class="uw-opt-name">${esc(v.label.replace('Satellite · the published method ', ''))}<span class="uw-badge">focused power</span></span><span class="uw-opt-sub">${esc(v.caption ?? '')}</span></span></label>`,
         )
         .join('')}
       <label class="uw-radio"><input type="radio" name="sat-vol" value="none" ${which === 'none' ? 'checked' : ''}/><span><span class="uw-opt-name">None</span></span></label>

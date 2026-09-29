@@ -1,8 +1,10 @@
 ---
 /**
- * The underworld: a deep-water panel beside the block diagram. The first
- * choice is the site; the second is what to show — the truth in the ground,
- * what an instrument recovered, or the waves themselves.
+ * The lab: a deep-water panel beside the block diagram. The first choice is
+ * the site; the second is what to look with — the truth in the ground, the
+ * instruments on the ground, the satellite read by each method, or the waves
+ * themselves. Every volume says what it is: the truth, a material property,
+ * or a method's fit score.
  */
 interface Props {
   mode?: 'full' | 'embed';
@@ -13,7 +15,7 @@ const { mode = 'full', initial } = Astro.props;
 <div class:list={['uw', mode]} data-theme="night" data-initial={initial} data-hash={mode === 'full' ? '1' : undefined}>
   <aside class="uw-panel" aria-label="Sites and view">
     <div class="uw-panel-head">
-      <span class="uw-panel-title">The underworld</span>
+      <span class="uw-panel-title">The lab</span>
       <span class="uw-seg-toggle" role="group" aria-label="Ground">
         <button type="button" data-theme="night" aria-pressed="true">night</button>
         <button type="button" data-theme="day" aria-pressed="false">day</button>
@@ -25,10 +27,10 @@ const { mode = 'full', initial } = Astro.props;
         <div class="uw-sites" data-uw="sites"></div>
       </section>
       <section class="uw-block">
-        <div class="uw-label">Show</div>
-        <div class="uw-modes" role="group" aria-label="What to show">
+        <div class="uw-label">Look with</div>
+        <div class="uw-modes" role="group" aria-label="What to look with">
           <button type="button" data-mode="truth" aria-pressed="true"><span class="uw-dot surveyed"></span>Truth</button>
-          <button type="button" data-mode="recovered" aria-pressed="false"><span class="uw-dot recovered"></span>Recovered</button>
+          <button type="button" data-mode="recovered" aria-pressed="false"><span class="uw-dot recovered"></span>Instruments</button>
           <button type="button" data-mode="waves" aria-pressed="false"><span class="uw-dot wave"></span>Waves</button>
           <button type="button" data-mode="satellite" aria-pressed="false"><span class="uw-dot radar"></span>Satellite</button>
         </div>
@@ -60,7 +62,7 @@ const { mode = 'full', initial } = Astro.props;
         <summary class="uw-label">Notes</summary>
         <div class="uw-notes" data-uw="notes"></div>
       </details>
-      <p class="uw-keys">keys · 1–4 site · t truth · v recovered · w waves · s satellite · space play · r reset · esc unpin</p>
+      <p class="uw-keys">keys · 1–4 site · t truth · v instruments · w waves · s satellite · space play · r reset · esc unpin</p>
     </div>
   </aside>
   <div class="uw-stage">
@@ -75,7 +77,8 @@ const { mode = 'full', initial } = Astro.props;
         <span><span class="uw-dot surveyed"></span>chamber or void</span>
         <span><span class="uw-dot claimed"></span>claimed</span>
         <span><span class="uw-dot recovered"></span>recovered</span>
-        <span><span class="uw-dot radar"></span>radar</span>
+        <span><span class="uw-dot radar"></span>radar, paper-style</span>
+        <span><span class="uw-dot gated"></span>radar, gated fit score</span>
         <span><span class="uw-dot sensor"></span>sensor</span>
       </span>
       <span class="uw-scalebar" data-uw="scalebar"><i></i><span></span></span>
@@ -430,6 +433,36 @@ const { mode = 'full', initial } = Astro.props;
   .uw-dot.radar {
     background: var(--cinnabar-night);
     box-shadow: 0 0 6px rgba(240, 144, 111, 0.5);
+  }
+  .uw-dot.gated {
+    background: #f2c14e;
+    box-shadow: 0 0 6px rgba(242, 193, 78, 0.55);
+  }
+  .uw-badge {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 0 5px;
+    border: 1px solid var(--panel-faint);
+    border-radius: 3px;
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--panel-muted);
+    vertical-align: 1px;
+  }
+  .uw-why {
+    margin: 6px 0 2px;
+    padding: 6px 8px;
+    border-left: 2px solid var(--panel-faint);
+    font-size: 10.5px;
+    line-height: 1.45;
+    color: var(--panel-muted);
+  }
+  .uw-why b {
+    color: var(--panel-text);
+    font-weight: 600;
   }
   .uw-dot.wave {
     background: radial-gradient(circle, #f3ead6 0 30%, transparent 32% 55%, #f3ead6 57% 72%, transparent 74%);
