@@ -327,5 +327,52 @@ def export_khufu_gated(out: Path = DATA) -> dict | None:
     return {'site': 'giza', 'volumes': [e['id'] for e in entries]}
 
 
+def export_lab(out: Path = DATA) -> list[dict]:
+    """Every lab run (katabasis.lab, sim/results/lab_*): its volumes into its site's viewer, drawn in gold as the gated
+    reconstruction's fit scores, and a list of runs in the site's radar.json for the satellite panel."""
+    from ..compose import load_site
+    from .sites import scene as site_scene
+    runs = sorted(d for d in RESULTS.glob('lab_*') if (d / 'volumes.npz').exists() and (d / 'summary.json').exists())
+    by_site: dict[str, list] = {}
+    for d in runs:
+        s = load(d.name)
+        prm = s['manifest']['params']
+        site = prm['site']
+        sd = out / 'sites' / site
+        rj = sd / 'radar.json'
+        if not rj.exists():
+            continue
+        sc = site_scene(load_site(site))
+        v = np.load(d / 'volumes.npz')
+        h = float(v['step'])
+        keep = v['z'] >= sc['extent']['z'][0] + h / 2
+        run = f"{d.name} · {s['manifest']['date']} · {s['manifest']['commit']}"
+        name = d.name[len('lab_'):]
+        vols, entries = [], []
+        for case in s['cases']:
+            short = 'real' if case == 'real' else 'twin'
+            for P in prm['supports']:
+                V = v[f'{case}_p{P}'].astype(np.float32)[:, :, keep]
+                u8 = np.where(np.isfinite(V), 1 + np.round(254 * np.clip(np.nan_to_num(V, nan=0.0), 0, 1)), 0).astype(np.uint8)
+                vid = f'radar-lab-{name}-{short}-p{P}'
+                vols.append(_write_volume(sd, vid, V, u8, [float(v['x'][0]), float(v['y'][0])], h, {
+                    'label': f"Satellite · lab run {name}, {'the real image' if short == 'real' else 'a motionless copy'}, support {P}",
+                    'method': s['finding'], 'quantity': 'conditional adjusted R2 at each nominal depth below the surface',
+                    'units': '0 to 1', 'range': [0.0, 1.0], 'run': run, 'tint': 'gated',
+                    'caption': 'fit scores, unsmoothed; empty where nothing passed'}, ztop=float(v['z'][keep][0])))
+                entries.append({'id': vid, 'case': short, 'support': int(P)})
+        _merge_volumes(sd, vols, drop=lambda q, name=name: q['id'].startswith(f'radar-lab-{name}-'))
+        cx, cy = prm['centre_m']
+        by_site.setdefault(site, []).append({
+            'name': name, 'title': s['manifest']['title'], 'volumes': entries,
+            'focus': [cx, cy, float(np.median(v['z_surface']))], 'radius_m': 620.0, 'note': s['finding'], 'run': run})
+    for site, labs in by_site.items():
+        rj = out / 'sites' / site / 'radar.json'
+        radar = json.loads(rj.read_text())
+        radar['lab'] = labs
+        rj.write_text(json.dumps(radar, separators=(',', ':')))
+    return [{'site': site, 'volumes': [e['id'] for lab in labs for e in lab['volumes']]} for site, labs in by_site.items()]
+
+
 def export_radar(out: Path = DATA) -> list[dict]:
-    return [r for r in (export_bench(out), export_claim(out), export_real(out), export_khufu_gated(out)) if r]
+    return [r for r in (export_bench(out), export_claim(out), export_real(out), export_khufu_gated(out)) if r] + export_lab(out)
