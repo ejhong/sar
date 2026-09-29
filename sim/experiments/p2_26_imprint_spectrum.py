@@ -45,7 +45,7 @@ import numpy as np
 from katabasis.compose import Grid, load_site, voxelise
 from katabasis.compose.site import parse_site
 from katabasis.runs import RESULTS, Run, load
-from katabasis.seismic.elastic3d import Medium, Receivers, Simulation, Source, _nearest
+from katabasis.seismic.elastic3d import Medium, Receivers, Result, Simulation, Source, _nearest
 from sarsim.acquisition import DwellGeometry
 
 RID = 'p2_26_imprint_spectrum'
@@ -86,6 +86,22 @@ RING_CASES = [('ring_bench', 'ring', BENCH), ('ring_favourable', 'ring', FAVOURA
               ('ring_favourable_fine', 'ring_fine', FAVOURABLE)]
 F_LOW = 6.0                          # Hz: below this the models are too small for the waves (and P2-04 holds)
 RECORD_EVERY = 4
+CACHE = RESULTS / 'cache' / 'p2_26'
+
+
+def cached(key, compute):
+    """A solver run kept on disk under a hash of everything that defines it, so a run cut short resumes where it
+    stopped (the records are the solver's own; nothing downstream is cached)."""
+    import hashlib
+    CACHE.mkdir(parents=True, exist_ok=True)
+    path = CACHE / (hashlib.sha1(json.dumps(key, sort_keys=True, default=str).encode()).hexdigest()[:16] + '.npz')
+    if path.is_file():
+        z = np.load(path, allow_pickle=False)
+        res = Result(z['t'], z['traces'], None, None, float(z['dt']), {})
+        return res, json.loads(str(z['extra'])), True
+    res, extra = compute()
+    np.savez(path, t=res.t, traces=res.traces.astype(np.float32), dt=res.dt, extra=json.dumps(extra, default=float))
+    return res, extra, False
 PASSED_S = 0.12                      # s: in the long records, the surface wave has crossed the recorded ground by then
 
 
@@ -106,6 +122,18 @@ def pulse(nt, dt, f_top):
 
 
 def run_case(site, spec, incidence, chamber, verbose=True):
+    key = {'what': 'case', 'site': SITE, 'spec': spec, 'incidence': incidence, 'chamber': chamber, 'every': RECORD_EVERY}
+
+    def compute():
+        res, (xs, ys), info = _run_case(site, spec, incidence, chamber, verbose)
+        return res, {'xs': list(map(float, xs)), 'ys': list(map(float, ys)), 'info': info}
+    res, extra, hit = cached(key, compute)
+    if hit and verbose:
+        print(f"    {incidence} {'chamber' if chamber else 'none'} h={spec['h']}: from the run cache", flush=True)
+    return res, (np.asarray(extra['xs']), np.asarray(extra['ys'])), extra['info']
+
+
+def _run_case(site, spec, incidence, chamber, verbose=True):
     g = Grid.covering(*spec['extent'], spec['h'])
     med = Medium.from_model(voxelise(model(site, chamber), g, heterogeneity=False))
     pml = int(round(spec['pml_m'] / spec['h']))
@@ -173,6 +201,18 @@ def rotations(U, los):
 
 
 def run_ring(site, spec, chamber, control=False):
+    key = {'what': 'ring', 'site': SITE, 'spec': spec, 'chamber': chamber, 'control': control, 'every': RECORD_EVERY}
+
+    def compute():
+        res, names, info = _run_ring(site, spec, chamber, control)
+        return res, {'names': names, 'info': info}
+    res, extra, hit = cached(key, compute)
+    if hit:
+        print(f"    ring {'control' if control else 'room'}: from the run cache", flush=True)
+    return res, extra['names'], extra['info']
+
+
+def _run_ring(site, spec, chamber, control=False):
     """A vertical force pulse on the room's ceiling (or at the same point in intact rock), recorded on the ceiling,
     the floor, a wall and the ground above: the room's own modes and how long they last."""
     g = Grid.covering(*spec['extent'], spec['h'])
