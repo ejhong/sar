@@ -1,0 +1,381 @@
+---
+import Doc from '../layouts/Doc.astro';
+import LineChart from '../components/LineChart.astro';
+import Term from '../components/Term.astro';
+import Routes from '../components/Routes.astro';
+import tight from '../../public/data/runs/p2_25_information_bound.json';
+import requirement from '../../public/data/runs/p2_27_requirement.json';
+import depths from '../../public/data/runs/p2_28_two_depths.json';
+import oracle from '../../public/data/runs/p2_29_oracle.json';
+import finite from '../../public/data/runs/p2_30_finite_certificates.json';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+// ---- formatting
+const SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+const sup = (n: number) => String(n).replace('-', '⁻').replace(/\d/g, (d) => SUP[+d]);
+const sci = (v: number, p = 1) => {
+  if (!(v > 0)) return '0';
+  const e = Math.floor(Math.log10(Math.abs(v)));
+  return Math.abs(e) < 3 ? v.toPrecision(p + 1) : `${(v / 10 ** e).toFixed(p)} × 10${sup(e)}`;
+};
+const pctp = (v: number, d = 2) => `${(100 * v).toFixed(d)}%`;
+const len = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m >= 1e-6 ? `${+(m * 1e6).toPrecision(2)} µm` : `${+(m * 1e9).toPrecision(2)} nm`);
+
+// ---- the three layers
+type Cert = { case: string; tv_upper: number; tpr_upper_at_fpr_005: number; tight_ceiling_p2_25?: number | null };
+type Dyn = Cert & { stress_11pct_tv_upper: number; stress_11pct_tpr_upper_at_fpr_005: number; stress_11pct_excludes_095_at_005: boolean; source_frequency_hz: number };
+const fc = finite as unknown as {
+  static: Cert[];
+  dynamic: Dyn[];
+  background_included: { covariance_floor_proved_within_model: number; los_peak_envelope_m: number; rows: Cert[] };
+  fixed_envelope_phase_modulation: (Cert & { affected_scatterer_pixels_assumed: number; nominal_ground_area_m2: number; informative: boolean })[];
+  requirements: { q_exclusion_boundary_095_005: number; oracle_energy_necessary_for_tv_090: number; peak_displacement_boundary_at_1000_m2_m: number };
+  geometry: { wavelength_m: number; area_density_used: number; in_band_bins: number; pixel_count: number };
+  depth_oracle: { residual_fraction: number; separation_m: number; rows: { signal: string; tv_depth_upper: number; mean_depth_error_lower_m: number }[] } | null;
+  finding: string;
+};
+type TS = { case: string; ceiling: number };
+type TD = { case: string; urban: { ceiling: number }; truck: { ceiling: number; worst_f_hz: number } };
+const tb = tight as unknown as { static: TS[]; dynamic: TD[]; checks: { detection: { pinsker_from_exact_kl: number; likelihood_ratio: { largest_pd_minus_pfa: number } }[] } };
+type OrRow = { case: string; kind: string; delta: number; tv_exact: number; growth_to_target: number; growth_after_allowances: number; open: boolean };
+const orc = oracle as unknown as {
+  chamber: OrRow[];
+  allowance_product: number;
+  raw_echo_check: { summary: Record<string, { mean: number; se: number }> };
+  depth: { residual_fraction: number; signal_factor_depth_over_detection: number; pair_interaction_fraction: number; best_single_bench_room_residual: number };
+  manifest: { params: { snr_db: number; nesz_best_db: number } };
+};
+const orFind = (s: string) => orc.chamber.find((r) => r.case.includes(s));
+const dyn = (name: string) => fc.dynamic.find((r) => r.case === name)!;
+const td = (name: string) => tb.dynamic.find((d) => d.case === name)!;
+const withBg = (name: string) => fc.background_included.rows.find((r) => r.case === name);
+const detOver = Math.max(...tb.checks.detection.map((d) => d.pinsker_from_exact_kl / d.likelihood_ratio.largest_pd_minus_pfa));
+
+type Layer = { what: string; level: string; cert: number; certNote: string; tight: number | null; tightNote: string; oracle: number | null };
+const s0 = tb.static;
+const layers: Layer[] = [
+  ...s0.map((r, i) => {
+    const bg = withBg(r.case);
+    const c = bg ?? fc.static[i];
+    return {
+      what: r.case.replace(', measured', ', regional'),
+      level: i === 1 ? 'Peterson’s high-noise model' : 'Kottamya, 67 km east',
+      cert: c.tv_upper,
+      certNote: bg ? 'background included' : 'reference covariance I',
+      tight: r.ceiling,
+      tightNote: 'static imprint, every direction',
+      oracle: orFind(r.case)?.tv_exact ?? null,
+    };
+  }),
+  { what: 'Urban background, bench room', level: 'FTA, 8–100 Hz', cert: dyn('surface: urban-level harmonic').tv_upper, certNote: 'the whole level at its worst frequency', tight: td('surface').urban.ceiling, tightNote: 'spread over the band', oracle: orFind('urban background, all pass (surface)')?.tv_exact ?? null },
+  { what: 'A lorry over a bump 15 m away, bench room', level: 'FTA, all pass', cert: dyn('surface: truck-level harmonic').tv_upper, certNote: 'its worst frequency', tight: td('surface').truck.ceiling, tightNote: `its worst frequency (${Math.round(td('surface').truck.worst_f_hz)} Hz)`, oracle: orc.chamber.filter((r) => r.case.startsWith('truck over a bump 15 m away, all pass, at') && r.case.endsWith('(surface)'))[0]?.tv_exact ?? null },
+  { what: 'The same lorry, a room under a 5 m roof', level: 'FTA, all pass', cert: dyn('surface_favourable: truck-level harmonic').tv_upper, certNote: 'its worst frequency', tight: td('surface_favourable').truck.ceiling, tightNote: 'its worst frequency', oracle: orc.chamber.filter((r) => r.case.startsWith('truck over a bump 15 m away, all pass, at') && r.case.endsWith('(surface_favourable)'))[0]?.tv_exact ?? null },
+];
+const micro = fc.background_included.rows[0];
+const thin = dyn('surface_favourable: truck-level harmonic');
+const orAmb = Math.max(...orc.chamber.filter((r) => r.kind === 'ambient').map((r) => r.tv_exact));
+const orOpen = orc.chamber.filter((r) => r.open);
+const pm = fc.fixed_envelope_phase_modulation;
+
+// ---- the requirement (P2-27)
+type RqRow = { L_m: number; area_half_m2: number; D_necessary_m: Record<string, number> };
+type RqLin = { L_m: number; area_half_m2: number; D_linearised_m: Record<string, number> };
+const rq = requirement as unknown as { acquisitions: Record<string, { frequencies: { f_hz: number; exact: RqRow[]; linear: RqLin[] }[] }>; constrained: { modelled_ratio: number }; ambient: { label: string; constrained_short_by: number }[] };
+const rqMain = rq.acquisitions['giza-20250827'].frequencies;
+const rqAt = (f: number, L: number) => rqMain.find((r) => r.f_hz === f)!.exact.find((e) => e.L_m === L)!.D_necessary_m['0.9'];
+const rqColours = ['var(--lapis)', 'var(--verdigris)', 'var(--ochre)', 'var(--porphyry)', 'var(--cinnabar)'];
+const rqPhase = Math.min(...rq.ambient.filter((a) => a.label.includes('regional')).map((a) => a.constrained_short_by));
+const certCurve = [1, 10, 100, 1e3, 1e4].map((A) => ({ A, D: fc.requirements.q_exclusion_boundary_095_005 / ((4 * Math.PI) / fc.geometry.wavelength_m * Math.sqrt(fc.geometry.area_density_used * A)) }));
+
+// ---- depth (P2-28, P2-29, P2-30)
+type DRes = { share_12_18_m: number; share_27_33_m: number; axis_share_12_18_m: number; axis_share_27_33_m: number; peak_depth_m: number };
+const dp = depths as unknown as { results: Record<string, DRes>; follows_depth: boolean; depth_axis_m: number[] };
+const d15 = dp.results['hollow_15_phase_2'];
+const d30 = dp.results['hollow_30_phase_2'];
+---
+<Doc
+  title="The bound, finite and stated"
+  kicker="Proof · what any way of reading one image could learn, and what it assumes"
+  current="satellite"
+  lede="Could a cleverer algorithm find what the published method does not? Within a stated measurement model this can be answered for every algorithm at once, and it is answered here in three layers, each proved without a small-motion approximation: a loose certificate that includes the ground’s own background motion, a tight calculation, and an oracle told everything but the answer. The physical inputs, the room’s imprint and the shaking’s level, are models and are marked as such."
+  state="status · proved within a stated model; physical inputs not certified · 29 September 2026"
+  index={[
+    { id: 'answer', label: 'The answer' },
+    { id: 'layers', label: 'Three layers' },
+    { id: 'theorems', label: 'The theorems' },
+    { id: 'mechanism', label: 'What a mechanism must supply' },
+    { id: 'depth', label: 'Depth' },
+    { id: 'open', label: 'What stays open' },
+  ]}
+>
+  <section id="answer">
+    <h2>Under the ground’s own trembling no way of reading one image can reach a useful detection of the bench room; strong shaking close by, known exactly, stays open</h2>
+    <div class="stat-row">
+      <div class="stat"><span class="value">{pctp(micro.tpr_upper_at_fpr_005, 3)}</span><span class="what">the most any processor could find the room at 5% false alarms, under the regional microseism envelope, the common background included (a loose certificate)</span><span class="src">P2-30 · Theorem C</span></div>
+      <div class="stat"><span class="value">{sci(s0[0].ceiling)}</span><span class="what">detection rate − false-alarm rate, at most, by the tight calculation (the reference covariance taken as the identity)</span><span class="src">P2-25 · Fisher with an explicit remainder</span></div>
+      <div class="stat"><span class="value">{sci(orAmb)}</span><span class="what">the same for an oracle told the ground’s exact texture, the shaking and both physical models, under the ambient levels, whatever the texture</span><span class="src">P2-29 · Theorem D, pulse by pulse</span></div>
+      <div class="stat"><span class="value">{pctp(thin.tpr_upper_at_fpr_005, 0)}</span><span class="what">the loose certificate’s ceiling for a room under a 5 m roof with a lorry bouncing beside it all pass: not excluded if its phase is 11% larger. Open</span><span class="src">P2-30 · the open case</span></div>
+    </div>
+    <p class="sub">
+      A detection target of 95% found with 5% false alarms needs the two hypotheses, room and no room, to differ by a total
+      variation of at least 0.9; every processor of the same measurements, tomograms and learned models included, inherits
+      whatever total variation the measurements have. The three layers bound it differently. The certificate is simple and
+      robust: it gives the room’s largest phase to every pixel of the whole image and proves a floor under the reference
+      covariance with the ground’s background motion in it. The tight calculation uses the structure speckle imposes (motion
+      shared by the scene holds nothing) and bounds the finite change with an explicit remainder. The oracle needs no model of
+      the texture at all. All three agree that the ground’s own trembling leaves nothing useful; they differ by orders of
+      magnitude in how little, which is what their different assumptions buy.
+    </p>
+    <Routes />
+  </section>
+
+  <section id="layers">
+    <h2>Three layers, one answer for the ground’s own trembling</h2>
+    <table class="data compact">
+      <thead><tr><th>shaking</th><th>level</th><th>certificate (P2-30)</th><th>tight (P2-25)</th><th>oracle (P2-29)</th></tr></thead>
+      <tbody>
+        {layers.map((l) => (
+          <tr><td>{l.what}</td><td>{l.level}</td><td>{sci(l.cert)}<br /><span class="dim">{l.certNote}</span></td><td>{l.tight === null ? '—' : sci(l.tight)}<br /><span class="dim">{l.tightNote}</span></td><td>{l.oracle === null ? '—' : sci(l.oracle)}</td></tr>
+        ))}
+      </tbody>
+    </table>
+    <p class="note">
+      Each entry bounds detection rate − false-alarm rate; with two equally likely cases the best accuracy exceeds a coin toss
+      by half of it. The certificate and the tight bound hold within fully developed speckle and the Doppler-to-time relation
+      (checked pulse by pulse, P2-25); the oracle holds for any texture with independent phases, at {orc.manifest.params.snr_db} dB
+      per resolution cell (above the brightest natural ground over ICEYE’s best Dwell noise floor, {orc.manifest.params.nesz_best_db} dB).
+      The ambient levels are regional, not upper limits at the pyramids. On small test images the best test comes within
+      {' '}{detOver.toFixed(1)} times of the tight bound: these are bounds, not what a detector achieves.
+    </p>
+  </section>
+
+  <section id="theorems">
+    <h2>Five theorems, each finite; none assumes a resonance peak or a particular algorithm</h2>
+    <div class="grid-2">
+      <div class="note-card">
+        <span class="tag">A · every processor</span>
+        <h3>Processing cannot add distinguishability</h3>
+        <p>For any test, detection rate − false-alarm rate ≤ TV(P₁, P₀), and for equal priors the best accuracy is ½ + TV/2. Any
+        channel applied the same way under both hypotheses, a sub-aperture bank, a tomogram, a renderer, a trained network,
+        contracts TV. So 95% found at 5% false alarms needs TV ≥ 0.9, and a proved TV below it excludes that target for
+        every method at once.</p>
+        <details><summary>Proof</summary><p>Split p₁ − p₀ into positive and negative parts of equal mass TV. A test 0 ≤ t ≤ 1
+        integrates to at most TV against it; the indicator of the positive part attains it. A processor K pulls back to the test
+        y ↦ E[t(K(y))], so it can do no better on K’s output.</p></details>
+      </div>
+      <div class="note-card">
+        <span class="tag">B · the finite change</span>
+        <h3>The exact Gaussian divergence, bounded</h3>
+        <p>For proper complex Gaussians, KL = tr(C₀⁻¹C₁) − d − log det(C₀⁻¹C₁) + δm*C₀⁻¹δm. With E the whitened covariance
+        change and its eigenvalues e<sub>j</sub> &gt; −1, KL = Σ(e<sub>j</sub> − log(1 + e<sub>j</sub>)) + mean term, and since
+        e − log(1 + e) ≤ e²/(2 min(1 + e, 1)), KL ≤ ‖E‖<sub>F</sub>²/(2(1 − ‖E‖)). Pinsker and Bretagnolle–Huber turn KL into TV. No
+        expansion in the displacement is made.</p>
+      </div>
+      <div class="note-card">
+        <span class="tag">C · a certificate from a phase envelope</span>
+        <h3>The whole image given the room’s largest phase</h3>
+        <p>If ‖C₀<sup>−½</sup>ΔA‖<sub>F</sub> ≤ q, ρ = 2q + q² bounds ‖E‖ exactly (E = DB* + BD* + DD*), so TV ≤ ρ/(2(1 − ρ)). A phase-only change
+        obeys |e<sup>−iΦ</sup> − 1|² ≤ Φ², so q² ≤ Σ|T₀|²Φ² / λ<sub>min</sub>(C₀) ≤ m P²/λ<sub>min</sub>: the peak phase P at every one of the image’s
+        {(fc.geometry.pixel_count / 1e9).toFixed(2)} billion pixels, over its {(fc.geometry.in_band_bins / 1e6).toFixed(0)} million retained bins. A background
+        motion bounded the same way proves λ<sub>min</sub>(C₀) ≥ (1 − √Q<sub>bg</sub>)² = {fc.background_included.covariance_floor_proved_within_model.toFixed(4)}.</p>
+      </div>
+      <div class="note-card">
+        <span class="tag">D · the oracle</span>
+        <h3>Told everything but the answer</h3>
+        <p>Given the reflectivity, the background motion, the shaking and both models, the raw echoes are Gaussian with the receiver
+        noise’s covariance and means that differ by the echo of the room-specific motion alone: TV = erf(√d/2) exactly, d the
+        noise-normalised energy of that difference. Averaged over what the oracle was told (only independent uniform phases
+        needed), TV ≤ erf(√(E d)/2); the background motion cancels; 95% at 5% needs E d ≥ {fc.requirements.oracle_energy_necessary_for_tv_090.toFixed(2)}.
+        Checked against pulse-by-pulse echoes on the real dwell: {orc.raw_echo_check.summary.background_x1.mean.toFixed(3)} ± {orc.raw_echo_check.summary.background_x1.se.toFixed(3)} of the formula.</p>
+      </div>
+      <div class="note-card">
+        <span class="tag">E · depth</span>
+        <h3>Two worlds a method cannot tell apart</h3>
+        <p>For two admissible worlds at depths Δ apart, any depth estimate has equal-prior mean absolute error at least
+        (Δ/2)(1 − TV). One indistinguishable pair is enough to rule out reliable depth over any class that contains it.</p>
+      </div>
+      <div class="note-card">
+        <span class="tag">and the tight layer</span>
+        <h3>What speckle adds</h3>
+        <p>For speckle, motion shared by the scene leaves the image’s distribution unchanged, so only what differs from place
+        to place counts: the Fisher information F = Σ|Φ̃(f − f′; f) − Φ̃(f − f′; f′)|², with a power-series remainder ε bounding
+        the rest, ‖E‖ ≤ √F + ε (P2-25). This is far tighter than the certificate, and assumes the reference covariance is the
+        identity, where the certificate proves its floor with the background in it.</p>
+      </div>
+    </div>
+    <p class="note">
+      Theorems A–E are from an independent derivation made for this lab and checked in its code (<span class="mono">sim/sarsim/finite.py</span>,
+      with its tests); the tight layer is <span class="mono">sim/sarsim/information.py</span>. Background:
+      {' '}<a href="https://web.stanford.edu/class/stats311/lecture-notes.pdf">Duchi’s lecture notes</a> on total variation, data processing,
+      Pinsker and two-point testing.
+    </p>
+  </section>
+
+  <section id="mechanism">
+    <h2>What a mechanism must supply: the motion it adds to the ground over the room, whatever makes it</h2>
+    <div class="grid-2 charts">
+      <LineChart
+        title="The least room-specific line-of-sight motion for 95% found at 5% false alarms, against footprint"
+        series={[
+          ...rqMain.map((r, i) => ({ name: `${r.f_hz} Hz, exact (P2-27)`, x: r.exact.map((e) => e.area_half_m2), y: r.exact.map((e) => e.D_necessary_m['0.9']), color: rqColours[i], width: 1.8 })),
+          { name: 'the certificate’s boundary, any frequency (P2-30)', x: certCurve.map((c) => c.A), y: certCurve.map((c) => c.D), color: 'var(--muted)', dash: '4 3', width: 1.3 },
+        ]}
+        xLabel="footprint, m²"
+        yLabel="m, line of sight"
+        logX
+        logY
+        yFormat="exp"
+        height={240}
+        directLabels={false}
+        caption="Solid: exact within the model (P2-27), per frequency: at microseism frequencies only the motion’s gradient counts, so the footprint hardly matters. Dashed: the loose certificate’s sufficient boundary (P2-30), the same at every frequency. Below a curve the model excludes the target; above it, that bound does not decide."
+      />
+      <div class="note-card">
+        <span class="tag">conditional</span>
+        <h3>Phase modulation, nonlinear coupling, anything</h3>
+        <p>The bounds use the full complex change of the image, phase included; no spectral peak is needed. Any mechanism, linear or
+        not, reaches one image only through the motion it adds over the room, and the curve says how much. A change of phase
+        alone moves the ground by at most twice the motion it acts on: within the background envelope of
+        {' '}{len(fc.background_included.los_peak_envelope_m)}, an arbitrary phase modulation on {pm[0].affected_scatterer_pixels_assumed.toLocaleString('en-US')} pixels
+        (about {Math.round(pm[0].nominal_ground_area_m2).toLocaleString('en-US')} m²) is capped at {pctp(pm[0].tpr_upper_at_fpr_005)} found at 5% (the certificate),
+        and at Giza’s regional levels falls short of the exact curve {sci(rqPhase)} times; over the whole image the certificate
+        does not decide. A mechanism with gain, gathering energy over the room for the whole pass, is not excluded: it needs its
+        output specified (source, footprint, amplitude and phase, losses, duration) before it can be tested.</p>
+        <details class="calculator" data-lambda={fc.geometry.wavelength_m} data-density={fc.geometry.area_density_used}>
+          <summary>Try an envelope in the certificate</summary>
+          <div class="inputs">
+            <label>Footprint (m²)<input name="area" type="number" value="1000" min="0.001" step="100" /></label>
+            <label>Peak room-specific motion (µm)<input name="displacement" type="number" value="0.12" min="0" step="0.01" /></label>
+            <label>Covariance floor<input name="floor" type="number" value="1" min="0.000001" step="0.1" /></label>
+          </div>
+          <p><output aria-live="polite"></output></p>
+          <p class="dim">The loose certificate (Theorem C): zero-mean Gaussian texture, phase-only change, continuum area. Inputs are assumptions, not measured motion.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section id="depth">
+    <h2>Depth needs far more than detection: rooms spread 15 m down leave the mark of a room 30 m down to {(100 * orc.depth.residual_fraction).toFixed(1)}%</h2>
+    <div class="grid-2">
+      <div class="note-card">
+        <span class="tag">any method · P2-29, P2-30</span>
+        <h3>An obstruction, computed</h3>
+        <p>Small rooms 15 m down, spread over the ground, reproduce the surface mark of the bench room 30 m down to within
+        {' '}{(100 * orc.depth.residual_fraction).toFixed(1)}% on the lab’s solver (two solved together agree with their sum to
+        {' '}{(100 * orc.depth.pair_interaction_fraction).toFixed(1)}%); the bench room 15 m down alone, only to {Math.round(100 * orc.depth.best_single_bench_room_residual)}%. So even the
+        oracle needs {Math.round(orc.depth.signal_factor_depth_over_detection)} times the signal to tell the two depths apart that it needs to detect either.
+        {fc.depth_oracle && ` By Theorem E, where detection just reaches 95% at 5%, any method's mean depth error between them is at least ${fc.depth_oracle.rows[0].mean_depth_error_lower_m.toFixed(1)} m of their ${fc.depth_oracle.separation_m} m separation.`}</p>
+      </div>
+      <div class="note-card">
+        <span class="tag simulated">the published method · P2-28</span>
+        <h3>Its depth follows the shaking, not the room</h3>
+        <p>Run whole over the bench room 15 m down, the same room 30 m down and a granite block, each imprint boosted to 2 rad, the
+        published focusing spreads each change over its whole axis: {pctp(d15.share_12_18_m, 0)} of the 15 m room’s change lies between 12 and 18 m
+        and {pctp(d30.share_27_33_m, 0)} of the 30 m room’s between 27 and 33 m, where {pctp(d15.axis_share_12_18_m, 0)} and {pctp(d30.axis_share_27_33_m, 0)} of the axis lie.
+        Its depth coordinate is an uncalibrated focus coordinate: the frequency of the registration series (P2-06).</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="open">
+    <h2>What stays open: the physical envelopes, the open regime, and measurement</h2>
+    <table class="data compact">
+      <thead><tr><th>open</th><th>why</th><th>what would close or open it</th></tr></thead>
+      <tbody>
+        <tr><td>Strong shaking close by, known exactly</td><td>a room under a 5 m roof with a lorry beside it all pass: the certificate allows {pctp(thin.tpr_upper_at_fpr_005, 0)} at 5%, uninformative with 11% more phase; the oracle, {orOpen.length ? `${orOpen.length} cases open after allowances (×${Math.round(orc.allowance_product)})` : 'excluded after allowances'}</td><td>a physical limit on the motion a room adds under such forcing; a measurement over a known void</td></tr>
+        <tr><td>The physical envelopes</td><td>the imprint is the lab’s linear solver in uniform bare rock (P2-04, P2-26); the ambient levels are regional; nonlinear or parametric coupling is not modelled</td><td>ground motion measured on the plateau during a pass; a proponent’s quantitative prediction of the room-specific motion</td></tr>
+        <tr><td>The measurement model</td><td>speckle and the Doppler-to-time relation for the certificate and the tight layer; the radiometry for the oracle (30 dB assumed)</td><td>a qualified observation operator and noise floor for the real product</td></tr>
+        <tr><td>Measured validation</td><td>the geophone-and-satellite comparison (P2-22, P2-23) is simulated</td><td>shaker or reflector data with instruments on them; surveyed voids and matched controls, blind</td></tr>
+      </tbody>
+    </table>
+    <p class="sub">
+      A method that succeeds on well-designed, withheld ground would show that the measurements or these inputs deserve revision;
+      the bounds are written so such a revision can be made, not to protect a conclusion. The test that would settle it is frozen
+      and blind: motion recovered from a measured moving reflector first, then withheld cavities and controls predicted with
+      settings fixed in advance (<a href={`${base}/satellite/#settle`}>What would settle it</a>). What would help most from the method’s
+      proponents is a predicted room-specific surface motion, with its source, footprint, amplitude and phase, losses and duration,
+      which can be put straight into these formulas without releasing any software.
+    </p>
+  </section>
+</Doc>
+
+<script>
+  document.querySelectorAll<HTMLDetailsElement>('.calculator').forEach((box) => {
+    const area = box.querySelector<HTMLInputElement>('input[name="area"]')!;
+    const disp = box.querySelector<HTMLInputElement>('input[name="displacement"]')!;
+    const floor = box.querySelector<HTMLInputElement>('input[name="floor"]')!;
+    const out = box.querySelector<HTMLOutputElement>('output')!;
+    const lam = Number(box.dataset.lambda);
+    const dens = Number(box.dataset.density);
+    const calc = () => {
+      const A = area.valueAsNumber;
+      const u = disp.valueAsNumber * 1e-6;
+      const z = floor.valueAsNumber;
+      if (![A, u, z].every(Number.isFinite) || A <= 0 || u < 0 || z <= 0) {
+        out.textContent = 'Enter a positive footprint and floor, and a motion of zero or more.';
+        return;
+      }
+      const q = Math.sqrt((dens * A) / z) * ((4 * Math.PI * u) / lam);
+      const rho = 2 * q + q * q;
+      const v = rho < 1 ? Math.min(1, rho / (2 * (1 - rho))) : 1;
+      out.textContent =
+        v >= 1
+          ? 'The certificate does not decide for these inputs (which does not make detection possible).'
+          : `Detection − false alarm ≤ ${v.toPrecision(3)}; at 5% false alarms, found ≤ ${(100 * Math.min(1, 0.05 + v)).toFixed(2)}%. ${v < 0.9 ? 'The 95% / 5% target is excluded.' : 'The target is not excluded by this bound.'}`;
+    };
+    [area, disp, floor].forEach((el) => el.addEventListener('input', calc));
+    calc();
+  });
+</script>
+
+<style>
+  .dim {
+    color: var(--muted);
+    font-size: 0.72rem;
+  }
+  .note {
+    font-size: 0.82rem;
+    color: var(--muted);
+    max-width: 90ch;
+  }
+  details summary {
+    cursor: pointer;
+    font: 600 12px var(--font-sans);
+    color: var(--text);
+    margin-top: 6px;
+  }
+  .calculator {
+    margin-top: 10px;
+    border-top: 1px solid var(--border);
+    padding-top: 8px;
+  }
+  .inputs {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin: 10px 0 4px;
+  }
+  .inputs label {
+    display: grid;
+    gap: 4px;
+    font: 11px var(--font-sans);
+    color: var(--muted);
+  }
+  .inputs input {
+    font: 12px var(--font-mono);
+    padding: 5px 6px;
+    border: 1px solid var(--border-strong);
+    border-radius: 4px;
+    background: var(--sheet);
+    color: var(--text);
+  }
+  output {
+    font: 12px var(--font-mono);
+    color: var(--text);
+  }
+  @media (max-width: 640px) {
+    .inputs {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

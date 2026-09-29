@@ -129,6 +129,14 @@ Then (29 September, evening; the cloud session, on branch `claude/upbeat-pascal-
 - **Stale:** `sim/legacy/results/r07_injected_motion` holds the 23 September run while its script has changed
   since; P1-05's finding says "to the noise level" where the run stopped at its iteration cap.
 
+- **The finite proof, integrated** (29 September, night): an independent derivation (Theorems A–E: processing
+  contracts TV; the exact complex Gaussian divergence; a certificate straight from a phase-energy envelope with the common
+  background's covariance floor; the oracle; two-world depth risk) is ported as `sim/sarsim/finite.py` with its checks and
+  applied to the lab's own runs by P2-30, beside P2-25's tight bound and P2-29's oracle. The site's `/proof/` sets out the
+  three layers; the open regime (strong shaking close by, known exactly; the thin-roof room with a lorry) is kept in view.
+  P2-25 now carries the scattered wave to the scene's farthest corner (the derivation's correction). A container restart
+  cost one P2-26 run; P2-26 now keeps each solver run on disk (`results/cache/p2_26/`) and resumes.
+
 ## The goal
 
 Decide whether one radar image can map structure under the ground, as claimed by Biondi & Malanga (2022, retracted

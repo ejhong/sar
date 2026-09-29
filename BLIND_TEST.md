@@ -6,6 +6,23 @@ contents neither its operator nor the scorer knows, and scored afterwards agains
 and requirement curve (P2-27) predict the outcome within their model; the test is worth running because it does not
 depend on that model.
 
+## 0. Gates before it, in order
+
+An independent review (29 September 2026) set the path to a real mapper, whichever way the evidence goes. Each gate is
+passed before the next is attempted:
+
+1. **Recover motion before interpreting depth.** A measured moving reflector with synchronised instruments on it: the
+   frozen processing must recover the withheld motion's place, timing, frequency, amplitude and phase, beside stationary
+   controls and ordinary scatterers. This qualifies the chain, not cavity detection.
+2. **Establish a cavity-specific surface response.** Surveyed voids and matched intact ground under measured excitation,
+   an array measuring amplitude and phase; a forward model fitted on some sensors and frequencies predicts the rest.
+3. **Predict withheld cavities with frozen settings** (this document's test): presence, place, depth and size scored
+   separately; any focus-coordinate calibration fixed on development examples and tested for transfer.
+4. **Only then a voxel map**, from validated estimates, with its resolution, calibration domain and alternatives shown.
+
+The lab's bounds (P2-25, P2-29, P2-30) say which regimes are worth testing: a regime the certificate leaves open (strong
+nearby shaking, known exactly) is where a controlled experiment could be designed.
+
 ## 1. Freeze, then make
 
 Before any product is made, publish (commit to this repository) and hash:
