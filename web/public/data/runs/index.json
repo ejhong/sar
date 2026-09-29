@@ -1517,6 +1517,281 @@
   },
   "command": "uv run --with scikit-image python experiments/p2_24_gated_on_the_shaking.py"
  },
+ "p2_25_information_bound": {
+  "id": "p2_25_information_bound",
+  "title": "What one image can hold about the chamber, whatever reads it",
+  "date": "2026-09-29",
+  "started_utc": "2026-09-29T20:57:52+00:00",
+  "runtime_s": 1370.5,
+  "commit": "117f33b",
+  "params": {
+   "acquisition": "giza-20250827",
+   "grid_m": 0.5,
+   "half_width_m": 45.0,
+   "taper_static_m": [
+    30.0,
+    39.0
+   ],
+   "taper_dynamic_m": [
+    32.0,
+    39.0
+   ],
+   "far_field_from_m": 32.0,
+   "reliable_dprime": 3.29,
+   "genie_snr_db": 30.0,
+   "monte_carlo": {
+    "model": 600,
+    "synthesizer": 80
+   },
+   "noise_free": true,
+   "attenuation": "none"
+  },
+  "environment": {
+   "python": "3.11.15",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 4,
+   "cpus": 4
+  },
+  "command": "uv run python experiments/p2_25_information_bound.py"
+ },
+ "p2_26_imprint_spectrum": {
+  "id": "p2_26_imprint_spectrum",
+  "title": "The chamber's imprint at every frequency",
+  "date": "2026-09-29",
+  "started_utc": "2026-09-29T19:55:18+00:00",
+  "runtime_s": 3686.1,
+  "commit": "43ef093",
+  "params": {
+   "site": "bench-void",
+   "models": {
+    "main": {
+     "extent": [
+      [
+       -110.0,
+       110.0
+      ],
+      [
+       -80.0,
+       80.0
+      ],
+      [
+       -100.0,
+       3.0
+      ]
+     ],
+     "h": 1.0,
+     "pml_m": 20.0,
+     "half": 40.0,
+     "line_x": -75.0,
+     "plane_z": -60.0,
+     "record_s": 0.5,
+     "f_top": 120.0
+    },
+    "small": {
+     "extent": [
+      [
+       -55.0,
+       55.0
+      ],
+      [
+       -40.0,
+       40.0
+      ],
+      [
+       -40.0,
+       3.0
+      ]
+     ],
+     "h": 1.0,
+     "pml_m": 10.0,
+     "half": 25.0,
+     "line_x": -38.0,
+     "plane_z": null,
+     "record_s": 0.3,
+     "f_top": 120.0
+    },
+    "small_fine": {
+     "extent": [
+      [
+       -55.0,
+       55.0
+      ],
+      [
+       -40.0,
+       40.0
+      ],
+      [
+       -40.0,
+       3.0
+      ]
+     ],
+     "h": 0.5,
+     "pml_m": 10.0,
+     "half": 25.0,
+     "line_x": -38.0,
+     "plane_z": null,
+     "record_s": 0.3,
+     "f_top": 240.0
+    }
+   },
+   "cases": [
+    [
+     "surface",
+     "main",
+     "line",
+     {
+      "centre": [
+       0,
+       0,
+       -15
+      ],
+      "size": [
+       6,
+       6,
+       6
+      ]
+     }
+    ],
+    [
+     "p_below",
+     "main",
+     "plane_up",
+     {
+      "centre": [
+       0,
+       0,
+       -15
+      ],
+      "size": [
+       6,
+       6,
+       6
+      ]
+     }
+    ],
+    [
+     "s_below",
+     "main",
+     "plane_east",
+     {
+      "centre": [
+       0,
+       0,
+       -15
+      ],
+      "size": [
+       6,
+       6,
+       6
+      ]
+     }
+    ],
+    [
+     "surface_favourable",
+     "main",
+     "line",
+     {
+      "centre": [
+       0,
+       0,
+       -10
+      ],
+      "size": [
+       10,
+       10,
+       10
+      ]
+     }
+    ],
+    [
+     "surface_small",
+     "small",
+     "line",
+     {
+      "centre": [
+       0,
+       0,
+       -15
+      ],
+      "size": [
+       6,
+       6,
+       6
+      ]
+     }
+    ],
+    [
+     "surface_small_fine",
+     "small_fine",
+     "line",
+     {
+      "centre": [
+       0,
+       0,
+       -15
+      ],
+      "size": [
+       6,
+       6,
+       6
+      ]
+     }
+    ],
+    [
+     "surface_favourable_small",
+     "small",
+     "line",
+     {
+      "centre": [
+       0,
+       0,
+       -10
+      ],
+      "size": [
+       10,
+       10,
+       10
+      ]
+     }
+    ],
+    [
+     "surface_favourable_small_fine",
+     "small_fine",
+     "line",
+     {
+      "centre": [
+       0,
+       0,
+       -10
+      ],
+      "size": [
+       10,
+       10,
+       10
+      ]
+     }
+    ]
+   ],
+   "f_low_hz": 6.0,
+   "rock": "limestone-mokattam, no intrinsic attenuation",
+   "line_of_sight": [
+    -0.3485081910484424,
+    -0.06857282760869288,
+    0.9347939923244537
+   ],
+   "pml_vp_m_s": 3300.0,
+   "record_every": 4
+  },
+  "environment": {
+   "python": "3.11.15",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 4,
+   "cpus": 4
+  },
+  "command": "uv run python experiments/p2_26_imprint_spectrum.py"
+ },
  "lab_khafre": {
   "id": "lab_khafre",
   "title": "The gated reconstruction across Khafre, from the 2022 image",

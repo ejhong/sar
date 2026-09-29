@@ -38,5 +38,6 @@ export const GLOSSARY: Record<string, Entry> = {
   'doppler-tomography': { term: 'Doppler tomography', field: 'radar', text: 'The claimed method: reading ground vibration from the differences between sub-apertures of one image and focusing it into depth. Published 2022, retracted 2026.' },
   look: { term: 'look', field: 'radar', text: 'An image formed from part of the Doppler band. In a dwell the band is time, so a look sees the ground as it was during a few seconds, and averages any motion over them.' },
   speckle: { term: 'speckle', field: 'radar', text: 'The grainy texture of radar images of natural ground: many small scatterers in each cell interfering. Each Doppler bin holds an independent speckle pattern.' },
+  fisher: { term: 'Fisher information', field: 'both', text: 'How sharply the probability of the data changes with a parameter. Its inverse bounds the variance of any unbiased estimate (the Cramér–Rao bound), and for a small change it fixes how well any test can tell the two cases apart.' },
   imprint: { term: 'imprint', field: 'both', text: 'The difference a buried chamber makes to how the surface moves as a wave passes: what any passive method would have to detect.' },
 };

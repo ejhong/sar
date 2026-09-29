@@ -476,13 +476,64 @@ investigation's record, and what it leaves open follow.
     646 positions, 32 within 12 m of the axis; the random noise at 648, also 32. At a thousandth of the force, 454 and 456.
     The chamber changes the method's picture exactly as noise of its size does.
 
+17. **Whatever reads it, one image of ordinary ground holds almost nothing of the chamber (P2-25).** Items 1 to 16 test
+    methods by running them; this bounds every method at once, tested or not. An image is a function of the echo from
+    what the wave reaches, the surface, and the surface's motion during the pass, and a method is a function of the
+    image, so none holds more about the chamber than the image does (the data-processing inequality). For any test the
+    detection rate minus the false-alarm rate is at most the total variation between the image's distributions with and
+    without the chamber, at most sqrt(KL/2) (Pinsker); for a small imprint KL = F/2, F the Fisher information. For fully
+    developed speckle the image is a zero-mean circular Gaussian and, with its spectrum's bins independent,
+    F = sum over f, f' of w(f) w(f') |Phi~(f - f'; f) - Phi~(f - f'; f')|^2, Phi~(k; f) the spatial Fourier coefficient of
+    the imprint's radar phase at the slow time the pass sees bin f (`sim/sarsim/information.py`). Three consequences:
+    motion shared by the scene carries exactly nothing; any motion gives F <= 4 N <Phi^2> over the N independent cells
+    (28 per square metre here); slow smooth motion gives F = (R/V_s)^2 sum over cells of <(dv/dx)^2>, the texture's
+    stretch along track (R/V_s = 79.3 s). Checked: the sum against tr(C+ C' C+ C') built scatterer by scatterer (6e-16),
+    the continuum formula used on the real geometry against the exact sum (1.3 to 1.6% high), shared motion (zero to
+    rounding); and reached: the locally most powerful detector, on 600 speckle images with a boosted imprint, spreads by
+    1.01 +- 0.03 of sqrt(F) without it and shifts by 1.00 +- 0.06 of a F with it (on the lab's synthesizer, 80 scenes of
+    random scatterers moved through its own motion callback: 0.96 +- 0.08 and 1.00 +- 0.01; in the stretch regime 1.03
+    and 0.89 +- 0.07), so the bound is what the image holds. On the real dwell, generously (the method told the ambient
+    shaking, no receiver noise, no attenuation), the bench chamber gives any method at most 1.3e-9 over a coin toss under
+    Giza's measured microseisms (the texture's largest stretch 6e-11), 9.2e-8 at the noisiest stations on Earth, 1.3e-8
+    and 2.7e-8 at the measured 1-3 and 3-8 Hz levels (P2-04's static imprint, recomputed and matching its published map
+    to 2e-6); with P2-26's dynamic imprint, 1.2e-3 under the FTA's urban background (9 um/s over 8-100 Hz) for the whole
+    pass and 1.7e-2 for a truck over a bump 15 m away for the whole pass at its worst frequency (56 Hz); 5.9e-3 and
+    8.2e-2 over a room under a 5 m roof. Most of the dynamic information is the scattered wave carried unattenuated
+    across the whole 5 km scene by the bound; within 32 m alone the urban hum gives 9e-5 and the truck 1.3e-3. A point
+    as bright as the brightest on open plateau (12 dB) over the imprint's peak gives 3.0e-9 under the microseisms, a
+    corner reflector (50 dB) 2.3e-7 (3.6e-3 with the truck); a method told the ground's reflectivity, which no single
+    image has, every pixel 30 dB over the noise, 1.9e-6 (0.37 with the truck: the one case the bound leaves open). A
+    reliable detection (95% found at 5% false alarms) under the microseisms needs the ground shaking 1.3e9 times harder;
+    beside the truck, 98 times harder (20 over the thin roof). The claimed deep structure scales to 0.36 of the bench's
+    peak imprint, and in the stretch regime the information depends on the peak alone: 4.6e-10.
+
+18. **No room rings; faster shaking reaches a room better (P2-26).** The lab's elastic solver, with and without the
+    chamber, under a surface wave from the side (a line of vertical forces across the model 75 m from the axis, a
+    Gaussian pulse flat to 120 Hz; waves from the other sides by the bench's symmetry), a P and an S wave from below
+    (planes of forces 60 m down), and P2-22's favourable room (10 m, roof 5 m down), in rock without attenuation, from
+    6 to 120 Hz, and to 240 Hz on a smaller model at 0.5 m. The bench room's imprint on the line-of-sight velocity rises
+    with frequency to 0.16 of a surface wave's motion at 79 Hz (Q 0.9) and falls away to 240 Hz; waves from below reach
+    0.31 (P, 86 Hz, Q 1.4) and 0.34 (S, still rising at 120 Hz). The room under a 5 m roof flexes with the wave: the
+    ground over it moves up to 1.98 times the passing motion at 65 Hz (2.15 at 59 Hz on the finer grid), broadly (Q 0.9
+    to 1.8), and stays above the motion to 240 Hz. No case shows a peak standing 20% above its surroundings: rock round a
+    room carries the energy away. At 7 Hz the imprint is 0.96 of P2-04's static answer, by 12 Hz 1.8 times it, where the
+    static approximation gives way (within 3-8 Hz at most about 1.2 times, which P2-25's 3-8 Hz row does not include).
+    Halving the grid changes the imprint by at most 6% below 120 Hz (11% for the thin roof), the finer grid giving less.
+    The air inside a room, which the solver leaves out, has 1/19,000 of the rock's acoustic impedance
+    (sites/materials.json), so at its resonance (29 Hz for 6 m) it would need a quality factor of about 190 to press on
+    the walls with 1% of the rock's own stress.
+
 These reasons differ in kind and strength. 4 is algebraic and holds whatever the ground does: the depth axis is a
 frequency axis with a repeat and a mirror, and no validated model turns it into a physical depth. 1 and 12 are
 measured, for particular estimators and configurations; 13 is a known-truth test of one of them, on synthetic products. 2, 3 and 8 are models with stated assumptions (a small chamber
 in uniform rock, quasi-static strain, the regional microseism level, dry sand's penetration as a bound for limestone).
 Together they show that the methods tested do not establish subsurface imaging; they do not prove every conceivable
 route impossible. R16's resolution bound (1.10 m s at Giza, P2-01) limits short looks; strong prior information could
-in principle detect weak changes below it.
+in principle detect weak changes below it. 17 is of a different kind: a theorem that bounds every way of reading one
+image at once, tested or not, including methods with strong prior information, for ordinary ground modelled as fully
+developed speckle (bright points bounded separately, and any scene by a genie that knows the reflectivity). Its inputs,
+the chamber's imprint (2, 18) and the ambient levels, are models; within them it is reached by the best detector, so it
+is what the image holds, not a loose ceiling. It does not cover penetration at longer wavelengths or many images.
 
 ### Independent review, 28 September 2026: corrections adopted
 
@@ -579,9 +630,11 @@ corner-reflector threshold P2-05 computes, so P2-05's thresholds are generous to
   cover and the plateau's 0.6 Hz resonance are not modelled; site amplification of a few times would
   not change the shortfall's order of magnitude. The traffic case is only a guide, since at 15 Hz the
   waves are not long compared with the depth.
-- The magnitude tracker is the best of those tried, not a proven optimum. The argument that nothing
-  can do much better for ordinary ground is the distributional one in 1: what survives in speckle is
-  the apparent brightness a displacement gradient produces, which for this imprint is of order 10⁻¹¹.
+- The bound of 17 holds exactly for fully developed speckle and for bright points taken one at a time; real texture
+  holds scatterers in between, whose information lies between the two bounds, and the genie bound, which assumes the
+  reflectivity known, covers any scene. It is computed noise-free and with the method told the ambient motion, both
+  generous. The imprint is P2-04's static one below 8 Hz and P2-26's dynamic one above, for one chamber in uniform bare
+  rock without attenuation; the scattered wave is carried unattenuated across the whole scene by a bound.
 - Giza's own ambient level is unmeasured in the open literature; the microseism level is from
   Kottamya, 67 km east (M1-01), bracketed by Peterson's global models.
 - The known-chamber test at Khufu on two real passes (2022 and 2025) is run locally and not yet published. Stated in

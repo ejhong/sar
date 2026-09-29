@@ -1,0 +1,161 @@
+---
+/**
+ * The ceiling on every method (P2-25). For each source of shaking, the most any way of reading one image of ordinary
+ * ground can raise its detection rate above its false-alarm rate on the one-chamber bench: sqrt(F) / 2, F the Fisher
+ * information the image holds about the chamber's imprint. A log axis from a trillionth to certainty, with the line a
+ * reliable detection needs (95% found, 5% false alarms).
+ */
+import bound from '../../public/data/runs/p2_25_information_bound.json';
+
+interface Props {
+  compact?: boolean;
+}
+const { compact = false } = Astro.props;
+
+type S = { fisher: number; edge: number; shake_factor_for_reliable: number | null };
+type Static = S & { case: string; rms_velocity_m_s: number };
+type Dyn = { case: string; urban: S & { band_hz: number[] }; truck: S & { worst_f_hz: number } };
+type Pt = S & { point: string; scr_db: number; shaking: string };
+const b = bound as unknown as { static: Static[]; dynamic: Dyn[]; points: Pt[]; genie: (S & { case: string })[]; claimed: { microseisms: S } };
+const st = b.static;
+const surf = b.dynamic.find((d) => d.case === 'surface')!;
+const refl = b.points.find((p) => p.scr_db > 40 && p.shaking === 'microseisms')!;
+const genie = b.genie[0];
+
+type Row = { name: string; sub: string; edge: number; kind: 'natural' | 'cultural' | 'helped' | 'claim' };
+const rows: Row[] = [
+  { name: 'Giza’s trembling', sub: 'microseisms, as measured nearby', edge: st[0].edge, kind: 'natural' },
+  { name: 'The most restless ground on Earth', sub: 'the noisiest stations, 71× Giza', edge: st[1].edge, kind: 'natural' },
+  { name: 'Faster trembling', sub: '1–3 and 3–8 Hz, as measured', edge: Math.max(st[2].edge, st[3].edge), kind: 'natural' },
+  { name: 'A city’s traffic hum', sub: `urban background, ${surf.urban.band_hz[0]}–${surf.urban.band_hz[1]} Hz, all pass`, edge: surf.urban.edge, kind: 'cultural' },
+  { name: 'A lorry over a bump, 15 m away', sub: `all 25 s, at its worst (${Math.round(surf.truck.worst_f_hz)} Hz)`, edge: surf.truck.edge, kind: 'cultural' },
+  { name: 'A corner reflector over the room', sub: `${Math.round(refl.scr_db)} dB, Giza’s trembling`, edge: refl.edge, kind: 'helped' },
+  { name: 'Told the ground’s texture', sub: 'a genie; Giza’s trembling', edge: genie.edge, kind: 'helped' },
+  { name: 'The claimed deep structure', sub: '80 m at 1,220 m, Giza’s trembling', edge: b.claimed.microseisms.edge, kind: 'claim' },
+];
+const shown = compact ? rows.filter((r) => r.kind !== 'helped') : rows;
+
+const LO = -12;
+const HI = 0;
+const W = 680;
+const L = 214;
+const R = 20;
+const top = 26;
+const rowH = compact ? 30 : 32;
+const H = top + shown.length * rowH + 52;
+const x = (e: number) => L + ((Math.log10(Math.max(e, 10 ** LO)) - LO) / (HI - LO)) * (W - L - R);
+const decades = Array.from({ length: HI - LO + 1 }, (_, i) => LO + i);
+const SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+const sup = (n: number) => String(n).replace('-', '⁻').replace(/\d/g, (d) => SUP[+d]);
+const sci = (v: number) => {
+  if (v >= 0.01) return v.toFixed(2);
+  const e = Math.floor(Math.log10(v));
+  const m = v / 10 ** e;
+  return `${m.toFixed(1)}×10${sup(e)}`;
+};
+const tick = (e: number) => (e === 0 ? '1' : `10${sup(e)}`);
+const colour = { natural: 'var(--cinnabar)', cultural: 'var(--cinnabar)', helped: 'var(--cinnabar)', claim: 'var(--porphyry)' };
+const reliable = 0.9;
+---
+<figure class="ceiling">
+  <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="The most any method can beat a coin toss by, for each source of shaking, on a logarithmic scale">
+    {decades.map((e) => (
+      <g>
+        <line x1={x(10 ** e)} x2={x(10 ** e)} y1={top - 6} y2={top + shown.length * rowH} class="grid" />
+        {e % 3 === 0 && e > LO && <text x={x(10 ** e)} y={top + shown.length * rowH + 16} text-anchor="middle" class="tick">{tick(e)}</text>}
+      </g>
+    ))}
+    <line x1={x(reliable)} x2={x(reliable)} y1={top - 16} y2={top + shown.length * rowH} class="reliable" />
+    <text x={x(reliable) - 4} y={top - 10} text-anchor="end" class="reliable-label">a reliable detection</text>
+    <text x={L + 2} y={top + shown.length * rowH + 36} text-anchor="start" class="axis">beats a coin toss by →</text>
+    {shown.map((r, i) => {
+      const y = top + i * rowH + rowH / 2;
+      const c = colour[r.kind];
+      return (
+        <g>
+          <text x={L - 10} y={y - 2} text-anchor="end" class="name">{r.name}</text>
+          <text x={L - 10} y={y + 11} text-anchor="end" class="sub">{r.sub}</text>
+          <line x1={L} x2={W - R} y1={y} y2={y} class="base" />
+          <rect x={L} y={y - 4} width={Math.max(x(r.edge) - L, 1)} height="8" rx="4" fill={c} opacity={r.kind === 'helped' ? 0.45 : 0.85} />
+          <circle cx={x(r.edge)} cy={y} r="5" fill="var(--sheet)" stroke={c} stroke-width="2.2" />
+          <text x={x(r.edge) + 10} y={y + 4} class="value">{sci(r.edge)}</text>
+        </g>
+      );
+    })}
+  </svg>
+  <figcaption>
+    <slot>
+      For each source of shaking, the most that any way of reading one image of ordinary ground, however clever, can raise
+      its rate of finding the chamber above its rate of false alarms: the square root of the information the image holds,
+      halved. The method is allowed to know the shaking exactly and the image is taken without receiver noise; both only
+      raise the ceiling. A reliable detection, 95% found with 5% false alarms, needs 0.9.
+    </slot>
+  </figcaption>
+</figure>
+
+<style>
+  .ceiling {
+    margin: 8px 0 4px;
+  }
+  .ceiling svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  @media (max-width: 640px) {
+    .ceiling {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .ceiling svg {
+      min-width: 600px;
+    }
+  }
+  .grid {
+    stroke: var(--border);
+    stroke-width: 1;
+  }
+  .base {
+    stroke: var(--border-strong);
+    stroke-width: 1;
+  }
+  .reliable {
+    stroke: var(--verdigris);
+    stroke-width: 1.5;
+    stroke-dasharray: 4 3;
+  }
+  .reliable-label {
+    font: italic 11.5px var(--font-serif);
+    fill: var(--verdigris);
+  }
+  .tick {
+    font: 10px var(--font-mono);
+    fill: var(--muted);
+  }
+  .axis {
+    font: 600 9.5px var(--font-mono);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    fill: var(--muted);
+  }
+  .name {
+    font: 600 12.5px var(--font-sans);
+    fill: var(--text);
+  }
+  .sub {
+    font: 11px var(--font-sans);
+    fill: var(--muted);
+  }
+  .value {
+    font: 600 11px var(--font-mono);
+    fill: var(--text);
+  }
+  figcaption {
+    font-family: var(--font-serif);
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--body);
+    margin-top: 8px;
+    max-width: 80ch;
+  }
+</style>

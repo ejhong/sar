@@ -8,6 +8,8 @@ import LineChart from '../components/LineChart.astro';
 import SizeLadder from '../components/SizeLadder.astro';
 import Sci from '../components/Sci.astro';
 import Boundary from '../components/Boundary.astro';
+import Ceiling from '../components/Ceiling.astro';
+import Routes from '../components/Routes.astro';
 import ClaimSection from '../components/ClaimSection.astro';
 import { GATED_CODE } from '../data/credits';
 import every from '../../public/data/runs/p2_23_every_reader.json';
@@ -17,6 +19,7 @@ import sees from '../../public/data/runs/p2_03_what_a_dwell_sees.json';
 import imp from '../../public/data/runs/p2_04_chamber_imprint.json';
 import bud from '../../public/data/runs/p2_05_budget.json';
 import dep from '../../public/data/runs/p2_06_depth_is_frequency.json';
+import bound from '../../public/data/runs/p2_25_information_bound.json';
 import lib from '../../public/data/ambient.json';
 import labKhafre from '../../public/data/runs/lab_khafre.json';
 import type { TourStop } from '../viewer/Underworld';
@@ -115,6 +118,18 @@ const g24w = g24tag ? g24!.results[g24tag].p1 : undefined;
 const gatedReads = g24w ? g24w.positions_changed_near >= 5 && g24w.positions_changed_near > 3 * g24!.near_share * g24w.positions_changed : undefined;
 const seasons = (routes as unknown as { C_between_passes: { rooms: { bench: { heat: { breathing_over_imprint: number } } } } }).C_between_passes.rooms.bench.heat
   .breathing_over_imprint;
+// 10 · any way of reading the image (P2-25): the ceiling one image puts on every method
+type BS = { fisher: number; edge: number; shake_factor_for_reliable: number | null };
+const bd = bound as unknown as {
+  static: (BS & { case: string; stretch_peak: number })[];
+  dynamic: { case: string; urban: BS; truck: BS & { worst_f_hz: number } }[];
+};
+const microEdge = bd.static[0].edge;
+const noisyEdge = bd.static[1].edge;
+const hum = bd.dynamic.find((d) => d.case === 'surface')!;
+const thin = bd.dynamic.find((d) => d.case === 'surface_favourable')!;
+const inWords = (n: number) =>
+  n >= 1e9 ? `${+(n / 1e9).toPrecision(2)} billion` : n >= 1e6 ? `${+(n / 1e6).toPrecision(2)} million` : n >= 1e3 ? `${+(n / 1e3).toPrecision(2)} thousand` : `${Math.round(n)}`;
 
 const stops: TourStop[] = [
   { site: 'bench-void', caption: '<b>Test bench</b>One room, 6 m across and 15 m down in limestone: the truth every instrument is scored against.' },
@@ -164,7 +179,7 @@ const explore = [
             <li><b>Instruments on the ground</b> find the room: travel times, echoes, whole waveforms, and the vibrator above.</li>
             <li><b>Long-wavelength radar</b> reaches about {sand('L')} m into the driest sand at L band and {sand('P')} m at P band (X band: {Math.round(sand('X') * 100)} cm); shuttle radar found buried valleys under the Sahara that way.</li>
             <li><b>Many satellite passes</b> measure ground that moves, as over voids that sink or collapse; a stable room in rock moves the ground {Math.round(seasons)} times less than the ground’s own seasons do.</li>
-            <li><b>One X-band image</b> of ordinary ground: no route we could find, and none in the physics we modelled.</li>
+            <li><b>One X-band image</b> of ordinary ground: in our model, however it is read, it beats a coin toss on the room by at most one in {inWords(1 / microEdge)} (<a href="#bound">step 10</a>).</li>
           </ul>
         </div>
       </div>
@@ -209,6 +224,7 @@ const explore = [
         <li><a href="#frequency">depth is frequency</a></li>
         <li><a href="#seismometer">beside a seismometer</a></li>
         <li><a href="#scale">how far off</a></li>
+        <li><a href="#bound">any way of reading it</a></li>
         <li><a href="#rescue">could anything change it?</a></li>
       </ol>
     </header>
@@ -439,15 +455,50 @@ const explore = [
       </div>
     </section>
 
-    <section id="rescue" class="step">
+    <section id="bound" class="step">
       <div class="words">
         <p class="num">10</p>
+        <h2>In our model, however the image is read, it beats a coin toss on the room by at most one in {inWords(1 / microEdge)}</h2>
+        <p>
+          Steps 5 to 9 tested one method. This step bounds every method at once, including any not yet invented. An image
+          is made of three things: the echo from what the radar reaches, a few centimetres into the ground; the surface
+          itself; and how the surface moves during the 25-second pass. The room is 15 metres down, far past the echo, so
+          only the motion can carry it; and processing can lose what the image holds, never add to it.
+        </p>
+        <p>
+          How much does the motion leave? Radar texture is random, like the grain of film. When a whole stretch of ground
+          moves together, the grain stays exactly as random as it was, and the image keeps no trace of that motion: not a
+          little, none. What leaves a trace is ground moving differently from place to place, which stretches the texture
+          along the satellite’s track. Over the room that stretch is at most <Sci v={bd.static[0].stretch_peak} p={0} />,
+          and it caps what any method can do: tell “room” from “no room” better than a coin toss by at most one in{' '}
+          {inWords(1 / microEdge)}. At the most restless places on Earth, one in {inWords(1 / noisyEdge)}.
+        </p>
+        <p>
+          The cap is what the image holds, not a loose ceiling over it: the best possible detector, run on simulated
+          images, reaches it. Faster shaking reaches the room better, and the room scatters it more; a room under a roof
+          only 5 metres thick even moves the ground over it twice as much as the passing wave, though it never rings. Yet a
+          city’s traffic hum for the whole pass leaves the cap at <Sci v={hum.urban.edge} p={0} />. Only a lorry bouncing over a bump 15
+          metres from the room for all 25 seconds lifts it to <Sci v={hum.truck.edge} p={0} /> (<Sci v={thin.truck.edge} p={0} /> under
+          the thin roof), and a reliable detection would still need the ground shaken{' '}
+          {Math.round(hum.truck.shake_factor_for_reliable!).toLocaleString('en-US')} times harder than that
+          ({Math.round(thin.truck.shake_factor_for_reliable!).toLocaleString('en-US')} under the thin roof), with the method told
+          exactly how it shook.
+        </p>
+      </div>
+      <div class="wide routes-wrap"><Routes /></div>
+      <div class="wide narrow"><Ceiling compact /></div>
+      <p class="more"><a href={`${base}/satellite/#bound`}>The derivation, its checks, and every case →</a></p>
+    </section>
+
+    <section id="rescue" class="step">
+      <div class="words">
+        <p class="num">11</p>
         <h2>Could anything change the answer?</h2>
       </div>
       <div class="qa">
         <details class="q">
           <summary>What if the ground shook harder?</summary>
-          <p>At the most restless places on Earth the ground moves 70 times more than at Giza, and the chamber’s signal would still be millions of times too faint. A lorry close by shakes the ground harder, but faster than the satellite’s slices can follow; a slice short enough to follow it blurs the ground over 30 metres.</p>
+          <p>At the most restless places on Earth the ground moves 70 times more than at Giza, and no way of reading the image beats a coin toss by more than one in {inWords(1 / noisyEdge)} (step 10). A lorry close by shakes the ground far harder, and faster, which the room scatters more; yet a lorry bouncing over a bump 15 metres away for the whole pass leaves any method at most <Sci v={hum.truck.edge} p={0} /> better than a coin toss. The method’s own slices fare worse: one short enough to follow such shaking blurs the ground over 30 metres.</p>
         </details>
         <details class="q">
           <summary>What about a shinier target?</summary>
@@ -455,7 +506,7 @@ const explore = [
         </details>
         <details class="q">
           <summary>What about a cleverer way to read the image?</summary>
-          <p>For ordinary ground, as radar texture is usually modelled, the information is not in the picture: motion shared by a stretch of ground leaves the texture’s statistics unchanged, a property of speckle rather than of one method. Real ground departs from that model where it has bright points, which can be tracked (above); other departures would need tests of their own.</p>
+          <p>That is step 10: it bounds every way of reading one image at once. For ordinary ground, as radar texture is modelled, motion shared by a stretch of ground leaves the texture’s statistics unchanged, and what survives of the room’s mark gives any method, however clever, at most one in {inWords(1 / microEdge)} over a coin toss; the best possible detector reaches that and no further. Bright points can be tracked, and a corner reflector over the room raises the cap only to <Sci v={(bound as unknown as { points: { scr_db: number; shaking: string; edge: number }[] }).points.find((p) => p.scr_db > 40 && p.shaking === 'microseisms')!.edge} p={0} />. <a href={`${base}/satellite/#bound`}>The bound, derived and checked</a>.</p>
         </details>
         <details class="q">
           <summary>Then why do the published pictures look so convincing?</summary>
@@ -629,6 +680,26 @@ const explore = [
   }
   .wide {
     max-width: 960px;
+  }
+  #bound .wide + .wide {
+    margin-top: 28px;
+  }
+  #bound .words p + p {
+    margin-top: 12px;
+  }
+  #bound .wide.narrow {
+    max-width: 780px;
+  }
+  #bound .wide.routes-wrap {
+    max-width: 960px;
+  }
+  .more {
+    max-width: var(--page);
+    margin: 14px auto 0;
+    font: 12.5px var(--font-mono);
+  }
+  .more a {
+    color: var(--lapis);
   }
   .wide.on-dark {
     margin-top: 36px;
@@ -1291,19 +1362,19 @@ const explore = [
 
   /* each step: its words beside its pictures, so the story reads in half the height */
   @media (min-width: 861px) {
-    .step:not(#rescue) {
+    .step:not(#rescue):not(#bound) {
       display: grid;
       grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
       column-gap: 40px;
       row-gap: 16px;
       align-items: start;
     }
-    .step:not(#rescue) > .words {
+    .step:not(#rescue):not(#bound) > .words {
       grid-column: 1;
       grid-row: 1 / span 3;
       margin-bottom: 0;
     }
-    .step:not(#rescue) > :not(.words) {
+    .step:not(#rescue):not(#bound) > :not(.words) {
       grid-column: 2;
       max-width: none;
       width: 100%;

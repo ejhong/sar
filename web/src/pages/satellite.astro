@@ -32,7 +32,11 @@ import onShaking from '../../public/data/runs/p2_24_gated_on_the_shaking.json';
 import shaking from '../../public/data/runs/p2_22_one_shaking.json';
 import passive from '../../public/data/runs/p1_04_ambient.json';
 import echo from '../../public/data/runs/p1_03_scattered.json';
+import bound from '../../public/data/runs/p2_25_information_bound.json';
+import spectrum from '../../public/data/runs/p2_26_imprint_spectrum.json';
 import Figure from '../components/Figure.astro';
+import Ceiling from '../components/Ceiling.astro';
+import Routes from '../components/Routes.astro';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 // ---- formatting
@@ -318,6 +322,54 @@ const vibMillions = `${Math.round(vibRatio / 1e6).toLocaleString('en-US')} milli
 // ---- the lab's Khafre run
 type LRes = Record<string, { supported_positions: Record<string, number> }>;
 const lk = labKhafre.results as unknown as LRes;
+// ---- P2-25 and P2-26: a bound on every way of reading one image
+type BS = { fisher: number; edge: number; shake_factor_for_reliable: number | null };
+type BStatic = BS & { case: string; rms_velocity_m_s: number; f_hz: number; stretch_peak: number; imprint_peak_phase_rad: number; fisher_bound_any_frequency: number; fisher_slow_limit: number };
+type BDyn = { case: string; urban: BS & { fisher_near_only: number; rms_velocity_m_s: number; band_hz: number[] }; truck: BS & { fisher_near_only: number; worst_f_hz: number; rms_velocity_m_s: number } };
+type BAtt = { spread_over_sqrtF: number; spread_se: number; shift_over_aF: number; shift_se: number; estimator_var_times_F: number; deflection_expected: number; peak_phase_rad: number; width_m: number; f_hz: number; realisations: number; synthesizer?: { spread_over_sqrtF: number; spread_se: number; paired_shift_over_aF: number; paired_shift_se: number; realisations: number } };
+const bd = bound as unknown as {
+  checks: {
+    covariance: { relative_difference: number; shared_motion_fisher: number };
+    continuum: { width_m: number; f_hz: number; ratio: number; paired_echo_m: number }[];
+    attained: { A_compact: BAtt; B_smooth: BAtt; C_shared: { largest_score: number; fisher: number } };
+  };
+  kernels: { largest_difference_over_peak: number; source: string };
+  static: BStatic[];
+  dynamic: BDyn[];
+  points: (BS & { point: string; scr_db: number; shaking: string })[];
+  genie: (BS & { case: string })[];
+  claimed: { relative_imprint: number; microseisms: BS; noisiest: BS };
+  penetration_db_x_band: number;
+  cells_per_m2: number;
+  stretch_seconds: number;
+  paired_echo_m_per_hz: number;
+  scene_radius_m: number;
+};
+const bSurf = bd.dynamic.find((d) => d.case === 'surface')!;
+const bFav = bd.dynamic.find((d) => d.case === 'surface_favourable')!;
+const bA = bd.checks.attained.A_compact;
+const bB = bd.checks.attained.B_smooth;
+const cont = bd.checks.continuum;
+const contSpread = [Math.min(...cont.map((c) => c.ratio)), Math.max(...cont.map((c) => c.ratio))];
+type SCase = { f_hz: number[]; peak_transfer: number[]; peak_value: number; peak_f_hz: number; q_of_largest: number | null; band_edge_largest: boolean; sharp_peaks_hz: number[]; half_max_radius_m_at_peak: number };
+const sp = spectrum as unknown as { cases: Record<string, SCase>; static: { dynamic_over_static: number[]; f_hz: number[] }; grid_check: Record<string, { max_amplitude_change: number }> };
+const spS = sp.cases.surface;
+const spNames: [string, string, string][] = [
+  ['surface', 'surface wave, the bench', 'var(--cinnabar)'],
+  ['surface_favourable', 'surface wave, a room 5 m down', 'var(--porphyry)'],
+  ['p_below', 'P wave from below', 'var(--lapis)'],
+  ['s_below', 'S wave from below', 'var(--verdigris)'],
+];
+const sharpAny = Object.values(sp.cases).some((c) => c.sharp_peaks_hz.length > 0);
+const atEdge = (c: SCase) => c.band_edge_largest || c.peak_f_hz >= 0.97 * c.f_hz[c.f_hz.length - 1];
+const qText = (c: SCase) => (atEdge(c) ? 'still rising at the model’s upper limit' : `Q ${c.q_of_largest!.toFixed(1)}`);
+const spF = sp.cases.surface_favourable;
+const spFfine = sp.cases.surface_favourable_small_fine;
+const qMax = Math.max(...Object.values(sp.cases).filter((c) => !atEdge(c)).map((c) => c.q_of_largest ?? 0));
+const dyn7 = sp.static.dynamic_over_static;
+const staticLine = (f: number) => (2 * Math.PI * f * (imp.hv as number) * (imp.imprint_peak_los_per_strain_m as number)) / (imp.rayleigh_speed_m_s as number);
+const fStatic = Array.from({ length: 25 }, (_, i) => 6 + i);
+const times = (v: number | null) => (v === null ? '—' : v >= 1000 ? `×${sci(v, 1)}` : `×${Math.round(v)}`);
 ---
 <Doc
   title="The satellite over the same ground"
@@ -327,6 +379,7 @@ const lk = labKhafre.results as unknown as LRes;
   state="status · tested, not closed · 29 September 2026 · revised after an independent review"
   index={[
     { id: 'verdict', label: 'Where it stands' },
+    { id: 'bound', label: 'Any method, bounded' },
     { id: 'sure', label: 'How sure' },
     { id: 'questions', label: 'Four questions' },
     { id: 'benchmark', label: 'The benchmark, begun' },
@@ -355,6 +408,7 @@ const lk = labKhafre.results as unknown as LRes;
       <div class="stat"><span class="value">{pct(blk.gain_complex)}</span><span class="what">of a stretch of real ground’s planted motion recovered by correlating one image’s looks against each other, the published way</span><span class="src">P2-03 · measured on the real Giza image, for that estimator</span></div>
       <div class="stat"><span class="value"><Sci v={imp.cases[0].imprint_over_motion} /></span><span class="what">the fraction of the ground’s own motion a 6 m chamber 15 m down changes as a microseism passes, in uniform rock</span><span class="src">P2-04 · a quasi-static model</span></div>
       <div class="stat"><span class="value">{order(ground.shortfall!)}<small>×</small></span><span class="what">short, in our model: the smallest imprint one dwell could detect on the plateau against the imprint modelled ({order(bright.shortfall!)} on a bright scatterer)</span><span class="src">P2-05 · a model, every advantage we could name allowed</span></div>
+      <div class="stat"><span class="value">{sci(bd.static[0].edge)}</span><span class="what">the most any way of reading one image of ordinary ground can beat a coin toss by on that chamber under Giza’s trembling ({sci(bSurf.truck.edge)} with a truck bouncing beside it all pass)</span><span class="src">P2-25 · a bound on every method, under the speckle model</span></div>
     </div>
     <p class="sub">
       The first is a property of the processing and holds whatever the ground does: the published depth coordinate is the
@@ -363,8 +417,11 @@ const lk = labKhafre.results as unknown as LRes;
       measured, for complex correlation between one image’s <Term k="look">looks</Term> on real texture; bright points can be
       tracked, and any other estimator needs its own measurement. The third and fourth rest on models: a small chamber in
       uniform rock, shaken at Giza’s regional microseism level. Resonance, layering, larger structures or other forcing would
-      change their numbers, though the gaps they find are wide. None of this shows that no radar could ever sense anything
-      below the surface; it shows that these methods, as tested, do not. The measured record from the real acquisitions
+      change their numbers, though the gaps they find are wide. The fifth is of another kind: a bound on every way of reading
+      one image of ordinary ground at once, tested or not, which the best detector reaches (P2-25, <a href="#bound">below</a>);
+      its inputs are those same models, extended by P2-26 to every frequency, where no room rings. None of this shows that no radar
+      could ever sense anything below the surface; it shows that these methods, as tested, do not, and that for one X-band
+      image of ordinary ground no other method could do much better. The measured record from the real acquisitions
       (<a href={`${base}/archive/`}>the first investigation</a>) agrees, and several of its readings, and of ours, are
       corrected below.
     </p>
@@ -373,6 +430,123 @@ const lk = labKhafre.results as unknown as LRes;
       ({GATED_CODE.version}, commit {GATED_CODE.commit}), run unchanged: its source and profile hash to
       {' '}<span class="mono">{GATED_CODE.module_sha256.slice(0, 12)}…</span> and <span class="mono">{GATED_CODE.profile_sha256.slice(0, 12)}…</span>,
       as every run’s record states.
+    </p>
+  </section>
+
+  <section id="bound">
+    <h2>Whatever reads it, one image of ordinary ground beats a coin toss on the chamber by at most {sci(bd.static[0].edge)} under Giza’s trembling: a bound on every method, reached by the best one</h2>
+    <p class="sub">
+      Everything above tests methods by running them. This bounds them all at once, with every method not yet written
+      (P2-25). An image is made of the echo from what the radar wave reaches, the surface, and the surface’s motion during
+      the pass; any method is a function of the image, so none can hold more about the chamber than the image does (the
+      data-processing inequality). The echo is noted, not pursued: the bench chamber’s roof lies at least
+      {' '}{Math.round(bd.penetration_db_x_band)} dB down at X band (P2-11). The surface is what any photograph shows. The
+      motion is bounded here, generously: the method is told the ambient shaking exactly, the image has no receiver noise,
+      and the rock no attenuation; each only raises the bound.
+    </p>
+    <Routes />
+    <div class="grid-2" style="margin-top: 18px">
+      <div class="note-card">
+        <span class="tag">a theorem · for fully developed speckle</span>
+        <h3>The bound</h3>
+        <p>For any test, detection rate − false-alarm rate ≤ TV ≤ √(KL/2) (Pinsker); for a small imprint <i>a</i>Φ(<i>x</i>, <i>t</i>),
+        KL = <i>F a</i>²/2 with <i>F</i> the <Term k="fisher">Fisher information</Term>, so no method’s edge over a coin toss exceeds √<i>F</i>/2. Ordinary
+        ground is <Term k="speckle">speckle</Term>: white, circular Gaussian reflectivity, so the image is a zero-mean circular
+        Gaussian vector, <i>F</i> = tr(C⁻¹C′C⁻¹C′), and with its spectrum’s bins independent</p>
+        <p class="eq"><i>F</i> = Σ<sub><i>f</i>, <i>f</i>′</sub> <i>w</i>(<i>f</i>) <i>w</i>(<i>f</i>′) |Φ̃(<i>f</i> − <i>f</i>′; <i>f</i>) − Φ̃(<i>f</i> − <i>f</i>′; <i>f</i>′)|²</p>
+        <p>Φ̃(<i>k</i>; <i>f</i>) is the spatial Fourier coefficient at <i>k</i> of the imprint’s radar phase 4π<i>d</i>/λ at the slow
+        time <i>t</i> = <i>f</i><sub>a</sub>/<i>K</i><sub>a</sub> at which the pass sees Doppler bin <i>f</i>; <i>w</i> is 1 in the processed
+        band without noise, whatever the window.</p>
+      </div>
+      <div class="note-card">
+        <span class="tag">three consequences</span>
+        <h3>What survives of motion in speckle</h3>
+        <ul>
+          <li><b>Motion shared by the scene holds nothing.</b> Φ̃ is then nonzero only at <i>k</i> = 0, where the difference vanishes: <i>F</i> = 0 exactly, not approximately.</li>
+          <li><b>Any motion:</b> <i>F</i> ≤ 4<i>N</i>⟨Φ²⟩, <i>N</i> the independent resolution cells ({Math.round(bd.cells_per_m2)} per square metre here) and ⟨Φ²⟩ the imprint’s mean-square phase over them and over the pass.</li>
+          <li><b>Slow, smooth motion:</b> <i>F</i> = (<i>R</i>/<i>V</i><sub>s</sub>)² Σ<sub>cells</sub> ⟨(∂<i>v</i>/∂<i>x</i>)²⟩. The texture is stretched along track by the line-of-sight velocity’s gradient times <i>R</i>/<i>V</i><sub>s</sub> ({bd.stretch_seconds.toFixed(1)} s at Giza), and only that stretch survives. Faster motion displaces faint copies of the texture by {bd.paired_echo_m_per_hz.toFixed(2)} m per hertz, and where they land on ground that moved differently they leave a trace too; the exact sum counts both.</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 class="bound-h">Checked, and reached</h3>
+    <table class="data compact">
+      <thead><tr><th>check</th><th>result</th></tr></thead>
+      <tbody>
+        <tr><td>The double sum against tr(C⁺C′C⁺C′) built scatterer by scatterer (a 32 × 8 image)</td><td>agree to <Sci v={Math.max(bd.checks.covariance.relative_difference, 1e-16)} p={0} /></td></tr>
+        <tr><td>Motion shared by the whole scene</td><td><i>F</i> = {bd.checks.covariance.shared_motion_fisher}; the detector’s value {sci(bd.checks.attained.C_shared.largest_score)} (zero to rounding)</td></tr>
+        <tr><td>The continuum formula used on the real geometry, against the exact sum on the image’s own grid ({cont.length} cases, each row at its own zero-Doppler time)</td><td>{contSpread[0].toFixed(3)} to {contSpread[1].toFixed(3)} of it (slightly high: the bound errs to the claim’s side)</td></tr>
+        <tr><td>The best detector on {bA.realisations} speckle images, a {bA.width_m} m imprint at {bA.f_hz} Hz boosted to a peak phase of {bA.peak_phase_rad.toFixed(2)} rad: its spread without, its shift with, against √<i>F</i> and <i>aF</i></td><td>{bA.spread_over_sqrtF.toFixed(2)} ± {bA.spread_se.toFixed(2)} and {bA.shift_over_aF.toFixed(2)} ± {bA.shift_se.toFixed(2)}; its estimate’s variance {bA.estimator_var_times_F.toFixed(2)} of the Cramér–Rao bound</td></tr>
+        {bA.synthesizer && <tr><td>The same, on the lab’s synthesizer: {bA.synthesizer.realisations} scenes of scatterers at random, moved through its own motion callback</td><td>{bA.synthesizer.spread_over_sqrtF.toFixed(2)} ± {bA.synthesizer.spread_se.toFixed(2)} and {bA.synthesizer.paired_shift_over_aF.toFixed(2)} ± {bA.synthesizer.paired_shift_se.toFixed(2)}</td></tr>}
+        <tr><td>The stretch regime (a {bB.width_m} m imprint at {bB.f_hz} Hz, where the chamber’s microseism imprint lives), {bB.realisations} images</td><td>{bB.spread_over_sqrtF.toFixed(2)} ± {bB.spread_se.toFixed(2)} and {bB.shift_over_aF.toFixed(2)} ± {bB.shift_se.toFixed(2)}</td></tr>
+        <tr><td>P2-04’s static kernels, recomputed, against its published map</td><td>largest difference {(bd.kernels.largest_difference_over_peak * 100).toFixed(1)}% of the peak</td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="bound-h">The chamber on the real Giza dwell, for every kind of shaking</h3>
+    <table class="data compact">
+      <thead><tr><th>shaking</th><th>level</th><th><i>F</i></th><th>any method’s edge</th><th>harder, for 95% found at 5% false alarms</th></tr></thead>
+      <tbody>
+        {bd.static.map((r) => (
+          <tr><td>{r.case} (static imprint, P2-04)</td><td>{(r.rms_velocity_m_s * 1e6).toPrecision(2)} µm/s rms, {r.f_hz} Hz</td><td>{sci(r.fisher)}</td><td>{sci(r.edge)}</td><td>{times(r.shake_factor_for_reliable)}</td></tr>
+        ))}
+        <tr><td>Urban background, {bSurf.urban.band_hz[0]}–{bSurf.urban.band_hz[1]} Hz, the whole pass (dynamic imprint, P2-26)</td><td>{(bSurf.urban.rms_velocity_m_s * 1e6).toFixed(0)} µm/s rms</td><td>{sci(bSurf.urban.fisher)}</td><td>{sci(bSurf.urban.edge)}</td><td>{times(bSurf.urban.shake_factor_for_reliable)}</td></tr>
+        <tr><td>A truck over a bump 15 m away, the whole pass, at the worst frequency ({Math.round(bSurf.truck.worst_f_hz)} Hz)</td><td>{(bSurf.truck.rms_velocity_m_s * 1e6).toFixed(0)} µm/s rms</td><td>{sci(bSurf.truck.fisher)}</td><td>{sci(bSurf.truck.edge)}</td><td>{times(bSurf.truck.shake_factor_for_reliable)}</td></tr>
+        <tr><td>The same two, a room 10 m across whose roof is 5 m down</td><td></td><td>{sci(bFav.urban.fisher)} · {sci(bFav.truck.fisher)}</td><td>{sci(bFav.urban.edge)} · {sci(bFav.truck.edge)}</td><td>{times(bFav.urban.shake_factor_for_reliable)} · {times(bFav.truck.shake_factor_for_reliable)}</td></tr>
+        {bd.points.map((p) => (
+          <tr><td>A point {p.scr_db.toFixed(0)} dB over the clutter over the imprint’s peak ({p.point.replace(/ \(P2-23\)$/, '')}), {p.shaking}</td><td></td><td>{sci(p.fisher)}</td><td>{sci(p.edge)}</td><td>{times(p.shake_factor_for_reliable)}</td></tr>
+        ))}
+        {[bd.genie[0], bd.genie[bd.genie.length - 1]].map((r) => (
+          <tr><td>Told the ground’s reflectivity (a genie: no single image has it), every pixel 30 dB over the noise: {r.case === bd.static[0].case ? 'Giza’s microseisms' : 'the truck, all pass'}</td><td></td><td>{sci(r.fisher)}</td><td>{sci(r.edge)}</td><td>{times(r.shake_factor_for_reliable)}</td></tr>
+        ))}
+        <tr><td>The claimed deep structure, 80 m at 1,220 m, Giza’s microseisms (P2-04’s scaling)</td><td></td><td>{sci(bd.claimed.microseisms.fisher)}</td><td>{sci(bd.claimed.microseisms.edge)}</td><td>{times(bd.claimed.microseisms.shake_factor_for_reliable)}</td></tr>
+      </tbody>
+    </table>
+    <div class="ceiling-wrap"><Ceiling /></div>
+
+    <h3 class="bound-h">{sharpAny ? 'Faster shaking reaches a room better; some responses peak sharply' : `No room rings: every response is broad (Q under ${Math.ceil(qMax)}); a room under a 5 m roof moves the ground over it up to ${spF.peak_value.toFixed(1)} times the passing motion`}</h3>
+    <div class="grid-2 charts">
+      <LineChart
+        title="The chamber’s imprint at every frequency: its largest line-of-sight value over the incident motion"
+        series={[
+          ...spNames.map(([k, name, color]) => ({ name, x: sp.cases[k].f_hz, y: sp.cases[k].peak_transfer, color, width: k === 'surface' ? 1.9 : 1.3 })),
+          { name: 'static answer (P2-04)', x: fStatic, y: fStatic.map(staticLine), color: 'var(--muted)', dash: '4 3', width: 1.2 },
+        ]}
+        xLabel="Hz"
+        yLabel="imprint / motion"
+        logY
+        height={210}
+        directLabels={false}
+        caption={`The lab’s elastic solver, with and without the chamber, waves from the side and from below, in rock with no attenuation (P2-26). The largest imprint under a surface wave is ${spS.peak_value.toFixed(2)} of the motion at ${Math.round(spS.peak_f_hz)} Hz (${qText(spS)}); ${sharpAny ? 'peaks standing 20% above their surroundings are listed in the run' : 'no curve has a peak standing 20% above its surroundings'}. Halving the grid changes the imprint by at most ${Math.round(100 * sp.grid_check.surface_small.max_amplitude_change)}% below 120 Hz (${Math.round(100 * sp.grid_check.surface_favourable_small.max_amplitude_change)}% for the room under a 5 m roof), the finer grid giving less.`}
+      />
+      <div class="note-card">
+        <span class="tag simulated">simulated · P2-26</span>
+        <h3>Faster shaking reaches a room better; rock keeps it from ringing</h3>
+        <p>A resonance is the one way physics could make the imprint far larger than the static answer. Under a surface wave
+        the bench room’s imprint grows with frequency, as the wave’s strain does, until the wave is short enough to pass over
+        the room; its broad largest value ({spS.peak_value.toFixed(2)} of the motion, within {Math.round(spS.half_max_radius_m_at_peak)} m
+        of the axis at half that) is a scattering maximum, not a ringing, and it falls away to 240 Hz. A room whose roof is only
+        5 m thick flexes with the wave: the ground over it moves up to {spF.peak_value.toFixed(1)} times the passing motion near
+        {' '}{Math.round(spF.peak_f_hz)} Hz ({spFfine.peak_value.toFixed(1)} near {Math.round(spFfine.peak_f_hz)} Hz on the finer grid), still
+        broadly (Q {spF.q_of_largest!.toFixed(1)}), because the rock round it carries the energy away. At the low end the imprint
+        meets P2-04’s static answer ({dyn7[0].toFixed(2)} of it at {Math.round(sp.static.f_hz[0])} Hz) and by 12 Hz exceeds it
+        {' '}{dyn7[dyn7.length - 1].toFixed(1)} times, where the static approximation gives way.</p>
+        <p>What the faster shaking lacks is strength and duration. The bound above counts the imprint within 32 m exactly and the
+        wave it scatters out across the whole {(2 * bd.scene_radius_m / 1000).toFixed(0)} km scene by the bound 4<i>N</i>⟨Φ²⟩,
+        unattenuated, and that scattered wave carries most of the information: within 32 m alone the urban hum would give
+        {' '}{sci(0.5 * Math.sqrt(bSurf.urban.fisher_near_only))} and the truck {sci(0.5 * Math.sqrt(bSurf.truck.fisher_near_only))}.
+        Counted in full, a truck bouncing over a bump beside the bench room for the whole pass gives any method at most
+        {' '}{sci(bSurf.truck.edge)} over a coin toss, and {sci(bFav.truck.edge)} beside the room under a 5 m roof.</p>
+      </div>
+    </div>
+    <p class="sub">
+      What the bound assumes: ordinary ground is fully developed speckle (bright points are bounded separately, above, and
+      the genie row holds for any scene); the rock is linearly elastic (at strains of 10⁻¹¹ nothing else is conceivable); the
+      chamber is the bench’s, a 6 m room 15 m down, which is shallower and more favourable than anything claimed; the ambient
+      levels are the measured and published ones cited. What it does not cover: penetration at longer wavelengths (P band
+      could reach a shallow room, blurred into a 25 m cell), and many images, which can measure slow deformation (P2-11).
+      Within its assumptions it is not an estimate of one method’s reach but a ceiling on all of them, and the best detector
+      meets it.
     </p>
   </section>
 
@@ -392,7 +566,8 @@ const lk = labKhafre.results as unknown as LRes;
         <tr><td>A small chamber changes ambient motion by under a ten-thousandth; one dwell falls far short</td><td>modelled</td><td>uniform rock, quasi-static strain, regional ambient level (P2-04, P2-05)</td><td>motion measured on the plateau during a pass; resonant or larger structures</td></tr>
         <tr><td>Other routes carry far too little at X band</td><td>modelled estimates</td><td>penetration, loads, heat, surface (P2-11)</td><td>measured penetration in Mokattam limestone; deformation over known voids</td></tr>
         <tr><td>Single images measure vibration of bright targets</td><td>established</td><td>2026 papers with ground truth; P2-03</td><td>none</td></tr>
-        <tr><td>Whether any single-image method could detect a subsurface influence on surface vibration</td><td>open</td><td>no forward model or blind test yet</td><td>the tests under <a href="#settle">What would settle it</a></td></tr>
+        <tr><td>However one image of ordinary ground is read, the bench chamber’s imprint on the ground’s motion gives at most {sci(bd.static[0].edge)} over a coin toss under Giza’s trembling, {sci(bSurf.urban.edge)} under an urban hum, {sci(bSurf.truck.edge)} with a truck bouncing 15 m away all pass</td><td>bounded: a theorem under a model</td><td>fully developed speckle, linear elasticity, the chamber’s imprint by the elastic solver at every frequency, the cited ambient levels; reached by the best detector in simulation (P2-25, P2-26)</td><td>ground whose texture departs from speckle beyond bright points; shaking far above these levels for a whole pass; an imprint beyond linear elasticity</td></tr>
+        <tr><td>Whether a single image at a longer wavelength, or many images, could sense a subsurface structure</td><td>open</td><td>estimates only (P2-11)</td><td>the tests under <a href="#settle">What would settle it</a></td></tr>
       </tbody>
     </table>
   </section>
@@ -1204,7 +1379,7 @@ const lk = labKhafre.results as unknown as LRes;
       <div class="note-card"><h3>More motion</h3><p>Peterson’s high-noise model, 71 times Giza’s microseisms, leaves the plateau short by {order(noisyGround)}. Traffic exceeds 77 µm/s within 25 m of a road (P2-00), but at 10–30 Hz, where a look must be under 33 ms and resolves 33 m; short by {order(truckGround)} on ground. Khafre is 199 m from the nearest road.</p></div>
       <div class="note-card"><h3>Brighter targets</h3><p>Magnitude tracking follows an isolated bright scatterer in full (P2-03), so the best case is a stone or a placed corner reflector above the chamber: short by {order(brightShort)} and {order(reflShort)} under Giza’s microseisms, {order(noisyRefl)} for the reflector at the noisiest stations.</p></div>
       <div class="note-card"><h3>Other structures</h3><p>The imprint scales as volume over depth squared (checked against the solver, P2-04); the claimed deep structure scales to {(imp.claimed[0].relative_to_bench as number).toFixed(2)} of the bench chamber. Independently of any structure, Giza’s whole microseism motion is {wholeMotion.toLocaleString('en-US')} times below the plateau’s detection threshold.</p></div>
-      <div class="note-card"><h3>A better estimator</h3><p>Under the textbook model of ordinary ground, fully developed speckle, the Doppler bins are independent circular Gaussians, so a phase history shared by a patch leaves the image’s distribution unchanged and no estimator can recover it from one image. Real ground departs from that model where it holds bright points, which magnitudes can track (above), and through the apparent brightness a displacement gradient makes, of order 10<sup>−11</sup> here. Other departures would need their own measurement.</p></div>
+      <div class="note-card"><h3>A better estimator</h3><p>Bounded for all of them at once (<a href="#bound">above</a>, P2-25). Under the textbook model of ordinary ground, fully developed speckle, a phase history shared by a patch leaves the image’s distribution unchanged; what survives is the texture’s stretch along track, and it gives any estimator, test or learned model at most {sci(bd.static[0].edge)} over a coin toss on the bench chamber under Giza’s microseisms. The best detector reaches that bound in simulation. Bright points are bounded separately ({sci(bd.points.find((p) => p.scr_db > 40 && p.shaking === 'microseisms')!.edge)} for a corner reflector over the chamber), and a method told the ground’s reflectivity, which no single image has, does no better than {sci(bd.genie[0].edge)}.</p></div>
       <div class="note-card"><h3>Stricter selection</h3><p>Gates can only discard readings, never add what the image does not hold. Run unchanged on the real image, a gated version passes motionless copies of it too, passes nothing at its own settings on its own lines, and cannot pass a vibration’s own trace at any strength (<a href="#gates">above</a>).</p></div>
       <div class="note-card"><h3>The published images</h3><p>The pipeline draws structured sections from any input: identical with and without the chamber (P2-07), the same over monuments and open desert (R1, R6), no signal over hundreds of surveyed shafts (R13), and the published appearance everywhere (R8).</p></div>
       <div class="note-card"><h3>Vibration measured from orbit, 2026</h3><p>The method’s authors first applied this kind of tracking to bridges in Italy and to the Mosul Dam in 2020, without instruments on the structures at the same time. Two 2026 papers (Vattulainen et al., IEEE Access; Lotti et al., Structural Control and Health Monitoring) measure vibration from single spaceborne images against ground truth: corner reflectors on shakers in open fields, and a steel footbridge chosen because it is bright. They track isolated bright targets moving at 0.7 mm/s and up, with errors near 1 mm/s: what P2-03 says works. Their smallest motion is {Math.round(eB.measured_over_trembling).toLocaleString('en-US')} times Giza’s whole microseism motion and <Sci v={eB.measured_over_imprint} p={0} /> times the chamber’s imprint.</p></div>
@@ -1294,6 +1469,20 @@ const lk = labKhafre.results as unknown as LRes;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 14px;
     margin-bottom: 18px;
+  }
+  .eq {
+    font-family: var(--font-serif);
+    font-size: 14.5px;
+    text-align: center;
+    margin: 8px 0 10px;
+    color: var(--text);
+  }
+  h3.bound-h {
+    margin: 28px 0 8px;
+  }
+  .ceiling-wrap {
+    max-width: 760px;
+    margin-top: 18px;
   }
   table.compact td,
   table.compact th {

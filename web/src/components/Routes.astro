@@ -1,0 +1,163 @@
+---
+/**
+ * How a buried room could reach a radar image, and what each route carries (P2-25). The image is made of the echo from
+ * what the radar wave reaches, the surface, and the surface's motion during the pass; every method is a function of the
+ * image, so none can hold more than the image does. Laid out left to right on a wide screen, top to bottom on a phone.
+ */
+import bound from '../../public/data/runs/p2_25_information_bound.json';
+import imp from '../../public/data/runs/p2_04_chamber_imprint.json';
+
+const b = bound as unknown as { penetration_db_x_band: number; stretch_seconds: number; static: { edge: number }[] };
+const SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+const sup = (n: number) => String(n).replace('-', '⁻').replace(/\d/g, (d) => SUP[+d]);
+const sci = (v: number, p = 1) => {
+  const e = Math.floor(Math.log10(v));
+  return `${(v / 10 ** e).toFixed(p)}×10${sup(e)}`;
+};
+const pen = Math.round(b.penetration_db_x_band);
+const frac = imp.cases[0].imprint_over_motion as number;
+---
+<figure class="routes">
+  <div class="node room">
+    <span class="k">below</span>
+    <b>The room</b>
+    <span>6 m across, 15 m down, in limestone</span>
+  </div>
+  <div class="paths">
+    <div class="path closed">
+      <b>Its echo</b>
+      <span>X-band waves reach about 30 cm into the driest sand; the room’s roof lies at least {pen} dB down</span>
+      <em>closed</em>
+    </div>
+    <div class="path surface">
+      <b>The surface</b>
+      <span>what any photograph shows: the ground itself, not what is under it</span>
+      <em>no view below</em>
+    </div>
+    <div class="path open">
+      <b>How the surface moves in the 25 s pass</b>
+      <span>the room changes the trembling by {sci(frac)}; motion shared by a stretch of ground leaves no trace in the texture, and only the stretch along track that its differences make survives</span>
+      <em>at most {sci(b.static[0].edge, 1)} over a coin toss</em>
+    </div>
+  </div>
+  <div class="node image">
+    <span class="k">recorded</span>
+    <b>One image</b>
+    <span>grainy texture: the echo of countless small reflections</span>
+  </div>
+  <div class="node method">
+    <span class="k">processed</span>
+    <b>Any method</b>
+    <span>a function of the image: it can lose what the image holds, never add to it</span>
+  </div>
+</figure>
+
+<style>
+  .routes {
+    margin: 10px 0 6px;
+    display: grid;
+    grid-template-columns: minmax(120px, 0.8fr) minmax(260px, 2.2fr) minmax(120px, 0.8fr) minmax(120px, 0.8fr);
+    gap: 0 22px;
+    align-items: center;
+    position: relative;
+  }
+  .node,
+  .path {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--sheet);
+    padding: 9px 11px 10px;
+    font: 12px/1.45 var(--font-sans);
+    color: var(--muted);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    position: relative;
+  }
+  .node b,
+  .path b {
+    font: 600 13px/1.3 var(--font-sans);
+    color: var(--text);
+  }
+  .k {
+    font: 600 9.5px var(--font-mono);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+  .room {
+    border-color: var(--lapis);
+  }
+  .paths {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .path em {
+    font: italic 12px/1.4 var(--font-serif);
+    margin-top: 3px;
+  }
+  .closed {
+    opacity: 0.8;
+  }
+  .closed em,
+  .surface em {
+    color: var(--muted);
+  }
+  .open {
+    border-color: var(--cinnabar);
+  }
+  .open em {
+    color: var(--cinnabar-deep, var(--cinnabar));
+    font-style: normal;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 11.5px;
+  }
+  /* arrows between the columns */
+  .room::after,
+  .image::after {
+    content: '→';
+    position: absolute;
+    right: -18px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--faint);
+    font: 14px var(--font-mono);
+  }
+  .paths .path::after {
+    content: '→';
+    position: absolute;
+    right: -18px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--faint);
+    font: 14px var(--font-mono);
+  }
+  .closed::after {
+    content: '×' !important;
+    color: var(--muted) !important;
+  }
+  @media (max-width: 820px) {
+    .routes {
+      grid-template-columns: 1fr;
+      gap: 18px 0;
+    }
+    .room::after,
+    .image::after,
+    .paths .path::after {
+      content: '↓';
+      right: auto;
+      left: 50%;
+      top: auto;
+      bottom: -17px;
+      transform: translateX(-50%);
+    }
+    .paths .path:not(:last-child)::after {
+      content: none;
+    }
+    .closed::after {
+      content: none !important;
+    }
+  }
+</style>
