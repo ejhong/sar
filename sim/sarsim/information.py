@@ -16,15 +16,16 @@ reference image of the same ground (a genie that supplies one is bounded separat
 
 The bound, finite and rigorous within the model. Let the imprint be phi = a Phi(x, t), a = 1 with the chamber and 0
 without. Whiten the covariance change: E = C0^-1/2 (C_a - C0) C0^-1/2. Then, exactly, KL(P_a || P_0) = sum over the
-eigenvalues l of I + E of (l - 1 - ln l), and since l - 1 - ln l <= (l - 1)^2 / (2 min(l, 1)^2),
+eigenvalues l of I + E of (l - 1 - ln l), and since l - 1 - ln l <= (l - 1)^2 / (2 min(l, 1)) and every |l - 1| is
+at most |E|_F,
 
-    KL <= |E|_F^2 / (2 (1 - |E|_F)^2)       while |E|_F < 1.
+    KL <= |E|_F^2 / (2 (1 - |E|_F))         while |E|_F < 1.
 
 E is a Fourier transform of exp(-i a dPhi) - 1 (dPhi the imprint's phase difference between two Doppler bins); its
-first-order part has Frobenius norm a sqrt(F), F the Fisher information below, and the remainder, from
-|exp(-i t) - 1 + i t| <= t^2 / 2, has norm at most eps = 2 a^2 (N_b / N) sum_x max_t Phi(x, t)^2 (N_b / N the share of
-the image's frequency bins inside the processed band). So |E|_F <= a sqrt(F) + eps, no approximation. Any test, however
-built, has
+first-order part has Frobenius norm a sqrt(F), F the Fisher information below. The rest is a power series in a dPhi,
+|dPhi| <= 2 |Phi|, whose n-th term has Frobenius norm at most (2a)^n / n! sqrt((N_b / N) sum_x |Phi(x)|^(2n)) by
+Parseval (N_b / N the share of the image's frequency bins inside the processed band); summed from n = 2 it is eps
+(`remainder`). So |E|_F <= a sqrt(F) + eps, no approximation. Any test, however built, has
 
     detection rate - false-alarm rate <= TV <= min( sqrt(KL / 2), sqrt(1 - exp(-KL)) )
 
@@ -69,10 +70,10 @@ def cells_per_m2(g):
 
 def kl_upper(F, eps=0.0):
     """A rigorous upper bound on KL(P_a || P_0) from the Fisher information F (at a = 1) and the remainder bound eps:
-    (sqrt F + eps)^2 / (2 (1 - sqrt F - eps)^2); infinite where sqrt F + eps >= 1, where the bound says nothing."""
+    x^2 / (2 (1 - x)), x = sqrt F + eps; infinite where x >= 1, where the bound says nothing."""
     x = np.sqrt(np.asarray(F, float)) + np.asarray(eps, float)
     with np.errstate(divide='ignore', invalid='ignore'):
-        return np.where(x < 1, x ** 2 / (2 * (1 - x) ** 2), np.inf)
+        return np.where(x < 1, x ** 2 / (2 * (1 - x)), np.inf)
 
 
 def tv_upper(kl):
@@ -121,12 +122,15 @@ def _spectrum(K, spacing, pad):
     return S, np.fft.fftfreq(pad[0], da), np.fft.fftfreq(pad[1], dg)
 
 
-def fisher_sinusoid(K, spacing, f_m, g, pad=None):
+def fisher_sinusoid(K, spacing, f_m, g, pad=None, swing=False):
     """Expected Fisher information (over the phase psi) one image of speckle holds about a slant-range motion
     d(x, t) = K(x) cos(2 pi f_m (t + x_a / V_g) + psi), K [n_a, n_g] in metres on a grid with `spacing` (m).
     Noise-free: the most the image can hold. K may be complex, d = Re[K exp(i(2 pi f_m (t + x_a / V_g) + psi))],
     for a travelling or scattered wave. `pad` must leave room for the paired echoes, which the motion displaces by
-    f_m V_g / |Ka| metres along track (1.24 m per hertz at Giza): the default pads by four times that."""
+    f_m V_g / |Ka| metres along track (1.24 m per hertz at Giza): the default pads by four times that.
+    With `swing`, also an upper bound on |B| (F(psi) = A + Re(B exp(2 i psi))): the continuum of fisher_grid's
+    geometric sum, |sum over the bins' overlap of exp(4 pi i f_m t)| <= its length times |sinc(2 f_m T_overlap)|, and
+    2 |S+ S-| <= |S+|^2 + |S-|^2; returns (A, B_upper)."""
     K = np.asarray(K)
     da, dg = spacing
     if pad is None:
@@ -134,7 +138,8 @@ def fisher_sinusoid(K, spacing, f_m, g, pad=None):
         pad = (int(2 ** np.ceil(np.log2(K.shape[0] + need / da))), int(2 ** np.ceil(np.log2(2 * K.shape[1]))))
     xa = (np.arange(K.shape[0]) - K.shape[0] / 2) * da
     k0 = 4 * np.pi / g.lam
-    total = 0.0
+    total, total_b = 0.0, 0.0
+    T_p = g.nu_band * g.V / g.Ka                              # the processed span of slow time
     for sgn in (1, -1):
         Kc = k0 * (K if sgn > 0 else np.conj(K)) * np.exp(sgn * 2j * np.pi * f_m * xa / g.V)[:, None]
         S, ka, kg = _spectrum(Kc, spacing, pad)
@@ -143,7 +148,12 @@ def fisher_sinusoid(K, spacing, f_m, g, pad=None):
         rho_g = np.clip(1 - np.abs(kg) / kg_band, 0, None)
         wa = np.sin(np.pi * f_m * g.V * ka / g.Ka) ** 2 * rho_a
         dk = (ka[1] - ka[0]) * (kg[1] - kg[0])
-        total += float(np.sum(np.abs(S) ** 2 * wa[:, None] * rho_g[None, :]) * dk)
+        P = np.abs(S) ** 2 * rho_g[None, :]
+        total += float(np.sum(P * wa[:, None]) * dk)
+        if swing:
+            total_b += float(np.sum(P * (wa * np.abs(np.sinc(2 * f_m * T_p * rho_a)))[:, None]) * dk)
+    if swing:
+        return cells_per_m2(g) * total, cells_per_m2(g) * total_b
     return cells_per_m2(g) * total
 
 

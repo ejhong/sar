@@ -90,13 +90,13 @@ def summary(F, kl=None):
 
 def ambient_kl(parts, eps):
     """KL bound for a random superposition (independent phases) of components j, each with mean information A_j and
-    largest information over its phase M_j: KL(mixture) <= E KL <= (E F + 2 eps sqrt(E F) + eps^2) / (2 (1 - x)^2),
+    largest information over its phase M_j: KL(mixture) <= E KL <= (E F + 2 eps sqrt(E F) + eps^2) / (2 (1 - x)),
     E F = sum A_j, x = sum sqrt(M_j) + eps bounding |E|_F in every realisation (triangle inequality)."""
     EF = float(sum(a for a, _ in parts))
     x = float(sum(np.sqrt(m) for _, m in parts)) + eps
     if x >= 1:
         return EF, np.inf, x
-    return EF, (EF + 2 * eps * np.sqrt(EF) + eps ** 2) / (2 * (1 - x) ** 2), x
+    return EF, (EF + 2 * eps * np.sqrt(EF) + eps ** 2) / (2 * (1 - x)), x
 
 
 def eps_from_norms(l2, kmax, g):
