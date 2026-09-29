@@ -182,7 +182,8 @@ export function satelliteMethods(s: SiteScene): Method[] {
         control,
         sub: cap(v.caption ?? ''),
         run: v.run,
-        threshold: 0.8,
+        // a site deep enough for the whole axis shows its thinner columns at a lower threshold
+        threshold: s.extent.z[1] - s.extent.z[0] > 1000 ? 0.6 : 0.8,
       });
     }
   }

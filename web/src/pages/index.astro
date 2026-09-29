@@ -127,6 +127,7 @@ const stops: TourStop[] = [
 const explore = [
   { site: 'bench-void', name: 'One chamber', text: 'The test ground: a 6 m room, 15 m down in limestone. Every instrument here is scored against it: geophones, the satellite, and the one shaking both read.' },
   { site: 'giza', name: 'Giza plateau', text: 'The real ground: Copernicus terrain, the three pyramids, the chambers surveyed inside and beneath them, and every picture the satellite methods drew there.' },
+  { site: 'giza-deep', name: 'Giza depths', text: 'The same plateau to 1,500 m: the published-style pictures over their whole depth axis, under every pyramid and open plateau alike, beside the structures claimed beneath Khafre.' },
 ];
 ---
 <Base current="home">
@@ -185,7 +186,8 @@ const explore = [
           Biondi and Malanga, 2022 (<a href="https://arxiv.org/abs/2208.00811">arXiv:2208.00811</a>), retracted by{' '}
           <em>Remote Sensing</em> on 10 August 2026 (<a href="https://www.mdpi.com/2072-4292/18/16/2679">notice</a>). The
           Khafre Project’s briefing in Bologna, 15 March 2025, has not appeared in a peer-reviewed paper; its geometry, as far
-          as it was stated, is drawn below.
+          as it was stated, is drawn below, and in the lab <a href={`${base}/underworld/#giza-deep/satellite`}>Giza depths</a>
+          shows it beneath Khafre beside the published-style pictures drawn to the same depths.
         </p>
         <ClaimSection />
       </div>
@@ -457,7 +459,7 @@ const explore = [
         </details>
         <details class="q">
           <summary>Then why do the published pictures look so convincing?</summary>
-          <p>Because the method draws such pictures from any image: over our flat simulated ground, with and without a room; over open desert on the real image; over hundreds of surveyed tombs at Giza, where it found none. Its tall columns are pixels whose reading wanders, drawn bright at every depth; the blocks at their feet sit where its depth scale repeats itself. <a href={`${base}/satellite/#pillars`}>How the pillars and boxes are made</a>.</p>
+          <p>Because the method draws such pictures from any image: over our flat simulated ground, with and without a room; over open desert on the real image; over hundreds of surveyed tombs at Giza, where it found none. Its tall columns are pixels whose reading wanders, drawn bright at every depth; the blocks at their feet sit where its depth scale repeats itself. <a href={`${base}/underworld/#giza-deep/satellite`}>See them under every pyramid and open plateau alike</a>, or <a href={`${base}/satellite/#pillars`}>how the pillars and boxes are made</a>.</p>
         </details>
         <details class="q">
           <summary>What about stricter versions that filter out the noise?</summary>
@@ -882,7 +884,7 @@ const explore = [
   }
   .gallery {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 16px;
   }
   .tile {

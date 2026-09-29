@@ -120,6 +120,8 @@ export interface RadarInfo {
   /** A bench's volumes with and without its chamber, or a real site's list of the method's volumes. */
   volumes: { with: string; without: string } | string[];
   reach_m?: number;
+  /** Start with the draped image hidden (a deep site, where it would cover what hangs beneath it). */
+  image_hidden?: boolean;
   stats?: { monument_vs_control_profile_corr: number; patch_profile_corr_range: [number, number]; pillar_power_vs_energy_min: number };
   run?: string;
   /** The gated reconstruction over one monument: its volumes (real image and motionless copy, by support), where to look,

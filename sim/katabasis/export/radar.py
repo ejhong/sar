@@ -168,10 +168,11 @@ def export_claim(out: Path = DATA) -> dict | None:
     return {'site': 'bench-khafre-claim', 'volumes': [vol['id']]}
 
 
-def export_real(out: Path = DATA) -> dict | None:
+def export_real(out: Path = DATA, site: str = 'giza') -> dict | None:
     """The real Giza pass (P2-12): the image on the ground, and the published method's volume at each patch inside the
     site, on one brightness scale so that monuments and open plateau compare fairly. Depth is measured from the rock
-    surface and relabelled as the claim relabels it (the axis repeats at 648 m)."""
+    surface and relabelled as the claim relabels it (the axis repeats at 648 m), down to the site's floor: Giza stops at
+    its block's floor; Giza's depths runs the axis past its repeats, as the published pictures do."""
     rid = 'p2_12_real_pass'
     vpath = RESULTS / rid / 'volumes.npz'
     if not vpath.exists():
@@ -181,7 +182,7 @@ def export_real(out: Path = DATA) -> dict | None:
     from sarsim.acquisition import DwellGeometry
     from sarsim.ortho import grid_height
     s = load(rid)
-    sc = site_scene(load_site('giza'))
+    sc = site_scene(load_site(site))
     g = DwellGeometry.from_record(s['manifest']['params']['acquisition'])
     v = np.load(vpath)
     h = float(v['voxel_m'])
@@ -200,7 +201,7 @@ def export_real(out: Path = DATA) -> dict | None:
     med = float(np.median(allT))
     A = np.log10(np.maximum(allT, 1e-30) / med)
     lo, hi = float(np.percentile(A, 2)), float(np.percentile(A, 99.5))
-    d = out / 'sites' / 'giza'
+    d = out / 'sites' / site
     d.mkdir(parents=True, exist_ok=True)
     zbot = sc['extent']['z'][0]
     run = f"{rid} · {s['manifest']['date']} · {s['manifest']['commit']}"
@@ -243,13 +244,15 @@ def export_real(out: Path = DATA) -> dict | None:
         'image': {'kind': 'ortho', 'file': 'radar-ground.jpg', 'extent': s['image']['extent']},
         'reach_m': s['reach_m'],
         'volumes': [x['id'] for x in vols],
+        # deep enough to see the whole depth axis: the image, draped on the ground, would hide what hangs beneath it
+        **({'image_hidden': True} if sc['extent']['z'][1] - sc['extent']['z'][0] > 1000 else {}),
         'stats': {'monument_vs_control_profile_corr': s['monument_vs_control_profile_corr'],
                   'patch_profile_corr_range': s['patch_profile_corr_range'],
                   'pillar_power_vs_energy_min': min(x['pillar_power_vs_energy'] for x in s['patches'])},
         'run': run,
     }
     (d / 'radar.json').write_text(json.dumps(radar, separators=(',', ':')))
-    return {'site': 'giza', 'volumes': [x['id'] for x in vols]}
+    return {'site': site, 'volumes': [x['id'] for x in vols]}
 
 
 def export_khufu_gated(out: Path = DATA) -> dict | None:
@@ -497,4 +500,4 @@ def export_survives(out: Path = DATA) -> dict | None:
 
 def export_radar(out: Path = DATA) -> list[dict]:
     return [r for r in (export_bench(out), export_bench_gated(out), export_claim(out), export_real(out), export_khufu_gated(out))
-            if r] + export_lab(out) + [r for r in (export_survives(out),) if r]
+            if r] + export_lab(out) + [r for r in (export_survives(out), export_real(out, 'giza-deep')) if r]

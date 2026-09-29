@@ -17,7 +17,8 @@ ground. Owner: Eugene Jhong. Read `ROADMAP.md` (state and next steps) and `web/D
 
 ## Layout
 
-- `sites/` — `materials.json` and one `site.json` per site (bench-void, bench-shafts, bench-khafre-claim, giza).
+- `sites/` — `materials.json` and one `site.json` per site: bench-void and giza, giza-deep (which `extends` giza with a
+  1,500 m floor and the claimed structures), and bench-shafts and bench-khafre-claim (composed but `listed: false`).
 - `sim/katabasis/compose` — materials, site schema, shapes, terrain, heterogeneity, voxeliser, DEM crops, benches.
 - `sim/katabasis/seismic` — `elastic3d` (the solver), `analytic`, `arrays`, `picking`, `traveltime`, `imaging`.
 - `sim/katabasis/export` — sites, runs, volumes and wavefields for the viewer.

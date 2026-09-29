@@ -207,6 +207,7 @@ export class Underworld {
       ...(scene.wavefields ?? []).map(async (w) => block.addWavefield(w, await loadVolume(scene.id, w.file))),
     ]);
     block.addRadar();
+    if (scene.radar?.image_hidden) block.radar?.setImageVisible(false);
     this.pin(undefined);
     this.applyLayerToggles();
     const cut = this.$<HTMLInputElement>('[data-uw=cut]');
@@ -488,7 +489,7 @@ export class Underworld {
         ${a.track_km.toFixed(1)} km of track, ${Math.round(a.slant_range_km)} km away, looking ${Math.round(a.incidence_deg)}° from straight
         down (satellite and beam not to scale). On the ground lies the image it made, resampled onto the terrain; it reaches about
         ${Math.round((r.reach_m ?? 0.3) * 100)} cm into the driest sand, less into rock.</p>
-      <label class="uw-check"><input type="checkbox" data-uw="sat-image" checked /><span class="uw-dot radar"></span>Show the image</label>`;
+      <label class="uw-check"><input type="checkbox" data-uw="sat-image" ${r.image_hidden ? '' : 'checked'} /><span class="uw-dot radar"></span>Show the image</label>`;
   }
 
   private bindPass(ctx: HTMLElement) {

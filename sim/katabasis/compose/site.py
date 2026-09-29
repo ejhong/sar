@@ -1,6 +1,7 @@
 """Site files (sites/<id>/site.json): loading and validation."""
 from __future__ import annotations
 
+import copy
 import json
 import math
 from dataclasses import dataclass, field
@@ -120,9 +121,33 @@ def parse_site(raw: dict, directory: Path | None = None, materials: dict | None 
                 materials, raw.get('frame', {}), raw.get('sources', {}), raw.get('notes', []), raw, directory)
 
 
+def resolve(raw: dict, sites_dir: Path = SITES_DIR) -> tuple[dict, Path | None]:
+    """A composition that extends another: the base's, with this one's keys over it and its `features_add`,
+    `sources_add` and `notes_add` added to the base's. Returns the merged composition and the directory its terrain
+    and other files come from (the base's), or None when it extends nothing."""
+    base_id = raw.get('extends')
+    if not base_id:
+        return raw, None
+    base, base_dir = resolve(json.loads((sites_dir / base_id / 'site.json').read_text()), sites_dir)
+    out = copy.deepcopy(base)
+    for k, v in raw.items():
+        if k == 'extends':
+            continue
+        if k == 'features_add':
+            out['features'] = out.get('features', []) + v
+        elif k == 'sources_add':
+            out['sources'] = {**out.get('sources', {}), **v}
+        elif k == 'notes_add':
+            out['notes'] = out.get('notes', []) + v
+        else:
+            out[k] = v
+    return out, base_dir or sites_dir / base_id
+
+
 def load_site(sid: str, sites_dir: Path = SITES_DIR) -> Site:
     d = sites_dir / sid
-    return parse_site(json.loads((d / 'site.json').read_text()), d)
+    raw, base_dir = resolve(json.loads((d / 'site.json').read_text()), sites_dir)
+    return parse_site(raw, base_dir or d)
 
 
 def list_sites(sites_dir: Path = SITES_DIR) -> list[str]:

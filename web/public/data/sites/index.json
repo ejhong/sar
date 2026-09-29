@@ -55,6 +55,35 @@
     "geophones": 0,
     "satellite": 24
    }
+  },
+  {
+   "id": "giza-deep",
+   "name": "Giza depths",
+   "kind": "real",
+   "summary": "The same plateau down to 1,500 m: the published-style method's pictures drawn over their whole depth axis, as the published pictures draw them, beside the structures claimed beneath Khafre.",
+   "extent": {
+    "x": [
+     -640.0,
+     960.0
+    ],
+    "y": [
+     -760.0,
+     640.0
+    ],
+    "z": [
+     -1500.0,
+     220.0
+    ]
+   },
+   "features": {
+    "surveyed": 12,
+    "claimed": 9
+   },
+   "volumes": 4,
+   "instruments": {
+    "geophones": 0,
+    "satellite": 4
+   }
   }
  ]
 }

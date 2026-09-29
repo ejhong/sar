@@ -1,0 +1,106 @@
+[
+ {
+  "id": "radar-khafre",
+  "status": "radar",
+  "file": "vol-radar-khafre.u8",
+  "shape": [
+   108,
+   54,
+   320
+  ],
+  "origin": [
+   -442.5,
+   -167.5,
+   97.5
+  ],
+  "spacing": 5.0,
+  "label": "Satellite \u00b7 the published method at Khafre pyramid",
+  "method": "The real 2025 ICEYE pass through the paper-style pipeline (50 half-band pairs, 32 px patches, grid-median correction, no selection gates, lambda_s 0.48 m): focused power on a log scale, depth relabelled as the claim does (repeat at 648 m), smoothed for display; not the gated reconstruction",
+  "quantity": "focused power, log scale",
+  "units": "relative",
+  "range": [
+   -0.3866768181324005,
+   0.593835711479187
+  ],
+  "run": "p2_12_real_pass \u00b7 2026-09-28 \u00b7 02c7253",
+  "caption": "columns where the registration wanders, as over empty plateau"
+ },
+ {
+  "id": "radar-khufu",
+  "status": "radar",
+  "file": "vol-radar-khufu.u8",
+  "shape": [
+   110,
+   54,
+   316
+  ],
+  "origin": [
+   -122.5,
+   182.5,
+   77.5
+  ],
+  "spacing": 5.0,
+  "label": "Satellite \u00b7 the published method at Khufu pyramid",
+  "method": "The real 2025 ICEYE pass through the paper-style pipeline (50 half-band pairs, 32 px patches, grid-median correction, no selection gates, lambda_s 0.48 m): focused power on a log scale, depth relabelled as the claim does (repeat at 648 m), smoothed for display; not the gated reconstruction",
+  "quantity": "focused power, log scale",
+  "units": "relative",
+  "range": [
+   -0.3866768181324005,
+   0.593835711479187
+  ],
+  "run": "p2_12_real_pass \u00b7 2026-09-28 \u00b7 02c7253",
+  "caption": "columns where the registration wanders, as over empty plateau"
+ },
+ {
+  "id": "radar-menkaure",
+  "status": "radar",
+  "file": "vol-radar-menkaure.u8",
+  "shape": [
+   102,
+   54,
+   319
+  ],
+  "origin": [
+   -612.5,
+   -552.5,
+   92.5
+  ],
+  "spacing": 5.0,
+  "label": "Satellite \u00b7 the published method at Menkaure pyramid",
+  "method": "The real 2025 ICEYE pass through the paper-style pipeline (50 half-band pairs, 32 px patches, grid-median correction, no selection gates, lambda_s 0.48 m): focused power on a log scale, depth relabelled as the claim does (repeat at 648 m), smoothed for display; not the gated reconstruction",
+  "quantity": "focused power, log scale",
+  "units": "relative",
+  "range": [
+   -0.3866768181324005,
+   0.593835711479187
+  ],
+  "run": "p2_12_real_pass \u00b7 2026-09-28 \u00b7 02c7253",
+  "caption": "columns where the registration wanders, as over empty plateau"
+ },
+ {
+  "id": "radar-plateau_south",
+  "status": "radar",
+  "file": "vol-radar-plateau_south.u8",
+  "shape": [
+   102,
+   51,
+   315
+  ],
+  "origin": [
+   -352.5,
+   -757.5,
+   72.5
+  ],
+  "spacing": 5.0,
+  "label": "Satellite \u00b7 the published method over Open plateau, south of Khafre (control)",
+  "method": "The real 2025 ICEYE pass through the paper-style pipeline (50 half-band pairs, 32 px patches, grid-median correction, no selection gates, lambda_s 0.48 m): focused power on a log scale, depth relabelled as the claim does (repeat at 648 m), smoothed for display; not the gated reconstruction",
+  "quantity": "focused power, log scale",
+  "units": "relative",
+  "range": [
+   -0.3866768181324005,
+   0.593835711479187
+  ],
+  "run": "p2_12_real_pass \u00b7 2026-09-28 \u00b7 02c7253",
+  "caption": "the same kind of picture over empty plateau"
+ }
+]
