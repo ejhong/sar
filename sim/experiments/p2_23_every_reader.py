@@ -282,20 +282,26 @@ def main():
                                      'imprint_max_los_m_s': f90 * float(np.abs(v_los[ch] - v_los['none']).max()),
                                      'direct_los_max_m_s': f90 * float(np.abs(v_los['none']).max())}
 
-        # the whole chain once at the bench's boundary force: products with and without the chamber, tracked, decided
-        F = sat['reflectors']['bench']['force_n']
+        # the whole chain, twice: at a force whose motion lies within the tracker's calibration (the measurement control:
+        # it must recover the vibrator's own motion), and at the idealised boundary above, where the ground moves far faster
+        F_bound = sat['reflectors']['bench']['force_n']
+        F_track = CAL_V / float(np.abs(v_los['none']).max())
         chain = {}
-        for truth in ('none', 'bench'):
-            r3 = np.random.default_rng(2323 if truth == 'none' else 2324)
-            img = speckle(g, r3, mask)
-            for c, A in zip(cols_r, v_los[truth] * F):
-                img = img + vibrate(point_image(mask, ROWS // 2, int(c), REFLECTOR_SCR_DB), g, A, f)
-            est = np.array([track(img, g, f, ROWS // 2, int(c), centres)[0] for c in cols_r])
-            m0, m1 = G * v_los['none'] * F, G * v_los['bench'] * F
-            stat = float(np.real(np.vdot(m1 - m0, est - (m0 + m1) / 2)) / (sig(REFLECTOR_SCR_DB) * np.linalg.norm(m1 - m0)))
-            control = float(np.abs(np.vdot(m0, est)) / np.vdot(m0, m0).real)
-            chain[truth] = {'statistic': stat, 'threshold': float(norm.ppf(1 - ALPHA) - Z / 2), 'direct_motion_recovered': control}
-            print(f"  chain, {truth}: {chain[truth]}", flush=True)
+        for label, F in (('within_tracking', F_track), ('at_boundary', F_bound)):
+            d = float(Z * F / F_bound)                                    # the detector's deflection at this force
+            chain[label] = {'force_n': F, 'direct_los_max_m_s': F * float(np.abs(v_los['none']).max()), 'deflection': d}
+            for truth in ('none', 'bench'):
+                r3 = np.random.default_rng(2323 if truth == 'none' else 2324)
+                img = speckle(g, r3, mask)
+                for c, A in zip(cols_r, v_los[truth] * F):
+                    img = img + vibrate(point_image(mask, ROWS // 2, int(c), REFLECTOR_SCR_DB), g, A, f)
+                est = np.array([track(img, g, f, ROWS // 2, int(c), centres)[0] for c in cols_r])
+                m0, m1 = G * v_los['none'] * F, G * v_los['bench'] * F
+                stat = float(np.real(np.vdot(m1 - m0, est - (m0 + m1) / 2)) / (sig(REFLECTOR_SCR_DB) * np.linalg.norm(m1 - m0)))
+                control = float(np.real(np.vdot(m0, est)) / np.vdot(m0, m0).real)
+                chain[label][truth] = {'statistic': stat, 'threshold': float(norm.ppf(1 - ALPHA) - d / 2),
+                                       'direct_motion_recovered': control}
+                print(f"  chain, {label}, {truth}: {chain[label][truth]}", flush=True)
         sat['chain'] = chain
 
         # --- natural ground: the real image's bright points, the tracker's noise for each, blended along the track
@@ -342,7 +348,7 @@ def main():
 
         gq, gn = geo['kottamya_median']['bench'], geo['peterson_high']['bench']
         rb, nb = sat['reflectors']['bench'], sat['natural']['bench']
-        found = chain['bench']['statistic'] > chain['bench']['threshold'] and chain['none']['statistic'] <= chain['none']['threshold']
+        ct, cb = chain['within_tracking'], chain['at_boundary']
         finding = (
             f"One vibrator at {f:.2f} Hz, 30 m from the bench's chamber, read over the same {T:.1f} s. Geophones over the "
             f"chamber find it with {gq['force_n'] / 1e3:,.1f} kN of force at a quiet site and {gn['force_n'] / 1e3:,.0f} kN at a "
@@ -354,8 +360,11 @@ def main():
                else f"On natural ground there is nothing to track: over open plateau the real image's brightest point stands "
                     f"{sat['natural']['brightest_db']:.0f} dB over the speckle, and its {sat['natural']['counts']['10']} points of 10 dB "
                     f"or more are what speckle alone gives ({sat['natural']['speckle_alone']['10']:.0f}). ")
-            + f"Run whole at the reflectors' boundary, the chain {'tells the chamber from none' if found else 'does not separate them'}"
-            f" and recovers {chain['none']['direct_motion_recovered'] * 100:.0f}% of the vibrator's own motion.")
+            + f"Run whole, the chain recovers {ct['none']['direct_motion_recovered'] * 100:.0f}% of the vibrator's own motion at "
+            f"{ct['force_n']:.1e} N, where the reflectors move at up to {ct['direct_los_max_m_s'] * 1e3:.0f} mm/s (the measurement "
+            f"control), while the chamber stays out of reach there; at the boundary the reflectors move at up to "
+            f"{cb['direct_los_max_m_s']:.2f} m/s and the tracker recovers {cb['none']['direct_motion_recovered'] * 100:.0f}% of it, "
+            f"so that boundary is a floor.")
         run.save(dict(out, forces=FORCES.tolist(), curves=curves, axis_up_m_s_per_n=axis_up, finding=finding))
         print(finding)
 
