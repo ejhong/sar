@@ -327,6 +327,56 @@ def export_khufu_gated(out: Path = DATA) -> dict | None:
     return {'site': 'giza', 'volumes': [e['id'] for e in entries]}
 
 
+def export_bench_gated(out: Path = DATA) -> dict | None:
+    """The gated reconstruction over the one-chamber bench (P2-20): its fit scores on synthetic products without the
+    chamber, with it, with its imprint boosted, and with a random perturbation of the imprint's size, hung below the
+    flat ground on a 2.4 m grid and cut at the bench's floor. Drawn with the satellite's other volumes."""
+    rid = 'p2_20_bench_gated'
+    vpath = RESULTS / rid / 'volumes.npz'
+    rj = out / 'sites' / 'bench-void' / 'radar.json'
+    if not (vpath.exists() and rj.exists()):
+        return None
+    from ..compose import load_site
+    from .sites import scene as site_scene
+    s = load(rid)
+    sc = site_scene(load_site('bench-void'))
+    v = np.load(vpath)
+    h = float(v['step'])
+    keep = v['z'] >= sc['extent']['z'][0] + h / 2
+    d = out / 'sites' / 'bench-void'
+    run = f"{rid} · {s['manifest']['date']} · {s['manifest']['commit']}"
+    vols, entries = [], []
+    for case, boost in s['manifest']['params']['cases']:
+        kind = 'null' if boost is None else 'without' if boost == 0 else 'with' if boost == 1 else 'boosted'
+        name = {'null': "a random perturbation of the imprint's size", 'without': 'without the chamber',
+                'with': 'with the chamber', 'boosted': f"with the chamber's imprint boosted {boost:,.0f} times"}[kind]
+        for P in s['manifest']['params']['supports']:
+            V = v[f'{case}_p{P}'].astype(np.float32)[:, :, keep]
+            u8 = np.where(np.isfinite(V), 1 + np.round(254 * np.clip(np.nan_to_num(V, nan=0.0), 0, 1)), 0).astype(np.uint8)
+            vid = f'radar-gated-{case.replace("_", "-")}-p{P}'
+            vols.append(_write_volume(d, vid, V, u8, [float(v['x'][0]), float(v['y'][0])], h, {
+                'label': f'Satellite · the gated reconstruction over the bench, {name}, support {P}',
+                'method': ("Synthetic products in the 2022 layout, shaken as Giza shakes, through the gated reconstruction's "
+                           "own code, unchanged, along 51 lines 2.4 m apart"),
+                'quantity': 'conditional adjusted R2 at each nominal depth below the surface', 'units': '0 to 1',
+                'range': [0.0, 1.0], 'run': run, 'tint': 'gated',
+                'caption': 'fit scores, unsmoothed; empty where nothing passed'}, ztop=float(v['z'][keep][0])))
+            entries.append({'id': vid, 'case': kind, 'support': int(P), **({'boost': float(boost)} if kind == 'boosted' else {})})
+    _merge_volumes(d, vols, drop=lambda q: q['id'].startswith('radar-gated-'))
+    radar = json.loads(rj.read_text())
+    radar['gated'] = {
+        'title': 'What the gated reconstruction computes over the bench',
+        'date': 'synthetic',
+        'volumes': entries,
+        'focus': [0.0, 0.0, -15.0],
+        'radius_m': 200.0,
+        'note': s['finding'],
+        'run': run,
+    }
+    rj.write_text(json.dumps(radar, separators=(',', ':')))
+    return {'site': 'bench-void', 'volumes': [e['id'] for e in entries]}
+
+
 def export_lab(out: Path = DATA) -> list[dict]:
     """Every lab run (katabasis.lab, sim/results/lab_*): its volumes into its site's viewer, drawn in gold as the gated
     reconstruction's fit scores, and a list of runs in the site's radar.json for the satellite panel."""
@@ -375,4 +425,5 @@ def export_lab(out: Path = DATA) -> list[dict]:
 
 
 def export_radar(out: Path = DATA) -> list[dict]:
-    return [r for r in (export_bench(out), export_claim(out), export_real(out), export_khufu_gated(out)) if r] + export_lab(out)
+    return [r for r in (export_bench(out), export_bench_gated(out), export_claim(out), export_real(out), export_khufu_gated(out))
+            if r] + export_lab(out)

@@ -77,8 +77,11 @@ def export_sites(out: Path = DATA) -> list[dict]:
         counts = {}
         for f in site.features:
             counts[f['status']] = counts.get(f['status'], 0) + 1
+        radar = sum(v.get('status') == 'radar' for v in sc['volumes'])
         index.append({'id': sid, 'name': site.name, 'kind': site.kind, 'summary': site.summary,
-                      'extent': site.extent, 'features': counts, 'volumes': len(sc['volumes'])})
+                      'extent': site.extent, 'features': counts, 'volumes': len(sc['volumes']),
+                      'instruments': {'geophones': len(sc['volumes']) - radar + len(sc.get('wavefields', [])),
+                                      'satellite': radar}})
     order = {'test': 0, 'real': 1}
     index.sort(key=lambda s: (order[s['kind']], ['bench-void', 'bench-shafts', 'bench-khafre-claim'].index(s['id'])
                               if s['id'].startswith('bench') else 9, s['id']))

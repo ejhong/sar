@@ -14,9 +14,10 @@ Methods:
 Every run writes sim/results/lab_<name>/ (summary.json with its manifest, volumes.npz), which `katabasis.export` adds
 to the site's viewer. With --twin SEED the same raster is also run on a motionless twin of the crop.
 
-The product defaults to the 2022 X13 dwell on the desktop; any product in the ICEYE SLC layout with an RPC can be given
-with --product, a synthetic one included. The gated profile's filter bank was frozen for the 2022 product; a product
-with a different Doppler rate or band would need the bank adapted, which the command refuses to do silently.
+The product defaults to the 2022 X13 dwell on the desktop. --product takes any product in the ICEYE SLC layout: a real
+one is placed through its RPC, a synthetic one (sarsim.slcfile) through the flat mapping its file records, its scene
+centre at the site's origin. The gated profile's filter bank was frozen for the 2022 product and is used as frozen; on a
+product with another Doppler rate or band it may not suit, and the command does not adapt it.
 """
 from __future__ import annotations
 
@@ -58,14 +59,46 @@ def load_gated():
     return mod
 
 
+WGS84_A, WGS84_E2 = 6378137.0, 6.69437999014e-3
+
+
+def synthetic_mapping(product) -> dict | None:
+    """A synthetic product's flat site-to-pixel mapping (sarsim.slcfile) with its scene centre's place, or None."""
+    import h5py
+    with h5py.File(product, 'r') as h:
+        if 'synthetic' not in h or 'site_to_pixel' not in h['synthetic'].attrs:
+            return None
+        m = json.loads(h['synthetic'].attrs['site_to_pixel'])
+        cc = h['coord_center'][...]
+        lat = np.deg2rad(float(cc[2]))
+        x, y, _ = h['synthetic']['scene_centre_ecef'][...]
+        n = WGS84_A / np.sqrt(1 - WGS84_E2 * np.sin(lat) ** 2)
+        m['origin'] = {'latitude': float(cc[2]), 'longitude': float(cc[3])}
+        m['height_m'] = float(np.hypot(x, y) / np.cos(lat) - n)
+        return m
+
+
+def flat_project(m, x, y, z):
+    """Row and column of site points in a synthetic product: azimuth along the heading, slant range to its right."""
+    h, th = np.deg2rad(m['heading_deg']), np.deg2rad(m['theta_deg'])
+    a = x * np.sin(h) + y * np.cos(h)
+    gr = x * np.cos(h) - y * np.sin(h)
+    return m['centre_row'] + a / m['dx'], m['centre_col'] + (gr * np.sin(th) - z * np.cos(th)) / m['dr']
+
+
 def raster(product, sc, centre, half_ew, half_ns, step, positions=101):
-    """East-west lines across a square of the site, placed through the product's RPC over the site's surface."""
+    """East-west lines across a square of the site, placed through the product's RPC over the site's surface, or through
+    a synthetic product's own flat mapping."""
     from sarsim.ortho import frame_to_lla, project, surface
+    syn = synthetic_mapping(product)
+    if syn is None:
+        from sarsim.dwell import DwellProduct
+        dp = DwellProduct(product)
     cx, cy = centre
     ys = np.arange(-half_ns, half_ns + 1e-6, step)
     xs_trace = np.linspace(half_ew, -half_ew, TRACE_POINTS)
     xs = xs_trace[np.linspace(0, TRACE_POINTS - 1, positions).round().astype(int)]
-    o = sc['frame']['origin']
+    o = syn['origin'] if syn else sc['frame']['origin']
     geom = {'title': f"East-west lines {step:g} m apart across ({cx:g}, {cy:g})",
             'coordinate_order': 'Geographic endpoints are [latitude, longitude]. Native pixels are [column, row].',
             'tracks': {}}
@@ -74,8 +107,11 @@ def raster(product, sc, centre, half_ew, half_ns, step, positions=101):
         X = cx + xs_trace
         Y = np.full_like(X, cy + y)
         Z = surface(sc, X, Y)
-        r, c = project(product, sc, X, Y, Z, GEOID_M)
-        heights.append(float(np.mean(Z)) + GEOID_M)
+        if syn:
+            r, c = flat_project(syn, X, Y, Z)
+        else:
+            r, c = project(dp, sc, X, Y, Z, GEOID_M)
+        heights.append(syn['height_m'] if syn else float(np.mean(Z)) + GEOID_M)
         z_surf[j] = surface(sc, cx + xs, np.full_like(xs, cy + y))
         lat, lon = frame_to_lla(o, X[[0, -1]], Y[[0, -1]])
         geom['tracks'][f'L{j:03d}'] = {
@@ -102,14 +138,12 @@ def curtains_to_volume(F, z_m, z_surf, zc, step):
 
 def run_gated(name, site='giza', centre=(0.0, 0.0), half_ew=150.0, half_ns=141.0, step=3.0, supports=(1, 4),
               twin=None, product=PRODUCT, title=None):
-    from sarsim.dwell import DwellProduct
     from sarsim.looks import motionless_twin
     if not re.fullmatch(r'[a-z0-9_]+', name):
         raise SystemExit('a run name is lower-case letters, digits and underscores')
     if abs(2 * half_ew / 100 - step) > 1e-9:
         raise SystemExit(f'positions along a line are 2 x half_ew / 100 apart; for a {step:g} m grid use --half-ew {50 * step:g}')
     sc = site_scene(load_site(site))
-    p = DwellProduct(product)
     profile = json.loads(PROFILE.read_text())
     profile['gates'] = dict(profile['gates'], pixel_support_variants=list(supports))
     rid = f'lab_{name}'
@@ -117,7 +151,7 @@ def run_gated(name, site='giza', centre=(0.0, 0.0), half_ew=150.0, half_ns=141.0
               'step_m': step, 'supports': list(supports), 'twin_seed': twin, 'product': Path(product).name,
               'gated_module_sha256': sha256(MODULE), 'gated_profile_sha256': sha256(PROFILE), 'geoid_m': GEOID_M}
     with Run(rid, title or f'The gated reconstruction across ({centre[0]:g}, {centre[1]:g}) on {site}', params) as run:
-        geom, xs, ys, z_surf = raster(p, sc, centre, half_ew, half_ns, step)
+        geom, xs, ys, z_surf = raster(product, sc, centre, half_ew, half_ns, step)
         gdir = ROOT / 'sim' / 'data' / rid
         gdir.mkdir(parents=True, exist_ok=True)
         (gdir / 'geometry.json').write_text(json.dumps(geom))
