@@ -3,9 +3,9 @@
   "id": "p2_22_one_shaking",
   "title": "One shaking: a vibrator beside the bench, with the chamber and without it",
   "date": "2026-09-29",
-  "started_utc": "2026-09-29T15:16:36+00:00",
-  "runtime_s": 1473.2,
-  "commit": "110d416+",
+  "started_utc": "2026-09-29T15:44:44+00:00",
+  "runtime_s": 1379.6,
+  "commit": "aeffc33",
   "params": {
    "site": "bench-void",
    "frequency_hz": 10.691485,
@@ -77,19 +77,19 @@
    "steady_change_max": 0.003627,
    "steady_change_median": 0.003633,
    "up_at_axis_m_s_per_n": 7.565e-12,
-   "runtime_s": 687.6
+   "runtime_s": 445.3
   },
   "bench": {
    "steady_change_max": 0.003627,
    "steady_change_median": 0.003633,
    "up_at_axis_m_s_per_n": 7.584e-12,
-   "runtime_s": 415.6
+   "runtime_s": 500.9
   },
   "favourable": {
    "steady_change_max": 0.003627,
    "steady_change_median": 0.003633,
    "up_at_axis_m_s_per_n": 7.647e-12,
-   "runtime_s": 370.0
+   "runtime_s": 433.3
   }
  },
  "imprint": {

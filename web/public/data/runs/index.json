@@ -1162,9 +1162,9 @@
   "id": "p2_22_one_shaking",
   "title": "One shaking: a vibrator beside the bench, with the chamber and without it",
   "date": "2026-09-29",
-  "started_utc": "2026-09-29T15:16:36+00:00",
-  "runtime_s": 1473.2,
-  "commit": "110d416+",
+  "started_utc": "2026-09-29T15:44:44+00:00",
+  "runtime_s": 1379.6,
+  "commit": "aeffc33",
   "params": {
    "site": "bench-void",
    "frequency_hz": 10.691485,
