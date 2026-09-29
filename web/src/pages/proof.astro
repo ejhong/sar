@@ -8,6 +8,7 @@ import requirement from '../../public/data/runs/p2_27_requirement.json';
 import depths from '../../public/data/runs/p2_28_two_depths.json';
 import oracle from '../../public/data/runs/p2_29_oracle.json';
 import finite from '../../public/data/runs/p2_30_finite_certificates.json';
+import shapes from '../../public/data/runs/p2_32_shape_bounds.json';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 // ---- formatting
@@ -76,6 +77,23 @@ const thin = dyn('surface_favourable: truck-level harmonic');
 const orAmb = Math.max(...orc.chamber.filter((r) => r.kind === 'ambient').map((r) => r.tv_exact));
 const orOpen = orc.chamber.filter((r) => r.open);
 const pm = fc.fixed_envelope_phase_modulation;
+const orWorst_tv = (o: typeof orc) => o.chamber.filter((r) => r.kind === 'cultural').reduce((a, r) => Math.max(a, r.tv_exact), 0).toFixed(2);
+
+// ---- shape discrimination (P2-32)
+type ShRow = { case: string; tight_ceiling: number; oracle_tv: number; oracle_growth_to_target: number | null; certificate_tpr_at_005: number };
+type ShPair = { pair: string; rows: ShRow[]; discrimination_signal_factor: number | null };
+type ShDyn = { pair: string; worst_f_hz: number; oracle_tv: number; oracle_growth_to_target: number | null; oracle_tv_within_32m: number };
+const sh = shapes as unknown as { static: ShPair[]; dynamic: ShDyn[] };
+const pairName: Record<string, string> = {
+  'branching_tunnel vs none': 'A branching tunnel, or none',
+  'L_tunnel vs straight_tunnel': 'An L-shaped tunnel, or a straight one',
+  'column_spiral vs column': 'A column with a spiral, or a plain column',
+  'L_tunnel vs branching_tunnel': 'An L-shaped tunnel, or a branching one',
+  'room vs none': 'An isolated room, or none',
+};
+const shDyn = (pair: string) => sh.dynamic.find((d) => d.pair === pair);
+const shMaxCert = Math.max(...sh.static.map((p) => p.rows[0].certificate_tpr_at_005));
+const shWorstDyn = sh.dynamic.length ? sh.dynamic.reduce((a, d) => (d.oracle_tv > a.oracle_tv ? d : a)) : null;
 
 // ---- the requirement (P2-27)
 type RqRow = { L_m: number; area_half_m2: number; D_necessary_m: Record<string, number> };
@@ -97,11 +115,13 @@ const d30 = dp.results['hollow_30_phase_2'];
   title="The bound, finite and stated"
   kicker="Proof · what any way of reading one image could learn, and what it assumes"
   current="satellite"
-  lede="Could a cleverer algorithm find what the published method does not? Within a stated measurement model this can be answered for every algorithm at once, and it is answered here in three layers, each proved without a small-motion approximation: a loose certificate that includes the ground’s own background motion, a tight calculation, and an oracle told everything but the answer. The physical inputs, the room’s imprint and the shaking’s level, are models and are marked as such."
+  lede="Does one satellite radar image hold reproducible information about what is underground (whether something is there, where it is, its shape) even if its depth stays uncertain? Within a stated measurement model this can be bounded for every algorithm at once, for detection and for telling one layout from another, in three layers, each proved without a small-motion approximation. The aim is a defensible boundary: which conditions rule out useful recovery and which deserve experiments. The physical inputs, a structure’s imprint and the shaking’s level, are models and are marked as such."
   state="status · proved within a stated model; physical inputs not certified · 29 September 2026"
   index={[
     { id: 'answer', label: 'The answer' },
     { id: 'claims', label: 'Five claims, apart' },
+    { id: 'shape', label: 'Shape, bounded' },
+    { id: 'boundary', label: 'The boundary' },
     { id: 'layers', label: 'Three layers' },
     { id: 'theorems', label: 'The theorems' },
     { id: 'mechanism', label: 'What a mechanism must supply' },
@@ -153,6 +173,49 @@ const d30 = dp.results['hollow_30_phase_2'];
       regional microseism envelope that leaves no prospecting value within the model, even for ranking sites (TV ≤ {sci(micro.tv_upper)});
       where TV is large, as in the open regime, a method could have prospecting value short of 95% at 5%, and it is not excluded.
     </p>
+  </section>
+
+  <section id="shape">
+    <h2>Telling one layout from another is bounded the same way, and moving a reconstruction up or down cannot rescue it</h2>
+    <p class="sub">
+      If two layouts leave nearly the same image in distribution, no algorithm can tell them apart, however it
+      reconstructs. A uniformly reliable shape mapper must separate two layouts even after the depth freedom it is allowed;
+      the closest admissible pair of depth variants is no easier than the pair at the same depth, so the same-depth bound
+      holds for every allowance. Each layout’s imprint is the lab’s solver (statically for the ambient levels, dynamically
+      for a lorry close by), and the bound is on the difference between two layouts’ imprints (P2-32).
+    </p>
+    <table class="data compact">
+      <thead><tr><th>which of the two?</th><th>tight (microseisms)</th><th>oracle (microseisms)</th><th>oracle, a lorry beside it all pass</th><th>signal over detection’s</th></tr></thead>
+      <tbody>
+        {sh.static.map((p) => (
+          <tr><td>{pairName[p.pair] ?? p.pair}</td><td>{sci(p.rows[0].tight_ceiling)}</td><td>{sci(p.rows[0].oracle_tv)}</td><td>{shDyn(p.pair) ? `${shDyn(p.pair)!.oracle_tv.toFixed(2)} at ${Math.round(shDyn(p.pair)!.worst_f_hz)} Hz` : '—'}</td><td>{p.pair.endsWith('none') ? '1 (detection)' : `${(p.discrimination_signal_factor ?? 0).toFixed(1)}×`}</td></tr>
+        ))}
+      </tbody>
+    </table>
+    <p class="note">
+      Detection rate − false-alarm rate, at most. The loose certificate with the background caps every pair at
+      {' '}{pctp(shMaxCert, 3)} found at 5% false alarms under the microseisms. “Signal over detection’s”: how many times the signal
+      that detects the first layout is needed to tell the two apart. Shallow, bench-scale layouts in uniform rock: more
+      favourable than anything claimed, and only these.
+    </p>
+  </section>
+
+  <section id="boundary">
+    <h2>The boundary: the ground’s own trembling rules out useful recovery within the model; strong, known shaking close by does not, and deserves experiments</h2>
+    <table class="data compact">
+      <thead><tr><th>conditions</th><th>presence</th><th>location and shape</th><th>absolute depth</th></tr></thead>
+      <tbody>
+        <tr><td>Giza’s regional trembling, any reader, one image</td><td>excluded: ≤ {pctp(micro.tpr_upper_at_fpr_005, 3)} found at 5% (certificate), {sci(orAmb)} for the oracle</td><td>excluded: each pair ≤ {pctp(shMaxCert, 3)} at 5%</td><td>excluded with presence; aliased in the published method</td></tr>
+        <tr><td>The noisiest ground on Earth</td><td>excluded (tight {sci(s0[1].ceiling)})</td><td>excluded with presence</td><td>excluded with presence</td></tr>
+        <tr><td>A lorry beside a room all pass, known exactly</td><td>open: the oracle reaches {orWorst_tv(orc)} and the certificate {pctp(thin.tpr_upper_at_fpr_005, 0)} at 5% for a thin roof</td><td>{shWorstDyn ? `open: the oracle reaches ${shWorstDyn.oracle_tv.toFixed(2)} for the hardest pair` : 'to compute'}</td><td>needs {Math.round(orc.depth.signal_factor_depth_over_detection)}× the signal of detection (P2-29)</td></tr>
+        <tr><td>Any mechanism with gain, not yet specified</td><td colspan="3">not covered: it must state the motion it adds over the room (source, footprint, amplitude and phase, losses, duration); the requirement curve above says how much is needed</td></tr>
+      </tbody>
+    </table>
+    <div class="grid-3">
+      <div class="note-card"><span class="tag">achieved, conditionally</span><h3>Limits within a stated measurement and physical model</h3><p>The theorems and the three layers above: finite, algorithm-independent, and scoped to fully developed speckle (or any texture, for the oracle), the Doppler-to-time relation, the lab’s linear elastic imprints and the regional ambient levels.</p></div>
+      <div class="note-card"><span class="tag planned">a research goal</span><h3>Limits for a defined class of realistic archaeological settings</h3><p>Feasible, with stronger physical validation: measured ground motion at the site during a pass, measured coupling over known voids, a qualified observation model and noise floor, and the open regime examined by experiment rather than by bound.</p></div>
+      <div class="note-card"><span class="tag claimed">not claimed</span><h3>That every conceivable single-image application has no archaeological value</h3><p>Too broad for this work: mechanisms, environments and acquisitions outside the model are not covered, and the open regime is open. The outcome sought is this boundary, not a verdict fixed in advance.</p></div>
+    </div>
   </section>
 
   <section id="layers">

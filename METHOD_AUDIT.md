@@ -582,6 +582,22 @@ model, and location and shape with it, since telling two layouts apart is harder
 that excludes 95% at 5% is not by itself a proof of no prospecting value, which is excluded only where the bound on
 detection minus false alarm is itself small. The shape test (P2-31) is the next decisive experiment.
 
+### What the proof can and cannot claim (29 September 2026)
+
+Three goals, kept apart (after the second review's framing):
+
+- **Limits within a stated measurement and physical model:** achieved, conditionally. Detection (P2-25, P2-29, P2-30) and
+  shape discrimination (P2-32: a branching tunnel or none, an L-shaped or a straight tunnel, a column with a spiral or
+  without), each finite and algorithm-independent, the same-depth bound covering every allowed vertical transformation.
+- **Limits for a defined class of realistic archaeological settings:** a feasible research goal, needing measured ground
+  motion at the site, measured coupling over known voids, a qualified observation model and noise floor, and experiments in
+  the regime the bounds leave open (strong shaking close by, known exactly).
+- **That every conceivable single-image application has no archaeological value:** too broad to claim from this work.
+
+The useful outcome is the boundary: which conditions rule out useful recovery (within the model, the ground's own
+trembling) and which deserve experiments (strong, known shaking near a shallow structure; mechanisms with gain once
+specified).
+
 ### Second review, 29 September 2026: corrections adopted
 
 A second independent review of the branch that added P2-25 and P2-26 (commit d7e9b9e) asked that they not be presented

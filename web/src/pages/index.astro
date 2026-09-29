@@ -525,7 +525,8 @@ const explore = [
           bouncing beside the room all pass gives such an oracle {orWorst.tv_exact.toFixed(2)}, still
           {' '}{orWorst.growth_to_target.toFixed(0)} times short of a reliable detection, a margin too thin to call closed. Where a room
           is and its shape are bounded the same way, since telling two layouts apart is harder than telling either from none.
-          Absolute depth is the hardest claim: small rooms spread 15 metres down leave the mark of a room 30 metres down to within
+          Telling an L-shaped tunnel from a straight one, or a column with a spiral from a plain column, is bounded the same
+          way, and no depth allowance helps. Absolute depth is the hardest claim: small rooms spread 15 metres down leave the mark of a room 30 metres down to within
           {' '}{(100 * orc.depth.residual_fraction).toFixed(0)}%, so telling the two apart takes
           {' '}{Math.round(orc.depth.signal_factor_depth_over_detection)} times the signal that detecting either takes; but a method that
           found a layout at the wrong depth would still be useful, so the claims are scored apart.
