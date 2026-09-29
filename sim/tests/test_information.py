@@ -98,9 +98,46 @@ def test_score_attains_fisher(g):
     assert (T1.mean() - T0.mean()) / (a * F) == pytest.approx(1.0, abs=4 * np.sqrt(2 / n) / (a * np.sqrt(F)))
 
 
-def test_point_and_edge():
+def test_point_and_ceiling():
     t = np.linspace(-12, 12, 4001)
     phase = 1e-3 * np.cos(2 * np.pi * 0.5 * t)
     assert inf.fisher_point(100.0, phase, t) == pytest.approx(100.0 * 1e-6, rel=0.02)
     assert inf.fisher_point(100.0, 1e-3 + 2e-4 * t, t) == pytest.approx(0.0, abs=1e-20)   # phase and position absorb it
-    assert inf.edge(4e-18) == pytest.approx(1e-9)
+    # a weak signal: KL <= F/2 (1 + O(sqrt F)), TV <= sqrt(KL/2) = sqrt(F)/2, and the best test reaches 2 Phi(d/2) - 1
+    assert float(inf.ceiling(4e-18)) == pytest.approx(1e-9, rel=1e-6)
+    assert float(inf.best_test_tv(4e-18)) == pytest.approx(2e-9 / np.sqrt(2 * np.pi), rel=1e-6)
+    assert np.isinf(inf.kl_upper(1.0)) and float(inf.ceiling(1.0)) == 1.0
+
+
+def test_grid_matches_sum():
+    """The FFT form on the image's pixels equals the double sum: its mean over psi and its largest value."""
+    g = DwellGeometry.from_record('giza-20250827')
+    shape = (64, 10)
+    xa = (np.arange(shape[0]) - shape[0] / 2) * g.dx
+    Xa, Xr = np.meshgrid(xa, (np.arange(shape[1]) - shape[1] / 2) * g.dr, indexing='ij')
+    K = 1e-3 * np.exp(-(Xa ** 2 + (Xr / np.sin(g.theta)) ** 2) / 0.5) * (1 + 0.3j * np.sin(Xr))
+    k0 = 4 * np.pi / g.lam
+    fm = 40.0
+    A, B = inf.fisher_grid(K, g, fm, pad=shape)
+    Fs = []
+    for psi in np.linspace(0, np.pi, 6, endpoint=False):
+        Kp = 0.5 * k0 * K * np.exp(2j * np.pi * fm * xa / g.V)[:, None] * np.exp(1j * psi)
+        Fs.append(inf.fisher_exact([(Kp, lambda t: np.exp(2j * np.pi * fm * t)),
+                                    (np.conj(Kp), lambda t: np.exp(-2j * np.pi * fm * t))], g, shape))
+    assert np.mean(Fs) == pytest.approx(A, rel=1e-10)
+    assert max(Fs) <= A + B * (1 + 1e-9) and max(Fs) >= A + B * np.cos(np.pi / 6) - 1e-12
+
+
+def test_finite_kl_is_bounded():
+    """The finite change's exact KL stays under the rigorous bound, and close to a^2 F / 2 for a weak imprint."""
+    g = DwellGeometry.from_record('giza-20250827')
+    shape = (64, 12)
+    k0 = 4 * np.pi / g.lam
+    K = k0 * bump(g, shape, 0.4)
+    comps = [(K, lambda t: np.cos(2 * np.pi * 1.0 * t))]
+    F = inf.fisher_exact(comps, g, shape)
+    for a in (0.05, 0.15):
+        B = inf.band_operator(comps, g, shape, a)
+        kl = inf.kl_exact(B @ B.conj().T)
+        assert kl == pytest.approx(a * a * F / 2, rel=0.02)
+        assert kl <= float(inf.kl_upper(a * a * F, inf.remainder(K / k0, g, shape, a=a)))

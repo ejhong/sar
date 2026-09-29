@@ -1,25 +1,42 @@
-"""What one image can hold about a chamber, whatever reads it (Phase 2, P2-25).
+"""What one image can hold about a chamber, whatever reads it (Phase 2, P2-25, P2-27).
 
 The chamber can reach a radar image only through what the image is made of: the echo from what the radar wave
 reaches (the surface and its first centimetres; P2-11 puts the bench chamber's roof at least 347 dB down at X band),
 the surface itself (which any photograph shows), and the surface's motion during the pass. Every method is a function
 of the image, so none can hold more about the chamber than the image does (the data-processing inequality). This
-module bounds what the motion leaves in the image, for any method.
+module bounds what the motion leaves in the image, for any method, within a stated measurement model.
 
-The image. For an ideal focusing processor a scatterer with reflectivity s at x, whose slant range grows by d(x, t)
+The model. For an ideal focusing processor a scatterer with reflectivity s at x, whose slant range grows by d(x, t)
 during the pass, adds s exp(-2 pi i f.x) exp(-i phi) to the image's spectrum at f = (f_a, f_r), with phi = 4 pi d /
-lambda taken at t = f_a / Ka, the slow time at which the pass sees that Doppler bin (sarsim.synth). Ordinary ground is
-fully developed speckle: s is white and circular Gaussian, so the image is a zero-mean circular Gaussian vector and
-its covariance C holds everything it says about the ground.
+lambda taken at t = f_a / Ka, the slow time at which the pass sees that Doppler bin (sarsim.synth; the relation is the
+stationary-phase one, checked against pulse-by-pulse echoes in P2-25). Ordinary ground is fully developed speckle: s
+white and circular Gaussian on the image's own pixel grid, so the image is a zero-mean circular Gaussian vector and its
+covariance C holds everything it says about the ground. No receiver noise (which could only lower what follows), no
+reference image of the same ground (a genie that supplies one is bounded separately).
 
-The bound. Let the chamber's imprint be phi = a Phi(x, t): a = 1 with the chamber, a = 0 without it. Any test, however
-built, has P(detect) - P(false alarm) <= TV <= sqrt(KL / 2) (Pinsker); for a small imprint KL = F a^2 / 2 with F the
-Fisher information, so the edge any method can have over a guess is at most sqrt(F) / 2. For a zero-mean circular
-Gaussian F = tr(C^-1 C' C^-1 C'), and with speckle white (C diagonal in frequency, band window W, receiver noise),
+The bound, finite and rigorous within the model. Let the imprint be phi = a Phi(x, t), a = 1 with the chamber and 0
+without. Whiten the covariance change: E = C0^-1/2 (C_a - C0) C0^-1/2. Then, exactly, KL(P_a || P_0) = sum over the
+eigenvalues l of I + E of (l - 1 - ln l), and since l - 1 - ln l <= (l - 1)^2 / (2 min(l, 1)^2),
 
-    F = sum_{f, f'} w(f) w(f') |Phi~(f - f'; f) - Phi~(f - f'; f')|^2,      w = |W|^2 s2 / (|W|^2 s2 + noise),
+    KL <= |E|_F^2 / (2 (1 - |E|_F)^2)       while |E|_F < 1.
 
-Phi~(k; f) the spatial Fourier coefficient of Phi(., t(f)) at k. Without noise w is 1 in the band, whatever W is.
+E is a Fourier transform of exp(-i a dPhi) - 1 (dPhi the imprint's phase difference between two Doppler bins); its
+first-order part has Frobenius norm a sqrt(F), F the Fisher information below, and the remainder, from
+|exp(-i t) - 1 + i t| <= t^2 / 2, has norm at most eps = 2 a^2 (N_b / N) sum_x max_t Phi(x, t)^2 (N_b / N the share of
+the image's frequency bins inside the processed band). So |E|_F <= a sqrt(F) + eps, no approximation. Any test, however
+built, has
+
+    detection rate - false-alarm rate <= TV <= min( sqrt(KL / 2), sqrt(1 - exp(-KL)) )
+
+(Pinsker; Bretagnolle-Huber); for two equally likely cases the best accuracy is 1/2 + TV/2. For a weak signal the
+log-likelihood ratio is Gaussian with deflection d = a sqrt(F), the best test reaches TV = 2 Phi(d/2) - 1 = 0.40 d, and
+the bound gives 0.50 d: tight to a factor 1.25 there (checked with the exact likelihood-ratio test on a small image).
+
+The Fisher information. For a zero-mean circular Gaussian F = tr(C^-1 C' C^-1 C'), and with the bins independent,
+
+    F = sum_{f, f' in band} |Phi~(f - f'; f) - Phi~(f - f'; f')|^2,
+
+Phi~(k; f) the discrete spatial Fourier coefficient (over the image's pixels) of Phi(., t(f)) at k.
 
 1. Motion shared by the whole scene holds no information at all: Phi~ is then nonzero only at k = 0, where the
    difference vanishes. Not little: none.
@@ -28,18 +45,15 @@ Phi~(k; f) the spatial Fourier coefficient of Phi(., t(f)) at k. Without noise w
 3. For slow, smooth motion F = (R / V_s)^2 sum_cells <(dv/dx)^2>: the image is locally stretched along track by the
    line-of-sight velocity's gradient times R / V_s (79 s at Giza), and only that stretch survives the speckle.
 
-For a sinusoid, d = K(x) cos(2 pi f_m (t + x_a / V_g) + psi) (x_a / V_g: each row's own zero-Doppler time), the
-expectation over psi is, in the continuum,
+For a sinusoid, d = Re[K(x) exp(i(2 pi f_m (t + x_a / V_g) + psi))] (x_a / V_g: each row's own zero-Doppler time), F
+depends on psi as F(psi) = A + Re(B exp(2 i psi)): `fisher_grid` computes A (the mean over psi) and |B| exactly on the
+image's pixel grid; `fisher_sinusoid` is the continuum approximation of A, for quick use. Handing the method the
+ground's reflectivity (a genie) raises the information to at most 2 sum_cells SNR <Phi^2>, whatever the scene; a lone
+bright point with signal-to-clutter ratio SCR holds F = 2 SCR <Phi_perp^2> about its own motion (Phi_perp: the phase
+history less a constant and a linear trend, its unknown phase and position).
 
-    F = nu_band kg_band  integral (|K+^(k)|^2 + |K-^(k)|^2) sin^2(pi f_m V_g k_a / Ka) rho_a(k_a) rho_g(k_g) dk,
-
-K+- = (4 pi / lambda) K exp(+-2 pi i f_m x_a / V_g), ^ the continuous Fourier transform, rho the band's normalised
-autocorrelation. Handing the method the ground's reflectivity (a genie; no single image has it) only raises the
-information, to F = 2 sum_cells SNR <Phi^2> whatever the scene; a lone bright point with signal-to-clutter ratio SCR
-holds F = 2 SCR <Phi_perp^2> about its own motion (Phi_perp: the phase history less a constant and a linear trend,
-its unknown phase and position).
-
-Arrays of the imprint are [azimuth, ground range] on a regular grid (metres), azimuth along the radar's track.
+Arrays of the imprint are [azimuth, range] on a regular grid (metres), azimuth along the radar's track: the image's own
+pixels (dx, dr in slant range) for the exact functions, ground range for the continuum ones.
 """
 from __future__ import annotations
 
@@ -53,9 +67,51 @@ def cells_per_m2(g):
     return g.nu_band * g.kr_band * np.sin(g.theta)
 
 
-def edge(F):
-    """The most any method's detection rate can exceed its false-alarm rate: sqrt(KL / 2) with KL = F / 2."""
-    return 0.5 * np.sqrt(np.asarray(F, float))
+def kl_upper(F, eps=0.0):
+    """A rigorous upper bound on KL(P_a || P_0) from the Fisher information F (at a = 1) and the remainder bound eps:
+    (sqrt F + eps)^2 / (2 (1 - sqrt F - eps)^2); infinite where sqrt F + eps >= 1, where the bound says nothing."""
+    x = np.sqrt(np.asarray(F, float)) + np.asarray(eps, float)
+    with np.errstate(divide='ignore', invalid='ignore'):
+        return np.where(x < 1, x ** 2 / (2 * (1 - x) ** 2), np.inf)
+
+
+def tv_upper(kl):
+    """The most any test's detection rate can exceed its false-alarm rate, given KL: min of Pinsker's sqrt(KL / 2) and
+    Bretagnolle-Huber's sqrt(1 - exp(-KL)), at most 1."""
+    kl = np.asarray(kl, float)
+    with np.errstate(over='ignore', invalid='ignore'):
+        return np.minimum(np.minimum(np.sqrt(kl / 2), np.sqrt(-np.expm1(-kl))), 1.0)
+
+
+def ceiling(F, eps=0.0):
+    """detection rate - false-alarm rate <= this, for any test, within the model: tv_upper(kl_upper(F, eps)). For two
+    equally likely cases the best accuracy is 1/2 plus half of it."""
+    return tv_upper(kl_upper(F, eps))
+
+
+def best_test_tv(F):
+    """What the best test reaches for a weak signal (the log-likelihood ratio Gaussian with deflection sqrt F):
+    2 Phi(sqrt(F) / 2) - 1. Asymptotic, for comparison with the ceiling."""
+    from scipy.special import erf
+    return erf(np.sqrt(np.asarray(F, float)) / (2 * np.sqrt(2)))
+
+
+def remainder(K, g, shape=None, a=1.0, terms=24):
+    """eps, a rigorous bound on the Frobenius norm of the whitened covariance change beyond first order, for
+    d = a Re[K exp(i ...)] with K [n_a, n_r] metres on the image's pixels. exp(-i a dPhi) - 1 + i a dPhi is a power
+    series in a dPhi, dPhi = Re[K+ dtau+] with |dtau| <= 2; term n has Frobenius norm at most
+    (2a)^n / n! sqrt((N_b / N) sum_x |4 pi K / lambda|^(2n)) (Parseval over the image, N_b in-band bins). Summed from
+    n = 2; the tail beyond `terms` is negligible for the phases here and is bounded by the last term's ratio test."""
+    shape = np.shape(K) if shape is None else shape
+    in_a, in_r, _ = band_masks(g, shape)
+    share = in_a.mean() * in_r.mean()
+    k = 4 * np.pi / g.lam * np.abs(np.asarray(K, complex)).ravel()
+    total, last = 0.0, 0.0
+    for n in range(2, terms + 1):
+        last = (2 * a) ** n / math.factorial(n) * np.sqrt(share * np.sum(k ** (2 * n)))
+        total += last
+    ratio = 2 * a * k.max() / (terms + 1)
+    return float(total + (last * ratio / (1 - ratio) if ratio < 1 else np.inf))
 
 
 def _spectrum(K, spacing, pad):
@@ -89,6 +145,54 @@ def fisher_sinusoid(K, spacing, f_m, g, pad=None):
         dk = (ka[1] - ka[0]) * (kg[1] - kg[0])
         total += float(np.sum(np.abs(S) ** 2 * wa[:, None] * rho_g[None, :]) * dk)
     return cells_per_m2(g) * total
+
+
+def fisher_grid(K, g, f_m, pad=None):
+    """Exact F(psi) = A + Re(B exp(2 i psi)) for d = Re[K exp(i(2 pi f_m (t + x_a / V_g) + psi))] with scatterers on the
+    image's own pixel grid (noise-free speckle): K complex [n_a, n_r] metres at the image's spacing (g.dx along track,
+    g.dr in slant range), zero-padded to `pad` (default: room for the paired echoes, f_m V_g / |Ka| metres each way).
+    Returns (A, |B|): the mean over psi, and the amplitude of its swing (the largest F over psi is A + |B|)."""
+    K = np.asarray(K, complex)
+    na, nr = K.shape
+    if pad is None:
+        need = 4 * f_m * g.V / g.Ka
+        pad = (int(2 ** np.ceil(np.log2(na + need / g.dx + 8))), int(2 ** np.ceil(np.log2(nr + 8))))
+    Na, Nr = pad
+    N = Na * Nr
+    k0 = 4 * np.pi / g.lam
+    xa = (np.arange(na) - na / 2) * g.dx
+    ph = np.exp(2j * np.pi * f_m * xa / g.V)[:, None]
+    Kp = np.zeros((Na, Nr), complex)
+    Km = np.zeros((Na, Nr), complex)
+    Kp[:na, :nr] = k0 * K * ph
+    Km[:na, :nr] = k0 * np.conj(K) * np.conj(ph)
+    Fp, Fm = np.fft.fft2(Kp) / N, np.fft.fft2(Km) / N
+    in_a, in_r, _ = band_masks(g, pad)
+    ka = np.rint(np.fft.fftfreq(Na) * Na).astype(int)[in_a]
+    kr = np.rint(np.fft.fftfreq(Nr) * Nr).astype(int)[in_r]
+    lo_a, hi_a, lo_r, hi_r = ka.min(), ka.max(), kr.min(), kr.max()
+    Ma, Mr = hi_a - lo_a + 1, hi_r - lo_r + 1                 # contiguous bands
+    c = 2 * np.pi * f_m * g.V / (Na * g.dx * g.Ka_signed)     # phase of the motion per azimuth bin
+    da = np.arange(-(Ma - 1), Ma)
+    dr = np.arange(-(Mr - 1), Mr)
+    s2 = np.sin(c * da / 2) ** 2
+    Ra, Rr = Ma - np.abs(da), Mr - np.abs(dr)
+    # G(da): sum over bins k with k and k - da both in band of exp(i c (2k - da))
+    k_start = np.maximum(lo_a, lo_a + da)
+    count = np.minimum(hi_a, hi_a + da) - k_start + 1
+    q = np.exp(2j * c)
+    with np.errstate(divide='ignore', invalid='ignore'):
+        geo = np.where(np.abs(1 - q) > 1e-12, (1 - q ** count) / (1 - q), count)
+    G = np.exp(-1j * c * da) * np.exp(2j * c * k_start) * geo
+    Wa = np.zeros(Na)
+    WBa = np.zeros(Na, complex)
+    np.add.at(Wa, da % Na, Ra * s2)
+    np.add.at(WBa, da % Na, s2 * G)
+    Wr = np.zeros(Nr)
+    np.add.at(Wr, dr % Nr, Rr)
+    A = float(np.sum((np.abs(Fp) ** 2 + np.abs(Fm) ** 2) * Wa[:, None] * Wr[None, :]))
+    B = -2 * np.sum(Fp * np.conj(Fm) * WBa[:, None] * Wr[None, :])
+    return A, float(np.abs(B))
 
 
 def fisher_bound(K, spacing, g):
@@ -150,6 +254,29 @@ def fisher_exact(components, g, shape, w=None):
         diff = sum(Kt_j[np.ix_(da, dr)] * (tau_j[a] - tau_j[:, None]) for Kt_j, tau_j in zip(Kt, taus))
         F += w[a, r] * float(np.sum(w * np.abs(diff) ** 2))
     return F
+
+
+def band_operator(components, g, shape, a=1.0):
+    """B(a) [n_band, N]: the in-band image spectrum (unitary DFT) of scatterers on an image's pixel grid, moved by
+    a Phi with Phi(x, t) = sum_j Kj(x) tau_j(t) (radians). For unit white speckle the image's in-band covariance is
+    C(a) = B B^H, and B(0) has orthonormal rows, so C(0) = I. Exact, for small images."""
+    in_a, in_r, nu = band_masks(g, shape)
+    na, nr = shape
+    t = g.nu_to_time(nu)
+    ia, ir = np.nonzero(in_a[:, None] & in_r[None, :])
+    xa, xr = np.meshgrid(np.arange(na), np.arange(nr), indexing='ij')
+    E = np.exp(-2j * np.pi * (np.outer(np.fft.fftfreq(na)[ia], xa.ravel()) + np.outer(np.fft.fftfreq(nr)[ir], xr.ravel())))
+    E /= np.sqrt(na * nr)
+    if a == 0.0 or not components:
+        return E
+    Phi = sum(np.outer(np.asarray(tau(t))[ia], np.ravel(Kj)) for Kj, tau in components)
+    return E * np.exp(-1j * a * Phi)
+
+
+def kl_exact(C1):
+    """KL(CN(0, C1) || CN(0, I)) = sum over eigenvalues l of C1 of (l - 1 - ln l): the finite change, exactly."""
+    lam = np.linalg.eigvalsh(C1)
+    return float(np.sum(lam - 1 - np.log(lam)))
 
 
 def score(img, K, tau, g):
