@@ -197,6 +197,47 @@ const { mode = 'full', initial } = Astro.props;
   details[open] > summary.uw-label::after {
     content: '−';
   }
+  .uw-select {
+    position: relative;
+  }
+  .uw-select::after {
+    content: '▾';
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--panel-faint);
+    pointer-events: none;
+    font-size: 11px;
+  }
+  .uw-select select {
+    width: 100%;
+    appearance: none;
+    -webkit-appearance: none;
+    font: 600 13px/1.2 var(--font-sans);
+    color: var(--panel-text);
+    background: var(--panel-head);
+    border: 1px solid var(--panel-line);
+    border-radius: 8px;
+    padding: 9px 30px 9px 11px;
+    cursor: pointer;
+  }
+  .uw-select select:focus-visible {
+    outline: 2px solid rgba(130, 179, 255, 0.5);
+    outline-offset: 1px;
+  }
+  .uw-site-meta {
+    font-size: 11.5px;
+    line-height: 1.45;
+    color: var(--panel-muted);
+    margin: 8px 0 0;
+  }
+  .uw-site-ins {
+    display: block;
+    margin-top: 4px;
+    font: 500 10.5px/1.4 var(--font-mono);
+    color: var(--panel-faint);
+  }
   .uw-group {
     font: 500 9.5px/1 var(--font-mono);
     color: var(--panel-faint);
@@ -530,6 +571,9 @@ const { mode = 'full', initial } = Astro.props;
     color: var(--panel-faint);
     margin-top: 6px;
     word-break: break-word;
+  }
+  .uw-run a {
+    color: var(--panel-muted);
   }
   .uw-more {
     font: 10px/1.5 var(--font-mono);

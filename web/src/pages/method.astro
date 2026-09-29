@@ -1,6 +1,7 @@
 ---
 import Doc from '../layouts/Doc.astro';
 import { GLOSSARY } from '../data/glossary';
+import { GATED_CODE } from '../data/credits';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const materials = (await import('../../public/data/materials.json')).default as {
   sources: Record<string, { citation: string; url: string; doi?: string }>;
@@ -133,7 +134,8 @@ cd ../web && npm ci && npm run build                   # the site, into docs/</c
     <pre><code>cd sim
 uv run --with scikit-image python -m katabasis.lab gated --name khafre --site giza --centre 0,0 --twin 101
 uv run python -m katabasis.export                      # the run appears in the lab, under the satellite</code></pre>
-    <p class="sub"><span class="mono">gated</span> runs the stricter gated reconstruction’s own code, unchanged but for its
+    <p class="sub"><span class="mono">gated</span> runs the stricter gated reconstruction, the public
+      <a href={GATED_CODE.url}>{GATED_CODE.name}</a> ({GATED_CODE.version}, commit {GATED_CODE.commit}), unchanged but for its
       input paths, along east–west lines <span class="mono">--step</span> metres apart across a square of the site
       (<span class="mono">--half-ew</span>, <span class="mono">--half-ns</span>), each line placed through the product’s RPC
       over the site’s surface (<span class="mono">--lines ns</span> lays them north–south). Its fit scores are hung below
@@ -151,7 +153,7 @@ uv run python -m katabasis.export                      # the run appears in the 
       (from <span class="mono">sim/</span>). {dirty > 0 && <>A commit marked <span class="mono">+</span> had uncommitted
       changes to the lab’s code when the run saved ({dirty} of {runIndex.length}); rerunning at that commit may differ in
       small ways. </>}Runs that read a real ICEYE product need it on disk, and the {gatedRuns} runs of the gated
-      reconstruction need its code, whose hash each of those records carries.</p>
+      reconstruction need <a href={GATED_CODE.url}>its public package</a>, whose hash each of those records carries.</p>
     <table class="data runs">
       <thead><tr><th>Run</th><th>What it does, and the command that repeats it</th><th>Date</th><th>Commit</th><th class="num">Took</th></tr></thead>
       <tbody>

@@ -26,6 +26,7 @@ import labKhafre from '../../public/data/runs/lab_khafre.json';
 import survives from '../../public/data/runs/p2_21_what_survives.json';
 import bench from '../../public/data/runs/p2_20_bench_gated.json';
 import Boundary from '../components/Boundary.astro';
+import { GATED_CODE } from '../data/credits';
 import readers from '../../public/data/runs/p2_23_every_reader.json';
 import shaking from '../../public/data/runs/p2_22_one_shaking.json';
 import passive from '../../public/data/runs/p1_04_ambient.json';
@@ -352,6 +353,12 @@ const lk = labKhafre.results as unknown as LRes;
       below the surface; it shows that these methods, as tested, do not. The measured record from the real acquisitions
       (<a href={`${base}/archive/`}>the first investigation</a>) agrees, and several of its readings, and of ours, are
       corrected below.
+    </p>
+    <p class="note credit">
+      The stricter, gated reconstruction throughout is the public <a href={GATED_CODE.url}>{GATED_CODE.name}</a>
+      ({GATED_CODE.version}, commit {GATED_CODE.commit}), run unchanged: its source and profile hash to
+      {' '}<span class="mono">{GATED_CODE.module_sha256.slice(0, 12)}…</span> and <span class="mono">{GATED_CODE.profile_sha256.slice(0, 12)}…</span>,
+      as every run’s record states.
     </p>
   </section>
 
@@ -827,7 +834,7 @@ const lk = labKhafre.results as unknown as LRes;
       the two components of its shifts trace an ellipse at one of ten modes, fitted well, with a narrow semi-axis of at least
       {' '}{gg.minor_min_px} px and at least a tenth as wide as it is long; ten windows in a row must agree on the mode, and four
       or five neighbouring positions must pass together. The depth focus runs only where all of that passed. We ran such a
-      gated pipeline, unchanged, twice. The first run (P2-13) used loops the lab drew up Khafre’s faces, from
+      gated pipeline, the public <a href={GATED_CODE.url}>{GATED_CODE.name}</a> ({GATED_CODE.version}), unchanged, twice. The first run (P2-13) used loops the lab drew up Khafre’s faces, from
       {' '}{gates.heights_m[0]} to {gates.heights_m[gates.heights_m.length - 1]} m, because we misread the reconstruction’s
       “70.5 m” as a height above the base; its own lines follow the base, 70.5 m above sea level, and the second run (P2-14,
       below) uses them. Both run the real 2022 image beside two motionless twins of it (its brightness and spectrum, fresh

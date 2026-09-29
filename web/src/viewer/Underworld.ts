@@ -448,6 +448,7 @@ export class Underworld {
         </div>`
             : ''
         }
+        ${m.code ? `<p class="uw-run">code <a href="${esc(m.code.url)}" target="_blank" rel="noopener">${esc(m.code.name)}</a> · ${esc(m.code.version)}, unchanged</p>` : ''}
         ${c.run ? `<p class="uw-run">run ${esc(c.run)}</p>` : ''}`
           : ''
       }
@@ -814,6 +815,7 @@ export class Underworld {
 
   // ---------- DOM ----------
 
+  /** The sites as a drop-down, benches and real sites apart; under it, one line on the current site. */
   private renderSiteList() {
     const list = this.$('[data-uw=sites]');
     if (!list) return;
@@ -821,40 +823,28 @@ export class Underworld {
       ['Test benches', this.sites.filter((s) => s.kind === 'test')],
       ['Real sites', this.sites.filter((s) => s.kind === 'real')],
     ];
-    let n = 0;
-    list.innerHTML = groups
+    list.innerHTML = `<div class="uw-select"><select data-uw="site-select" aria-label="Site">${groups
       .filter(([, g]) => g.length)
-      .map(
-        ([label, g]) => `
-        <div class="uw-group">${label}</div>
-        ${g
-          .map((s) => {
-            n++;
-            const ins = s.instruments;
-            const runs = ins
-              ? [
-                  ins.geophones ? `<span class="uw-dot recovered" title="${ins.geophones} from geophones"></span>` : '',
-                  ins.satellite ? `<span class="uw-dot radar" title="${ins.satellite} from the satellite"></span>` : '',
-                ].join('')
-              : s.volumes
-                ? `<span class="uw-site-runs" title="pictures">${s.volumes}</span>`
-                : '';
-            return `<button class="uw-site" data-site="${s.id}" type="button">
-              <span class="uw-site-key">${n}</span>
-              <span class="uw-site-text"><span class="uw-site-name">${esc(s.name)}${runs}</span>
-              <span class="uw-site-sub">${esc(firstSentence(s.summary))}</span></span>
-            </button>`;
-          })
-          .join('')}`,
-      )
-      .join('');
-    list.querySelectorAll<HTMLButtonElement>('[data-site]').forEach((b) =>
-      b.addEventListener('click', () => void this.show(b.dataset.site!)),
-    );
+      .map(([label, g]) => `<optgroup label="${label}">${g.map((s) => `<option value="${s.id}">${esc(s.name)}</option>`).join('')}</optgroup>`)
+      .join('')}</select></div>
+      <p class="uw-site-meta" data-uw="site-meta"></p>`;
+    list.querySelector<HTMLSelectElement>('select')!.addEventListener('change', (e) => void this.show((e.target as HTMLSelectElement).value));
   }
 
   private markCurrent() {
-    this.$$<HTMLButtonElement>('[data-site]').forEach((b) => b.setAttribute('aria-current', String(b.dataset.site === this.current)));
+    const sel = this.$<HTMLSelectElement>('[data-uw=site-select]');
+    if (sel) sel.value = this.current;
+    const meta = this.$('[data-uw=site-meta]');
+    const s = this.sites.find((x) => x.id === this.current);
+    if (!meta || !s) return;
+    const ins = s.instruments;
+    const dots = ins
+      ? [
+          ins.geophones ? `<span class="uw-inline"><span class="uw-dot recovered"></span>geophones</span>` : '',
+          ins.satellite ? `<span class="uw-inline"><span class="uw-dot radar"></span>satellite</span>` : '',
+        ].join(' ')
+      : '';
+    meta.innerHTML = `${esc(firstSentence(s.summary))}.${dots ? ` <span class="uw-site-ins">${dots}</span>` : ''}`;
   }
 
   private renderSiteInfo(s: SiteScene) {

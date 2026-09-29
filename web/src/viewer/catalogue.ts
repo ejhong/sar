@@ -1,4 +1,5 @@
 import type { SiteScene, VolumeInfo } from './data/types';
+import { GATED_CODE } from '../data/credits';
 
 /**
  * What the lab offers on a site, arranged as it works: an instrument (geophones on the ground, or the satellite), the
@@ -51,6 +52,8 @@ export interface Method {
   line: string;
   /** Why its picture looks the way it does. */
   why?: string;
+  /** Code this lab runs but did not write, credited where its pictures are shown. */
+  code?: { name: string; url: string; version: string };
   choices: Choice[];
 }
 
@@ -278,7 +281,8 @@ export function satelliteMethods(s: SiteScene): Method[] {
       name: 'Gated reconstruction',
       dot: 'radar',
       quantity: 'fit score',
-      line: 'a stricter version with selection gates and a depth fit, its own code run unchanged',
+      line: 'a stricter version with selection gates and a depth fit, its public code run unchanged',
+      code: { name: GATED_CODE.name, url: GATED_CODE.url, version: GATED_CODE.version },
       why:
         r?.kind === 'bench'
           ? 'A column wherever a position passed the gates, banded where the fit’s phase turns whole times across a window. The speckle decides where: the chamber’s imprint, even made a hundred million times stronger, moves the columns no nearer to it than random noise of its size does.'

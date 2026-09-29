@@ -8,6 +8,7 @@ import LineChart from '../components/LineChart.astro';
 import SizeLadder from '../components/SizeLadder.astro';
 import Sci from '../components/Sci.astro';
 import Boundary from '../components/Boundary.astro';
+import { GATED_CODE } from '../data/credits';
 import every from '../../public/data/runs/p2_23_every_reader.json';
 import routes from '../../public/data/runs/p2_11_every_way_in.json';
 import chain from '../../public/data/runs/p2_07_whole_chain.json';
@@ -105,6 +106,12 @@ const millions = (x: number) => (x >= 1e6 ? `${Math.round(x / 1e6).toLocaleStrin
 // what reaches below the surface, and what the seasons do (P2-11)
 const bands = (routes as unknown as { A_penetration: { bands: { id: string; sand_penetration_m: number }[] } }).A_penetration.bands;
 const sand = (id: string) => bands.find((b) => b.id === id)!.sand_penetration_m;
+// P2-24, once run: does the gated reconstruction read the chamber where the reflectors' data hold it?
+type G24 = { results: Record<string, { p1?: { positions_changed: number; positions_changed_near: number } }>; near_share: number };
+const g24 = Object.values(import.meta.glob('../../public/data/runs/p2_24_gated_on_the_shaking.json', { eager: true, import: 'default' }))[0] as G24 | undefined;
+const g24tag = g24 ? Object.keys(g24.results).find((k) => k.endsWith('_with')) : undefined;
+const g24w = g24tag ? g24!.results[g24tag].p1 : undefined;
+const gatedReads = g24w ? g24w.positions_changed_near >= 5 && g24w.positions_changed_near > 3 * g24!.near_share * g24w.positions_changed : undefined;
 const seasons = (routes as unknown as { C_between_passes: { rooms: { bench: { heat: { breathing_over_imprint: number } } } } }).C_between_passes.rooms.bench.heat
   .breathing_over_imprint;
 
@@ -118,8 +125,8 @@ const stops: TourStop[] = [
 
 const explore = [
   { site: 'bench-void', name: 'One chamber', text: 'The test ground: a 6 m room, 15 m down in limestone. Every instrument on this site was scored against it.' },
-  { site: 'bench-shafts', name: 'A field of shaft tombs', text: 'Twelve burial shafts, 5 to 30 m deep: the scale of Giza’s cemeteries, where the method, run on the real image, found none of the hundreds surveyed.' },
-  { site: 'bench-khafre-claim', name: 'The claimed underworld', text: 'Eight shafts to 640 m and a structure near 1,220 m, placed exactly as announced in 2025, beside what physics lets anything see.' },
+  { site: 'bench-shafts', name: 'Shaft tombs', text: 'Twelve burial shafts, 5 to 30 m deep: the scale of Giza’s cemeteries, where the method, run on the real image, found none of the hundreds surveyed.' },
+  { site: 'bench-khafre-claim', name: 'Khafre claim', text: 'Eight shafts to 640 m and a structure near 1,220 m, placed exactly as announced in 2025, beside what physics lets anything see.' },
   { site: 'giza', name: 'Giza plateau', text: 'The real ground: Copernicus terrain, the three pyramids, and the chambers actually surveyed inside and beneath them.' },
 ];
 ---
@@ -147,6 +154,7 @@ const explore = [
             <li>Over a known room it draws the same picture with the room and without it; so does the stricter version.</li>
             <li>Its patterns appear in motionless copies of an image and over open ground.</li>
             {survivesPass === false && <li>What it draws across Khafre changes from one satellite pass to the next.</li>}
+            {gatedReads === false && <li>Where the data demonstrably hold a chamber, shaken hard enough for reflectors to find it, the stricter version still does not read it.</li>}
           </ul>
         </div>
         <div class="verdict">
@@ -453,7 +461,7 @@ const explore = [
         </details>
         <details class="q">
           <summary>What about stricter versions that filter out the noise?</summary>
-          <p>Later versions keep only readings that pass a row of tests. We ran one unchanged. Motionless copies of the image pass its tests too; across the pyramids it passes about one position in {oneIn}, as over open plateau; over our known room its picture changes no more with the room than with random noise of the room’s size{survivesPass === undefined ? '.' : `; and across Khafre what it draws, and at what depth, ${survivesPass ? 'survives' : 'does not survive'} a change from one satellite pass to another.`} <a href={`${base}/satellite/#gates`}>The gates, measured</a>.</p>
+          <p>Later versions keep only readings that pass a row of tests. We ran the public one, <a href={GATED_CODE.url}>{GATED_CODE.name}</a> ({GATED_CODE.version}), unchanged. Motionless copies of the image pass its tests too; across the pyramids it passes about one position in {oneIn}, as over open plateau; over our known room its picture changes no more with the room than with random noise of the room’s size{survivesPass === undefined ? '.' : `; and across Khafre what it draws, and at what depth, ${survivesPass ? 'survives' : 'does not survive'} a change from one satellite pass to another.`} <a href={`${base}/satellite/#gates`}>The gates, measured</a>.</p>
         </details>
         <details class="q">
           <summary>Hasn’t vibration been measured from space?</summary>
