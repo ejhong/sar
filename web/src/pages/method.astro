@@ -125,9 +125,11 @@ uv run python -m katabasis.export                      # the run appears in the 
     <p class="sub"><span class="mono">gated</span> runs the stricter gated reconstruction’s own code, unchanged but for its
       input paths, along east–west lines <span class="mono">--step</span> metres apart across a square of the site
       (<span class="mono">--half-ew</span>, <span class="mono">--half-ns</span>), each line placed through the product’s RPC
-      over the site’s surface. Its fit scores are hung below the surface into a volume, unsmoothed and empty where nothing
-      passed; <span class="mono">--twin SEED</span> runs the same raster on a motionless copy of the image, the control
-      every picture needs. Each run writes <span class="mono">sim/results/lab_&lt;name&gt;/</span>: its record (date,
+      over the site’s surface (<span class="mono">--lines ns</span> lays them north–south). Its fit scores are hung below
+      the surface into a volume, unsmoothed and empty where nothing passed; <span class="mono">--twin SEED</span> runs the
+      same raster on a motionless copy of the image, the control every picture needs, and <span class="mono">--product</span>
+      takes another pass, or a synthetic product. In the lab, every place a method was run shows at once, and the pass and
+      the lines become choices: things a real feature should survive. Each run writes <span class="mono">sim/results/lab_&lt;name&gt;/</span>: its record (date,
       commit, the method’s source hash, every parameter) and its volumes, which the export adds to the lab with the record
       attached. More methods will join it as they are built.</p>
   </section>

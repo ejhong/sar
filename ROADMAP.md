@@ -161,7 +161,11 @@ The lab does it by simulation over ground whose contents are known, in two phase
   stage names the picture in one line, the legend shows only what is drawn, colour follows the instrument (verdigris for
   the geophones, cinnabar for the satellite, whichever method), and the badge says what the voxels hold. Old links
   (`recovered`, `waves`) still open. The satellite's pass, the draped image and the image's virtual sensors
-  (`scene/Radar.ts`) sit under the satellite; the waves sit under the geophones.
+  (`scene/Radar.ts`) sit under the satellite; the waves sit under the geophones. On a real site every place a method
+  was run shows at once (the owner's plateau "underworld"), made the same way (method, pass, lines, input, support),
+  each labelled on the stage and outlined on the ground so that ground outside every outline reads as not yet
+  computed; a label or a place chip flies there. The pass and the way the lines are laid are choices wherever they
+  were run: things a real feature should survive (P2-21 measures whether it does).
 - **The lab's command** (`python -m katabasis.lab gated`, `sim/katabasis/lab.py`): the gated reconstruction, unchanged,
   over any area of a real product (placed through its RPC) or a synthetic one (through the mapping its file records),
   with a motionless twin; each run writes `sim/results/lab_<name>/` and the export adds it to the lab. The method page's
