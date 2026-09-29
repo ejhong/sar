@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { areaOf, defaultChoice, dimensions, findChoice, geophoneMethods, satelliteMethods, step } from './catalogue';
+import { areaOf, defaultChoice, dimensions, findChoice, geophoneMethods, satelliteMethods, step, viewSet } from './catalogue';
 import type { SiteScene } from './data/types';
 
 const DATA = join(__dirname, '../../public/data/sites');
@@ -53,12 +53,13 @@ describe('the lab’s catalogue', () => {
     expect([four.input, four.support]).toEqual(['Motionless copy', 4]);
     const paper = sat.find((m) => m.key === 'paper')!;
     expect(paper.choices.find((c) => c.control)?.area).toBe('Open plateau');
-    // a lab run's area offers only what was run there
-    const khafre = gated.choices.find((c) => c.area === 'Khafre');
-    if (khafre) {
-      const inputs = dimensions(gated, khafre).find((d) => d.key === 'input')?.values ?? [];
-      expect(inputs).not.toContain('Open plateau');
-    }
+    // open plateau is a place of its own, a control fed the real image; every place is drawn with its like
+    const plateau = gated.choices.find((c) => c.area === 'Open plateau')!;
+    expect([plateau.input, plateau.control]).toEqual(['Real image', true]);
+    expect(dimensions(gated).find((d) => d.key === 'input')?.values).not.toContain('Open plateau');
+    const together = viewSet(gated, first).map((c) => c.area);
+    expect(together).toContain('Khufu');
+    expect(together).toContain('Open plateau');
   });
 
   it('shows the claimed underworld’s picture under the satellite, not the geophones', () => {

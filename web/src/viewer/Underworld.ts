@@ -411,7 +411,7 @@ export class Underworld {
   private methodHTML(m: Method, sel?: { method: Method; choice: Choice }): string {
     const c = sel?.method.key === m.key ? sel.choice : undefined;
     const chips = c
-      ? dimensions(m, c)
+      ? dimensions(m)
           .map(
             (d) =>
               `<div class="uw-chips" role="group" aria-label="${DIM_LABEL[d.key]}">${d.key === 'area' ? '<span class="uw-chips-label">go to</span><button type="button" class="uw-chip" data-uw="all-places">the whole site</button>' : ''}${d.values
@@ -458,8 +458,8 @@ export class Underworld {
   private passHTML(s: SiteScene): string {
     const r = s.radar;
     if (!r)
-      return `<p class="uw-ctx-note">No pass is drawn over this bench: its picture comes from a real image of Giza, placed where the
-        claim places what it shows.</p>`;
+      return `<p class="uw-ctx-note">No pass is drawn over this bench: its picture is the paper-style pipeline’s, from the real 2025
+        image of Khafre, placed where the claim places what it shows and drawn to the claim’s depths.</p>`;
     const a = r.acquisition;
     if (r.sensors) {
       const sv = r.sensors;

@@ -190,7 +190,9 @@ export function satelliteMethods(s: SiteScene): Method[] {
       dot: 'radar',
       quantity: 'focused power',
       line: 'as the 2022 paper describes it: sub-aperture pairs registered and focused, no selection gates',
-      why: real
+      why: !r
+        ? 'Here the method’s depth axis is drawn whole, relabelled so that it repeats where the claim puts the bottoms of its shafts. Its pillars run the full depth, where the surface reading is noisiest, and bright blocks sit at each repeat, where every steering phase coincides: that is how the published pictures get their shafts and their deep structure. Over the Giza plateau the same kind of volume is cut at the block’s floor, well above the first repeat, and shares one brightness scale with open ground, so neither the repeat blocks nor one patch’s own stretch appear there.'
+        : real
         ? 'Pillars: a pixel whose registration wanders is bright at every depth. Bands: along a pillar the power rises and falls once per step of the axis’s resolution. Blocks: at the surface and at each repeat depth every steering phase coincides. Open plateau draws the same shapes.'
         : 'Pillars where a pixel’s registration wanders, bands at each step of the axis’s resolution, blocks where every steering phase coincides; none of it depends on what is below.',
       choices: paper.map((c) =>
@@ -243,8 +245,8 @@ export function satelliteMethods(s: SiteScene): Method[] {
         id: v.id,
         kind: 'volume',
         area: areaOf(lab.title) ?? cap(lab.name),
-        pass: `${lab.pass ?? '2022'} pass`,
-        lines: lab.lines === 'ns' ? 'North–south lines' : 'East–west lines',
+        pass: lab.pass === 'both' ? 'Both passes agree' : `${lab.pass ?? '2022'} pass`,
+        lines: lab.lines === 'both' ? 'Both layouts agree' : lab.lines === 'ns' ? 'North–south lines' : 'East–west lines',
         input,
         control,
         support: v.support,
@@ -307,16 +309,15 @@ export function defaultChoice(methods: Method[]): Choice | undefined {
   return preferred?.choices.find((c) => !c.control) ?? preferred?.choices[0];
 }
 
-/** The dimensions a method's choices vary over, each with its values in order of first appearance; given the current
- * choice, what went in and the support are those run in its area. */
+/** The dimensions a method's choices vary over, each with its values in order of first appearance. Every value is
+ * offered wherever it was run: choosing one the current place lacks moves to the places that have it. */
 export type Dimension = 'area' | 'pass' | 'lines' | 'input' | 'support';
 
-export function dimensions(m: Method, current?: Choice): { key: Dimension; values: (string | number)[] }[] {
+export function dimensions(m: Method): { key: Dimension; values: (string | number)[] }[] {
   const dims: { key: Dimension; values: (string | number)[] }[] = [];
   for (const key of ['area', 'pass', 'lines', 'input', 'support'] as const) {
     const values: (string | number)[] = [];
-    const pool = key === 'area' || !current ? m.choices : m.choices.filter((c) => c.area === current.area);
-    for (const c of pool) {
+    for (const c of m.choices) {
       const v = c[key];
       if (v !== undefined && !values.includes(v)) values.push(v);
     }
