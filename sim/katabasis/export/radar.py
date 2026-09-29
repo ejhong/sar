@@ -66,10 +66,12 @@ def _acquisition(g) -> dict:
             'satellite': g.source['satellite'], 'date': g.source['collection_start'][:10]}
 
 
-def _merge_volumes(d: Path, new: list[dict]):
+def _merge_volumes(d: Path, new: list[dict], drop=None):
+    """Replace a site's radar volumes with `new`; with `drop`, only the existing volumes it selects."""
     path = d / 'volumes.json'
     vols = json.loads(path.read_text()) if path.exists() else []
-    vols = [v for v in vols if v.get('status') != 'radar'] + new
+    drop = drop or (lambda v: v.get('status') == 'radar')
+    vols = [v for v in vols if not drop(v)] + new
     path.write_text(json.dumps(vols, indent=1))
 
 
@@ -249,5 +251,61 @@ def export_real(out: Path = DATA) -> dict | None:
     return {'site': 'giza', 'volumes': [x['id'] for x in vols]}
 
 
+def export_khufu_gated(out: Path = DATA) -> dict | None:
+    """The gated reconstruction across the Great Pyramid (P2-16): its fit scores hung below the surface on a 3 m grid, for
+    the real 2022 image and a motionless copy, at supports one and four. Unsmoothed, empty where nothing passed, cut at
+    the site's floor; drawn in gold beside the paper-style pipeline's cinnabar."""
+    rid = 'p2_16_khufu_volume'
+    vpath = RESULTS / rid / 'volumes.npz'
+    rj = out / 'sites' / 'giza' / 'radar.json'
+    if not (vpath.exists() and rj.exists()):
+        return None
+    from ..compose import load_site
+    from .sites import scene as site_scene
+    s = load(rid)
+    sc = site_scene(load_site('giza'))
+    v = np.load(vpath)
+    h = float(v['step'])
+    x, y, z = v['x'], v['y'], v['z']
+    keep = z >= sc['extent']['z'][0] + h / 2
+    d = out / 'sites' / 'giza'
+    run = f"{rid} · {s['manifest']['date']} · {s['manifest']['commit']}"
+    vols, entries = [], []
+    for case, name in (('real', 'the real image'), ('twin101', 'a motionless copy')):
+        for P in s['manifest']['params']['supports']:
+            V = v[f'{case}_p{P}'].astype(np.float32)[:, :, keep]
+            u8 = np.where(np.isfinite(V), 1 + np.round(254 * np.clip(np.nan_to_num(V, nan=0.0), 0, 1)), 0).astype(np.uint8)
+            short = 'real' if case == 'real' else 'twin'
+            vid = f'radar-khufu-gated-{short}-p{P}'
+            vols.append(_write_volume(d, vid, V, u8, [float(x[0]), float(y[0])], h, {
+                'label': f'Satellite · the gated reconstruction at Khufu, {name}, support {P}',
+                'method': ("The 2022 ICEYE pass through the gated reconstruction's own code, unchanged (317 pairs; ellipse, "
+                           f"Track10 and support-{P} gates), along 95 lines across the Great Pyramid 3 m apart"),
+                'quantity': 'conditional adjusted R2 at each nominal depth below the surface', 'units': '0 to 1',
+                'range': [0.0, 1.0], 'run': run, 'tint': 'gated',
+                'caption': 'fit scores, unsmoothed; empty where nothing passed'}, ztop=float(z[keep][0])))
+            entries.append({'id': vid, 'case': short, 'support': int(P)})
+    _merge_volumes(d, vols, drop=lambda q: q['id'].startswith('radar-khufu-gated'))
+    radar = json.loads(rj.read_text())
+    kh = next(t for t in sc['structures'] if t['id'] == 'khufu')['shape']
+    st = s['stats']
+    radar['gated'] = {
+        'title': 'What the gated reconstruction computes at Khufu',
+        'date': '2022',
+        'volumes': entries,
+        'focus': [kh['centre'][0], kh['centre'][1], kh['centre'][2] + 0.2 * kh['height']],
+        'radius_m': 620.0,
+        'chambers': {'real': [st['real_p1']['mean_score_in_chambers'], st['real_p1']['mean_score_same_depths_elsewhere']],
+                     'twin': [st['twin101_p1']['mean_score_in_chambers'], st['twin101_p1']['mean_score_same_depths_elsewhere']]},
+        'note': ("The stricter reconstruction's own code, unchanged, run on the 2022 pass along 95 lines across the pyramid, "
+                 "3 m apart. Each voxel is its fit score at that nominal depth below the surface point above it: what the "
+                 "pipeline computes, not a detection and not a validated depth. Beside it, the same calculation on a "
+                 "motionless copy of the image. The satellite drawn above is the 2025 pass."),
+        'run': run,
+    }
+    rj.write_text(json.dumps(radar, separators=(',', ':')))
+    return {'site': 'giza', 'volumes': [e['id'] for e in entries]}
+
+
 def export_radar(out: Path = DATA) -> list[dict]:
-    return [r for r in (export_bench(out), export_claim(out), export_real(out)) if r]
+    return [r for r in (export_bench(out), export_claim(out), export_real(out), export_khufu_gated(out)) if r]
