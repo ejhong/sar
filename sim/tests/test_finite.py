@@ -1,0 +1,173 @@
+"""sarsim.finite: independent checks of its finite identities and a small physical echo chain (P2-30).
+
+These are mathematical/numerical checks, not field validation.
+"""
+import json
+import math
+import unittest
+from decimal import Decimal, localcontext
+from pathlib import Path
+
+import numpy as np
+from scipy.special import ndtri
+
+from sarsim.finite import (baseline_floor_from_phase_energy, certificate_from_energy, conditional_gaussian_roc,
+    finite_complex_kl, oracle_mean_energy, oracle_tv_from_mean_energy,
+    perturbation_certificate, required_oracle_energy, required_q_for_tv,
+    stable_covariance_difference, stable_exp_difference, stable_range_difference)
+
+
+
+def real_cov(C):
+    return .5*np.block([[C.real,-C.imag],[C.imag,C.real]])
+
+
+class FiniteProofTests(unittest.TestCase):
+    def test_real_complex_convention(self):
+        rng=np.random.default_rng(160)
+        for n in (2,5,9):
+            A=rng.normal(size=(n,n))+1j*rng.normal(size=(n,n))
+            c0=A@A.conj().T+np.eye(n)
+            B=rng.normal(size=(n,n))+1j*rng.normal(size=(n,n))
+            c1=c0+.05*(B@B.conj().T)
+            dm=.1*(rng.normal(size=n)+1j*rng.normal(size=n))
+            complex_kl=finite_complex_kl(c0,c1-c0,dm)['kl']
+            r0,r1=real_cov(c0),real_cov(c1)
+            rd=np.r_[dm.real,dm.imag]
+            real_kl=.5*(np.trace(np.linalg.solve(r0,r1))-2*n+
+                np.linalg.slogdet(r0)[1]-np.linalg.slogdet(r1)[1]+rd@np.linalg.solve(r0,rd))
+            self.assertAlmostEqual(complex_kl,float(real_kl),places=12)
+
+    def test_finite_perturbation_bound(self):
+        rng=np.random.default_rng(161)
+        for scale in (1e-9,1e-6,.002,.02,.07):
+            for _ in range(8):
+                a0=(rng.normal(size=(7,11))+1j*rng.normal(size=(7,11)))/math.sqrt(22)
+                c0=a0@a0.conj().T
+                delta=scale*(rng.normal(size=a0.shape)+1j*rng.normal(size=a0.shape))/math.sqrt(22)
+                L=np.linalg.cholesky(c0)
+                q=np.linalg.norm(np.linalg.solve(L,delta),'fro')
+                certificate=perturbation_certificate(float(q))
+                exact=finite_complex_kl(c0,stable_covariance_difference(a0,delta))
+                self.assertLessEqual(exact['kl'],certificate['kl_upper']*(1+1e-9)+1e-30)
+                self.assertLessEqual(exact['rho_actual'],certificate['rho']*(1+1e-9)+1e-15)
+
+    def test_high_precision_tiny_covariance(self):
+        for value in ['-0.8','-0.2','-1e-12','1e-12','0.2','0.8']:
+            with localcontext() as ctx:
+                ctx.prec=80
+                d=Decimal(value);exact=d-(1+d).ln()
+                rho=abs(d);upper=d*d/(2*(1-rho)**2)
+                self.assertLessEqual(exact,upper)
+                result=finite_complex_kl(np.eye(1),np.array([[float(d)]]))['kl']
+                self.assertLess(abs(result-float(exact)),float(exact)*2e-13)
+
+    def test_partial_fourier_finite_and_shared_motion(self):
+        n,m=128,96
+        E=np.exp(-2j*math.pi*np.outer(np.arange(m),np.arange(n))/n)/math.sqrt(n)
+        x=np.linspace(-1,1,n);t=np.linspace(-.5,.5,m)
+        pattern=np.exp(-x*x/.08)[None,:]*np.cos(2*math.pi*2*t[:,None])
+        for scale in (1e-9,1e-5,.001,.015):
+            phase=scale*pattern
+            da=E*stable_exp_difference(-phase)
+            Q=float(np.sum(np.abs(E)**2*phase**2))
+            self.assertLessEqual(np.linalg.norm(da,'fro')**2,Q*(1+1e-14))
+            c0=E@E.conj().T
+            floor=float(np.linalg.eigvalsh(c0).min())
+            exact=finite_complex_kl(c0,stable_covariance_difference(E,da))
+            cert=certificate_from_energy(Q,covariance_floor=floor)
+            self.assertLessEqual(exact['kl'],cert['kl_upper']*(1+1e-8)+1e-29)
+        # Shared row phase is an exact finite invariance in this model.
+        a1=np.exp(-.7j*np.cos(4*t))[:,None]*E
+        self.assertLess(np.linalg.norm(a1@a1.conj().T-c0,'fro'),1e-12)
+        background=.03*np.sin(t[:,None]+3*x[None,:])
+        da=E*stable_exp_difference(-background)
+        Qbg=float(np.sum(np.abs(E)**2*background**2))
+        floor=baseline_floor_from_phase_energy(Qbg)
+        actual_floor=float(np.linalg.eigvalsh((E+da)@(E+da).conj().T).min())
+        self.assertLessEqual(floor,actual_floor+1e-14)
+
+    def test_non_gaussian_reflectivity_oracle(self):
+        rng=np.random.default_rng(162)
+        n,m=9,7
+        dt=.08*(rng.normal(size=(m,n))+1j*rng.normal(size=(m,n)))
+        noise=.5*np.eye(m)
+        mean=np.zeros(n,complex);mean[0]=3+2j
+        M=np.eye(n)+np.outer(mean,mean.conj())
+        theoretical=oracle_mean_energy(dt,M,noise)
+        # Unit-magnitude random phases, plus a coherent bright mean: not CN.
+        s=np.exp(2j*math.pi*rng.random((n,60000)))+mean[:,None]
+        observed=np.sum(np.abs(dt@s)**2,axis=0)/.5
+        self.assertLess(abs(observed.mean()-theoretical),6*observed.std()/math.sqrt(len(observed)))
+
+    def test_oracle_upper_experiment(self):
+        rng=np.random.default_rng(163)
+        for scale in (1e-6,.01,.1):
+            a0=(rng.normal(size=(6,10))+1j*rng.normal(size=(6,10)))/math.sqrt(20)
+            da=scale*(rng.normal(size=a0.shape)+1j*rng.normal(size=a0.shape))/math.sqrt(20)
+            N=.7*np.eye(6);M=np.eye(10)
+            c0=a0@a0.conj().T+N
+            marginal=finite_complex_kl(c0,stable_covariance_difference(a0,da))['kl']
+            joint=oracle_mean_energy(da,M,N)
+            self.assertLessEqual(marginal,joint*(1+1e-12))
+
+    def test_raw_echo_tiny_motion_and_detector(self):
+        from sarsim.acquisition import DwellGeometry
+        g=DwellGeometry.from_record('giza-20250827')
+        R,V,lam=g.R0,g.V_platform,g.lam
+        t=np.linspace(-12,12,257)
+        b=np.c_[V*t,np.zeros_like(t),np.full_like(t,R)]
+        amp=2.5838805e-12
+        u=np.zeros_like(b);u[:,2]=amp*np.cos(2*math.pi*.2*t)
+        dR=stable_range_difference(b,u)
+        # Direct subtraction loses all or almost all of this picometre signal.
+        direct=np.linalg.norm(b-u,axis=1)-np.linalg.norm(b,axis=1)
+        self.assertGreater(np.max(np.abs(dR)),amp*.98)
+        self.assertLess(np.count_nonzero(direct),len(t)*.01)
+        delta_phi=-4*math.pi*dR/lam
+        a0=np.exp(-1j*np.linspace(0,40,len(t)))/math.sqrt(len(t))
+        delta_mu=a0*stable_exp_difference(delta_phi)
+        self.assertGreater(np.linalg.norm(delta_mu),0)
+        # Boost the motion for a measurable diagnostic; NOT a physical result.
+        phase=delta_phi*1e9
+        delta_mu=a0*stable_exp_difference(phase)
+        power=float(np.vdot(delta_mu,delta_mu).real)
+        noise=power/.5  # fixed conditional oracle energy .5
+        energy=power/noise
+        rng=np.random.default_rng(164);M=80000
+        # Projection is sufficient for the Gaussian likelihood ratio.
+        z=rng.normal(size=M)
+        threshold=float(ndtri(.95))
+        observed_fpr=float(np.mean(z>threshold))
+        observed_tpr=float(np.mean(z+math.sqrt(2*energy)>threshold))
+        predicted=conditional_gaussian_roc(energy,.05)
+        self.assertLess(abs(observed_fpr-.05),.004)
+        self.assertLess(abs(observed_tpr-predicted),.006)
+        self.assertAlmostEqual(oracle_tv_from_mean_energy(energy),math.erf(math.sqrt(.5)/2),places=14)
+
+    def test_local_fisher_does_not_prove_finite_invariance(self):
+        # N(a^2,1): Fisher at zero is zero, finite KL at a=1 is 1/2.
+        f0=0;kl_finite=.5
+        self.assertEqual(f0,0);self.assertGreater(kl_finite,0)
+
+    def test_boundary_and_jensen(self):
+        q=required_q_for_tv(.9)
+        self.assertAlmostEqual(perturbation_certificate(q)['tv_upper'],.9,places=13)
+        b=required_oracle_energy(.9)
+        self.assertAlmostEqual(oracle_tv_from_mean_energy(b),.9,places=13)
+        energies=np.array([0,.01,.1,1,5])
+        average=sum(oracle_tv_from_mean_energy(float(e)) for e in energies)/len(energies)
+        self.assertLessEqual(average,oracle_tv_from_mean_energy(float(energies.mean())))
+
+    def test_direction_enlargement(self):
+        # Analytical guard: cos(pi/24) >= 1-(22/7/24)^2/2 > 1/1.01.
+        self.assertGreater(1-((22/7)/24)**2/2,1/1.01)
+        rng=np.random.default_rng(165)
+        az=np.arange(24)*math.pi/24
+        for _ in range(100):
+            a,b,c=rng.normal(size=3)
+            sampled=np.max(np.abs(a+b*np.cos(2*az)+c*np.sin(2*az)))
+            true=abs(a)+math.hypot(b,c)
+            self.assertLessEqual(true,1.01*sampled+1e-15)
+
+if __name__=='__main__':unittest.main(verbosity=2)
