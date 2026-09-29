@@ -486,11 +486,12 @@ def dynamic_information(g, maps_path, p226):
     """Per P2-26 case, per frequency and direction, per unit incident vertical velocity amplitude: the tapered map within
     39 m exactly on the image's pixels (A and the largest over phase, A + |B|), and the scattered wave beyond FAR_FROM by
     the bound 4 N <Phi^2> (its energy per metre of radius, the far-field cross-width, the largest over the outer annuli,
-    carried unattenuated to the scene's edge). Combined per component by the triangle inequality on sqrt F."""
+    carried unattenuated to the farthest corner of the scene). Combined per component by the triangle inequality on
+    sqrt F."""
     maps = np.load(maps_path)
     src = json.loads((SITES / 'acquisitions' / 'giza-20250827.json').read_text())['source']
     rows_, cols_ = src['shape']
-    scene_radius = 0.5 * min(rows_ * g.dx, cols_ * g.dr / np.sin(g.theta))
+    scene_radius = 0.5 * float(np.hypot(rows_ * g.dx, cols_ * g.dr / np.sin(g.theta)))   # covers the corners
     k0 = 4 * np.pi / g.lam
     axes = pixel_axes(g)
     out = {}
