@@ -47,8 +47,12 @@ Since then (still 28 September):
   desert, 9 with 2 mm/s vibrations planted (none at a planted frequency). Its pairs' images are 6 s slices sharing
   98.75% of their spectrum, its modes stand for 1.07 to 10.7 Hz where such an image keeps at most 4.7%, a vibration's
   trace is at least 3,000 times as long as it is wide where the gate accepts at most 10, and 31 of 35 passing depths are
-  the mode times 6.17 m or its mirror. On `/satellite/#gates`, in general terms. It needs the implementation's frozen geometry file (not public)
-  to run on its exact lines.
+  the mode times 6.17 m or its mirror. On `/satellite/#gates`, in general terms.
+- **P2-14** runs the implementation's own frozen Khafre geometry (the base corners at 70.5 m above sea level, as sent
+  and corrected for the geoid) with the same controls and supports 1 to 5: at its own support of four or five nothing
+  passes on the corrected lines in any image; loosened to one, the real image passes 69, the twins 28 and 29, open
+  desert 53. Its own steering record gives 6.00 s of every pixel's pass per image. The Great Pyramid's eleven lines use
+  a newer format the published code does not read; they lie on the east face, nearly edge-on to the pass.
 - **The viewer's satellite data** is exported (`sim/katabasis/export/radar.py`: the track, the draped image, the
   virtual sensors, the method's volumes with and without the chamber over one whole period of its depth axis, and the
   Khafre volume); the viewer's Satellite mode that draws them is next.

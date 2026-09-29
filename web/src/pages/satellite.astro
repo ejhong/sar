@@ -16,6 +16,7 @@ import vsens from '../../public/data/runs/p2_09_virtual_sensors.json';
 import every from '../../public/data/runs/p2_11_every_way_in.json';
 import realpass from '../../public/data/runs/p2_12_real_pass.json';
 import gates from '../../public/data/runs/p2_13_gates.json';
+import own from '../../public/data/runs/p2_14_own_lines.json';
 import passive from '../../public/data/runs/p1_04_ambient.json';
 import echo from '../../public/data/runs/p1_03_scattered.json';
 import Figure from '../components/Figure.astro';
@@ -186,6 +187,33 @@ const gatesVerdict =
   (gNew.length
     ? `, and ${gNew.length === 1 ? 'one new feature' : `${gNew.length} new features`}: ${gNew.map((r) => `on the ${r.side.toLowerCase()} face${r.planted_hz ? `, where ${r.planted_hz} Hz was planted` : ''}, at mode ${r.modes.join(', ')}, which stands for ${r.modes.map((m) => (m / gg.window_s).toFixed(1)).join(', ')} Hz`).join('; ')}.`
     : ', and nothing new.');
+
+// ---- P2-14
+type OChange = { side: string; position: number; mode: number | null; in_stretch: boolean };
+const oPos = own.positions as unknown as Record<string, Record<string, Record<string, number>>>;
+const oSup = ['1', '2', '3', '4', '5'];
+const oRows: [string, string, string][] = [
+  ['the real image', 'wgs84', 'real'],
+  ['a motionless twin', 'wgs84', 'twin101'],
+  ['a motionless twin, other speckle', 'wgs84', 'twin102'],
+  ['the real image, vibrations planted', 'wgs84', 'planted'],
+  ['open desert, the same image', 'desert', 'real'],
+];
+const oW = oPos.wgs84;
+const oSea = oPos.sea_level;
+const oDesert = oPos.desert.real;
+const oNothing = ['4', '5'].every((P) => Object.values(oW).every((c) => c[P] === 0) && oDesert[P] === 0);
+const oTwin1 = (oW.twin101['1'] + oW.twin102['1']) / 2;
+const oDepth = (own.depth_vs_mode as unknown as Record<string, { n: number; at_mode_depth: number; chance: number }>)['1'];
+const oChanges = own.planted_changes as unknown as Record<string, Record<string, { new: OChange[]; lost: number }>>;
+const oNew = Object.values(oChanges).flatMap((w) => Object.values(w).flatMap((c) => c.new));
+const oLost = Object.values(oChanges).reduce((a, w) => a + Object.values(w).reduce((b, c) => b + c.lost, 0), 0);
+const oNorthModes = [...new Set(oNew.filter((c) => c.in_stretch && c.side === 'North' && c.mode !== null).map((c) => c.mode as number))].sort((a, b) => a - b);
+const oReturned = (own.planted_returned as unknown[]).length;
+const oRate = own.doppler_rate_hz_s as number;
+const oSpan = own.image_span_s as number;
+const oSpread = Math.max(...Object.values(own.steering as Record<string, { zero_doppler_spread_s: number }>).map((s) => s.zero_doppler_spread_s));
+const oFrameMs = (1000 * (gates.manifest.params.bank.k_leap_hz as number)) / oRate;
 ---
 <Doc
   title="The satellite over the same ground"
@@ -287,10 +315,12 @@ const gatesVerdict =
       Doppler rate {Math.abs(gz.flat_earth_rate_error.with_ground_speed * 100).toFixed(0)}% off. Every second of aperture is
       also a change of viewing direction, and a look’s resolution times its duration is fixed by the orbit: a
       {' '}{gz.looks[3].duration_s} s look resolves {gz.looks[3].resolution_m.toFixed(2)} m, a 0.25 s look {gz.looks[0].resolution_m.toFixed(1)} m.
-      Looks are cut from the image’s Doppler band, and each Doppler frequency is a moment of the pass: the band sweeps by
+      Looks are cut from the image’s Doppler band, and for each pixel every Doppler frequency is a moment of the pass,
+      counted from that pixel’s own zero-Doppler moment: its Doppler falls by
       {' '}{Math.abs(gz.doppler_rate_hz_s).toLocaleString('en-US', { maximumFractionDigits: 0 })} Hz every second, so slicing the band in
-      frequency is slicing the {gz.aperture_s.toFixed(1)} s in time, and a slice half the band wide averages
-      {' '}{(gz.aperture_s / 2).toFixed(1)} s of whatever the ground did.
+      frequency is slicing each pixel’s {gz.aperture_s.toFixed(1)} s in time, and a slice half the band wide averages
+      {' '}{(gz.aperture_s / 2).toFixed(1)} s of whatever the ground did. Across a patch the size of a pyramid those zero-Doppler
+      moments differ by hundredths of a second.
     </p>
     <DwellDiagram />
     <table class="data">
@@ -563,7 +593,8 @@ const gatesVerdict =
     <h2>Stricter gates keep noise: motionless images pass them, and no vibration draws the shape they require</h2>
     <p class="sub">
       Later versions of the method put selection gates between the shifts and the depth focus. Pairs of images are cut from
-      the pass, each a {gSpan.toFixed(1)} s slice of it, and registered to 0.01 px. A window of {gW} successive pairs
+      the Doppler band, each {Math.round(gates.manifest.params.bank.mask_width_hz).toLocaleString('en-US')} Hz of it, which for every
+      pixel is {gSpan.toFixed(1)} s of its pass, and registered to 0.01 px. A window of {gW} successive pairs
       is kept only if the two components of its shifts trace an ellipse at one of ten modes, fitted well,
       with a narrow semi-axis of at least {gg.minor_min_px} px and at least a tenth as wide as it is long; ten windows in a row must
       agree on the mode, and four or five neighbouring positions must pass together. The depth focus runs only where all of
@@ -636,6 +667,41 @@ const gatesVerdict =
       />
     </div>
     <RunDetails manifest={gates.manifest} />
+    <div class="grid-2" style="margin-top: 22px">
+      <div class="note-card">
+        <span class="tag measured">real image · P2-14</span>
+        <h3>On its own lines round the base, {oNothing ? 'nothing passes at its own settings' : 'little passes at its own settings'}</h3>
+        <table class="data compact">
+          <thead><tr><th>positions in a row</th>{oSup.map((P) => <th class="num">{P}</th>)}</tr></thead>
+          <tbody>
+            {oRows.map(([label, w, c]) => <tr><td>{label}</td>{oSup.map((P) => <td class="num">{oPos[w][c][P]}</td>)}</tr>)}
+          </tbody>
+        </table>
+        <p>The reconstruction’s own lines follow Khafre’s base corners, 70.5 m above sea level. Given to the product’s
+        geolocation as they were first sent, as heights on the ellipsoid, they sit about 50 px off in range; corrected
+        for the geoid, they land on the base (the table). At its own support of four or five neighbouring positions,
+        {oNothing ? ' nothing passes on the corrected lines in any image' : ' few positions pass'}; on the uncorrected ones, {oSea.real['4']} pass in the real image and
+        {' '}{oSea.twin101['4']} and {oSea.twin102['4']} in the twins. Loosened to a single position, the real image passes
+        {' '}{(oW.real['1'] / oTwin1).toFixed(1)} times what the twins do, and open desert in the same image {oDesert['1']} against the
+        pyramid’s {oW.real['1']}.</p>
+      </div>
+      <div class="note-card">
+        <span class="tag measured">why · P2-14</span>
+        <h3>Its own record: each image holds six seconds of every pixel’s pass</h3>
+        <p>For any one pixel, the Doppler frequency of its echo falls steadily as the satellite passes, so each frequency in
+        its band was recorded at one moment: the pixel’s own zero-Doppler moment plus the frequency over the Doppler rate.
+        The pipeline’s steering makes this conversion itself, with a rate of {oRate.toLocaleString('en-US', { maximumFractionDigits: 0 })} Hz per
+        second at Khafre, so its {Math.round(gates.manifest.params.bank.mask_width_hz).toLocaleString('en-US')} Hz images each hold
+        {' '}{oSpan.toFixed(2)} s of every pixel’s pass; it puts the four sides’ zero-Doppler moments within {oSpread.toFixed(2)} s of
+        each other. The pairs are frames of a film, each a {oSpan.toFixed(0)}-second exposure, started {Math.round(oFrameMs)} ms apart: a
+        shiver repeating several times a second blurs out within every frame.</p>
+        <p>Planting the vibrations adds and removes a few positions ({oNew.length} start passing and {oLost} stop, over all
+        five supports). In the 0.26 Hz stretch the new ones sit at modes {oNorthModes.join(', ')}, which no 0.26 Hz motion can
+        make; in the 3.66 Hz stretch, {oReturned === 1 ? 'one' : oReturned} at the nearest mode. Of the {oDepth.n} positions passing at a support of one,
+        {' '}{oDepth.at_mode_depth} have their best depth where their mode puts it, against {pct(oDepth.chance)} by chance.</p>
+      </div>
+    </div>
+    <RunDetails manifest={own.manifest} />
   </section>
 
   <section id="sensors">
@@ -772,7 +838,7 @@ const gatesVerdict =
       <div class="note-card"><h3>Brighter targets</h3><p>Magnitude tracking follows an isolated bright scatterer in full (P2-03), so the best case is a stone or a placed corner reflector above the chamber: short by {order(brightShort)} and {order(reflShort)} under Giza’s microseisms, {order(noisyRefl)} for the reflector at the noisiest stations.</p></div>
       <div class="note-card"><h3>Other structures</h3><p>The imprint scales as volume over depth squared (checked against the solver, P2-04); the claimed deep structure scales to {(imp.claimed[0].relative_to_bench as number).toFixed(2)} of the bench chamber. Independently of any structure, Giza’s whole microseism motion is {wholeMotion.toLocaleString('en-US')} times below the plateau’s detection threshold.</p></div>
       <div class="note-card"><h3>A better estimator</h3><p>For fully developed speckle the Doppler bins are independent circular Gaussians, so a phase history shared by a patch leaves the image’s distribution unchanged: no estimator recovers it. What survives is point-like content (magnitudes, above) and the apparent brightness a displacement gradient makes, of order 10<sup>−11</sup> here.</p></div>
-      <div class="note-card"><h3>Stricter selection</h3><p>Gates can only discard readings, never add what the image does not hold. Run unchanged on the real image, a gated version passes motionless copies of it as readily as the real one, and cannot pass a vibration’s own trace at any strength (<a href="#gates">above</a>).</p></div>
+      <div class="note-card"><h3>Stricter selection</h3><p>Gates can only discard readings, never add what the image does not hold. Run unchanged on the real image, a gated version passes motionless copies of it too, passes nothing at its own settings on its own lines, and cannot pass a vibration’s own trace at any strength (<a href="#gates">above</a>).</p></div>
       <div class="note-card"><h3>The published images</h3><p>The pipeline draws structured sections from any input: identical with and without the chamber (P2-07), the same over monuments and open desert (R1, R6), no signal over hundreds of surveyed shafts (R13), and the published appearance everywhere (R8).</p></div>
       <div class="note-card"><h3>Vibration measured from orbit, 2026</h3><p>The method’s authors first applied this kind of tracking to bridges in Italy and to the Mosul Dam in 2020, without instruments on the structures at the same time. Two 2026 papers (Vattulainen et al., IEEE Access; Lotti et al., Structural Control and Health Monitoring) measure vibration from single spaceborne images against ground truth: corner reflectors on shakers in open fields, and a steel footbridge chosen because it is bright. They track isolated bright targets moving at 0.7 mm/s and up, with errors near 1 mm/s: what P2-03 says works. Their smallest motion is {Math.round(eB.measured_over_trembling).toLocaleString('en-US')} times Giza’s whole microseism motion and <Sci v={eB.measured_over_imprint} p={0} /> times the chamber’s imprint.</p></div>
       <div class="note-card"><h3>Only simulation?</h3><p>The coherence identity holds on the real crop to 10<sup>−9</sup>; the blindness is measured on real texture (1 ± 1%); the geometry is read from the product and reproduces its declared numbers; and the first investigation’s real-data controls found nothing at Giza or Sacsayhuamán.</p></div>

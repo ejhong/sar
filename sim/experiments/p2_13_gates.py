@@ -10,8 +10,9 @@ this gated pipeline, with a frozen profile for the ICEYE X13 pass of 15 July 202
 404 Hz apart, registration to 0.01 px, lambda_s 0.2406 m, depths 0 to 300 m), is run here unchanged: its source is
 imported as published and its hash recorded; only the image it reads is replaced.
 
-Lines: four sides round Khafre's faces at 70.5 m above the base (the profile's height), placed through the product's RPC
-over the site's surface with the residual offset fitted against predicted brightness (sarsim.ortho, within 80 m).
+Lines: the lab's, four sides round Khafre's faces at seven heights above the base (HEIGHTS), placed through the
+product's RPC over the site's surface with the residual offset fitted against predicted brightness (sarsim.ortho,
+within 80 m). The implementation's own frozen lines follow the base, 70.5 m above sea level; P2-14 runs them.
 
 Five cases, the same code:
   real     the product's crop, as it is;
@@ -54,7 +55,7 @@ MODULE = GATED / 'biondi_tomography_v1_8.py'
 PROFILE = GATED / 'profiles/iceye_x13_khafre_w50.json'
 GEOID_M = 15.5
 FIT_WINDOW_M = 80.0
-FACE_HEIGHT_M = 70.5                 # the profile's own height
+FACE_HEIGHT_M = 70.5                 # the steering's target height, as the profile's frozen geometry gives it (the base, above sea level)
 HEIGHTS = [20.0, 35.0, 50.0, 60.0, 70.5, 80.0, 95.0]
 V_AMP = 2e-3
 PLANTS = [('North', 0.26), ('South', 3.66)]

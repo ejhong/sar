@@ -13,10 +13,13 @@ import dep from '../../public/data/runs/p2_06_depth_is_frequency.json';
 import lib from '../../public/data/ambient.json';
 import vsens from '../../public/data/runs/p2_09_virtual_sensors.json';
 import gates from '../../public/data/runs/p2_13_gates.json';
+import own from '../../public/data/runs/p2_14_own_lines.json';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const gc = gates.counts as { real: number; twins: number[]; planted: number; desert: number; positions_per_image: number };
 const gNew = gates.planted_new as unknown as { modes: number[]; planted_hz: number | null }[];
+const oPos = own.positions as unknown as Record<string, Record<string, Record<string, number>>>;
+const oNothing = ['4', '5'].every((P) => Object.values(oPos.wgs84).every((c) => c[P] === 0) && oPos.desert.real[P] === 0);
 const gFound = gNew.length
   ? `one new patch passed, but at a rhythm ${Math.round(gNew[0].modes[0] / (gates.gate.window_s as number) / (gNew[0].planted_hz ?? 1))} times faster than the shaking planted there`
   : 'nothing new passed';
@@ -210,8 +213,9 @@ const roomY = (100 * 12) / zmax;
         <h2>The method cuts one picture into slices and compares them</h2>
         <p>
           The satellite takes 24 seconds to make its picture, flying 188 km and seeing the ground from slightly different
-          angles as it goes. The method cuts the picture into slices, each made from a moment of that pass, and looks for
-          the ground shifting between them. But the slices come from the same recording. Two slices of nearby moments
+          angles as it goes. The method cuts the picture into slices by the pitch of the echoes: as the satellite passes,
+          every spot’s echo slides steadily down in pitch, like a passing train’s whistle, so each slice is made from one
+          stretch of the pass. It then looks for the ground shifting between them. But the slices come from the same recording. Two slices of nearby moments
           share most of their data, so they look almost identical (correlation {round(lc.an_eighth_apart)}): comparing
           something with itself says “nothing moved”. Two slices seconds apart share none, and the grainy texture looks
           completely different from each angle (correlation {round(lc.two_seconds_apart, 1)}): there is nothing to line up.
@@ -378,7 +382,7 @@ const roomY = (100 * 12) / zmax;
         </div>
         <div class="q">
           <h3>What about stricter versions that filter out the noise?</h3>
-          <p>Later versions of the method keep only readings that pass a row of tests: they must circle in a clean ellipse, ten stretches in a row must agree, and neighbouring points must pass together. We ran one, unchanged, round Khafre’s faces in the real image: {gc.real} of {gc.positions_per_image.toLocaleString('en-US')} points passed. In copies of the image in which nothing moves, {gc.twins.join(' and ')} passed; over open desert in the same image, {gc.desert ? gc.desert : 'none'}. When we made the faces shake 40,000 times harder than the ground does, the tests did not find it: {gFound}. Each picture the tests compare lasts six seconds and averages such shaking away, and shaking draws a thin line in the readings, never the round ellipse the tests ask for. What passes is noise, and its “depth” is only the rhythm the tests picked. <a href={`${base}/satellite/#gates`}>The gates, measured</a>.</p>
+          <p>Later versions of the method keep only readings that pass a row of tests: they must circle in a clean ellipse, ten stretches in a row must agree, and neighbouring points must pass together. We ran one, unchanged, round Khafre’s faces in the real image: {gc.real} of {gc.positions_per_image.toLocaleString('en-US')} points passed. In copies of the image in which nothing moves, {gc.twins.join(' and ')} passed; over open desert in the same image, {gc.desert ? gc.desert : 'none'}. On the lines its makers drew round the pyramid’s base, with their own settings, {oNothing ? 'nothing passed at all, in any of these images' : 'hardly anything passed'}; loosened to single points, the real image passed {oPos.wgs84.real['1']}, the still copies {oPos.wgs84.twin101['1']} and {oPos.wgs84.twin102['1']}, and open desert {oPos.desert.real['1']}. When we made the faces shake 40,000 times harder than the ground does, the tests did not find it: {gFound}. Each picture the tests compare lasts six seconds and averages such shaking away, and shaking draws a thin line in the readings, never the round ellipse the tests ask for. What passes is noise, and its “depth” is only the rhythm the tests picked. <a href={`${base}/satellite/#gates`}>The gates, measured</a>.</p>
         </div>
         <div class="q">
           <h3>Hasn’t vibration been measured from space?</h3>

@@ -1,0 +1,1250 @@
+{
+ "manifest": {
+  "id": "p2_14_own_lines",
+  "title": "The reconstruction's own lines round Khafre's base, with the same controls",
+  "date": "2026-09-29",
+  "started_utc": "2026-09-29T02:20:23+00:00",
+  "runtime_s": 877.7,
+  "commit": "d23f20b",
+  "params": {
+   "acquisition": "giza-20220715",
+   "gated_module_sha256": "3e1154c11274b896b91e262198576ffd750732709ad08ac00c6892c4ea5e1b1d",
+   "gated_profile_sha256": "ae84cade31f7e5ffa9b4daa0eba152649d2afc7f1655415bad38553f4f4d69aa",
+   "geometry_sea_level_sha256": "d5c8e0c1a62135fd7a32c56fd66680bbc63bd02a4b47f20d2aaec7d80e7f791e",
+   "geometry_wgs84_sha256": "6c2a510cbae9ddb44530cffcc443754c057e554ff1c2743319a7610e9aecc3b0",
+   "wgs84_projection_height_m": 85.914409,
+   "supports": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "planted": [
+    [
+     "North",
+     0.26
+    ],
+    [
+     "South",
+     3.66
+    ]
+   ],
+   "planted_v_m_s": 0.002,
+   "planted_positions": [
+    30,
+    71
+   ],
+   "twin_seeds": [
+    101,
+    102
+   ],
+   "desert_centre_m": [
+    -100.0,
+    -640.0
+   ]
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  }
+ },
+ "rpc_check_row_col_px": {
+  "NW": [
+   -1.447e-08,
+   1.707e-06
+  ],
+  "NE": [
+   -1.44e-08,
+   1.706e-06
+  ],
+  "SE": [
+   -1.401e-08,
+   1.706e-06
+  ],
+  "SW": [
+   -1.409e-08,
+   1.707e-06
+  ]
+ },
+ "steering": {
+  "sea_level": {
+   "doppler_rate_hz_s": [
+    -5389.598343,
+    -5389.183041,
+    -5389.777554,
+    -5390.197165
+   ],
+   "zero_doppler_spread_s": 0.030097
+  },
+  "wgs84": {
+   "doppler_rate_hz_s": [
+    -5389.70376,
+    -5389.288441,
+    -5389.891412,
+    -5390.300497
+   ],
+   "zero_doppler_spread_s": 0.030052
+  },
+  "desert": {
+   "doppler_rate_hz_s": [
+    -5390.642151,
+    -5390.17186,
+    -5390.796121,
+    -5391.26652
+   ],
+   "zero_doppler_spread_s": 0.030091
+  }
+ },
+ "doppler_rate_hz_s": 5389.796027,
+ "image_span_s": 5.998397,
+ "positions": {
+  "sea_level": {
+   "real": {
+    "1": 49,
+    "2": 8,
+    "3": 4,
+    "4": 4,
+    "5": 0
+   },
+   "twin101": {
+    "1": 25,
+    "2": 4,
+    "3": 0,
+    "4": 0,
+    "5": 0
+   },
+   "twin102": {
+    "1": 21,
+    "2": 6,
+    "3": 4,
+    "4": 0,
+    "5": 0
+   },
+   "planted": {
+    "1": 54,
+    "2": 12,
+    "3": 4,
+    "4": 4,
+    "5": 0
+   }
+  },
+  "wgs84": {
+   "real": {
+    "1": 69,
+    "2": 12,
+    "3": 0,
+    "4": 0,
+    "5": 0
+   },
+   "twin101": {
+    "1": 28,
+    "2": 4,
+    "3": 0,
+    "4": 0,
+    "5": 0
+   },
+   "twin102": {
+    "1": 29,
+    "2": 0,
+    "3": 0,
+    "4": 0,
+    "5": 0
+   },
+   "planted": {
+    "1": 67,
+    "2": 8,
+    "3": 0,
+    "4": 0,
+    "5": 0
+   }
+  },
+  "desert": {
+   "real": {
+    "1": 53,
+    "2": 4,
+    "3": 0,
+    "4": 0,
+    "5": 0
+   }
+  }
+ },
+ "first_gate_windows": {
+  "sea_level": {
+   "real": 3304,
+   "twin101": 1525,
+   "twin102": 1491,
+   "planted": 3510
+  },
+  "wgs84": {
+   "real": 4219,
+   "twin101": 1776,
+   "twin102": 1635,
+   "planted": 4237
+  },
+  "desert": {
+   "real": 2695
+  }
+ },
+ "exact_zero": {
+  "sea_level": {
+   "real": 0.370963,
+   "twin101": 0.413398,
+   "twin102": 0.415436,
+   "planted": 0.370885
+  },
+  "wgs84": {
+   "real": 0.358173,
+   "twin101": 0.404113,
+   "twin102": 0.403551,
+   "planted": 0.358454
+  },
+  "desert": {
+   "real": 0.366036
+  }
+ },
+ "planted_changes": {
+  "sea_level": {
+   "1": {
+    "new": [
+     {
+      "side": "North",
+      "position": 30,
+      "mode": 3,
+      "in_stretch": true,
+      "planted_hz": 0.26
+     },
+     {
+      "side": "North",
+      "position": 45,
+      "mode": 1,
+      "in_stretch": true,
+      "planted_hz": 0.26
+     },
+     {
+      "side": "North",
+      "position": 47,
+      "mode": 1,
+      "in_stretch": true,
+      "planted_hz": 0.26
+     },
+     {
+      "side": "North",
+      "position": 58,
+      "mode": 1,
+      "in_stretch": true,
+      "planted_hz": 0.26
+     },
+     {
+      "side": "North",
+      "position": 70,
+      "mode": 1,
+      "in_stretch": true,
+      "planted_hz": 0.26
+     },
+     {
+      "side": "East",
+      "position": 2,
+      "mode": 1,
+      "in_stretch": false,
+      "planted_hz": null
+     },
+     {
+      "side": "East",
+      "position": 81,
+      "mode": 3,
+      "in_stretch": false,
+      "planted_hz": null
+     },
+     {
+      "side": "South",
+      "position": 83,
+      "mode": 1,
+      "in_stretch": false,
+      "planted_hz": 3.66
+     }
+    ],
+    "lost": 3
+   },
+   "2": {
+    "new": [
+     {
+      "side": "North",
+      "position": 44,
+      "mode": 1,
+      "in_stretch": true,
+      "planted_hz": 0.26
+     },
+     {
+      "side": "North",
+      "position": 45,
+      "mode": 1,
+      "in_stretch": true,
+      "planted_hz": 0.26
+     },
+     {
+      "side": "North",
+      "position": 48,
+      "mode": 2,
+      "in_stretch": true,
+      "planted_hz": 0.26
+     },
+     {
+      "side": "North",
+      "position": 49,
+      "mode": 2,
+      "in_stretch": true,
+      "planted_hz": 0.26
+     }
+    ],
+    "lost": 0
+   },
+   "3": {
+    "new": [],
+    "lost": 0
+   },
+   "4": {
+    "new": [],
+    "lost": 0
+   },
+   "5": {
+    "new": [],
+    "lost": 0
+   }
+  },
+  "wgs84": {
+   "1": {
+    "new": [
+     {
+      "side": "North",
+      "position": 78,
+      "mode": 4,
+      "in_stretch": false,
+      "planted_hz": 0.26
+     },
+     {
+      "side": "North",
+      "position": 81,
+      "mode": 5,
+      "in_stretch": false,
+      "planted_hz": 0.26
+     },
+     {
+      "side": "South",
+      "position": 26,
+      "mode": 2,
+      "in_stretch": false,
+      "planted_hz": 3.66
+     },
+     {
+      "side": "South",
+      "position": 53,
+      "mode": 3,
+      "in_stretch": true,
+      "planted_hz": 3.66
+     },
+     {
+      "side": "South",
+      "position": 77,
+      "mode": 2,
+      "in_stretch": false,
+      "planted_hz": 3.66
+     },
+     {
+      "side": "South",
+      "position": 89,
+      "mode": 4,
+      "in_stretch": false,
+      "planted_hz": 3.66
+     }
+    ],
+    "lost": 8
+   },
+   "2": {
+    "new": [],
+    "lost": 4
+   },
+   "3": {
+    "new": [],
+    "lost": 0
+   },
+   "4": {
+    "new": [],
+    "lost": 0
+   },
+   "5": {
+    "new": [],
+    "lost": 0
+   }
+  }
+ },
+ "planted_returned": [
+  {
+   "side": "South",
+   "position": 53,
+   "mode": 3,
+   "in_stretch": true,
+   "planted_hz": 3.66,
+   "where": "wgs84",
+   "support": 1
+  }
+ ],
+ "depth_vs_mode": {
+  "1": {
+   "n": 395,
+   "at_mode_depth": 352,
+   "chance": 0.032864
+  },
+  "2": {
+   "n": 58,
+   "at_mode_depth": 48,
+   "chance": 0.032851
+  },
+  "3": {
+   "n": 12,
+   "at_mode_depth": 12,
+   "chance": 0.040986
+  },
+  "4": {
+   "n": 8,
+   "at_mode_depth": 8,
+   "chance": 0.040986
+  },
+  "5": {
+   "n": 0,
+   "at_mode_depth": 0,
+   "chance": null
+  }
+ },
+ "passing": {
+  "sea_level": {
+   "real": {
+    "1": {
+     "North": [
+      2,
+      22,
+      23,
+      35,
+      41,
+      43,
+      44,
+      48,
+      49,
+      54,
+      75,
+      94
+     ],
+     "East": [
+      5,
+      6,
+      8,
+      13,
+      15,
+      38,
+      43,
+      64,
+      70,
+      72,
+      91
+     ],
+     "South": [
+      9,
+      23,
+      24,
+      30,
+      40,
+      46,
+      57,
+      58,
+      61,
+      62,
+      70,
+      71,
+      72,
+      73,
+      81
+     ],
+     "West": [
+      4,
+      19,
+      22,
+      26,
+      45,
+      60,
+      77,
+      84,
+      89,
+      97,
+      100
+     ]
+    },
+    "2": {
+     "North": [],
+     "East": [],
+     "South": [
+      23,
+      24,
+      61,
+      62,
+      70,
+      71,
+      72,
+      73
+     ],
+     "West": []
+    },
+    "3": {
+     "North": [],
+     "East": [],
+     "South": [
+      70,
+      71,
+      72,
+      73
+     ],
+     "West": []
+    },
+    "4": {
+     "North": [],
+     "East": [],
+     "South": [
+      70,
+      71,
+      72,
+      73
+     ],
+     "West": []
+    },
+    "5": {
+     "North": [],
+     "East": [],
+     "South": [],
+     "West": []
+    }
+   },
+   "twin101": {
+    "1": {
+     "North": [
+      7,
+      32,
+      43,
+      44,
+      45,
+      46,
+      54,
+      55,
+      67,
+      72,
+      77,
+      79
+     ],
+     "East": [
+      48,
+      53,
+      63,
+      80,
+      81
+     ],
+     "South": [
+      15,
+      32,
+      42,
+      43,
+      44
+     ],
+     "West": [
+      16,
+      60,
+      92
+     ]
+    },
+    "2": {
+     "North": [
+      45,
+      46
+     ],
+     "East": [],
+     "South": [
+      43,
+      44
+     ],
+     "West": []
+    },
+    "3": {
+     "North": [],
+     "East": [],
+     "South": [],
+     "West": []
+    },
+    "4": {
+     "North": [],
+     "East": [],
+     "South": [],
+     "West": []
+    },
+    "5": {
+     "North": [],
+     "East": [],
+     "South": [],
+     "West": []
+    }
+   },
+   "twin102": {
+    "1": {
+     "North": [
+      8,
+      11,
+      29,
+      43,
+      44,
+      45,
+      46,
+      70,
+      78,
+      94
+     ],
+     "East": [
+      35,
+      39,
+      85,
+      89,
+      100
+     ],
+     "South": [
+      28,
+      93,
+      98,
+      99
+     ],
+     "West": [
+      27,
+      46
+     ]
+    },
+    "2": {
+     "North": [
+      43,
+      44,
+      45,
+      46
+     ],
+     "East": [],
+     "South": [
+      98,
+      99
+     ],
+     "West": []
+    },
+    "3": {
+     "North": [
+      43,
+      44,
+      45,
+      46
+     ],
+     "East": [],
+     "South": [],
+     "West": []
+    },
+    "4": {
+     "North": [],
+     "East": [],
+     "South": [],
+     "West": []
+    },
+    "5": {
+     "North": [],
+     "East": [],
+     "South": [],
+     "West": []
+    }
+   },
+   "planted": {
+    "1": {
+     "North": [
+      2,
+      22,
+      23,
+      30,
+      35,
+      41,
+      43,
+      44,
+      45,
+      47,
+      48,
+      49,
+      54,
+      58,
+      70,
+      75,
+      94
+     ],
+     "East": [
+      2,
+      5,
+      6,
+      8,
+      13,
+      15,
+      38,
+      43,
+      64,
+      70,
+      72,
+      81,
+      91
+     ],
+     "South": [
+      9,
+      23,
+      24,
+      46,
+      57,
+      61,
+      62,
+      70,
+      71,
+      72,
+      73,
+      81,
+      83
+     ],
+     "West": [
+      4,
+      19,
+      22,
+      26,
+      45,
+      60,
+      77,
+      84,
+      89,
+      97,
+      100
+     ]
+    },
+    "2": {
+     "North": [
+      44,
+      45,
+      48,
+      49
+     ],
+     "East": [],
+     "South": [
+      23,
+      24,
+      61,
+      62,
+      70,
+      71,
+      72,
+      73
+     ],
+     "West": []
+    },
+    "3": {
+     "North": [],
+     "East": [],
+     "South": [
+      70,
+      71,
+      72,
+      73
+     ],
+     "West": []
+    },
+    "4": {
+     "North": [],
+     "East": [],
+     "South": [
+      70,
+      71,
+      72,
+      73
+     ],
+     "West": []
+    },
+    "5": {
+     "North": [],
+     "East": [],
+     "South": [],
+     "West": []
+    }
+   }
+  },
+  "wgs84": {
+   "real": {
+    "1": {
+     "North": [
+      2,
+      3,
+      7,
+      14,
+      35,
+      41,
+      46,
+      53,
+      54,
+      55,
+      57,
+      58,
+      77,
+      90,
+      96,
+      97
+     ],
+     "East": [
+      2,
+      19,
+      50,
+      55,
+      57,
+      61,
+      62,
+      68,
+      79,
+      83,
+      92,
+      95
+     ],
+     "South": [
+      6,
+      29,
+      50,
+      68,
+      69,
+      76,
+      79,
+      80,
+      83
+     ],
+     "West": [
+      5,
+      6,
+      7,
+      9,
+      11,
+      17,
+      22,
+      23,
+      24,
+      29,
+      31,
+      32,
+      33,
+      34,
+      36,
+      39,
+      45,
+      48,
+      49,
+      50,
+      51,
+      58,
+      62,
+      64,
+      65,
+      67,
+      68,
+      70,
+      74,
+      82,
+      83,
+      85
+     ]
+    },
+    "2": {
+     "North": [
+      2,
+      3,
+      54,
+      55,
+      57,
+      58
+     ],
+     "East": [],
+     "South": [
+      68,
+      69,
+      79,
+      80
+     ],
+     "West": [
+      49,
+      50
+     ]
+    },
+    "3": {
+     "North": [],
+     "East": [],
+     "South": [],
+     "West": []
+    },
+    "4": {
+     "North": [],
+     "East": [],
+     "South": [],
+     "West": []
+    },
+    "5": {
+     "North": [],
+     "East": [],
+     "South": [],
+     "West": []
+    }
+   },
+   "twin101": {
+    "1": {
+     "North": [
+      7,
+      22,
+      23,
+      40,
+      55,
+      67,
+      84
+     ],
+     "East": [
+      44,
+      55,
+      69,
+      80,
+      83,
+      84,
+      86
+     ],
+     "South": [
+      15,
+      43,
+      44,
+      45
+     ],
+     "West": [
+      3,
+      5,
+      10,
+      18,
+      57,
+      62,
+      63,
+      82,
+      85,
+      86
+     ]
+    },
+    "2": {
+     "North": [
+      22,
+      23
+     ],
+     "East": [],
+     "South": [
+      43,
+      44
+     ],
+     "West": []
+    },
+    "3": {
+     "North": [],
+     "East": [],
+     "South": [],
+     "West": []
+    },
+    "4": {
+     "North": [],
+     "East": [],
+     "South": [],
+     "West": []
+    },
+    "5": {
+     "North": [],
+     "East": [],
+     "South": [],
+     "West": []
+    }
+   },
+   "twin102": {
+    "1": {
+     "North": [
+      11,
+      58,
+      72,
+      79,
+      93
+     ],
+     "East": [
+      3,
+      35,
+      45,
+      48,
+      55,
+      77,
+      82,
+      85,
+      89
+     ],
+     "South": [
+      27,
+      33,
+      51,
+      62,
+      93,
+      99,
+      100
+     ],
+     "West": [
+      6,
+      8,
+      23,
+      33,
+      54,
+      57,
+      62,
+      91
+     ]
+    },
+    "2": {
+     "North": [],
+     "East": [],
+     "South": [],
+     "West": []
+    },
+    "3": {
+     "North": [],
+     "East": [],
+     "South": [],
+     "West": []
+    },
+    "4": {
+     "North": [],
+     "East": [],
+     "South": [],
+     "West": []
+    },
+    "5": {
+     "North": [],
+     "East": [],
+     "South": [],
+     "West": []
+    }
+   },
+   "planted": {
+    "1": {
+     "North": [
+      2,
+      3,
+      7,
+      14,
+      35,
+      41,
+      46,
+      53,
+      55,
+      78,
+      81,
+      96
+     ],
+     "East": [
+      2,
+      19,
+      50,
+      55,
+      57,
+      61,
+      62,
+      68,
+      79,
+      83,
+      92,
+      95
+     ],
+     "South": [
+      6,
+      26,
+      29,
+      50,
+      53,
+      68,
+      69,
+      76,
+      77,
+      79,
+      80,
+      83,
+      89
+     ],
+     "West": [
+      5,
+      6,
+      7,
+      11,
+      17,
+      22,
+      23,
+      24,
+      29,
+      31,
+      32,
+      33,
+      34,
+      36,
+      39,
+      45,
+      48,
+      49,
+      50,
+      51,
+      58,
+      62,
+      65,
+      67,
+      68,
+      70,
+      74,
+      82,
+      83,
+      85
+     ]
+    },
+    "2": {
+     "North": [
+      2,
+      3
+     ],
+     "East": [],
+     "South": [
+      68,
+      69,
+      79,
+      80
+     ],
+     "West": [
+      49,
+      50
+     ]
+    },
+    "3": {
+     "North": [],
+     "East": [],
+     "South": [],
+     "West": []
+    },
+    "4": {
+     "North": [],
+     "East": [],
+     "South": [],
+     "West": []
+    },
+    "5": {
+     "North": [],
+     "East": [],
+     "South": [],
+     "West": []
+    }
+   }
+  },
+  "desert": {
+   "real": {
+    "1": {
+     "North": [
+      0,
+      7,
+      11,
+      29,
+      42,
+      50,
+      51,
+      52,
+      54,
+      55,
+      64,
+      80,
+      81,
+      82,
+      92
+     ],
+     "East": [
+      4,
+      12,
+      17,
+      19,
+      33,
+      39,
+      41,
+      54,
+      56,
+      60,
+      62,
+      69,
+      71,
+      75,
+      99
+     ],
+     "South": [
+      0,
+      4,
+      23,
+      65,
+      66,
+      67,
+      68,
+      79,
+      81,
+      87,
+      94
+     ],
+     "West": [
+      8,
+      12,
+      22,
+      27,
+      39,
+      55,
+      60,
+      65,
+      82,
+      92,
+      97,
+      100
+     ]
+    },
+    "2": {
+     "North": [
+      50,
+      51
+     ],
+     "East": [],
+     "South": [
+      66,
+      67
+     ],
+     "West": []
+    },
+    "3": {
+     "North": [],
+     "East": [],
+     "South": [],
+     "West": []
+    },
+    "4": {
+     "North": [],
+     "East": [],
+     "South": [],
+     "West": []
+    },
+    "5": {
+     "North": [],
+     "East": [],
+     "South": [],
+     "West": []
+    }
+   }
+  }
+ },
+ "finding": "On the reconstruction's own lines round Khafre's base (Petrie's corners at 70.5 m above sea level, as sent and corrected to the ellipsoid), its unchanged pipeline passes nothing at its own support of 4 or 5 positions on the corrected lines, in any image: real, two motionless twins, planted vibrations, open desert; on the uncorrected lines, real 4, twins 0 and 0, planted 4. With support loosened to one position, the corrected lines pass 69, twins 28 and 29, planted 67, and open desert in the same image 53; at two, 12, twins 4 and 0, planted 8, desert 4. The planted vibrations do not return at their frequencies: the 0.26 Hz is below every mode, and the 9 positions that start passing in its stretch do so at modes [1, 2, 3]; 1 position starts passing in the 3.66 Hz stretch at its nearest mode, and over all supports 18 positions start passing and 15 stop. Of the 395 positions passing at support one, 352 have their best depth within half a cycle of their mode times the depth per cycle or its mirror, against 3% by chance. Its own steering uses a Doppler rate of 5,390 Hz/s at Khafre, so each 32,330 Hz image holds 6.00 s of every pixel's pass, and puts the four sides' zero-Doppler moments within 0.030 s of each other."
+}

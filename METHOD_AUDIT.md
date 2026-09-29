@@ -394,9 +394,25 @@ investigation's record, and what it leaves open follow.
     positions have their best depth within half a cycle of the mode times 6.17 m or of its mirror (308.7 m less),
     against 4% by chance. At the first gate the real image passes 2.5 times the twins' windows and open desert 1.9
     times (36% of shifts exactly zero against 41%); planting changes that count by 0.7%, and passing early does not
-    predict passing at the end. The implementation's frozen geometry file is not public: the lines are the lab's,
-    placed through the product's RPC over the site's surface (offset (44, 4) px from predicted brightness, correlation
-    0.03), and seven heights stand in for exact placement.
+    predict passing at the end. The lines are the lab's, on the faces, placed through the product's RPC over the site's
+    surface (offset (44, 4) px from predicted brightness, correlation 0.03); the implementation's own lines, round the
+    base, are 11.
+
+11. **On the reconstruction's own lines round Khafre's base, nothing passes at its own settings (P2-14).** The
+    profile's frozen geometry (Khafre's base corners, Petrie's as placed by Dash, projected through the RPC at
+    H = 70.5 m above sea level given as an ellipsoidal height) and its EGM96-corrected version (h = 85.9 m, about 50 px
+    nearer in range; the lab's projection of its corners reproduces the file exactly) are run unchanged, with pixel
+    support reported from one to five. At the profile's own support of four or five, nothing passes on the corrected
+    lines in the real image, two motionless twins, the planted image or the same square over open desert; the
+    uncorrected lines pass 4 positions in the real image and in the planted, none in the twins. At support one the
+    corrected lines pass 69 positions in the real image, 28 and 29 in the twins, 67 planted and 53 over open desert; at
+    two, 12, 4, 0, 8 and 4. Planting adds and removes a few positions (18 start passing and 15 stop, over all supports):
+    in the 0.26 Hz stretch at modes 1 to 3, which that frequency cannot produce, and in the 3.66 Hz stretch one position
+    at the nearest mode. 352 of the 395 positions passing at support one have their best depth within half a cycle of
+    their mode times 6.17 m or its mirror, against 3% by chance. The pipeline's own steering uses a Doppler rate of
+    5,390 Hz/s at Khafre, so each 32,330 Hz image holds 6.00 s of every pixel's pass, and puts the four sides'
+    zero-Doppler moments within 0.03 s of each other. The corrected file's projection.height_m is a text note, which
+    the steering reads as a number; it is set to the corners' ellipsoidal height.
 
 Any one of 1, 3 and 4 is sufficient on its own; they fail for independent reasons (the estimator, the
 physics of the signal, and the algebra of the depth axis). R16's resolution bound, which rests on the
@@ -477,9 +493,11 @@ corner-reflector threshold P2-05 computes, so P2-05's thresholds are generous to
   Kottamya, 67 km east (M1-01), bracketed by Peterson's global models.
 - The known-chamber test at Khufu on two real passes (2022 and 2025) is run locally and not yet published. Given 1
   and 4 it could only confirm, not change, the result.
-- P2-13 runs its gated implementation on the lab's own lines round Khafre, not on the implementation's frozen
-  geometry, which is not public; seven loops from 20 to 95 m stand in for exact placement. Its motionless twin keeps the
-  image's smoothed brightness and mean spectra, not its fine texture, and registers a little more steadily (41% of
-  shifts exactly zero against 36%).
+- P2-13's loops are the lab's, on Khafre's faces; P2-14 runs the implementation's own base lines. The motionless twin
+  keeps the image's smoothed brightness and mean spectra, not its fine texture, and registers a little more steadily
+  (41% of shifts exactly zero against 36%), which is why open desert in the same image is run beside it. The
+  implementation's eleven Great Pyramid lines use a newer format the published pipeline does not read and are not
+  run; they lie on the east face, nearly edge-on to this pass (86 degrees) and as dark as the darkest tenth of the
+  scene around the pyramid.
 - P2-11's penetration bounds use dry sand's measured penetration as an upper bound for limestone, and a limestone
   conductivity from the standard GPR table; no microwave loss measurement of Mokattam limestone itself is used.

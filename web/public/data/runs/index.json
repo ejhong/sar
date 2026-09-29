@@ -766,5 +766,58 @@
    "threads": 16,
    "cpus": 16
   }
+ },
+ "p2_14_own_lines": {
+  "id": "p2_14_own_lines",
+  "title": "The reconstruction's own lines round Khafre's base, with the same controls",
+  "date": "2026-09-29",
+  "started_utc": "2026-09-29T02:20:23+00:00",
+  "runtime_s": 877.7,
+  "commit": "d23f20b",
+  "params": {
+   "acquisition": "giza-20220715",
+   "gated_module_sha256": "3e1154c11274b896b91e262198576ffd750732709ad08ac00c6892c4ea5e1b1d",
+   "gated_profile_sha256": "ae84cade31f7e5ffa9b4daa0eba152649d2afc7f1655415bad38553f4f4d69aa",
+   "geometry_sea_level_sha256": "d5c8e0c1a62135fd7a32c56fd66680bbc63bd02a4b47f20d2aaec7d80e7f791e",
+   "geometry_wgs84_sha256": "6c2a510cbae9ddb44530cffcc443754c057e554ff1c2743319a7610e9aecc3b0",
+   "wgs84_projection_height_m": 85.914409,
+   "supports": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "planted": [
+    [
+     "North",
+     0.26
+    ],
+    [
+     "South",
+     3.66
+    ]
+   ],
+   "planted_v_m_s": 0.002,
+   "planted_positions": [
+    30,
+    71
+   ],
+   "twin_seeds": [
+    101,
+    102
+   ],
+   "desert_centre_m": [
+    -100.0,
+    -640.0
+   ]
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  }
  }
 }
