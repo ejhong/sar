@@ -1,0 +1,185 @@
+{
+ "manifest": {
+  "id": "p2_18_echo_validation",
+  "title": "The radar simulator, checked against pulses",
+  "date": "2026-09-29",
+  "started_utc": "2026-09-29T04:54:50+00:00",
+  "runtime_s": 388.1,
+  "commit": "994469d",
+  "params": {
+   "acquisition": "giza-20220715",
+   "prf_simulated": 1000.0,
+   "V_eff_m_s": 7353.943915,
+   "bandwidth_hz": 300000000.0,
+   "dwell_s": 24.56232,
+   "gated_module_sha256": "3e1154c11274b896b91e262198576ffd750732709ad08ac00c6892c4ea5e1b1d"
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  }
+ },
+ "resolution": {
+  "azimuth_m": 0.047252,
+  "azimuth_theory_m": 0.047054,
+  "range_m": 0.424596,
+  "range_theory_m": 0.442694,
+  "azimuth_first_sidelobe_db": -13.133275
+ },
+ "slice_is_stretch": [
+  {
+   "centre_s": -9.0,
+   "corr_same": 0.980929,
+   "corr_mirror": 3.808e-06
+  },
+  {
+   "centre_s": -6.0,
+   "corr_same": 0.986243,
+   "corr_mirror": 5.099e-06
+  },
+  {
+   "centre_s": -3.0,
+   "corr_same": 0.995293,
+   "corr_mirror": 5.474e-06
+  },
+  {
+   "centre_s": 0.0,
+   "corr_same": 0.997224,
+   "corr_mirror": null
+  },
+  {
+   "centre_s": 3.0,
+   "corr_same": 0.996519,
+   "corr_mirror": 7.111e-06
+  },
+  {
+   "centre_s": 6.0,
+   "corr_same": 0.991549,
+   "corr_mirror": 5.571e-06
+  },
+  {
+   "centre_s": 9.0,
+   "corr_same": 0.98624,
+   "corr_mirror": 4.494e-06
+  }
+ ],
+ "fast_vs_pulses": {
+  "corr_complex": 0.906268,
+  "corr_magnitude": 0.961849
+ },
+ "steady_velocity": {
+  "v_m_s": 0.005,
+  "shift_m": -0.41839,
+  "theory_m": -0.419896,
+  "velocity_read_back_m_s": 0.004982
+ },
+ "positive_control": {
+  "look_s": 0.05,
+  "looks": 161,
+  "reflector_scr_db": 50.0,
+  "rows": [
+   {
+    "v_m_s": 0.001,
+    "f_hz": 1.0,
+    "recovered_m_s": 0.001251,
+    "truth_look_average_m_s": 0.0009959,
+    "gain": 1.2566365256066208,
+    "gain_se": 0.9375833100586072,
+    "residual_rms_m_s": 0.008378,
+    "resolved": false
+   },
+   {
+    "v_m_s": 0.001,
+    "f_hz": 2.0,
+    "recovered_m_s": 0.001352,
+    "truth_look_average_m_s": 0.0009836,
+    "gain": 1.3747658439431123,
+    "gain_se": 0.9455639605202867,
+    "residual_rms_m_s": 0.008345,
+    "resolved": false
+   },
+   {
+    "v_m_s": 0.001,
+    "f_hz": 4.0,
+    "recovered_m_s": 0.0002564,
+    "truth_look_average_m_s": 0.0009355,
+    "gain": 0.2740298005575379,
+    "gain_se": 0.9899945167143773,
+    "residual_rms_m_s": 0.008309,
+    "resolved": false
+   },
+   {
+    "v_m_s": 0.005,
+    "f_hz": 1.0,
+    "recovered_m_s": 0.005119,
+    "truth_look_average_m_s": 0.004979,
+    "gain": 1.028067229513573,
+    "gain_se": 0.19024748748090214,
+    "residual_rms_m_s": 0.0085,
+    "resolved": true
+   },
+   {
+    "v_m_s": 0.005,
+    "f_hz": 2.0,
+    "recovered_m_s": 0.00512,
+    "truth_look_average_m_s": 0.004918,
+    "gain": 1.0409948913878049,
+    "gain_se": 0.18971625356003813,
+    "residual_rms_m_s": 0.008372,
+    "resolved": true
+   },
+   {
+    "v_m_s": 0.005,
+    "f_hz": 4.0,
+    "recovered_m_s": 0.003522,
+    "truth_look_average_m_s": 0.004677,
+    "gain": 0.7529862992658753,
+    "gain_se": 0.19756831009758435,
+    "residual_rms_m_s": 0.008291,
+    "resolved": true
+   }
+  ]
+ },
+ "pairs_pulses_vs_injection": [
+  {
+   "v_m_s": 0.002,
+   "f_hz": 0.26,
+   "pulses_px": 0.010745,
+   "injection_px": 0.010713
+  },
+  {
+   "v_m_s": 0.002,
+   "f_hz": 1.0691,
+   "pulses_px": 0.0,
+   "injection_px": 0.0
+  },
+  {
+   "v_m_s": 0.002,
+   "f_hz": 3.66,
+   "pulses_px": 0.0,
+   "injection_px": 0.0
+  },
+  {
+   "v_m_s": 0.02,
+   "f_hz": 0.26,
+   "pulses_px": 0.09403,
+   "injection_px": 0.093891
+  },
+  {
+   "v_m_s": 0.02,
+   "f_hz": 1.0691,
+   "pulses_px": 0.013365,
+   "injection_px": 0.011886
+  },
+  {
+   "v_m_s": 0.02,
+   "f_hz": 3.66,
+   "pulses_px": 0.012213,
+   "injection_px": 0.019223
+  }
+ ],
+ "finding": "Pulse by pulse, on the 2022 geometry, the simulator focuses a point to 4.73 cm in azimuth (theory 4.71) with a first sidelobe of -13.1 dB, and to 0.425 m in range against 0.443 m for a flat 300 MHz band (the dwell's 16 degrees widen the range spectrum). A frequency slice of the whole image matches the image formed from only that stretch of pulses to 0.981-0.997 in complex correlation, and the mirrored slice to at most 0.000. The fast synthesizer's image of the same still scatterers matches the pulses to 0.906. A steady 5 mm/s recession shifts the image by -41.84 cm against -41.99 cm from R v / V_s. As a positive control, a corner reflector 50 dB above clutter is read from one image by magnitudes through 50 ms looks: vibrating at 5 mm/s and 1 Hz at 1.03 ± 0.19, 5 mm/s and 2 Hz at 1.04 ± 0.19, 5 mm/s and 4 Hz at 0.75 ± 0.20 of its look-averaged velocity; at 1 mm/s it lies within the per-look noise (8 mm/s), as it would need a brighter reflector or a longer series. Through the six-second pairs, pulses and the injection give the bright point's pair shifts of 0.0107 and 0.0107 px (2 mm/s, 0.26 Hz); 0.0000 and 0.0000 px (2 mm/s, 1.07 Hz); 0.0000 and 0.0000 px (2 mm/s, 3.66 Hz); 0.0940 and 0.0939 px (20 mm/s, 0.26 Hz); 0.0134 and 0.0119 px (20 mm/s, 1.07 Hz); 0.0122 and 0.0192 px (20 mm/s, 3.66 Hz)."
+}
