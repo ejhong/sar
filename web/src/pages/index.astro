@@ -20,6 +20,8 @@ import imp from '../../public/data/runs/p2_04_chamber_imprint.json';
 import bud from '../../public/data/runs/p2_05_budget.json';
 import dep from '../../public/data/runs/p2_06_depth_is_frequency.json';
 import bound from '../../public/data/runs/p2_25_information_bound.json';
+import requirement from '../../public/data/runs/p2_27_requirement.json';
+import spectrum from '../../public/data/runs/p2_26_imprint_spectrum.json';
 import lib from '../../public/data/ambient.json';
 import labKhafre from '../../public/data/runs/lab_khafre.json';
 import type { TourStop } from '../viewer/Underworld';
@@ -118,14 +120,29 @@ const g24w = g24tag ? g24!.results[g24tag].p1 : undefined;
 const gatedReads = g24w ? g24w.positions_changed_near >= 5 && g24w.positions_changed_near > 3 * g24!.near_share * g24w.positions_changed : undefined;
 const seasons = (routes as unknown as { C_between_passes: { rooms: { bench: { heat: { breathing_over_imprint: number } } } } }).C_between_passes.rooms.bench.heat
   .breathing_over_imprint;
-// 10 · any way of reading the image (P2-25): the ceiling one image puts on every method
-type BS = { fisher: number; edge: number; shake_factor_for_reliable: number | null };
+// 10 · any way of reading the image (P2-25): the ceiling one image puts on every method, within the model
+type BS = { fisher: number; ceiling: number; accuracy_above_half: number };
 const bd = bound as unknown as {
   static: (BS & { case: string; stretch_peak: number })[];
   dynamic: { case: string; urban: BS; truck: BS & { worst_f_hz: number } }[];
+  points: (BS & { scr_db: number; shaking: string })[];
+  checks: { detection: { pinsker_from_exact_kl: number; likelihood_ratio: { largest_pd_minus_pfa: number } }[] };
 };
-const microEdge = bd.static[0].edge;
-const noisyEdge = bd.static[1].edge;
+const microEdge = bd.static[0].ceiling;
+const noisyEdge = bd.static[1].ceiling;
+const detOver = Math.max(...bd.checks.detection.map((d) => d.pinsker_from_exact_kl / d.likelihood_ratio.largest_pd_minus_pfa));
+// P2-27: what a detection would need, under stated conditions
+type RqRow = { L_m: number; D_necessary_m: Record<string, number> };
+const rq = requirement as unknown as {
+  acquisitions: Record<string, { frequencies: { f_hz: number; exact: RqRow[] }[] }>;
+  imprints: { label: string; f_hz: number; peak_m: number; necessary_m: number; short_by: number }[];
+};
+const rqAt = (f: number, L: number) => rq.acquisitions['giza-20250827'].frequencies.find((r) => r.f_hz === f)!.exact.find((e) => e.L_m === L)!.D_necessary_m['0.9'];
+const rqTruck = rq.imprints.filter((i) => i.label.startsWith('bench room, dynamic')).reduce((a, i) => (i.short_by < a.short_by ? i : a));
+const um = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} millimetres` : `${+(m * 1e6).toPrecision(2)} micrometres`);
+// P2-26: how long the modelled rooms ring
+type RRec = { largest_resolved_q: number | null };
+const ringQ = Math.max(...Object.values((spectrum as unknown as { rings: Record<string, { records: Record<string, RRec> }> }).rings).flatMap((r) => Object.values(r.records).map((x) => x.largest_resolved_q ?? 0)));
 const hum = bd.dynamic.find((d) => d.case === 'surface')!;
 const thin = bd.dynamic.find((d) => d.case === 'surface_favourable')!;
 const inWords = (n: number) =>
@@ -179,7 +196,7 @@ const explore = [
             <li><b>Instruments on the ground</b> find the room: travel times, echoes, whole waveforms, and the vibrator above.</li>
             <li><b>Long-wavelength radar</b> reaches about {sand('L')} m into the driest sand at L band and {sand('P')} m at P band (X band: {Math.round(sand('X') * 100)} cm); shuttle radar found buried valleys under the Sahara that way.</li>
             <li><b>Many satellite passes</b> measure ground that moves, as over voids that sink or collapse; a stable room in rock moves the ground {Math.round(seasons)} times less than the ground’s own seasons do.</li>
-            <li><b>One X-band image</b> of ordinary ground: in our model, however it is read, it beats a coin toss on the room by at most one in {inWords(1 / microEdge)} (<a href="#bound">step 10</a>).</li>
+            <li><b>One X-band image</b> of ordinary ground: in our model, however it is read, its rate of finding the room can exceed its rate of false alarms by at most one in {inWords(1 / microEdge)} (<a href="#bound">step 10</a>).</li>
           </ul>
         </div>
       </div>
@@ -458,36 +475,42 @@ const explore = [
     <section id="bound" class="step">
       <div class="words">
         <p class="num">10</p>
-        <h2>In our model, however the image is read, it beats a coin toss on the room by at most one in {inWords(1 / microEdge)}</h2>
+        <h2>In our model, however the image is read, its rate of finding the room can exceed its rate of false alarms by at most one in {inWords(1 / microEdge)}</h2>
         <p>
-          Steps 5 to 9 tested one method. This step bounds every method at once, including any not yet invented. An image
-          is made of three things: the echo from what the radar reaches, a few centimetres into the ground; the surface
-          itself; and how the surface moves during the 25-second pass. The room is 15 metres down, far past the echo, so
-          only the motion can carry it; and processing can lose what the image holds, never add to it.
+          Steps 5 to 9 tested one method. This step bounds every method at once, including any not yet invented, within a
+          stated model. An image is made of three things: the echo from what the radar reaches, a few centimetres into the
+          ground; the surface itself; and how the surface moves during the 25-second pass. The room is 15 metres down, far
+          past the echo, so only the motion can carry it; and processing can lose what the image holds, never add to it.
         </p>
         <p>
-          How much does the motion leave? Radar texture is random, like the grain of film. When a whole stretch of ground
-          moves together, the grain stays exactly as random as it was, and the image keeps no trace of that motion: not a
-          little, none. What leaves a trace is ground moving differently from place to place, which stretches the texture
-          along the satellite’s track. Over the room that stretch is at most <Sci v={bd.static[0].stretch_peak} p={0} />,
-          and it caps what any method can do: tell “room” from “no room” better than a coin toss by at most one in{' '}
-          {inWords(1 / microEdge)}. At the most restless places on Earth, one in {inWords(1 / noisyEdge)}.
+          How much does the motion leave? Radar texture is random, like the grain of film. When the whole scene moves
+          together, the grain stays exactly as random as it was, and the image keeps no trace of that motion: not a little,
+          none. What leaves a trace is ground moving differently from place to place, which stretches the texture along the
+          satellite’s track. Over the room that stretch is at most <Sci v={bd.static[0].stretch_peak} p={0} />, and in our
+          model it caps what any method can do: raise its rate of finding the room above its rate of false alarms by at most
+          one in {inWords(1 / microEdge)} (with room and no room equally likely, be right half that much more often than a
+          coin toss). At the most restless places on Earth, one in {inWords(1 / noisyEdge)}.
         </p>
         <p>
-          The cap is what the image holds, not a loose ceiling over it: the best possible detector, run on simulated
-          images, reaches it. Faster shaking reaches the room better, and the room scatters it more; a room under a roof
-          only 5 metres thick even moves the ground over it twice as much as the passing wave, though it never rings. Yet a
-          city’s traffic hum for the whole pass leaves the cap at <Sci v={hum.urban.edge} p={0} />. Only a lorry bouncing over a bump 15
-          metres from the room for all 25 seconds lifts it to <Sci v={hum.truck.edge} p={0} /> (<Sci v={thin.truck.edge} p={0} /> under
-          the thin roof), and a reliable detection would still need the ground shaken{' '}
-          {Math.round(hum.truck.shake_factor_for_reliable!).toLocaleString('en-US')} times harder than that
-          ({Math.round(thin.truck.shake_factor_for_reliable!).toLocaleString('en-US')} under the thin roof), with the method told
-          exactly how it shook.
+          The cap is a bound, not what a detector achieves: on small test images the best possible detector comes within
+          {' '}{detOver.toFixed(1)} times of it. Faster shaking reaches the room better, and the room scatters it more; a room
+          under a roof only 5 metres thick even moves the ground over it twice as much as the passing wave. Struck directly
+          and listened to for four seconds, the rooms we modelled rang only briefly (the longest-lived tone we could resolve
+          had a quality factor of {Math.round(ringQ)}). Yet a city’s traffic hum for the whole pass leaves the cap at{' '}
+          <Sci v={hum.urban.ceiling} p={0} />. Only a lorry bouncing over a bump 15 metres from the room for all 25 seconds
+          lifts it to <Sci v={hum.truck.ceiling} p={0} /> (<Sci v={thin.truck.ceiling} p={0} /> under the thin roof).
+        </p>
+        <p>
+          Turned around, the bound says what a detection would need. For this pass and ordinary ground, the room itself would
+          have to add at least {um(rqAt(80, 8))} of motion to the ground over it at the lorry’s frequencies, or
+          {' '}{um(rqAt(0.2, 8))} at the microseisms’: {inWords(rqTruck.short_by)} times what the lorry makes it add. That is a
+          requirement under stated conditions, not a proof about every conceivable mechanism: it covers anything that acts
+          through the ground’s motion in one image, and says nothing of other routes.
         </p>
       </div>
       <div class="wide routes-wrap"><Routes /></div>
       <div class="wide narrow"><Ceiling compact /></div>
-      <p class="more"><a href={`${base}/satellite/#bound`}>The derivation, its checks, and every case →</a></p>
+      <p class="more"><a href={`${base}/satellite/#bound`}>The derivation, its checks, the requirement curve, and every case →</a></p>
     </section>
 
     <section id="rescue" class="step">
@@ -498,7 +521,7 @@ const explore = [
       <div class="qa">
         <details class="q">
           <summary>What if the ground shook harder?</summary>
-          <p>At the most restless places on Earth the ground moves 70 times more than at Giza, and no way of reading the image beats a coin toss by more than one in {inWords(1 / noisyEdge)} (step 10). A lorry close by shakes the ground far harder, and faster, which the room scatters more; yet a lorry bouncing over a bump 15 metres away for the whole pass leaves any method at most <Sci v={hum.truck.edge} p={0} /> better than a coin toss. The method’s own slices fare worse: one short enough to follow such shaking blurs the ground over 30 metres.</p>
+          <p>At the most restless places on Earth the ground moves 70 times more than at Giza’s regional level, and in our model no way of reading the image raises its rate of finding the room above its false alarms by more than one in {inWords(1 / noisyEdge)} (step 10). A lorry close by shakes the ground far harder, and faster, which the room scatters more; yet a lorry bouncing over a bump 15 metres away for the whole pass leaves that margin at most <Sci v={hum.truck.ceiling} p={0} />. A detection would need the room itself to add at least {um(rqAt(80, 8))} of motion to the ground over it. The method’s own slices fare worse: one short enough to follow such shaking blurs the ground over 30 metres.</p>
         </details>
         <details class="q">
           <summary>What about a shinier target?</summary>
@@ -506,7 +529,7 @@ const explore = [
         </details>
         <details class="q">
           <summary>What about a cleverer way to read the image?</summary>
-          <p>That is step 10: it bounds every way of reading one image at once. For ordinary ground, as radar texture is modelled, motion shared by a stretch of ground leaves the texture’s statistics unchanged, and what survives of the room’s mark gives any method, however clever, at most one in {inWords(1 / microEdge)} over a coin toss; the best possible detector reaches that and no further. Bright points can be tracked, and a corner reflector over the room raises the cap only to <Sci v={(bound as unknown as { points: { scr_db: number; shaking: string; edge: number }[] }).points.find((p) => p.scr_db > 40 && p.shaking === 'microseisms')!.edge} p={0} />. <a href={`${base}/satellite/#bound`}>The bound, derived and checked</a>.</p>
+          <p>That is step 10: it bounds every way of reading one image at once, within a model. For ordinary ground, as radar texture is modelled, motion shared by the whole scene leaves the texture’s statistics unchanged, and what survives of the room’s mark lets no method, however clever, raise its rate of finding the room above its false alarms by more than one in {inWords(1 / microEdge)}; on small test images the best possible detector comes within {detOver.toFixed(1)} times of that bound. Bright points can be tracked, and a corner reflector over the room raises the cap only to <Sci v={bd.points.find((p) => p.scr_db > 40 && p.shaking === 'microseisms')!.ceiling} p={0} />. What the model leaves out (the echo at longer wavelengths, reflectivity changing during the pass, many images) is listed with the bound. <a href={`${base}/satellite/#bound`}>The bound, derived and checked</a>.</p>
         </details>
         <details class="q">
           <summary>Then why do the published pictures look so convincing?</summary>
@@ -526,7 +549,7 @@ const explore = [
         </details>
         <details class="q">
           <summary>Isn’t this only a simulation?</summary>
-          <p>Each step is checked on the real satellite image. The real image’s own numbers reproduce the method’s “coherence” exactly; a patch of the real image made to sway is nearly invisible to the method’s reading ({Math.round(blk.gain_complex * 100)}%). The chamber’s mark and how far off it is are models, and only as good as the models are. <a href={`${base}/satellite/#settle`}>What would settle it</a>.</p>
+          <p>Each step is checked on the real satellite image. The real image’s own numbers reproduce the method’s “coherence” exactly; a patch of the real image made to sway is nearly invisible to the method’s reading ({Math.round(blk.gain_complex * 100)}%). The chamber’s mark and how far off it is are models, and only as good as the models are; none of it has yet been checked against ground motion measured on the plateau during a pass. <a href={`${base}/satellite/#settle`}>What would settle it</a>.</p>
         </details>
       </div>
     </section>

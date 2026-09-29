@@ -530,10 +530,14 @@ in uniform rock, quasi-static strain, the regional microseism level, dry sand's 
 Together they show that the methods tested do not establish subsurface imaging; they do not prove every conceivable
 route impossible. R16's resolution bound (1.10 m s at Giza, P2-01) limits short looks; strong prior information could
 in principle detect weak changes below it. 17 is of a different kind: a theorem that bounds every way of reading one
-image at once, tested or not, including methods with strong prior information, for ordinary ground modelled as fully
-developed speckle (bright points bounded separately, and any scene by a genie that knows the reflectivity). Its inputs,
-the chamber's imprint (2, 18) and the ambient levels, are models; within them it is reached by the best detector, so it
-is what the image holds, not a loose ceiling. It does not cover penetration at longer wavelengths or many images.
+image at once, tested or not, including methods with strong prior information, within a stated measurement model:
+ordinary ground as fully developed speckle with no reference image, the Doppler-to-time relation (checked against
+pulse-by-pulse physics), bright points bounded separately, and any scene by a genie that knows the reflectivity. Its
+inputs, the chamber's imprint (2, 18) and the regional ambient levels, are models. It is a bound: on small test images
+the best test comes within a factor of about 1.3 to 1.4 of it, not onto it. 19 turns it into a conditional requirement
+on the motion a room would have to add to the ground. None of it covers penetration at longer wavelengths, changes of
+reflectivity during the pass, texture between speckle and bright points, or many images; and none of it has been
+checked against measured ground motion and radar data taken together.
 
 ### Independent review, 28 September 2026: corrections adopted
 
@@ -562,6 +566,46 @@ several component checks and found overstatements on both sides. Adopted:
 
 None of the review's corrections was rejected; where it asked for a measurement (the six-second transfer function)
 the measurement was made (P2-15).
+
+### Second review, 29 September 2026: corrections adopted
+
+A second independent review of the branch that added P2-25 and P2-26 (commit d7e9b9e) asked that they not be presented
+as a completed proof. Adopted:
+
+- **The finite change.** KL = a^2 F / 2 is local. The bound now controls the finite change from no chamber to the
+  chamber rigorously within the model: whitening the covariance change into E, KL <= |E|_F^2 / (2 (1 - |E|_F)) with
+  |E|_F <= sqrt(F) + eps, eps an explicit power-series remainder (`sarsim.information.remainder`), checked against the
+  exact KL on small images (P2-25).
+- **Probability terms.** The bound caps detection rate minus false-alarm rate (the total variation, TV); with two equally
+  likely cases the best accuracy exceeds a coin toss by TV / 2. The site had called TV "beating a coin toss by"; corrected
+  everywhere.
+- **A bound, not an attained value.** The Cramer-Rao check is an estimation check; it does not show that any test reaches
+  Pinsker's ceiling. Detection is now measured on its own: the exact likelihood-ratio test and the score test, with
+  their detection curves, beside Pinsker's bound from the exact KL. "Reached by the best detector" is withdrawn.
+- **Extrapolation labelled.** "1.3 billion times stronger shaking" was the linearised information extrapolated, within
+  the model, to a reliable detection. The run labels it so; the site replaces it with the requirement curve (P2-27),
+  computed exactly within the model.
+- **A conditional requirement, not a universal exclusion.** P2-27 states its acquisition, scattering model, footprint and
+  target; it covers mechanisms that act through the surface's motion in one image and says nothing of routes outside the
+  model or of mechanisms not specified. The phase-only argument covers motion; changes of reflectivity during the pass
+  are outside it.
+- **The Doppler-to-time relation** the bound rests on is checked against pulse-by-pulse physics (P2-25): where the two
+  differ the model holds more information, by an edge effect that fades as the time-bandwidth product grows.
+- **Regional, not local.** The ambient levels are regional (Kottamya, 67 km east) and are not upper limits at the
+  pyramids.
+- **Resonance.** P2-26's "Q" was the width of the largest response's envelope, not a modal Q; the S-wave case's band was
+  cut by the model's upper limit, so its 3.5 was no measurement at all; and records of 0.3-0.5 s cannot exclude a
+  long-lived narrow mode (a 60 Hz mode with Q 600 decays by 1/e in 3.2 s). P2-26 now reports the envelope's width as
+  such, rings each room on its ceiling for 4 s beside intact rock, resolves modal Q from the spectrum's peaks at 0.25 Hz,
+  and follows a passing wave for 4 s; its statement is limited to the rooms, excitations and windows modelled.
+- **Shortcuts dropped.** "At strains of 10^-11 nothing else is conceivable" (rock nonlinearity) and the air-impedance
+  argument against an air resonance (a quality factor near 190) are withdrawn; the air inside a room and the rock's
+  nonlinear response are listed as not modelled.
+- **Measured validation has not been done.** P2-22 and P2-23 compare geophones and the satellite in simulation. A test
+  against ground motion measured on the plateau during a pass, or shaker and reflector data with instruments on them,
+  remains a separate, unfinished task.
+- **Next, in the order the review gave:** two depths and hollow against solid (P2-28), then a frozen, blinded calibration
+  test (`BLIND_TEST.md`, written before any product for it exists).
 
 ### Motion measured from orbit, 2026
 
@@ -636,7 +680,17 @@ corner-reflector threshold P2-05 computes, so P2-05's thresholds are generous to
   generous. The imprint is P2-04's static one below 8 Hz and P2-26's dynamic one above, for one chamber in uniform bare
   rock without attenuation; the scattered wave is carried unattenuated across the whole scene by a bound.
 - Giza's own ambient level is unmeasured in the open literature; the microseism level is from
-  Kottamya, 67 km east (M1-01), bracketed by Peterson's global models.
+  Kottamya, 67 km east (M1-01), bracketed by Peterson's global models. None of these levels is an upper limit at the
+  pyramids, whose traffic and visitors add their own shaking.
+- Nothing here has been validated against measurement taken together: no ground motion recorded on the plateau during a
+  pass, no shaker or corner-reflector data with instruments on them read alongside the radar. P2-22 and P2-23 compare
+  geophones and the satellite in simulation. This is a separate, unfinished task.
+- P2-27's requirement is conditional: on the acquisition, fully developed speckle without a reference, one coherent
+  pattern at its worst phase, and the stated target. It does not exclude mechanisms that are not specified, nor routes
+  outside the model (reflectivity changing during the pass, the echo from beneath at longer wavelengths, texture between
+  speckle and bright points, many images).
+- P2-26 covers the rooms, excitations and observation windows it models: fractured, layered or coupled structures, the
+  air inside a room and the rock's nonlinear response are not modelled.
 - The known-chamber test at Khufu on two real passes (2022 and 2025) is run locally and not yet published. Stated in
   advance: if a frozen method scores the surveyed chambers above matched controls, blind, on both passes, that would
   weaken 1 and the scope of 4; if it does not, it strengthens them. P2-16 makes the same comparison, in the open, for

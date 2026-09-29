@@ -256,9 +256,14 @@ Not being built now; recorded so they are designed for, not lost.
 7. **A colour-scale lesson in the lab:** the same volume in a perceptually ordered scale and in a rainbow scale, to show
    how hue bands make structure appear.
 8. **The mechanism the method's proponents propose** (an air column resonating in the chamber), once its excitation,
-   damping and coupling are specified well enough to compute the surface motion. P2-26 bounds it for now: the air has
-   1/19,000 of the rock's impedance, so it would need a quality factor near 190 to press on the walls with 1% of the
-   rock's own stress; the elastic room itself does not ring. P2-25 bounds whatever surface motion any mechanism makes.
+   damping and coupling are specified well enough to compute the surface motion. Not modelled yet: the solver leaves the
+   air out (the earlier impedance argument is withdrawn). P2-27 states what any such mechanism would have to deliver:
+   the room-specific motion on the ground a detection in one image needs, under stated conditions.
+9. **Measured validation** (kept apart, unfinished): ground motion recorded on the plateau during a pass, or shaker and
+   corner-reflector data with instruments on them, read alongside the radar; everything so far is simulated.
+10. **The frozen, blinded calibration test** (`BLIND_TEST.md`): the synthetic products and sealed key here, the
+   published focusing in the cloud, the gated reconstruction on the desktop; the two-depth and hollow-against-solid test
+   through the gated reconstruction too (P2-28 runs the published chain only, the gated code being desktop-only).
 
 ## Open decisions
 

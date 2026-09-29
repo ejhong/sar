@@ -7,7 +7,7 @@
 import bound from '../../public/data/runs/p2_25_information_bound.json';
 import imp from '../../public/data/runs/p2_04_chamber_imprint.json';
 
-const b = bound as unknown as { penetration_db_x_band: number; stretch_seconds: number; static: { edge: number }[] };
+const b = bound as unknown as { penetration_db_x_band: number; stretch_seconds: number; static: { ceiling: number }[] };
 const SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹';
 const sup = (n: number) => String(n).replace('-', '⁻').replace(/\d/g, (d) => SUP[+d]);
 const sci = (v: number, p = 1) => {
@@ -27,7 +27,7 @@ const frac = imp.cases[0].imprint_over_motion as number;
     <div class="path closed">
       <b>Its echo</b>
       <span>X-band waves reach about 30 cm into the driest sand; the room’s roof lies at least {pen} dB down</span>
-      <em>closed</em>
+      <em>noted, not pursued</em>
     </div>
     <div class="path surface">
       <b>The surface</b>
@@ -36,8 +36,8 @@ const frac = imp.cases[0].imprint_over_motion as number;
     </div>
     <div class="path open">
       <b>How the surface moves in the 25 s pass</b>
-      <span>the room changes the trembling by {sci(frac)}; motion shared by a stretch of ground leaves no trace in the texture, and only the stretch along track that its differences make survives</span>
-      <em>at most {sci(b.static[0].edge, 1)} over a coin toss</em>
+      <span>the room changes the trembling by {sci(frac)} (a model); in speckle, motion shared by the whole scene leaves no trace in the texture; only motion that differs from place to place leaves any</span>
+      <em>detection − false alarm at most {sci(b.static[0].ceiling, 1)}</em>
     </div>
   </div>
   <div class="node image">

@@ -1,9 +1,9 @@
 ---
 /**
- * The ceiling on every method (P2-25). For each source of shaking, the most any way of reading one image of ordinary
- * ground can raise its detection rate above its false-alarm rate on the one-chamber bench: sqrt(F) / 2, F the Fisher
- * information the image holds about the chamber's imprint. A log axis from a trillionth to certainty, with the line a
- * reliable detection needs (95% found, 5% false alarms).
+ * The ceiling on every method, within the model (P2-25). For each source of shaking, the most any way of reading one
+ * image of ordinary ground can raise its detection rate above its false-alarm rate on the one-chamber bench: the total
+ * variation, bounded from the Fisher information with an explicit remainder (Pinsker, Bretagnolle-Huber). A log axis from
+ * a trillionth to certainty, with the line a reliable detection needs (95% found, 5% false alarms: 0.9).
  */
 import bound from '../../public/data/runs/p2_25_information_bound.json';
 
@@ -12,11 +12,21 @@ interface Props {
 }
 const { compact = false } = Astro.props;
 
-type S = { fisher: number; edge: number; shake_factor_for_reliable: number | null };
+type S = { fisher: number; ceiling: number; accuracy_above_half: number };
 type Static = S & { case: string; rms_velocity_m_s: number };
 type Dyn = { case: string; urban: S & { band_hz: number[] }; truck: S & { worst_f_hz: number } };
 type Pt = S & { point: string; scr_db: number; shaking: string };
-const b = bound as unknown as { static: Static[]; dynamic: Dyn[]; points: Pt[]; genie: (S & { case: string })[]; claimed: { microseisms: S } };
+type Det = { pinsker_from_exact_kl: number; likelihood_ratio: { largest_pd_minus_pfa: number } };
+const b = bound as unknown as {
+  static: Static[];
+  dynamic: Dyn[];
+  points: Pt[];
+  genie: (S & { case: string })[];
+  claimed: { microseisms: S };
+  checks: { detection: Det[] };
+};
+// how far the bound sits above what the best test achieves on small test images
+const over = Math.max(...b.checks.detection.map((d) => d.pinsker_from_exact_kl / d.likelihood_ratio.largest_pd_minus_pfa));
 const st = b.static;
 const surf = b.dynamic.find((d) => d.case === 'surface')!;
 const refl = b.points.find((p) => p.scr_db > 40 && p.shaking === 'microseisms')!;
@@ -24,14 +34,14 @@ const genie = b.genie[0];
 
 type Row = { name: string; sub: string; edge: number; kind: 'natural' | 'cultural' | 'helped' | 'claim' };
 const rows: Row[] = [
-  { name: 'Giza’s trembling', sub: 'microseisms, as measured nearby', edge: st[0].edge, kind: 'natural' },
-  { name: 'The most restless ground on Earth', sub: 'the noisiest stations, 71× Giza', edge: st[1].edge, kind: 'natural' },
-  { name: 'Faster trembling', sub: '1–3 and 3–8 Hz, as measured', edge: Math.max(st[2].edge, st[3].edge), kind: 'natural' },
-  { name: 'A city’s traffic hum', sub: `urban background, ${surf.urban.band_hz[0]}–${surf.urban.band_hz[1]} Hz, all pass`, edge: surf.urban.edge, kind: 'cultural' },
-  { name: 'A lorry over a bump, 15 m away', sub: `all 25 s, at its worst (${Math.round(surf.truck.worst_f_hz)} Hz)`, edge: surf.truck.edge, kind: 'cultural' },
-  { name: 'A corner reflector over the room', sub: `${Math.round(refl.scr_db)} dB, Giza’s trembling`, edge: refl.edge, kind: 'helped' },
-  { name: 'Told the ground’s texture', sub: 'a genie; Giza’s trembling', edge: genie.edge, kind: 'helped' },
-  { name: 'The claimed deep structure', sub: '80 m at 1,220 m, Giza’s trembling', edge: b.claimed.microseisms.edge, kind: 'claim' },
+  { name: 'Giza’s trembling', sub: 'microseisms, the regional level (67 km east)', edge: st[0].ceiling, kind: 'natural' },
+  { name: 'The most restless ground on Earth', sub: `the noisiest stations, ${Math.round(st[1].rms_velocity_m_s / st[0].rms_velocity_m_s)}× that level`, edge: st[1].ceiling, kind: 'natural' },
+  { name: 'Faster trembling', sub: '1–3 and 3–8 Hz, the regional levels', edge: Math.max(st[2].ceiling, st[3].ceiling), kind: 'natural' },
+  { name: 'A city’s traffic hum', sub: `urban background, ${surf.urban.band_hz[0]}–${surf.urban.band_hz[1]} Hz, all pass`, edge: surf.urban.ceiling, kind: 'cultural' },
+  { name: 'A lorry over a bump, 15 m away', sub: `all 25 s, at its worst (${Math.round(surf.truck.worst_f_hz)} Hz)`, edge: surf.truck.ceiling, kind: 'cultural' },
+  { name: 'A corner reflector over the room', sub: `${Math.round(refl.scr_db)} dB, Giza’s trembling`, edge: refl.ceiling, kind: 'helped' },
+  { name: 'Told the ground’s texture', sub: 'a genie; Giza’s trembling', edge: genie.ceiling, kind: 'helped' },
+  { name: 'The claimed deep structure', sub: '80 m at 1,220 m, by scaling', edge: b.claimed.microseisms.ceiling, kind: 'claim' },
 ];
 const shown = compact ? rows.filter((r) => r.kind !== 'helped') : rows;
 
@@ -58,7 +68,7 @@ const colour = { natural: 'var(--cinnabar)', cultural: 'var(--cinnabar)', helped
 const reliable = 0.9;
 ---
 <figure class="ceiling">
-  <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="The most any method can beat a coin toss by, for each source of shaking, on a logarithmic scale">
+  <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="The most any method can raise its detection rate above its false-alarm rate, for each source of shaking, on a logarithmic scale">
     {decades.map((e) => (
       <g>
         <line x1={x(10 ** e)} x2={x(10 ** e)} y1={top - 6} y2={top + shown.length * rowH} class="grid" />
@@ -67,7 +77,7 @@ const reliable = 0.9;
     ))}
     <line x1={x(reliable)} x2={x(reliable)} y1={top - 16} y2={top + shown.length * rowH} class="reliable" />
     <text x={x(reliable) - 4} y={top - 10} text-anchor="end" class="reliable-label">a reliable detection</text>
-    <text x={L + 2} y={top + shown.length * rowH + 36} text-anchor="start" class="axis">beats a coin toss by →</text>
+    <text x={L + 2} y={top + shown.length * rowH + 36} text-anchor="start" class="axis">detection rate − false-alarm rate, at most →</text>
     {shown.map((r, i) => {
       const y = top + i * rowH + rowH / 2;
       const c = colour[r.kind];
@@ -85,10 +95,12 @@ const reliable = 0.9;
   </svg>
   <figcaption>
     <slot>
-      For each source of shaking, the most that any way of reading one image of ordinary ground, however clever, can raise
-      its rate of finding the chamber above its rate of false alarms: the square root of the information the image holds,
-      halved. The method is allowed to know the shaking exactly and the image is taken without receiver noise; both only
-      raise the ceiling. A reliable detection, 95% found with 5% false alarms, needs 0.9.
+      For each source of shaking, the most that any way of reading one image of ordinary ground can raise its rate of
+      finding the chamber above its rate of false alarms, within the model: ordinary ground as fully developed speckle,
+      the chamber’s imprint as the lab’s solver finds it, the method told the shaking exactly and the image without
+      receiver noise (both only raise the ceiling). With the two cases equally likely, the best accuracy exceeds a coin
+      toss by half this. A reliable detection, 95% found with 5% false alarms, needs 0.9. A bound, not what a detector
+      reaches: on small test images the best detector gets within {over.toFixed(1)} times of it.
     </slot>
   </figcaption>
 </figure>
