@@ -20,6 +20,8 @@ import own from '../../public/data/runs/p2_14_own_lines.json';
 import resp from '../../public/data/runs/p2_15_pair_response.json';
 import khufu from '../../public/data/runs/p2_16_khufu_volume.json';
 import plateau from '../../public/data/runs/p2_17_plateau_control.json';
+import pulses from '../../public/data/runs/p2_18_echo_validation.json';
+import known from '../../public/data/runs/p2_19_known_vibration.json';
 import passive from '../../public/data/runs/p1_04_ambient.json';
 import echo from '../../public/data/runs/p1_03_scattered.json';
 import Figure from '../components/Figure.astro';
@@ -236,6 +238,17 @@ const kFmt = (v: number | null) => (v === null ? '–' : v.toFixed(2));
 const kP = plateau.supported_positions as unknown as Record<string, number>;
 const kPV = (plateau.stats as unknown as Record<string, { voxels_with_score: number }>).real_p1.voxels_with_score;
 const kHeading = `Across the whole Great Pyramid, the gated reconstruction’s scores ${kHigher ? 'run higher' : 'are no higher'} inside the surveyed chambers than at the same depths elsewhere${kLikeCopy ? ', and a motionless copy draws a volume of the same kind' : ''}`;
+// ---- P2-18, P2-19
+const eRes = pulses.resolution as { azimuth_m: number; azimuth_theory_m: number; range_m: number; range_theory_m: number };
+const eSl = pulses.slice_is_stretch as { corr_same: number; corr_mirror: number | null }[];
+const eSame = eSl.map((x) => x.corr_same);
+const eMirror = Math.max(...eSl.filter((x) => x.corr_mirror !== null).map((x) => x.corr_mirror as number));
+const ePairs = pulses.pairs_pulses_vs_injection as { v_m_s: number; f_hz: number; pulses_px: number; injection_px: number }[];
+const eBig = ePairs.filter((x) => Math.max(x.pulses_px, x.injection_px) >= 0.02);
+type KRow = { v_m_s: number; f_hz: number; tracker: { recovered_m_s: number; truth_look_average_m_s: number; se_m_s: number } | null; pipeline_shift_amp_px?: { azimuth: number }; passes_at_reflector: Record<string, number>; passing_positions: Record<string, Record<string, number[]>> };
+const kRows = Object.entries(known.results as unknown as Record<string, KRow>);
+const kMoving = kRows.filter(([, r]) => r.v_m_s > 0);
+const kElsewhere = kRows.flatMap(([, r]) => Object.values(r.passing_positions['1']).map((v) => v.length));
 ---
 <Doc
   title="The satellite over the same ground"
@@ -261,6 +274,7 @@ const kHeading = `Across the whole Great Pyramid, the gated reconstruction’s s
     { id: 'real', label: 'The real pass' },
     { id: 'rescue', label: 'What could change it' },
     { id: 'settle', label: 'What would settle it' },
+    { id: 'benchmark', label: 'The benchmark, begun' },
     { id: 'record', label: 'Corrections' },
   ]}
 >
@@ -293,7 +307,8 @@ const kHeading = `Across the whole Great Pyramid, the gated reconstruction’s s
       <tbody>
         <tr><td>The published and reconstructed depth axes are frequency axes of the registration, with a repeat and a mirror</td><td>established</td><td>the processing’s algebra (P2-06), its code (P2-13, P2-14), an independent check</td><td>a physical model deriving depth from the registration, validated on known voids</td></tr>
         <tr><td>Correlating one image’s looks registers little of ordinary ground’s motion</td><td>measured, for that estimator</td><td>P2-03 on real texture; an exact identity for whole images, an approximation for patches</td><td>an estimator shown to recover planted ground motion on real texture</td></tr>
-        <tr><td>The six-second pairs register little of a vibration</td><td>measured in simulation</td><td>P2-15, with motion put in through the Doppler-time mapping</td><td>pulse-level simulations, or shaker and reflector data, showing more</td></tr>
+        <tr><td>The six-second pairs register little of a vibration</td><td>measured in simulation</td><td>P2-15, confirmed pulse by pulse (P2-18)</td><td>shaker and reflector data showing more</td></tr>
+        <tr><td>The gated reconstruction does not respond to a known vibration a standard tracker measures</td><td>measured in simulation</td><td>synthetic products through its own loader (P2-19)</td><td>a frozen setting at which it recovers a planted vibration’s frequency, place and amplitude</td></tr>
         <tr><td>The gated reconstruction’s patterns also appear with nothing moving and nothing inside</td><td>measured, not a calibrated rate</td><td>two synthetic twins and open desert (P2-13, P2-14)</td><td>a frozen recipe that beats nulls with the same correlations on withheld truth</td></tr>
         <tr><td>A small chamber changes ambient motion by under a ten-thousandth; one dwell falls far short</td><td>modelled</td><td>uniform rock, quasi-static strain, regional ambient level (P2-04, P2-05)</td><td>motion measured on the plateau during a pass; resonant or larger structures</td></tr>
         <tr><td>Other routes carry far too little at X band</td><td>modelled estimates</td><td>penetration, loads, heat, surface (P2-11)</td><td>measured penetration in Mokattam limestone; deformation over known voids</td></tr>
@@ -968,7 +983,7 @@ const kHeading = `Across the whole Great Pyramid, the gated reconstruction’s s
     <h2>What would settle it: one frozen recipe reproduced, a motion test with ground truth, and a blind test on known voids</h2>
     <div class="grid-3">
       <div class="note-card"><h3>Reproduce one nominated result</h3><p>Take one figure the method’s proponents consider successful, with its image, exact geometry, code version, settings and plotting frozen and hashed, and have an independent reviewer regenerate it. Then run that frozen recipe on motionless copies, open ground and a planted motion. So far, attractive figures and negative tests have concerned different recipes.</p></div>
-      <div class="note-card"><h3>Show that the estimator measures motion</h3><p>Run the frozen pipeline on stationary scenes, on moving targets simulated from independent physics, and preferably on shaker or corner-reflector data with instruments on them at the same time. Sweep frequency and amplitude, 0.26 and 3.66 Hz included, and score recovery before the gates as well as after, beside an estimator already validated for vibrometry, so that a faulty injection is not mistaken for a failed method.</p></div>
+      <div class="note-card"><h3>Show that the estimator measures motion</h3><p>Run the frozen pipeline on stationary scenes, on moving targets simulated from independent physics, and preferably on shaker or corner-reflector data with instruments on them at the same time. Sweep frequency and amplitude, 0.26 and 3.66 Hz included, and score recovery before the gates as well as after, beside an estimator already validated for vibrometry, so that a faulty injection is not mistaken for a failed method. Begun below with synthetic products (P2-19).</p></div>
       <div class="note-card"><h3>Predict known voids blind</h3><p>Choose known voids and matched surveyed controls and withhold their labels. Fix the wavelength, line placement, gates and scoring in advance; predict places, depths and sizes with tolerances; count false positives as well as hits; use a site or pass not used for calibration. Before reading stairs or spirals, a forward model built on independent wave and radar physics should tell a plain column, a spiral and nothing apart.</p></div>
     </div>
     <p class="note">
@@ -977,6 +992,47 @@ const kHeading = `Across the whole Great Pyramid, the gated reconstruction’s s
       the pairs that registers more than ours. A bounded validation of this kind is worth more than further compelling
       pictures, whichever way it comes out.
     </p>
+  </section>
+
+  <section id="benchmark">
+    <h2>The benchmark has begun: the simulator holds up against pulses, and a vibration a tracker measures leaves the gated pipeline silent</h2>
+    <div class="grid-2">
+      <div class="note-card">
+        <span class="tag simulated">simulated pulse by pulse · P2-18</span>
+        <h3>The radar simulator, checked against pulses</h3>
+        <p>A second simulator computes what the radar records pulse by pulse, from every scatterer’s exact distance at each
+        moment, displaced by its own motion, and forms the image by back-projection on the product’s grid. It focuses a point
+        to {(eRes.azimuth_m * 100).toFixed(2)} cm in azimuth against {(eRes.azimuth_theory_m * 100).toFixed(2)} cm in theory. Its frequency
+        slices match the images formed from only the matching stretches of pulses, {Math.min(...eSame).toFixed(3)} to
+        {' '}{Math.max(...eSame).toFixed(3)} in complex correlation, with the mirrored slices at {eMirror.toFixed(3)}: a Doppler slice is a
+        stretch of the pass, shown by a calculation that never assumes it. The fast synthesizer’s image of the same scatterers
+        matches it to {(pulses.fast_vs_pulses as { corr_complex: number }).corr_complex.toFixed(2)}, and a steady
+        {' '}{((pulses.steady_velocity as { v_m_s: number }).v_m_s * 1e3).toFixed(0)} mm/s recession shifts the image
+        {' '}{Math.abs((pulses.steady_velocity as { shift_m: number }).shift_m * 100).toFixed(1)} cm against
+        {' '}{Math.abs((pulses.steady_velocity as { theory_m: number }).theory_m * 100).toFixed(1)} cm from theory. Through the six-second
+        pairs, pulses and the fast injection agree where the shifts are resolvable
+        ({eBig.map((x) => `${x.pulses_px.toFixed(3)} and ${x.injection_px.toFixed(3)} px at ${(x.v_m_s * 1e3).toFixed(0)} mm/s, ${x.f_hz.toFixed(2)} Hz`).join('; ')}),
+        and the rest sit at or below one rounding step in both.</p>
+      </div>
+      <div class="note-card">
+        <span class="tag simulated">synthetic products · P2-19</span>
+        <h3>A known vibration: a tracker measures it, the gated pipeline does not register it</h3>
+        <table class="data compact">
+          <thead><tr><th>the reflector vibrates</th><th class="num">tracker reads</th><th class="num">pipeline’s shift</th><th class="num">passes there</th></tr></thead>
+          <tbody>
+            {kMoving.map(([, r]) => <tr><td>{(r.v_m_s * 1e3).toFixed(0)} mm/s at {r.f_hz.toFixed(2)} Hz</td><td class="num">{(r.tracker!.recovered_m_s * 1e3).toFixed(1)} ± {(r.tracker!.se_m_s * 1e3).toFixed(1)} of {(r.tracker!.truth_look_average_m_s * 1e3).toFixed(1)} mm/s</td><td class="num">{r.pipeline_shift_amp_px!.azimuth.toFixed(4)} px</td><td class="num">{r.passes_at_reflector['1']}</td></tr>)}
+          </tbody>
+        </table>
+        <p>Synthetic products in the ICEYE layout, read by the reconstruction’s own loader unchanged, hold static speckle and a
+        corner reflector 50 dB above it, simulated pulse by pulse. The same files carry a vibration a standard tracker reads
+        through 50 ms looks. The gated pipeline’s shifts at the reflector move by about a thousandth of a pixel at its own
+        modes’ frequencies, it passes nothing at the reflector at any support, and it passes {Math.min(...kElsewhere)} to
+        {' '}{Math.max(...kElsewhere)} positions per line in the static speckle around it. As a measurement control it fails
+        at these settings: it does not respond to a vibration that is there and measurable.</p>
+      </div>
+    </div>
+    <RunDetails manifest={pulses.manifest} />
+    <RunDetails manifest={known.manifest} />
   </section>
 
   <section id="record">

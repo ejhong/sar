@@ -930,5 +930,88 @@
    "threads": 16,
    "cpus": 16
   }
+ },
+ "p2_18_echo_validation": {
+  "id": "p2_18_echo_validation",
+  "title": "The radar simulator, checked against pulses",
+  "date": "2026-09-29",
+  "started_utc": "2026-09-29T04:54:50+00:00",
+  "runtime_s": 388.1,
+  "commit": "994469d",
+  "params": {
+   "acquisition": "giza-20220715",
+   "prf_simulated": 1000.0,
+   "V_eff_m_s": 7353.943915,
+   "bandwidth_hz": 300000000.0,
+   "dwell_s": 24.56232,
+   "gated_module_sha256": "3e1154c11274b896b91e262198576ffd750732709ad08ac00c6892c4ea5e1b1d"
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  }
+ },
+ "p2_19_known_vibration": {
+  "id": "p2_19_known_vibration",
+  "title": "A known vibration through the unchanged pipeline",
+  "date": "2026-09-29",
+  "started_utc": "2026-09-29T05:03:23+00:00",
+  "runtime_s": 1007.2,
+  "commit": "a46ecd7",
+  "params": {
+   "acquisition": "giza-20220715",
+   "shape": [
+    8192,
+    384
+   ],
+   "scr_db": 50.0,
+   "cases": [
+    [
+     "still",
+     0.0,
+     0.0
+    ],
+    [
+     "mode1_5mm",
+     0.005,
+     1.0691
+    ],
+    [
+     "mode3_5mm",
+     0.005,
+     3.2074
+    ],
+    [
+     "slow_20mm",
+     0.02,
+     0.26
+    ]
+   ],
+   "track_rows": [
+    -8,
+    -4,
+    0,
+    4,
+    8
+   ],
+   "supports": [
+    1,
+    2,
+    4,
+    5
+   ],
+   "gated_module_sha256": "3e1154c11274b896b91e262198576ffd750732709ad08ac00c6892c4ea5e1b1d",
+   "gated_profile_sha256": "ae84cade31f7e5ffa9b4daa0eba152649d2afc7f1655415bad38553f4f4d69aa"
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  }
  }
 }
