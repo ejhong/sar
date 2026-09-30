@@ -208,7 +208,7 @@ const explore = [
             <li><b>Instruments on the ground</b> find the room: travel times, echoes, whole waveforms, and the vibrator above.</li>
             <li><b>Long-wavelength radar</b> reaches about {sand('L')} m into the driest sand at L band and {sand('P')} m at P band (X band: {Math.round(sand('X') * 100)} cm); shuttle radar found buried valleys under the Sahara that way.</li>
             <li><b>Many satellite passes</b> measure ground that moves, as over voids that sink or collapse; a stable room in rock moves the ground {Math.round(seasons)} times less than the ground’s own seasons do.</li>
-            <li><b>One X-band image</b> of ordinary ground: in our model, however it is read, its rate of finding the room can exceed its rate of false alarms by at most one in {inWords(1 / microEdge)} (<a href="#bound">step 10</a>).</li>
+            <li><b>One X-band image</b> of ordinary ground: in our model, however it is read, its rate of finding the room can exceed its rate of false alarms by at most one in {inWords(1 / microEdge)}; even beside a bouncing lorry it finds a shallow room, its place or its shape at most {Math.round(100 * (0.05 + bmMaxL1))}% of the time at 5% false alarms (<a href="#bound">step 10</a>, <a href={`${base}/proof/`}>the proof</a>).</li>
           </ul>
         </div>
       </div>
@@ -495,7 +495,7 @@ const explore = [
     <section id="bound" class="step">
       <div class="words">
         <p class="num">10</p>
-        <h2>In our model, however the image is read, its rate of finding the room can exceed its rate of false alarms by at most one in {inWords(1 / microEdge)}</h2>
+        <h2>In our model, however one image is read, it cannot reliably find a room: one in {inWords(1 / microEdge)} better than chance under the ground’s own trembling, and at most {Math.round(100 * (0.05 + bmMaxL1))}% found beside a bouncing lorry</h2>
         <p>
           Steps 5 to 9 tested one method. This step bounds every method at once, including any not yet invented, within a
           stated model. An image is made of three things: the echo from what the radar reaches, a few centimetres into the

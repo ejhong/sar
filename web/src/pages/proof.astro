@@ -559,8 +559,9 @@ const conc = (r: DRes) => r.over_room / r.elsewhere;
       Corrected on 30 September after two independent reviews. The solid curves were first described as the motion any
       mechanism must supply; they hold only for the smooth pattern computed. The requirement for every pattern is on the
       displacement integral <i>E</i> = ∫ max<sub>t</sub> |Δ<i>u</i><sub>los</sub>|² d<i>A</i> (m⁴: an integrated squared
-      displacement envelope, not a mechanical energy). Under strong shaking only the oracle’s version is valid: the ground
-      without a room already moves with the source, and the speckle certificate has no proved reference for that world.
+      displacement envelope, not a mechanical energy). Under strong shaking the whole-image certificate has no valid reference (the ground
+      without a room already moves with the source), so its curve applies to quiet ground; the oracle’s applies under any
+      shaking, and the benchmark above bounds a single image under a lorry line by line.
     </p>
     <div class="grid-2 charts">
       <LineChart
@@ -583,7 +584,7 @@ const conc = (r: DRes) => r.over_room / r.elsewhere;
         <h3>Phase modulation, nonlinear coupling, anything</h3>
         <p>The bounds use the full complex change of the image, phase included; no spectral peak is needed. Any mechanism,
         linear or not, reaches one image only through the motion it adds. An oracle told the reflectivity, the excitation and
-        both models, with receiver noise at {rq.any_pattern?.oracle_snr_db ?? 30} dB per cell, cannot reach 95% at 5% while that
+        both models, with receiver noise at the image’s calibrated {(rq.any_pattern?.oracle_snr_db ?? 0).toFixed(1)} dB per cell, cannot reach 95% at 5% while that
         motion’s displacement integral stays below {Eor != null ? `${sci(Eor)} m⁴` : 'the boundary'}, whatever its pattern
         or time history, and whatever motion both worlds share, which cancels from its mean echoes; below
         {' '}{Eor05 != null ? `${sci(Eor05)} m⁴` : '—'} it stays within five points of chance. Every method told less
