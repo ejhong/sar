@@ -495,6 +495,16 @@ investigation's record, and what it leaves open follow.
     pictures stand at on those passes are one choice drawn twice. The same code puts the same fit at different depths on
     different passes.
 
+19. **The published pictures' rungs and rooms come from settings the paper does not state (P2-35).** As the paper states
+    the method, on the real Khafre crop the strongest column's bands correlate at 0.48 from one range position to the
+    next (beads, not rungs) and its repeat layer stands 1.2 times the column's mean (a faint block, not a room). Rungs
+    appear whenever neighbouring pixels share their shifts (averaged before focusing, 0.75 and 0.92 over 3 x 3 and 7 x 7
+    targets; 64 px patches, 0.62). A room appears only with 20 pairs taken close together, within 6% of the band (the
+    derivative protocol v1.7's spacing): 4.4 times the mean, where the paper's pairs reach at most 1.7, because a pixel's
+    shifts then change slowly from pair to pair and the method draws slow change at the surface and at each repeat.
+    Earlier wording that P2-08 "draws the same shapes" as the published pictures is corrected: it finds the same
+    ingredients, and these settings finish the look.
+
 These reasons differ in kind and strength. 4 is algebraic and holds whatever the ground does: the depth axis is a
 frequency axis with a repeat and a mirror, and no validated model turns it into a physical depth. 1 and 12 are
 measured, for particular estimators and configurations; 13 is a known-truth test of one of them, on synthetic products. 2, 3 and 8 are models with stated assumptions (a small chamber

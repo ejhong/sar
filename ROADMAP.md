@@ -104,6 +104,9 @@ Then (29 September):
   2.5 m depth steps, smoothed only across the ground (the old 4 m depth smoothing and 5 m steps kept a fifth of the 13 m
   bands); P2-34 reads the gated reconstruction's depth scale from each run: 6.17 m a turn and a 308 m repeat on the 2022
   pass, 3.80 m and 190 m on the 2025 passes, where each fit stands twice, near the surface and at its mirror.
+- **Rungs and rooms (P2-35)**: as the paper states the method its bands stay beads (0.48) and its repeat block is faint
+  (1.2 times the mean); neighbouring pixels sharing their shifts make rungs (up to 0.96), and 20 closely spaced pairs make
+  a room (4.4 times). The site's "draws the same shapes" is corrected on the satellite page, the overview and the lab.
 
 - **Start here:** `CLAUDE.md`, this file, `web/DESIGN.md`. `cd sim && uv sync` then `uv run pytest` (≈35 s here);
   `cd web && npm ci && npm run check && npm test && npm run build`. On this Mac, scikit-fmm builds only with

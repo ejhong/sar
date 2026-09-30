@@ -1637,6 +1637,43 @@
   },
   "command": "uv run python experiments/p2_34_gated_depth_scale.py"
  },
+ "p2_35_rungs_and_rooms": {
+  "id": "p2_35_rungs_and_rooms",
+  "title": "What would give the published pictures their rungs and rooms",
+  "date": "2026-09-30",
+  "started_utc": "2026-09-30T12:59:04+00:00",
+  "runtime_s": 1.9,
+  "commit": "e5d8c52",
+  "params": {
+   "crop": "the first investigation's Khafre patch (legacy real_common, giza/khafre, the 2025 pass)",
+   "patches_px": [
+    32,
+    64
+   ],
+   "pools": [
+    1,
+    3,
+    7
+   ],
+   "banks": [
+    "paper",
+    "v17"
+   ],
+   "slab_lines": 31,
+   "rungs_threshold": 0.5,
+   "room_threshold": 2.0,
+   "trend_m": 60.0,
+   "column_positions": 7
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  },
+  "command": "uv run python experiments/p2_35_rungs_and_rooms.py"
+ },
  "lab_khafre": {
   "id": "lab_khafre",
   "title": "The gated reconstruction across Khafre, from the 2022 image",

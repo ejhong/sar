@@ -12,6 +12,7 @@ import bud from '../../public/data/runs/p2_05_budget.json';
 import dep from '../../public/data/runs/p2_06_depth_is_frequency.json';
 import chain from '../../public/data/runs/p2_07_whole_chain.json';
 import pill from '../../public/data/runs/p2_08_pillars_and_boxes.json';
+import rungs from '../../public/data/runs/p2_35_rungs_and_rooms.json';
 import vsens from '../../public/data/runs/p2_09_virtual_sensors.json';
 import every from '../../public/data/runs/p2_11_every_way_in.json';
 import realpass from '../../public/data/runs/p2_12_real_pass.json';
@@ -841,8 +842,10 @@ const lk = labKhafre.results as unknown as LRes;
     <details class="fold">
       <summary><h2>The published pictures’ pillars and boxes are the method’s own arithmetic</h2></summary>
     <p class="sub">
-      The published Khafre renderings show tall columns, banded like spirals, with blocks at their feet. P2-08 draws the same
-      shapes from the real Khafre image with the published focusing, and each has a plain cause. <b>Pillars:</b> averaged over
+      The published Khafre renderings show tall columns crossed by rungs, with blocks at their feet. P2-08 finds the same three
+      ingredients in the real Khafre image with the published focusing, each with a plain cause, though as the paper states the
+      method its bands stay beads and its blocks are faint; <a href="#rungs">P2-35, below</a>, finds what turns them into rungs
+      and rooms. <b>Pillars:</b> averaged over
       a period of its depth axis, the power the method draws at a pixel is that pixel’s trajectory energy (correlation{' '}
       {pk.pillar_corr_mean_power_vs_energy.toFixed(3)}), so a pixel whose registration wanders is bright at every depth and a
       thick-slab rendering stands it up as a column. Such pixels lie where the surface is darker or changes brightness; open
@@ -869,6 +872,33 @@ const lk = labKhafre.results as unknown as LRes;
       upsampling whole patches, so that patch took minutes, where every pixel of the whole image would take about two months.
     </p>
     <RunDetails manifest={pill.manifest} />
+    {(() => {
+      type RR = { patch_px: number; bank: string; pool: number; rungs: number; room: number; average_share: number | null };
+      const rr = rungs.rows as unknown as RR[];
+      const at = (patch: number, bank: string, pool: number) => rr.find((r) => r.patch_px === patch && r.bank === bank && r.pool === pool)!;
+      const stated = at(32, 'paper', 1);
+      const v17 = at(32, 'v17', 1);
+      const paperRoom = Math.max(...rr.filter((r) => r.bank === 'paper').map((r) => r.room));
+      return (
+        <div id="rungs" class="rungs">
+          <h3>Rungs and rooms come from settings the paper does not state</h3>
+          <p class="sub">
+            As the paper states the method (50 pairs swept across the band, 32 px patches, each pixel’s shifts its own), the
+            strongest column’s bands correlate at {stated.rungs.toFixed(2)} from one range position to the next, just short of lining
+            up, and its repeat depth stands {stated.room.toFixed(1)} times the column’s mean. The bands line up into rungs whenever
+            neighbouring pixels share their shifts: averaged with their neighbours’ before focusing ({at(32, 'paper', 3).rungs.toFixed(2)}{' '}
+            over 3 × 3, {at(32, 'paper', 7).rungs.toFixed(2)} over 7 × 7), or registered on 64 px patches ({at(64, 'paper', 1).rungs.toFixed(2)}).
+            A room appears only with 20 pairs taken close together, within 6% of the band (the derivative protocol v1.7’s spacing):
+            the repeat depth stands {v17.room.toFixed(1)} times the mean, where the paper’s pairs never reach {paperRoom.toFixed(1)}. Pairs so
+            close together hardly differ, so each pixel’s shifts change slowly from pair to pair (their average carries
+            {' '}{Math.round((v17.average_share ?? 0) * 100)}% of their energy, against {Math.round((stated.average_share ?? 0) * 100)}% with the paper’s
+            pairs), and the method draws slow change at the surface and again at every repeat. None of it depends on what lies below.
+          </p>
+          <Figure src={`${base}/data/runs/p2_35_rungs_and_rooms/sections.jpg`} alt="The real Khafre section drawn nine ways: rungs appear when neighbouring pixels share their shifts; bright layers at the surface and the repeat appear with closely spaced pairs" label="The real Khafre section, nine ways" caption="the published style (a slab 31 lines thick, log scale, rainbow palette); the dotted line marks the repeat at 648 m. Left to right: the paper’s pairs with 32 px and then 64 px patches, each pixel’s shifts its own or averaged over 3 × 3 and 7 × 7 neighbours; last, 20 closely spaced pairs" aspect="2079 / 506" />
+          <RunDetails manifest={rungs.manifest} />
+        </div>
+      );
+    })()}
     </details>
   </section>
 
@@ -1263,7 +1293,7 @@ const lk = labKhafre.results as unknown as LRes;
       <div class="note-card"><h3>Other structures</h3><p>The imprint scales as volume over depth squared (checked against the solver, P2-04); the claimed deep structure scales to {(imp.claimed[0].relative_to_bench as number).toFixed(2)} of the bench chamber. Independently of any structure, Giza’s whole microseism motion is {wholeMotion.toLocaleString('en-US')} times below the plateau’s detection threshold.</p></div>
       <div class="note-card"><h3>A better estimator</h3><p>Under the textbook model of ordinary ground, fully developed speckle, the Doppler bins are independent circular Gaussians, so a phase history shared by a patch leaves the image’s distribution unchanged and no estimator can recover it from one image. Real ground departs from that model where it holds bright points, which magnitudes can track (above), and through the apparent brightness a displacement gradient makes, of order 10<sup>−11</sup> here. Other departures would need their own measurement.</p></div>
       <div class="note-card"><h3>Stricter selection</h3><p>Gates can only discard readings, never add what the image does not hold. Run unchanged on the real image, a gated version passes motionless copies of it too, passes nothing at its own settings on its own lines, and cannot pass a vibration’s own trace at any strength (<a href="#gates">above</a>).</p></div>
-      <div class="note-card"><h3>The published images</h3><p>The pipeline draws structured sections from any input: identical with and without the chamber (P2-07), the same over monuments and open desert (R1, R6), no signal over hundreds of surveyed shafts (R13), and the published appearance everywhere (R8).</p></div>
+      <div class="note-card"><h3>The published images</h3><p>The pipeline draws structured sections from any input: identical with and without the chamber (P2-07), the same over monuments and open desert (R1, R6), no signal over hundreds of surveyed shafts (R13), and, with settings the paper does not state, the published rungs and blocks (P2-35).</p></div>
       <div class="note-card"><h3>Vibration measured from orbit, 2026</h3><p>The method’s authors first applied this kind of tracking to bridges in Italy and to the Mosul Dam in 2020, without instruments on the structures at the same time. Two 2026 papers (Vattulainen et al., IEEE Access; Lotti et al., Structural Control and Health Monitoring) measure vibration from single spaceborne images against ground truth: corner reflectors on shakers in open fields, and a steel footbridge chosen because it is bright. They track isolated bright targets moving at 0.7 mm/s and up, with errors near 1 mm/s: what P2-03 says works. Their smallest motion is {Math.round(eB.measured_over_trembling).toLocaleString('en-US')} times Giza’s whole microseism motion and <Sci v={eB.measured_over_imprint} p={0} /> times the chamber’s imprint.</p></div>
       <div class="note-card"><h3>Only simulation?</h3><p>The coherence identity holds on the real crop to 10<sup>−9</sup>; the blindness is measured on real texture (1 ± 1%); the geometry is read from the product and reproduces its declared numbers; and the first investigation’s real-data controls found nothing at Giza or Sacsayhuamán.</p></div>
     </div>
@@ -1410,6 +1440,12 @@ const lk = labKhafre.results as unknown as LRes;
   }
   .second-site {
     margin-top: 28px;
+  }
+  .rungs {
+    margin-top: 28px;
+  }
+  .rungs h3 {
+    margin: 0 0 6px;
   }
 </style>
 
