@@ -1,0 +1,136 @@
+{
+ "id": "sacsayhuaman",
+ "name": "Sacsayhuamán",
+ "kind": "real",
+ "summary": "The Inca walls above Cusco, the Rodadero outcrop and the city's houses, in one satellite pass: what each method draws over megalithic walls, beside houses and open hillside.",
+ "frame": {
+  "axes": "x east, y north, z up; metres",
+  "origin": {
+   "latitude": -13.50778,
+   "longitude": -71.98222,
+   "label": "Sacsayhuamán (Wikipedia's coordinates)"
+  },
+  "vertical": "z = metres above EGM2008 (orthometric)",
+  "geoid_m": 46.2,
+  "geoid_source": "EGM2008 undulation at the origin, 46.19 m, through PROJ 9.5.1 (us_nga_egm08_25) and pyproj 3.7.2"
+ },
+ "extent": {
+  "x": [
+   -700.0,
+   1000.0
+  ],
+  "y": [
+   -1250.0,
+   700.0
+  ],
+  "z": [
+   3150.0,
+   3750.0
+  ]
+ },
+ "terrain": {
+  "type": "dem",
+  "file": "terrain.json",
+  "datum_m": 0.0
+ },
+ "cover": [],
+ "strata": [
+  {
+   "name": "Limestone (assumed)",
+   "material": "limestone",
+   "top": "surface"
+  }
+ ],
+ "structures": [],
+ "features": [],
+ "landmarks": [
+  {
+   "id": "walls",
+   "name": "The zigzag walls",
+   "position": [
+    14.6,
+    -92.7,
+    3580.6
+   ],
+   "what": "three tiers of Inca terrace walls; \"The longest of the three walls is about 400 meters. They are about 6 meters tall\" (Wikipedia)",
+   "source": "OpenStreetMap ways 431479258 and 431479257 (\"Murallas de Sacsayhuamán\", barrier=retaining_wall), the midpoint of their extent; © OpenStreetMap contributors (ODbL), read through the Overpass API on 29 September 2026"
+  },
+  {
+   "id": "muyuqmarka",
+   "name": "Muyuqmarka",
+   "position": [
+    -63.0,
+    -136.3,
+    3595.7
+   ],
+   "what": "the round tower's foundations on the hilltop behind the walls",
+   "source": "OpenStreetMap way 480267375 (historic=castle), its centre; © OpenStreetMap contributors (ODbL), read through the Overpass API on 29 September 2026"
+  },
+  {
+   "id": "rodadero",
+   "name": "Rodadero (Suchuna)",
+   "position": [
+    29.4,
+    116.8,
+    3599.7
+   ],
+   "what": "the outcrop across the esplanade from the walls, with carved seats (\"Trono del Inka\", node 5857165093)",
+   "source": "OpenStreetMap node 5857164644 (\"Suchuna\"); © OpenStreetMap contributors (ODbL), read through the Overpass API on 29 September 2026"
+  },
+  {
+   "id": "chinkana",
+   "name": "Chinkana Chica",
+   "position": [
+    153.6,
+    212.2,
+    3587.6
+   ],
+   "what": "a short passage through the rock north of the Rodadero",
+   "source": "OpenStreetMap node 5857164643 (\"Chinkana Chica\"); © OpenStreetMap contributors (ODbL), read through the Overpass API on 29 September 2026"
+  },
+  {
+   "id": "cristo",
+   "name": "Cristo Blanco",
+   "position": [
+    447.3,
+    -197.6,
+    3583.7
+   ],
+   "what": "the statue on Pukamuqu hill, east of the walls",
+   "source": "OpenStreetMap node 4746310711 (\"Cristo Blanco\"); © OpenStreetMap contributors (ODbL), read through the Overpass API on 29 September 2026"
+  },
+  {
+   "id": "san-blas",
+   "name": "San Blas church",
+   "position": [
+    856.2,
+    -788.0,
+    3431.0
+   ],
+   "what": "the church at the heart of the San Blas quarter's houses",
+   "source": "OpenStreetMap way 23799145 (\"San Blas\", amenity=place_of_worship); © OpenStreetMap contributors (ODbL), read through the Overpass API on 29 September 2026"
+  },
+  {
+   "id": "plaza",
+   "name": "Plaza de Armas",
+   "position": [
+    372.5,
+    -994.3,
+    3400.7
+   ],
+   "what": "the city's main square, colonial buildings on Inca foundations round it",
+   "source": "OpenStreetMap node 6266294785 (\"Plaza de Armas\"); © OpenStreetMap contributors (ODbL), read through the Overpass API on 29 September 2026"
+  }
+ ],
+ "notes": [
+  "No structure is claimed beneath this site. It is composed for the satellite methods, to set megalithic walls beside houses and open hillside in one image.",
+  "The rock beneath is assumed limestone, as the walls' largest blocks are (\"the largest Limestone block\", Wikipedia); it is not surveyed, and no run here uses it.",
+  "Terrain is a DSM: the walls, houses and trees are in it, blurred over its 30 m cells."
+ ],
+ "sources": {
+  "wikipedia": "Wikipedia, Sacsayhuamán: coordinates \"13°30′28″S 71°58′56″W\"; altitude \"3,701 metres\"; \"The longest of the three walls is about 400 meters. They are about 6 meters tall.\"",
+  "osm": "OpenStreetMap: © OpenStreetMap contributors (ODbL), read through the Overpass API on 29 September 2026",
+  "copernicus": "Copernicus GLO-30 DEM, ESA/Airbus, via copernicus-dem-30m.s3.amazonaws.com",
+  "egm2008": "EGM2008 geoid (NGA), grid us_nga_egm08_25 from cdn.proj.org, evaluated with PROJ 9.5.1"
+ }
+}

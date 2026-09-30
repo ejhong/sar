@@ -8,7 +8,8 @@ Methods:
   gated   the stricter gated reconstruction, its source imported as published and hashed, its profile unchanged but for
           the input paths and the supports reported (1 and 4 by default). Lines run east to west across the area (or
           north to south, --lines ns), `step` metres apart, each placed through the product's RPC over the site's
-          surface with the EGM96 undulation; the curtains each line yields are stacked into a volume on a `step`-metre
+          surface with the site's geoid undulation (its frame's geoid_m; Giza's 15.5 m by default), shifted by any
+          residual offset given (--shift, in lines and samples); the curtains each line yields are stacked into a volume on a `step`-metre
           grid: the method's fit score at each nominal depth below the surface point above, unsmoothed, empty where
           nothing passed. The reconstruction compares each position with its neighbours along its line, so the way the
           lines are laid is one of the things a real feature should survive.
@@ -88,7 +89,12 @@ def flat_project(m, x, y, z):
     return m['centre_row'] + a / m['dx'], m['centre_col'] + (gr * np.sin(th) - z * np.cos(th)) / m['dr']
 
 
-def raster(product, sc, centre, half_ew, half_ns, step, positions=101, lines='ew'):
+def site_geoid(sc) -> float:
+    """The site's undulation from orthometric to ellipsoidal height: its frame's geoid_m, Giza's by default."""
+    return float(sc['frame'].get('geoid_m', GEOID_M))
+
+
+def raster(product, sc, centre, half_ew, half_ns, step, positions=101, lines='ew', shift=(0.0, 0.0)):
     """Lines across a square of the site, east to west (or north to south), placed through the product's RPC over the
     site's surface, or through a synthetic product's own flat mapping. Returns the geometry, the positions along a line,
     each line's offset across, and the surface height at every [line, position]."""
@@ -115,8 +121,8 @@ def raster(product, sc, centre, half_ew, half_ns, step, positions=101, lines='ew
         if syn:
             r, c = flat_project(syn, X, Y, Z)
         else:
-            r, c = project(dp, sc, X, Y, Z, GEOID_M)
-        heights.append(syn['height_m'] if syn else float(np.mean(Z)) + GEOID_M)
+            r, c = project(dp, sc, X, Y, Z, site_geoid(sc), shift)
+        heights.append(syn['height_m'] if syn else float(np.mean(Z)) + site_geoid(sc))
         z_surf[j] = Z[sel]
         lat, lon = frame_to_lla(o, X[[0, -1]], Y[[0, -1]])
         geom['tracks'][f'L{j:03d}'] = {
@@ -143,7 +149,7 @@ def curtains_to_volume(F, z_m, z_surf, zc, step, lines='ew'):
 
 
 def run_gated(name, site='giza', centre=(0.0, 0.0), half_ew=150.0, half_ns=141.0, step=3.0, supports=(1, 4),
-              twin=None, product=PRODUCT, title=None, lines='ew'):
+              twin=None, product=PRODUCT, title=None, lines='ew', area=None, shift=(0.0, 0.0)):
     from sarsim.looks import motionless_twin
     if not re.fullmatch(r'[a-z0-9_]+', name):
         raise SystemExit('a run name is lower-case letters, digits and underscores')
@@ -159,9 +165,13 @@ def run_gated(name, site='giza', centre=(0.0, 0.0), half_ew=150.0, half_ns=141.0
     rid = f'lab_{name}'
     params = {'method': 'gated', 'site': site, 'centre_m': list(centre), 'half_ew_m': half_ew, 'half_ns_m': half_ns,
               'step_m': step, 'supports': list(supports), 'twin_seed': twin, 'product': Path(product).name, 'lines': lines,
-              'gated_module_sha256': sha256(MODULE), 'gated_profile_sha256': sha256(PROFILE), 'geoid_m': GEOID_M}
+              'gated_module_sha256': sha256(MODULE), 'gated_profile_sha256': sha256(PROFILE), 'geoid_m': site_geoid(sc)}
+    if area:
+        params['area'] = area
+    if any(shift):
+        params['shift_px'] = [float(v) for v in shift]
     with Run(rid, title or f'The gated reconstruction across ({centre[0]:g}, {centre[1]:g}) on {site}', params) as run:
-        geom, pos, offs, z_surf = raster(product, sc, centre, half_ew, half_ns, step, lines=lines)
+        geom, pos, offs, z_surf = raster(product, sc, centre, half_ew, half_ns, step, lines=lines, shift=shift)
         gdir = ROOT / 'sim' / 'data' / rid
         gdir.mkdir(parents=True, exist_ok=True)
         (gdir / 'geometry.json').write_text(json.dumps(geom))
@@ -223,10 +233,12 @@ def main(argv=None):
     g.add_argument('--product', default=str(PRODUCT))
     g.add_argument('--title', default=None)
     g.add_argument('--lines', default='ew', choices=['ew', 'ns'], help='lines east-west (default) or north-south')
+    g.add_argument('--area', default=None, help='the place the lab names this run by (a name the other methods use)')
+    g.add_argument('--shift', default='0,0', help='residual offset in lines,samples added to the RPC placement')
     a = ap.parse_args(argv)
     cx, cy = (float(v) for v in a.centre.split(','))
     run_gated(a.name, a.site, (cx, cy), a.half_ew, a.half_ns, a.step, tuple(int(s) for s in a.supports.split(',')),
-              a.twin, Path(a.product), a.title, a.lines)
+              a.twin, Path(a.product), a.title, a.lines, a.area, tuple(float(v) for v in a.shift.split(',')))
 
 
 if __name__ == '__main__':

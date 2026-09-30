@@ -168,12 +168,12 @@ def export_claim(out: Path = DATA) -> dict | None:
     return {'site': 'bench-khafre-claim', 'volumes': [vol['id']]}
 
 
-def export_real(out: Path = DATA, site: str = 'giza') -> dict | None:
-    """The real Giza pass (P2-12): the image on the ground, and the published method's volume at each patch inside the
-    site, on one brightness scale so that monuments and open plateau compare fairly. Depth is measured from the rock
+def export_real(out: Path = DATA, site: str = 'giza', rid: str = 'p2_12_real_pass') -> dict | None:
+    """A real pass laid on its site (P2-12 at Giza, P2-33 at Sacsayhuamán): the image on the ground, and the published
+    method's volume at each patch inside the site, on one brightness scale so that monuments, houses and open ground
+    compare fairly. Depth is measured from the rock
     surface and relabelled as the claim relabels it (the axis repeats at 648 m), down to the site's floor: Giza stops at
     its block's floor; Giza's depths runs the axis past its repeats, as the published pictures do."""
-    rid = 'p2_12_real_pass'
     vpath = RESULTS / rid / 'volumes.npz'
     if not vpath.exists():
         return None
@@ -233,8 +233,8 @@ def export_real(out: Path = DATA, site: str = 'giza') -> dict | None:
                       'correction, no selection gates, lambda_s 0.48 m): focused power on a log scale, depth relabelled as the '
                       'claim does (repeat at 648 m), smoothed for display; not the gated reconstruction',
             'quantity': 'focused power, log scale', 'units': 'relative', 'range': [lo, hi], 'run': run,
-            'caption': ('the same kind of picture over empty plateau' if control else
-                        'columns where the registration wanders, as over empty plateau')}, ztop=ztop - h / 2))
+            'caption': ('the same kind of picture over open ground' if control else
+                        'columns where the registration wanders, as over open ground')}, ztop=ztop - h / 2))
     _merge_volumes(d, vols)
     src = RESULTS / rid / 'figs' / 'ground.jpg'
     shutil.copyfile(src, d / 'radar-ground.jpg')
@@ -246,13 +246,26 @@ def export_real(out: Path = DATA, site: str = 'giza') -> dict | None:
         'volumes': [x['id'] for x in vols],
         # deep enough to see the whole depth axis: the image, draped on the ground, would hide what hangs beneath it
         **({'image_hidden': True} if sc['extent']['z'][1] - sc['extent']['z'][0] > 1000 else {}),
-        'stats': {'monument_vs_control_profile_corr': s['monument_vs_control_profile_corr'],
-                  'patch_profile_corr_range': s['patch_profile_corr_range'],
-                  'pillar_power_vs_energy_min': min(x['pillar_power_vs_energy'] for x in s['patches'])},
+        'stats': real_stats(s),
         'run': run,
     }
     (d / 'radar.json').write_text(json.dumps(radar, separators=(',', ':')))
     return {'site': site, 'volumes': [x['id'] for x in vols]}
+
+
+def real_stats(s: dict) -> dict:
+    """The numbers the lab quotes beside a real pass's volumes, with the sentence it quotes them in."""
+    pmin = min(x['pillar_power_vs_energy'] for x in s['patches'])
+    if 'monument_vs_control_profile_corr' in s:                    # Giza (P2-12): pyramids against open plateau
+        c = s['monument_vs_control_profile_corr']
+        return {'monument_vs_control_profile_corr': c, 'patch_profile_corr_range': s['patch_profile_corr_range'],
+                'pillar_power_vs_energy_min': pmin,
+                'text': f'Over the pyramids and over empty plateau its depth profiles correlate at {c:.3f}; at every pixel '
+                        f'its power follows how much the registration wandered ({pmin:.3f}).'}
+    lo, hi = s['profile_corr']['all_pairs_range']                  # Sacsayhuamán (P2-33): walls, houses and fields
+    return {'profile_corr_range': [lo, hi], 'pillar_power_vs_energy_min': pmin,
+            'text': f'Over the walls, the houses and the fields its depth profiles correlate at {lo:.2f} to {hi:.2f}; at '
+                    f'every pixel its power follows how much the registration wandered ({pmin:.3f}).'}
 
 
 def export_khufu_gated(out: Path = DATA) -> dict | None:
@@ -445,7 +458,8 @@ def export_lab(out: Path = DATA) -> list[dict]:
         by_site.setdefault(site, []).append({
             'name': name, 'title': s['manifest']['title'], 'volumes': entries,
             'pass': stamp.group(1) if stamp else 'synthetic', 'lines': prm.get('lines', 'ew'),
-            'focus': [cx, cy, float(np.median(v['z_surface']))], 'radius_m': 620.0, 'note': s['finding'], 'run': run})
+            'focus': [cx, cy, float(np.median(v['z_surface']))], 'radius_m': 620.0, 'note': s['finding'], 'run': run,
+            **({'area': prm['area']} if prm.get('area') else {})})
     for site, labs in by_site.items():
         rj = out / 'sites' / site / 'radar.json'
         radar = json.loads(rj.read_text())
@@ -499,5 +513,6 @@ def export_survives(out: Path = DATA) -> dict | None:
 
 
 def export_radar(out: Path = DATA) -> list[dict]:
-    return [r for r in (export_bench(out), export_bench_gated(out), export_claim(out), export_real(out), export_khufu_gated(out))
+    return [r for r in (export_bench(out), export_bench_gated(out), export_claim(out), export_real(out), export_khufu_gated(out),
+                        export_real(out, 'sacsayhuaman', 'p2_33_sacsayhuaman'))
             if r] + export_lab(out) + [r for r in (export_survives(out), export_real(out, 'giza-deep')) if r]
