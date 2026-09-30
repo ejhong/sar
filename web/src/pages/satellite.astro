@@ -653,14 +653,14 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
       </div>
       <div class="note-card">
         <span class="tag">depth · any method</span>
-        <h3>Depth needs far more than detection</h3>
-        <p>Small rooms 15 m down, spread over the ground, leave the same mark as the bench room 30 m down to within
-        {(100 * orc.depth.residual_fraction).toFixed(1)}% (the lab’s solver, each small room’s imprint added; two solved together
-        agree with the sum to {(100 * orc.depth.pair_interaction_fraction).toFixed(1)}%). The bench room 15 m down alone matches it
-        only to {Math.round(100 * orc.depth.best_single_bench_room_residual)}%. So even the oracle, told everything else, needs
-        {Math.round(orc.depth.signal_factor_depth_over_detection)} times the signal to tell those two depths apart that it needs to
-        detect either: over a class that admits spread-out voids, no method can recover depth reliably wherever it can barely
-        detect. This is separate from the published depth axis being a frequency axis (P2-06, P2-28).</p>
+        <h3>Depth is carried by the mark’s shape</h3>
+        <p>Could shallower voids mimic a deeper one? Small rooms 15 m down, spread over the ground in any non-negative mix, leave
+        {' '}{Math.round(100 * orc.depth.residual_fraction)}% of the bench room 30 m down’s mark unmatched (the lab’s solver; two solved together agree with
+        their sum to {(100 * orc.depth.pair_interaction_fraction).toFixed(1)}%), and the bench room 15 m down alone
+        {' '}{Math.round(100 * orc.depth.best_single_bench_room_residual)}%. In uniform rock the mark changes shape with depth, so telling those depths apart takes only
+        {' '}{orc.depth.signal_factor_depth_over_detection.toFixed(1)} times the signal that detection takes: where the data hold a room, they would hold
+        some of its depth too. Richer classes of ground are not tested. The published method does not use this: its depth axis
+        is a frequency axis (P2-06, P2-28).</p>
       </div>
     </div>
     <table class="data compact">

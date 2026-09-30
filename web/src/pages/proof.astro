@@ -167,7 +167,7 @@ const conc = (r: DRes) => r.over_room / r.elsewhere;
         <tr><td>Horizontal location</td><td>the same bounds: telling a room here from a room there is a test between two worlds, and TV(A, B) ≤ TV(A, none) + TV(none, B)</td><td>bounded wherever presence is; where the data hold the room (boosted), the published picture changes most over it in a paired comparison (P2-07); blind recovery is the shape test’s</td></tr>
         <tr><td>Shape: a room, an L-shaped or a branching tunnel</td><td>the same inequality between any two layouts; the shape test (P2-31) on physically generated scenes, scored blind</td><td>bounded under the ground’s own trembling; the decisive experiment for the strong-signal regime, with a reference detector and a positive control</td></tr>
         <tr><td>Relative vertical geometry</td><td>whether deeper parts are drawn deeper, whatever the scale</td><td>not shown: the published axis is the registration’s frequency (P2-06, P2-28)</td></tr>
-        <tr><td>Absolute depth</td><td>the axis’s calibration, and whether different depths leave different marks</td><td>uncalibrated and aliased in the published method; physically, rooms spread shallower can mimic a deeper room (below)</td></tr>
+        <tr><td>Absolute depth</td><td>the axis’s calibration, and whether different depths leave different marks</td><td>uncalibrated and aliased in the published method; physically, in this model, the mark’s shape carries depth (below), so a reader that could detect could also tell depths apart</td></tr>
       </tbody>
     </table>
     <p class="note">
@@ -209,7 +209,7 @@ const conc = (r: DRes) => r.over_room / r.elsewhere;
       <tbody>
         <tr><td>Giza’s regional trembling, any reader, one image</td><td>excluded: ≤ {pctp(micro.tpr_upper_at_fpr_005, 3)} found at 5% (certificate), {sci(orAmb)} for the oracle</td><td>excluded: each pair ≤ {pctp(shMaxCert, 3)} at 5%</td><td>excluded with presence; aliased in the published method</td></tr>
         <tr><td>The noisiest ground on Earth</td><td>excluded (tight {sci(s0[1].ceiling)})</td><td>excluded with presence</td><td>excluded with presence</td></tr>
-        <tr><td>A lorry beside a room all pass, known exactly</td><td>open: the oracle reaches {orWorst_tv(orc)} and the certificate {pctp(thin.tpr_upper_at_fpr_005, 0)} at 5% for a thin roof</td><td>{shWorstDyn ? `open: the oracle reaches ${shWorstDyn.oracle_tv.toFixed(2)} for the hardest pair` : 'to compute'}</td><td>needs {Math.round(orc.depth.signal_factor_depth_over_detection)}× the signal of detection (P2-29)</td></tr>
+        <tr><td>A lorry beside a room all pass, known exactly</td><td>open: the oracle reaches {orWorst_tv(orc)} and the certificate {pctp(thin.tpr_upper_at_fpr_005, 0)} at 5% for a thin roof</td><td>{shWorstDyn ? `open: the oracle reaches ${shWorstDyn.oracle_tv.toFixed(2)} for the hardest pair` : 'to compute'}</td><td>about as hard as detection in this model ({orc.depth.signal_factor_depth_over_detection.toFixed(1)}× its signal, P2-29)</td></tr>
         <tr><td>Any mechanism with gain, not yet specified</td><td colspan="3">not covered: it must state the motion it adds over the room (source, footprint, amplitude and phase, losses, duration); the requirement curve above says how much is needed</td></tr>
       </tbody>
     </table>
@@ -346,16 +346,18 @@ const conc = (r: DRes) => r.over_room / r.elsewhere;
   </section>
 
   <section id="depth">
-    <h2>Absolute depth is the hardest of the five claims, and its ambiguity does not decide the others: rooms spread 15 m down leave the mark of a room 30 m down to {(100 * orc.depth.residual_fraction).toFixed(1)}%</h2>
+    <h2>{orc.depth.residual_fraction > 0.3 ? `Depth is carried by the mark’s shape in this model: rooms spread 15 m down leave ${Math.round(100 * orc.depth.residual_fraction)}% of a deeper room’s mark unmatched; the published method’s axis does not use it` : `Absolute depth is the hardest claim: rooms spread 15 m down match a deeper room’s mark to within ${(100 * orc.depth.residual_fraction).toFixed(1)}%`}</h2>
     <div class="grid-2">
       <div class="note-card">
         <span class="tag">any method · P2-29, P2-30</span>
-        <h3>An obstruction, computed</h3>
-        <p>Small rooms 15 m down, spread over the ground, reproduce the surface mark of the bench room 30 m down to within
-        {' '}{(100 * orc.depth.residual_fraction).toFixed(1)}% on the lab’s solver (two solved together agree with their sum to
-        {' '}{(100 * orc.depth.pair_interaction_fraction).toFixed(1)}%); the bench room 15 m down alone, only to {Math.round(100 * orc.depth.best_single_bench_room_residual)}%. So even the
-        oracle needs {Math.round(orc.depth.signal_factor_depth_over_detection)} times the signal to tell the two depths apart that it needs to detect either.
-        {fc.depth_oracle && ` By Theorem E, where detection just reaches 95% at 5%, any method's mean depth error between them is at least ${fc.depth_oracle.rows[0].mean_depth_error_lower_m.toFixed(1)} m of their ${fc.depth_oracle.separation_m} m separation.`}</p>
+        <h3>An obstruction sought, and not found</h3>
+        <p>Could shallower voids mimic a deeper one? Small rooms 15 m down, spread over the ground in any non-negative mix, were
+        fitted to the surface mark of the bench room 30 m down on the lab’s solver (two solved together agree with their sum to
+        {' '}{(100 * orc.depth.pair_interaction_fraction).toFixed(1)}%): {Math.round(100 * orc.depth.residual_fraction)}% of the mark is left unmatched, and the bench room
+        15 m down alone leaves {Math.round(100 * orc.depth.best_single_bench_room_residual)}%. In uniform rock the mark changes shape with depth, not only size, so telling these
+        depths apart takes only {orc.depth.signal_factor_depth_over_detection.toFixed(1)} times the signal detection takes.
+        {fc.depth_oracle && ` Theorem E's floor on any method's mean depth error, where detection just reaches 95% at 5%, is then only ${fc.depth_oracle.rows[0].mean_depth_error_lower_m.toFixed(1)} m of their ${fc.depth_oracle.separation_m} m separation.`}
+        Richer classes (layered rock, fractures, voids of other shapes) could still mimic one another; that is not tested.</p>
       </div>
       <div class="note-card">
         <span class="tag simulated">the published method · P2-28</span>

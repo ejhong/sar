@@ -520,14 +520,15 @@ const explore = [
         <p>
           Hand a detector more than any method has, the exact texture of the ground, the shaking and both physical models,
           with the room and without, and its best is known exactly, whatever the texture: under the ground’s own trembling at
-          most <Sci v={orAmb} p={0} />. The one regime this leaves open is strong shaking close by, known exactly: a lorry
-          bouncing beside the room all pass gives such an oracle {orWorst.tv_exact.toFixed(2)}, still
-          {' '}{orWorst.growth_to_target.toFixed(0)} times short of a reliable detection, a margin too thin to call closed. Where a room
-          is and its shape are bounded the same way, since telling two layouts apart is harder than telling either from none.
-          Telling an L-shaped tunnel from a straight one, or a column with a spiral from a plain column, is bounded the same
-          way, and no depth allowance helps. Absolute depth is the hardest claim: small rooms spread 15 metres down leave the mark of a room 30 metres down to within
-          {' '}{(100 * orc.depth.residual_fraction).toFixed(0)}%, so telling the two apart takes
-          {' '}{Math.round(orc.depth.signal_factor_depth_over_detection)} times the signal that detecting either takes; but a method that
+          most <Sci v={orAmb} p={0} />. The regime this leaves open is strong shaking close by, known exactly: a lorry
+          bouncing beside a room under a 5-metre roof for the whole pass gives such an oracle {orWorst.tv_exact.toFixed(2)}
+          {orWorst.growth_to_target < 1 ? ', enough within the model for a reliable detection' : `, still ${orWorst.growth_to_target.toFixed(0)} times short of a reliable detection`},
+          if the wave the room scatters carries undiminished across the whole scene (within 32 metres of the room alone, far less).
+          That is where experiments belong, not a verdict. Where a room is and its shape are bounded the same way, since telling
+          two layouts apart is harder than telling either from none: an L-shaped tunnel from a straight one, or a column with a
+          spiral from a plain column, and no depth allowance helps. Depth, in this model, is carried by the mark’s shape: rooms
+          spread 15 metres down cannot mimic a room 30 metres down ({(100 * orc.depth.residual_fraction).toFixed(0)}% of its mark is
+          left over), so a reader with enough signal to detect could tell those depths apart. A method that
           found a layout at the wrong depth would still be useful, so the claims are scored apart.
         </p>
       </div>
