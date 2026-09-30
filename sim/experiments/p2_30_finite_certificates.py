@@ -200,7 +200,7 @@ def certificates():
 
     # The stored genie values are proportional to a PHASE-ENERGY integral.
     # The new finite inequality is |expm1(i Phi)|^2 <= Phi^2. These are average
-    # source-phase/direction results at ASSUMED 30 dB noise, not uniform maxima.
+    # source-phase/direction results at P2-25's calibrated genie SNR, not uniform maxima.
     inherited_oracle = []
     for source in p['genie']:
         # Stored rounded F is accepted as nominal input. A 1% upward allowance
@@ -210,7 +210,7 @@ def certificates():
         inherited_oracle.append({"case": source['case'], "energy_upper_assumed": B,
             "tv_upper": tv, "tpr_upper_at_fpr_005": min(1.0, .05 + tv),
             "status":"conditional average oracle, inherited phase-energy estimate with 1% allowance",
-            "noise_snr_db_assumed":30,
+            "noise_snr_db":p['manifest']['params'].get('genie_snr_db'),
             "extra_allowance_fraction":.01,
             "allowance_is_certified_physics_error":False})
 

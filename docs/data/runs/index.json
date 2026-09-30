@@ -1521,9 +1521,9 @@
   "id": "p2_25_information_bound",
   "title": "What one image can hold about the chamber, whatever reads it",
   "date": "2026-09-30",
-  "started_utc": "2026-09-30T14:34:22+00:00",
-  "runtime_s": 180.3,
-  "commit": "439c48b+",
+  "started_utc": "2026-09-30T21:34:31+00:00",
+  "runtime_s": 150.5,
+  "commit": "914a473+",
   "params": {
    "acquisition": "giza-20250827",
    "half_width_m": 45.0,
@@ -1538,7 +1538,7 @@
    ],
    "far_field_from_m": 32.0,
    "reliable_dprime": 3.29,
-   "genie_snr_db": 30.0,
+   "genie_snr_db": 12.655911,
    "monte_carlo": {
     "estimator": 600,
     "synthesizer": 80,
@@ -1964,9 +1964,9 @@
   "id": "p2_27_requirement",
   "title": "What one image would need: the motion a room must add to the ground",
   "date": "2026-09-30",
-  "started_utc": "2026-09-30T18:11:26+00:00",
-  "runtime_s": 9.7,
-  "commit": "ecff0e5+",
+  "started_utc": "2026-09-30T21:37:03+00:00",
+  "runtime_s": 9.2,
+  "commit": "914a473+",
   "params": {
    "acquisitions": [
     "giza-20250827",
@@ -2021,7 +2021,7 @@
     198.248217,
     300.0
    ],
-   "genie_snr_db": 30.0,
+   "genie_snr_db": 12.655911,
    "reflector_scr_db": 50.0,
    "scattering": "fully developed speckle, no reference image",
    "noise_free": true,
@@ -2123,16 +2123,32 @@
   "id": "p2_29_oracle",
   "title": "The oracle: what an ideal detector could learn, told more than any method knows",
   "date": "2026-09-30",
-  "started_utc": "2026-09-30T18:11:20+00:00",
-  "runtime_s": 4.9,
-  "commit": "ecff0e5+",
+  "started_utc": "2026-09-30T21:37:13+00:00",
+  "runtime_s": 1.4,
+  "commit": "914a473+",
   "params": {
    "acquisition": "giza-20250827",
-   "snr_db": 30.0,
-   "nesz_best_db": -26.7,
-   "nesz_source": "ICEYE product specification, imaging modes, Table 2-11 (Dwell): -26.7 to -15.6 dB",
-   "sigma0_bright_natural_db": 0.0,
-   "sigma0_status": "assumed",
+   "snr_db": 12.655911,
+   "nesz_best_db": -18.0,
+   "nesz_source": "ICEYE Product Documentation 6.0.0, Product Specification, 2. Imaging Modes, Table 2-11 (Dwell and Dwell Fine): \"Noise Equivalent Sigma-Zero [dBm2/m2]: -18 to -15\" (scene-centre values)",
+   "snr": {
+    "nominal_db": 12.655911,
+    "generous_db": 18.0,
+    "specified_worst_db": 9.655911,
+    "measured_floor_lower_db": 5.878341,
+    "ground_sigma0_median_db": -5.344089,
+    "bright_ground_db_assumed": 0.0,
+    "nesz_specified_db": [
+     -18.0,
+     -15.0
+    ],
+    "nesz_in_product": false,
+    "nesz_source": "ICEYE Product Documentation 6.0.0, Product Specification, 2. Imaging Modes, Table 2-11 (Dwell and Dwell Fine): \"Noise Equivalent Sigma-Zero [dBm2/m2]: -18 to -15\" (scene-centre values)",
+    "ground_source": "sigma0 = calibration_factor x mean |z|^2 x sin(local incidence), over 10 m cells of the Giza site in the image; the darkest cells hold the noise floor plus any signal left, so the noise floor is at most their level",
+    "acquisition": "giza-20250827"
+   },
+   "sigma0_ground_db": -5.344089,
+   "sigma0_status": "measured in the image (median, 10 m cells)",
    "reflector_db": 50.0,
    "target_delta": 3.29,
    "allowances": {
@@ -2176,9 +2192,9 @@
   "id": "p2_30_finite_certificates",
   "title": "Finite certificates: the bound on every processor, the common background included",
   "date": "2026-09-30",
-  "started_utc": "2026-09-30T18:11:25+00:00",
+  "started_utc": "2026-09-30T21:37:15+00:00",
   "runtime_s": 0.1,
-  "commit": "ecff0e5+",
+  "commit": "914a473+",
   "params": {
    "target": {
     "tpr": 0.95,
@@ -2325,9 +2341,9 @@
   "id": "p2_32_shape_bounds",
   "title": "Shape discrimination, bounded",
   "date": "2026-09-30",
-  "started_utc": "2026-09-30T18:11:37+00:00",
-  "runtime_s": 192.9,
-  "commit": "ecff0e5+",
+  "started_utc": "2026-09-30T21:37:16+00:00",
+  "runtime_s": 166.4,
+  "commit": "914a473+",
   "params": {
    "layouts": {
     "room": [
@@ -2577,7 +2593,7 @@
     50.0,
     59.0
    ],
-   "snr_db": 30.0,
+   "snr_db": 12.655911,
    "target_delta": 3.29,
    "ambient_bands": [
     {
@@ -2773,9 +2789,9 @@
   "id": "p2_36_benchmark",
   "title": "One auditable comparison: presence, location and shape, bounds beside achieved",
   "date": "2026-09-30",
-  "started_utc": "2026-09-30T20:33:03+00:00",
-  "runtime_s": 82.9,
-  "commit": "1bf937d+",
+  "started_utc": "2026-09-30T21:58:33+00:00",
+  "runtime_s": 1817.3,
+  "commit": "914a473+",
   "params": {
    "frozen": {
     "worlds": {
@@ -2833,6 +2849,20 @@
         6.0
        ]
       ]
+     ],
+     "WC": [
+      [
+       [
+        0.0,
+        0.0,
+        -10.0
+       ],
+       [
+        10.0,
+        10.0,
+        10.0
+       ]
+      ]
      ]
     },
     "pairs": {
@@ -2851,6 +2881,10 @@
      "shape (room or L tunnel)": [
       "WA",
       "WB"
+     ],
+     "presence (10 m room)": [
+      "W0",
+      "WC"
      ]
     },
     "strong_source": {
@@ -2881,15 +2915,17 @@
      "f_top": 120.0,
      "record_every": 4
     },
-    "r_obs_m": 39.0,
-    "snr_db_nominal": 30.0,
+    "report_disc_m": 39.0,
+    "snr_db_nominal": 12.66,
+    "snr_db_generous": 18.0,
     "snr_db_sweep": [
-     20.0,
+     9.66,
+     12.66,
+     18.0,
      30.0,
-     40.0,
-     50.0,
-     60.0
+     40.0
     ],
+    "revision": "v2, after the sixth review: calibrated SNR, the 10 m room, the quiet case averaged through a linear bound, the microseisms' worst-case envelope in every reference, the score test with one noise law and separate calibration grounds",
     "acquisition": "giza-20250827",
     "rock": "limestone-mokattam",
     "analysis": {
@@ -2934,7 +2970,7 @@
      ]
     }
    },
-   "frozen_hash": "1c58de9ffe7c",
+   "frozen_hash": "4bc4c58f8948",
    "image_frame": {
     "dg": 0.432448,
     "half_along_m": 2500.0,
@@ -2944,7 +2980,7 @@
    },
    "pass_s": 24.485484,
    "microseism_los_peak_envelope_m": 7.158e-08,
-   "microseism_envelope_source": "P2-30 background_included (three regional harmonics)",
+   "microseism_envelope_source": "P2-30 background_included (three regional harmonics), times sqrt(24) for every realisation of the 24 directions",
    "quiet_level": {
     "case": "Giza microseisms, measured",
     "rms_velocity_m_s": 4.9e-08,
@@ -2953,7 +2989,22 @@
     "hv": 0.667438,
     "strain_amplitude": 1.542e-11
    },
-   "snr_status": "assumed: sigma0 about 0 dB over ICEYE Dwell best NESZ -26.7 dB; the acquisition's calibration and noise records are not in this repository"
+   "snr": {
+    "nominal_db": 12.655911,
+    "generous_db": 18.0,
+    "specified_worst_db": 9.655911,
+    "measured_floor_lower_db": 5.878341,
+    "ground_sigma0_median_db": -5.344089,
+    "bright_ground_db_assumed": 0.0,
+    "nesz_specified_db": [
+     -18.0,
+     -15.0
+    ],
+    "nesz_in_product": false,
+    "nesz_source": "ICEYE Product Documentation 6.0.0, Product Specification, 2. Imaging Modes, Table 2-11 (Dwell and Dwell Fine): \"Noise Equivalent Sigma-Zero [dBm2/m2]: -18 to -15\" (scene-centre values)",
+    "ground_source": "sigma0 = calibration_factor x mean |z|^2 x sin(local incidence), over 10 m cells of the Giza site in the image; the darkest cells hold the noise floor plus any signal left, so the noise floor is at most their level",
+    "acquisition": "giza-20250827"
+   }
   },
   "environment": {
    "python": "3.11.15",
@@ -2963,6 +3014,57 @@
    "cpus": 4
   },
   "command": "uv run python experiments/p2_36_benchmark.py"
+ },
+ "p2_38_claim": {
+  "id": "p2_38_claim",
+  "title": "The claim computed: the structure announced 1,220 m under Khafre",
+  "date": "2026-09-30",
+  "started_utc": "2026-09-30T22:29:46+00:00",
+  "runtime_s": 7.2,
+  "commit": "914a473+",
+  "params": {
+   "structure": {
+    "centre": [
+     0.0,
+     0.0,
+     -1220.0
+    ],
+    "size": [
+     80.0,
+     80.0,
+     80.0
+    ],
+    "source": "Claimed (egyptianstreets2025: \"additional unidentified structures potentially lying at depths of 4,000 feet\"); size representative."
+   },
+   "grid_half_m": 3600.0,
+   "grid_step_m": 10.0,
+   "cube_allowance": 1.5,
+   "allowances": {
+    "local ambient level over the regional": 10.0,
+    "site amplification": 3.0
+   },
+   "allowance_status": "assumed",
+   "quiet_level": {
+    "case": "Giza microseisms, measured",
+    "rms_velocity_m_s": 4.9e-08,
+    "f_hz": 0.2,
+    "phase_speed_m_s": 3000,
+    "hv": 0.667438,
+    "strain_amplitude": 1.542e-11
+   },
+   "model": "Eshelby's void (equal-volume sphere) through Okada's point source in a half-space",
+   "snr_db_nominal": 12.66,
+   "snr_status": "calibrated from the acquisition (sarsim.radiometry)",
+   "benchmark_frozen_hash": "4bc4c58f8948"
+  },
+  "environment": {
+   "python": "3.11.15",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 4,
+   "cpus": 4
+  },
+  "command": "uv run python experiments/p2_38_claim.py"
  },
  "lab_khafre": {
   "id": "lab_khafre",

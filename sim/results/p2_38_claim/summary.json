@@ -1,0 +1,329 @@
+{
+ "manifest": {
+  "id": "p2_38_claim",
+  "title": "The claim computed: the structure announced 1,220 m under Khafre",
+  "date": "2026-09-30",
+  "started_utc": "2026-09-30T22:29:46+00:00",
+  "runtime_s": 7.2,
+  "commit": "914a473+",
+  "params": {
+   "structure": {
+    "centre": [
+     0.0,
+     0.0,
+     -1220.0
+    ],
+    "size": [
+     80.0,
+     80.0,
+     80.0
+    ],
+    "source": "Claimed (egyptianstreets2025: \"additional unidentified structures potentially lying at depths of 4,000 feet\"); size representative."
+   },
+   "grid_half_m": 3600.0,
+   "grid_step_m": 10.0,
+   "cube_allowance": 1.5,
+   "allowances": {
+    "local ambient level over the regional": 10.0,
+    "site amplification": 3.0
+   },
+   "allowance_status": "assumed",
+   "quiet_level": {
+    "case": "Giza microseisms, measured",
+    "rms_velocity_m_s": 4.9e-08,
+    "f_hz": 0.2,
+    "phase_speed_m_s": 3000,
+    "hv": 0.667438,
+    "strain_amplitude": 1.542e-11
+   },
+   "model": "Eshelby's void (equal-volume sphere) through Okada's point source in a half-space",
+   "snr_db_nominal": 12.66,
+   "snr_status": "calibrated from the acquisition (sarsim.radiometry)",
+   "benchmark_frozen_hash": "4bc4c58f8948"
+  },
+  "environment": {
+   "python": "3.11.15",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 4,
+   "cpus": 4
+  }
+ },
+ "khafre_power_map": {
+  "footprint_mean_sigma0_db": -4.418964,
+  "footprint_over_site_median": 1.237407,
+  "share_of_imprint_in_footprint": 0.098787,
+  "oracle_with_footprint_brightness": {
+   "e_delta2": 3.317e-10,
+   "tv_upper": 7.266e-06,
+   "found_at_5pct_upper": 0.050007
+  },
+  "note": "the pyramid footprint (320 m) at its measured mean sigma0, the rest at the site median; a 2 km map of summed power would replace the rest"
+ },
+ "snr": {
+  "nominal_db": 12.655911,
+  "generous_db": 18.0,
+  "specified_worst_db": 9.655911,
+  "measured_floor_lower_db": 5.878341,
+  "ground_sigma0_median_db": -5.344089,
+  "bright_ground_db_assumed": 0.0,
+  "nesz_specified_db": [
+   -18.0,
+   -15.0
+  ],
+  "nesz_in_product": false,
+  "nesz_source": "ICEYE Product Documentation 6.0.0, Product Specification, 2. Imaging Modes, Table 2-11 (Dwell and Dwell Fine): \"Noise Equivalent Sigma-Zero [dBm2/m2]: -18 to -15\" (scene-centre values)",
+  "ground_source": "sigma0 = calibration_factor x mean |z|^2 x sin(local incidence), over 10 m cells of the Giza site in the image; the darkest cells hold the noise floor plus any signal left, so the noise floor is at most their level",
+  "acquisition": "giza-20250827"
+ },
+ "imprint": {
+  "peak_los_m": 1.918e-12,
+  "rms_over_directions_peak_m": 1.906e-12,
+  "half_power_area_m2": 452000.0,
+  "integral_e_m4": 3.356e-18,
+  "depth_m": 1220.0,
+  "volume_m3": 512000.0,
+  "poisson": 0.277957
+ },
+ "rows": {
+  "as computed": {
+   "amplitude_factor": 1.0,
+   "l1": {
+    "9.66": {
+     "kl_upper": 2.432e-11,
+     "tv_upper": 3.487e-06,
+     "c_max": 2.000002,
+     "floor_min": 1.021384,
+     "worst_realisation_tv_upper": 1.605e-05,
+     "state": "near chance"
+    },
+    "12.66": {
+     "kl_upper": 2.568e-11,
+     "tv_upper": 3.583e-06,
+     "c_max": 2.000002,
+     "floor_min": 0.96744,
+     "worst_realisation_tv_upper": 1.649e-05,
+     "state": "near chance"
+    },
+    "18": {
+     "kl_upper": 2.674e-11,
+     "tv_upper": 3.656e-06,
+     "c_max": 2.000002,
+     "floor_min": 0.929089,
+     "worst_realisation_tv_upper": 1.683e-05,
+     "state": "near chance"
+    },
+    "30": {
+     "kl_upper": 2.717e-11,
+     "tv_upper": 3.686e-06,
+     "c_max": 2.000002,
+     "floor_min": 0.91424,
+     "worst_realisation_tv_upper": 1.696e-05,
+     "state": "near chance"
+    },
+    "40": {
+     "kl_upper": 2.72e-11,
+     "tv_upper": 3.688e-06,
+     "c_max": 2.000002,
+     "floor_min": 0.91334,
+     "worst_realisation_tv_upper": 1.697e-05,
+     "state": "near chance"
+    }
+   },
+   "oracle": {
+    "9.66": {
+     "e_delta2": 1.624e-10,
+     "tv_upper": 5.085e-06,
+     "found_at_5pct_upper": 0.050005,
+     "state": "near chance"
+    },
+    "12.66": {
+     "e_delta2": 3.241e-10,
+     "tv_upper": 7.182e-06,
+     "found_at_5pct_upper": 0.050007,
+     "state": "near chance"
+    },
+    "18": {
+     "e_delta2": 1.108e-09,
+     "tv_upper": 1.328e-05,
+     "found_at_5pct_upper": 0.050013,
+     "state": "near chance"
+    },
+    "30": {
+     "e_delta2": 1.757e-08,
+     "tv_upper": 5.288e-05,
+     "found_at_5pct_upper": 0.050053,
+     "state": "near chance"
+    },
+    "40": {
+     "e_delta2": 1.757e-07,
+     "tv_upper": 0.0001672,
+     "found_at_5pct_upper": 0.050167,
+     "state": "near chance"
+    }
+   },
+   "l1_growth_to_target": 232061.202307,
+   "oracle_growth_to_target": 182732.348945
+  },
+  "cube allowance x1.5": {
+   "amplitude_factor": 1.5,
+   "l1": {
+    "9.66": {
+     "kl_upper": 5.472e-11,
+     "tv_upper": 5.231e-06,
+     "c_max": 2.000003,
+     "floor_min": 1.021384,
+     "worst_realisation_tv_upper": 2.408e-05,
+     "state": "near chance"
+    },
+    "12.66": {
+     "kl_upper": 5.777e-11,
+     "tv_upper": 5.374e-06,
+     "c_max": 2.000003,
+     "floor_min": 0.96744,
+     "worst_realisation_tv_upper": 2.474e-05,
+     "state": "near chance"
+    },
+    "18": {
+     "kl_upper": 6.015e-11,
+     "tv_upper": 5.484e-06,
+     "c_max": 2.000003,
+     "floor_min": 0.929089,
+     "worst_realisation_tv_upper": 2.524e-05,
+     "state": "near chance"
+    },
+    "30": {
+     "kl_upper": 6.113e-11,
+     "tv_upper": 5.529e-06,
+     "c_max": 2.000003,
+     "floor_min": 0.91424,
+     "worst_realisation_tv_upper": 2.545e-05,
+     "state": "near chance"
+    },
+    "40": {
+     "kl_upper": 6.119e-11,
+     "tv_upper": 5.531e-06,
+     "c_max": 2.000003,
+     "floor_min": 0.91334,
+     "worst_realisation_tv_upper": 2.546e-05,
+     "state": "near chance"
+    }
+   },
+   "oracle": {
+    "9.66": {
+     "e_delta2": 3.655e-10,
+     "tv_upper": 7.627e-06,
+     "found_at_5pct_upper": 0.050008,
+     "state": "near chance"
+    },
+    "12.66": {
+     "e_delta2": 7.292e-10,
+     "tv_upper": 1.077e-05,
+     "found_at_5pct_upper": 0.050011,
+     "state": "near chance"
+    },
+    "18": {
+     "e_delta2": 2.494e-09,
+     "tv_upper": 1.992e-05,
+     "found_at_5pct_upper": 0.05002,
+     "state": "near chance"
+    },
+    "30": {
+     "e_delta2": 3.952e-08,
+     "tv_upper": 7.931e-05,
+     "found_at_5pct_upper": 0.050079,
+     "state": "near chance"
+    },
+    "40": {
+     "e_delta2": 3.952e-07,
+     "tv_upper": 0.0002508,
+     "found_at_5pct_upper": 0.050251,
+     "state": "near chance"
+    }
+   },
+   "l1_growth_to_target": 154707.464784,
+   "oracle_growth_to_target": 121821.565963
+  },
+  "and the assumed allowances (x10 level, x3 amplification)": {
+   "amplitude_factor": 45.0,
+   "l1": {
+    "9.66": {
+     "kl_upper": 4.925e-08,
+     "tv_upper": 0.0001569,
+     "c_max": 2.000091,
+     "floor_min": 1.021384,
+     "worst_realisation_tv_upper": 0.0007223,
+     "state": "near chance"
+    },
+    "12.66": {
+     "kl_upper": 5.199e-08,
+     "tv_upper": 0.0001612,
+     "c_max": 2.000094,
+     "floor_min": 0.96744,
+     "worst_realisation_tv_upper": 0.0007421,
+     "state": "near chance"
+    },
+    "18": {
+     "kl_upper": 5.414e-08,
+     "tv_upper": 0.0001645,
+     "c_max": 2.000095,
+     "floor_min": 0.929089,
+     "worst_realisation_tv_upper": 0.0007573,
+     "state": "near chance"
+    },
+    "30": {
+     "kl_upper": 5.502e-08,
+     "tv_upper": 0.0001659,
+     "c_max": 2.000096,
+     "floor_min": 0.91424,
+     "worst_realisation_tv_upper": 0.0007634,
+     "state": "near chance"
+    },
+    "40": {
+     "kl_upper": 5.507e-08,
+     "tv_upper": 0.0001659,
+     "c_max": 2.000096,
+     "floor_min": 0.91334,
+     "worst_realisation_tv_upper": 0.0007638,
+     "state": "near chance"
+    }
+   },
+   "oracle": {
+    "9.66": {
+     "e_delta2": 3.289e-07,
+     "tv_upper": 0.0002288,
+     "found_at_5pct_upper": 0.050229,
+     "state": "near chance"
+    },
+    "12.66": {
+     "e_delta2": 6.563e-07,
+     "tv_upper": 0.0003232,
+     "found_at_5pct_upper": 0.050323,
+     "state": "near chance"
+    },
+    "18": {
+     "e_delta2": 2.244e-06,
+     "tv_upper": 0.0005977,
+     "found_at_5pct_upper": 0.050598,
+     "state": "near chance"
+    },
+    "30": {
+     "e_delta2": 3.557e-05,
+     "tv_upper": 0.002379,
+     "found_at_5pct_upper": 0.052379,
+     "state": "near chance"
+    },
+    "40": {
+     "e_delta2": 0.0003557,
+     "tv_upper": 0.007524,
+     "found_at_5pct_upper": 0.057524,
+     "state": "near chance"
+    }
+   },
+   "l1_growth_to_target": 5156.914501,
+   "oracle_growth_to_target": 4060.718865
+  }
+ },
+ "microseism_common_phase_energy_per_line": 0.001968,
+ "finding": "The structure announced 1,220 m under Khafre, computed rather than scaled: a void 80 m on a side (the size representative) as Eshelby's void seen through Okada's point source, loaded by Giza's regional microseisms. Its imprint on the ground's line-of-sight motion peaks at 1.9e-12 m and spreads over 0.45 km^2 at half power, so the whole image holds it. Any reader of the one image, bounded line by line with the microseisms in each line's reference and averaged over the field's realisations: at most 3.6e-06 above its false-alarm rate (near chance; 1.6e-05 at the worst realisation); the oracle told every scatterer's reflectivity, at the calibrated 12.7 dB: 7.2e-06. The motion would have to grow 2.3e+05 times for one image and 1.8e+05 times for the oracle; with a cube's moment allowed 1.5 times the sphere's, the local level ten times the regional and site amplification three times, still 5.2e+03 and 4.1e+03. For comparison the benchmark's room under a 5 m roof: 2.2e-07 and 4.5e-07. Khafre's measured footprint, -4.4 dB on average against the site's -5.3 dB, holds 10% of the imprint and moves the oracle to 7.3e-06. A lorry's wave does not reach that depth. The eight claimed shafts are not computed here; beyond Khafre's footprint the oracle takes the site's median ground until a 2 km map of the image's summed power replaces it."
+}

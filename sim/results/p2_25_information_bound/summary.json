@@ -3,9 +3,9 @@
   "id": "p2_25_information_bound",
   "title": "What one image can hold about the chamber, whatever reads it",
   "date": "2026-09-30",
-  "started_utc": "2026-09-30T14:34:22+00:00",
-  "runtime_s": 180.3,
-  "commit": "439c48b+",
+  "started_utc": "2026-09-30T21:34:31+00:00",
+  "runtime_s": 150.5,
+  "commit": "914a473+",
   "params": {
    "acquisition": "giza-20250827",
    "half_width_m": 45.0,
@@ -20,7 +20,7 @@
    ],
    "far_field_from_m": 32.0,
    "reliable_dprime": 3.29,
-   "genie_snr_db": 30.0,
+   "genie_snr_db": 12.655911,
    "monte_carlo": {
     "estimator": 600,
     "synthesizer": 80,
@@ -6414,21 +6414,21 @@
  "genie": [
   {
    "case": "Giza microseisms, measured",
-   "fisher": 1.477e-11,
-   "kl_upper": 7.383e-12,
-   "ceiling": 1.921e-06,
-   "accuracy_above_half": 9.607e-07,
-   "best_test_weak_signal": 1.533e-06,
-   "local_extrapolation_factor": 856165.809781
+   "fisher": 2.722e-13,
+   "kl_upper": 1.361e-13,
+   "ceiling": 2.609e-07,
+   "accuracy_above_half": 1.304e-07,
+   "best_test_weak_signal": 2.081e-07,
+   "local_extrapolation_factor": 6306121.424934
   },
   {
    "case": "truck over a bump, 15 m (surface wave)",
-   "fisher": 1.016042,
-   "kl_upper": 0.508021,
-   "ceiling": 0.503994,
-   "accuracy_above_half": 0.251997,
-   "best_test_weak_signal": 0.385735,
-   "local_extrapolation_factor": 3.263925
+   "fisher": 0.018728,
+   "kl_upper": 0.009364,
+   "ceiling": 0.068426,
+   "accuracy_above_half": 0.034213,
+   "best_test_weak_signal": 0.054553,
+   "local_extrapolation_factor": 24.040562
   }
  ],
  "claimed": {

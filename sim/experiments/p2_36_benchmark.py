@@ -9,8 +9,8 @@ detectors' achieved performance beside the bounds, with what each is told record
 
 Worlds (identical ground, scatterers and source; only the cavity differs):
   W0  no cavity;  WA  a room 6 m on a side, roof 5 m down;  WB  an L-shaped tunnel 2.5 m square, roof 5 m down;
-  WA6 the same room 6 m east.
-  Pairs: presence (W0-WA, W0-WB), horizontal location (WA-WA6), shape (WA-WB); absolute depth is not scored.
+  WA6 the same room 6 m east;  WC  a room 10 m on a side, roof 5 m down (revision 2: the case earlier runs left open).
+  Pairs: presence (W0-WA, W0-WB, W0-WC), horizontal location (WA-WA6), shape (WA-WB); absolute depth is not scored.
 Excitations:
   quiet   Giza's regional microseisms (0.1-0.3 Hz, measured 67 km east), the imprint by the solver settling under a
           uniform strain (P2-28), waves from every direction; the oracle ensemble-averaged over the field (its expected
@@ -18,24 +18,31 @@ Excitations:
   strong  one vertical point force 15 m west of the site (a lorry), the same force in every world, solved by the
           elastic solver on a box recorded to 70 m; its amplitude scaled so the vertical velocity at the site without a
           cavity is the FTA's truck-over-a-bump level at 15 m; one declared frequency (the rule: the frequency in the
-          FTA band where the presence pair's ensemble oracle is largest, found and then frozen).
-Observation: the image's scatterers within a disk of radius R_OBS about the site (declared); the scatterers outside
-  add a tail, bounded separately (information outside is at most added: the two sets are independent in the model).
+          FTA band where the presence (room) pair's oracle on the measured 70 m disc is largest, found and then frozen);
+          every other frequency of the band, sampled every 2 Hz, reported beside it.
+Observation: the whole image (the 2025 dwell's 5 km square). The solver's field is used within 70 m; beyond it an
+  assumed envelope (a surface wave carried undiminished to the image's edge), a declared assumption, not a bound; the
+  results are also given within 70 m and 39 m, and with the envelope larger and attenuated.
 Scattering and noise: fully developed speckle (white circular Gaussian scatterers on the image's pixel grid, texture
-  power one per cell) and white receiver noise at SNR per cell (30 dB nominal, assumed: sigma0 / NESZ for the brightest
-  natural ground over ICEYE Dwell's best specified NESZ, -26.7 dB; the acquisition's own calibration and noise records
-  are not in this repository), swept 20 to 60 dB. The Doppler-to-time relation (checked pulse by pulse, P2-25).
+  power one per cell) and white receiver noise at SNR per cell, calibrated from the acquisition's radiometry
+  (sarsim.radiometry: the site's median sigma0 measured in the image over ICEYE's best specified Dwell NESZ, -18 dB;
+  the product carries no noise field), 18 dB for ground at 0 dB, swept. The Doppler-to-time relation (checked pulse by
+  pulse, P2-25).
 Layers:
-  L1  unknown reflectivity (told the excitation and both worlds' motion, not the texture): the exact KL per
-      along-track line, each world's own covariance (its common motion and receiver noise in it), summed over lines
-      (independent with the range band widened, which can only add information); no floor, no Fisher approximation.
-  L2  the oracle told the reflectivity too: the complete coherent echo difference for fixed scenes (the synthesizer in
-      complex128), Delta^2 = 2 beta |dz|^2 / sigma_z^2, and its ensemble average checked against
-      E Delta^2 = 8 sum SNR <sin^2(k du / 2)>, which holds under independent uniform scatterer phases.
+  L1  unknown reflectivity (told the excitation and both worlds' motion, not the texture): Theorem C per along-track
+      line (sarsim.finite.per_line_certificate), each line's reference holding its own common motion (the lorry's wave,
+      the microseisms' worst-case envelope, world 0's cavity) and the receiver noise, KL summed over lines (independent
+      with the range band widened, which can only add information); checked against the exact KL on lines. The quiet
+      case averaged over the field's realisations through a bound linear in each line's phase energy (l1_ensemble).
+  L2  the oracle told the reflectivity too: E Delta^2 = 8 sum SNR <sin^2(k du / 2)> (independent uniform scatterer
+      phases; an upper bound on the average over scenes by Jensen), and the complete coherent echo difference for fixed
+      scenes pulse by pulse (P2-29's echo model, complex128) against it.
 Implemented detectors:
-  D1  the oracle's likelihood-ratio test on noisy images (Monte Carlo), against 2 Phi(Delta / 2) - 1.
-  D2  the Neyman-Pearson test of L1 (known excitation, unknown texture): its exact ROC from the generalised eigenvalues.
-  D3  the published method (P2-07's pipeline) read blind, as an ordinary mapper, on noisy images of the strong case.
+  D1  the oracle's test on fixed scenes: Gaussian in the receiver noise, its ROC exactly Phi(Phi^-1(alpha) + Delta)
+      with Delta from the pulse-by-pulse echo difference.
+  D2  the score test (known excitation and difference pattern, unknown texture): predicted from the exact Fisher
+      information within 70 m; achieved on synthesised images (one noise law, threshold from separate grounds).
+  D3  the published method (P2-07's pipeline) on the benchmark's strong-case images: P2-37.
 Every allowance is labelled assumed or empirical, and the conclusion is shown under larger ones.
 """
 import copy
@@ -56,24 +63,32 @@ from katabasis.seismic.elastic3d import Medium, Receivers, Simulation, Source
 from sarsim import finite
 from sarsim import information as inf
 from sarsim.acquisition import DwellGeometry
+from sarsim.radiometry import snr_per_cell
 
 RID = 'p2_36_benchmark'
 SITES = Path(__file__).resolve().parents[2] / 'sites'
+_SNR = snr_per_cell('giza-20250827')
 FROZEN = {
     'worlds': {
         'W0': [],
         'WA': [[[0.0, 0.0, -8.0], [6.0, 6.0, 6.0]]],
         'WB': [[[-5.0, 0.0, -6.25], [18.0, 2.5, 2.5]], [[2.75, 7.375, -6.25], [2.5, 17.25, 2.5]]],
         'WA6': [[[6.0, 0.0, -8.0], [6.0, 6.0, 6.0]]],
+        'WC': [[[0.0, 0.0, -10.0], [10.0, 10.0, 10.0]]],     # v2: the room the earlier runs left open (P2-22, P2-26)
     },
     'pairs': {'presence (room)': ['W0', 'WA'], 'presence (L tunnel)': ['W0', 'WB'], 'location (6 m)': ['WA', 'WA6'],
-              'shape (room or L tunnel)': ['WA', 'WB']},
+              'shape (room or L tunnel)': ['WA', 'WB'], 'presence (10 m room)': ['W0', 'WC']},
     'strong_source': {'kind': 'vertical point force', 'east_m': -15.0, 'north_m': 0.0, 'level': 'FTA truck over a bump, 15 m'},
     'solver': {'extent': [[-100.0, 100.0], [-100.0, 100.0], [-100.0, 3.0]], 'h': 1.0, 'pml_m': 20.0, 'half_m': 70.0,
                'record_s': 0.5, 'f_top': 120.0, 'record_every': 4},
-    'r_obs_m': 39.0,
-    'snr_db_nominal': 30.0,
-    'snr_db_sweep': [20.0, 30.0, 40.0, 50.0, 60.0],
+    'report_disc_m': 39.0,                    # reported beside the whole image, as the recorded 70 m disc is
+    'snr_db_nominal': round(_SNR['nominal_db'], 2),      # calibrated: the site's median sigma0 over the specified best NESZ
+    'snr_db_generous': round(_SNR['generous_db'], 2),    # ground at 0 dB (about the brightest natural ground, assumed)
+    'snr_db_sweep': sorted({round(_SNR['specified_worst_db'], 2), round(_SNR['nominal_db'], 2),
+                            round(_SNR['generous_db'], 2), 30.0, 40.0}),   # 30 dB: the withdrawn earlier assumption
+    'revision': 'v2, after the sixth review: calibrated SNR, the 10 m room, the quiet case averaged through a linear '
+                'bound, the microseisms\' worst-case envelope in every reference, the score test with one noise law and '
+                'separate calibration grounds',
     'acquisition': 'giza-20250827',
     'rock': 'limestone-mokattam',
     'analysis': {
@@ -530,13 +545,15 @@ def achieved_score_test(g, dD, xs, ys, f_hz, r_max, taper_m=10.0):
             'tv_achieved_mean_phase': tv(A), 'tv_achieved_best_phase': tv(A + B), 'r_max_m': r_max, 'taper_m': taper_m}
 
 
-def score_mc(g, D0, D1, xs, ys, f_hz, sigma2, amps=(1.0, 800.0), seeds=40, shape=(1024, 64)):
+def score_mc(g, D0, D1, xs, ys, f_hz, sigma2, amps=(1.0, 800.0), n_cal=24, n_eval=24, shape=(1024, 64)):
     """D2 implemented: the score statistic for the pair's difference, told its pattern and timing but not the speckle,
-    applied to synthesised images (sarsim.synthesize, complex128) of a cyclic patch about the largest difference:
-    scatterers on the pixel grid (white circular Gaussian), world 0 moving with its whole motion (the lorry's wave and
-    its own cavity), world 1 the same plus the difference amplified `amp` times, the same scatterers in both, white
-    receiver noise. Its empirical AUC and detection at 5% false alarms against the weak-signal prediction from the exact
-    Fisher information on the same patch (fisher_grid), and against the per-line certificate on the same patch."""
+    on synthesised images (sarsim.synthesize, complex128) of a cyclic patch about the largest difference: scatterers on
+    the pixel grid (white circular Gaussian), world 0 moving with its whole motion (the lorry's wave and its own cavity),
+    world 1 the same plus the difference amplified `amp` times. One noise law for every image (white, its variance fixed
+    once from a separate ground's motionless image at the nominal SNR); the 5% threshold set on n_cal calibration grounds
+    of world 0; the evaluation on disjoint grounds, n_eval of world 0 and n_eval of world 1, so the AUC compares
+    independent images and the detection rate is read at a threshold not fitted to them. Against the weak-signal
+    prediction from the exact Fisher information on the same patch (fisher_grid) and the per-line certificate there."""
     from sarsim import synthesize
     from sarsim.scene import Scatterers
     m31 = module('p231', Path(__file__).with_name('p2_31_shape_test.py'))
@@ -553,57 +570,67 @@ def score_mc(g, D0, D1, xs, ys, f_hz, sigma2, amps=(1.0, 800.0), seeds=40, shape
     site = lambda x, y: (c[0] + x * a_hat[0] + y * r_hat[0], c[1] + x * a_hat[1] + y * r_hat[1])
     Ep, Np = site(XA, YR)
     z0p, z1p = interp_complex(D0, xs, ys, Ep, Np), interp_complex(D1, xs, ys, Ep, Np)
+    dK1 = z1p - z0p                                           # the unit difference; the statistic's template
     ph_x = np.exp(1j * 2 * np.pi * f_hz * XA / g.V)
+    taus = [lambda t: np.cos(2 * np.pi * f_hz * t), lambda t: np.sin(2 * np.pi * f_hz * t)]
+    n = Nx * Nr
+    zero = np.zeros(n)
+
+    def ground(sd):
+        rng = np.random.default_rng(sd)
+        sc = (rng.normal(size=n) + 1j * rng.normal(size=n)) / np.sqrt(2)
+        scat = Scatterers(x=XA.ravel(), y=YR.ravel(), z=zero, amp=np.abs(sc), phase=np.angle(sc), iso=np.ones(n),
+                          flash=zero, nu0=zero, sig_nu=np.ones(n), vib_amp=zero, vib_freq=zero, vib_phase=zero,
+                          label=np.zeros(n, int))
+        psi = float(rng.uniform(0, 2 * np.pi))
+        noise = (rng.normal(size=(Nx, Nr)) + 1j * rng.normal(size=(Nx, Nr))) / np.sqrt(2)
+        return scat, psi, noise
+
+    # one noise law: its variance from a separate ground's motionless image
+    scat_c, _, _ = ground(3590)
+    p_sig = float(np.mean(np.abs(synthesize(scat_c, g, shape, dtype=np.complex128)) ** 2))
+    noise_sd = float(np.sqrt(sigma2 * p_sig))
+
+    def statistic(sd, amp):
+        scat, psi, noise = ground(sd)
+
+        def motion(x, y, z, t):
+            E, N = site(x, y)
+            z0 = interp_complex(D0, xs, ys, E, N)
+            zz = z0 + amp * (interp_complex(D1, xs, ys, E, N) - z0)
+            return np.real(zz[None, :] * np.exp(1j * (2 * np.pi * f_hz * (t[:, None] + x[None, :] / g.V) + psi)))
+        img = synthesize(scat, g, shape, motion=motion, dtype=np.complex128) + noise_sd * noise
+        q = m31.score_fields(img, g, taus)
+        ps = np.exp(1j * psi)
+        K1, K2 = np.real(dK1 * ph_x * ps), -np.imag(dK1 * ph_x * ps)     # d = K1 cos(2 pi f t) + K2 sin(2 pi f t)
+        return float(k0 * np.sum(K1 * q[0] + K2 * q[1]))
+    cal = [statistic(3600 + k, 0.0) for k in range(n_cal)]
+    ev0 = [statistic(3700 + k, 0.0) for k in range(n_eval)]
+    # the statistic's sign (the model's phase convention) from one separate ground, never from evaluation images
+    sign = 1.0 if statistic(3595, max(amps)) >= statistic(3595, 0.0) else -1.0
     rows = []
     for amp in amps:
-        dK = amp * (z1p - z0p)
-        A_f, B_f = inf.fisher_grid(dK, g, f_hz, pad=(Nx, Nr))
-        taus = [lambda t: np.cos(2 * np.pi * f_hz * t), lambda t: np.sin(2 * np.pi * f_hz * t)]
-        T = {0: [], 1: []}
-        for sd in range(seeds + 1):
-            rng = np.random.default_rng(3600 + sd)
-            sc = (rng.normal(size=Nx * Nr) + 1j * rng.normal(size=Nx * Nr)) / np.sqrt(2)
-            n = Nx * Nr
-            zero = np.zeros(n)
-            scat = Scatterers(x=XA.ravel(), y=YR.ravel(), z=zero, amp=np.abs(sc), phase=np.angle(sc), iso=np.ones(n),
-                              flash=zero, nu0=zero, sig_nu=np.ones(n), vib_amp=zero, vib_freq=zero, vib_phase=zero,
-                              label=np.zeros(n, int))
-            psi = rng.uniform(0, 2 * np.pi)
-            noise = (rng.normal(size=(Nx, Nr)) + 1j * rng.normal(size=(Nx, Nr))) / np.sqrt(2)
-            for w in (0, 1):
-                def motion(x, y, z, t, w=w):
-                    E, N = site(x, y)
-                    zz = interp_complex(D0, xs, ys, E, N) + w * amp * (interp_complex(D1, xs, ys, E, N) -
-                                                                      interp_complex(D0, xs, ys, E, N))
-                    return np.real(zz[None, :] * np.exp(1j * (2 * np.pi * f_hz * (t[:, None] + x[None, :] / g.V) + psi)))
-                img = synthesize(scat, g, shape, motion=motion, dtype=np.complex128)
-                img = img + np.sqrt(sigma2 * np.mean(np.abs(img) ** 2)) * noise
-                ps = np.exp(1j * psi)
-                q = m31.score_fields(img, g, taus)
-                Kp1, Kp2 = np.real(dK * ph_x * ps), -np.imag(dK * ph_x * ps)     # d = K1 cos(2 pi f t) + K2 sin
-                T[w].append(float(k0 * np.sum(Kp1 * q[0] + Kp2 * q[1])))
-        # the first seed fixes the statistic's sign (the model's phase convention), the rest are scored
-        sign = 1.0 if T[1][0] >= T[0][0] else -1.0
-        t0, t1 = sign * np.array(T[0][1:]), sign * np.array(T[1][1:])
+        t_cal, t0 = sign * np.array(cal), sign * np.array(ev0)
+        t1 = sign * np.array([statistic(3800 + k, amp) for k in range(n_eval)])
+        thr = float(np.quantile(t_cal, 0.95))
         auc = float(np.mean(t1[:, None] > t0[None, :]))
-        thr = np.quantile(t0, 0.95)
-        tpr = float(np.mean(t1 > thr))
+        A_f, _ = inf.fisher_grid(amp * dK1, g, f_hz, pad=(Nx, Nr))
         d = float(np.sqrt(A_f))
         osc = 1 / (2 * np.pi * f_hz * pass_seconds(g))
-        Q = g.band_frac * k0 ** 2 / 2 * (1 + osc) * np.sum(np.abs(dK) ** 2, axis=0)        # per range line
+        Q = g.band_frac * k0 ** 2 / 2 * (1 + osc) * np.sum(np.abs(amp * dK1) ** 2, axis=0)
         Qc = g.band_frac * k0 ** 2 / 2 * (1 + osc) * np.sum(np.abs(z0p) ** 2, axis=0)
         cert = l1_certificate(Q, Qc, sigma2)
-        rows.append({'amplification': amp, 'auc_empirical': auc, 'auc_predicted': float(ndtr(d / np.sqrt(2))),
-                     'tpr_at_005_empirical': tpr, 'tpr_at_005_predicted': float(ndtr(ndtri(0.05) + d)),
-                     'deflection_predicted': d, 'tv_predicted': float(2 * ndtr(d / 2) - 1),
-                     'certificate_tv_upper_patch': cert['tv_upper'], 'sign': sign,
-                     'mean_shift_over_sd': float((t1.mean() - t0.mean()) / t0.std(ddof=1))})
-        print(f"    score MC x{amp:g}: AUC {auc:.3f} (predicted {rows[-1]['auc_predicted']:.3f}), shift/sd "
-              f"{rows[-1]['mean_shift_over_sd']:.2f} (predicted d {d:.3f}), patch certificate {cert['tv_upper']:.3g}",
-              flush=True)
+        rows.append({'amplification': amp, 'auc_achieved': auc, 'auc_predicted': float(ndtr(d / np.sqrt(2))),
+                     'found_at_threshold_achieved': float(np.mean(t1 > thr)),
+                     'false_alarms_at_threshold_achieved': float(np.mean(t0 > thr)),
+                     'found_at_005_predicted': float(ndtr(ndtri(0.05) + d)), 'deflection_predicted': d,
+                     'tv_predicted': float(2 * ndtr(d / 2) - 1), 'certificate_tv_upper_patch': cert['tv_upper'],
+                     'sign': sign, 'mean_shift_over_sd': float((t1.mean() - t0.mean()) / t0.std(ddof=1))})
+        print(f"    score MC x{amp:g}: AUC {auc:.3f} (predicted {rows[-1]['auc_predicted']:.3f}), found "
+              f"{rows[-1]['found_at_threshold_achieved']:.2f} at a threshold giving {rows[-1]['false_alarms_at_threshold_achieved']:.2f} "
+              f"false alarms (predicted {rows[-1]['found_at_005_predicted']:.2f} at 0.05)", flush=True)
     return {'patch_px': list(shape), 'patch_m': [Nx * g.dx, Nr * g.dr / np.sin(g.theta)], 'centre_site_m': c.tolist(),
-            'seeds': seeds, 'rows': rows}
-
+            'calibration_grounds': n_cal, 'evaluation_grounds_each': n_eval, 'noise_sd': noise_sd, 'rows': rows}
 
 # ------------------------------------------------------------------ the quiet case: each world settling under strain
 
@@ -638,7 +665,11 @@ def lines_for(g, frame, emap, xs, ys, r_in, ring, exponent, osc, mult=1.0, atten
     return {'Q': phase_energy(g, S, osc), 'Q_disc': phase_energy(g, S_disc, osc),
             'area_integral_m4': float(S.sum() * frame['dg']),
             'disc_integral_m4': disc_integral(emap, xs, ys, r_in),
-            'obs_disc_integral_m4': disc_integral(emap, xs, ys, FROZEN['r_obs_m'])}
+            'obs_disc_integral_m4': disc_integral(emap, xs, ys, FROZEN['report_disc_m'])}
+
+
+def snr_key(v):
+    return f'{v:g}'
 
 
 def layers(g, frame, Q, Qc, integ, osc, extra=None):
@@ -648,21 +679,49 @@ def layers(g, frame, Q, Qc, integ, osc, extra=None):
         s2 = 10 ** (-snr / 10)
         c = l1_certificate(Q, Qc, s2)
         c['state'] = state(c['tv_upper'])
-        out['l1'][f'{snr:g}'] = c
+        out['l1'][snr_key(snr)] = c
         o = oracle(g, integ['area_integral_m4'], snr, osc)
         o['state'] = state(o['tv_upper'])
-        out['oracle'][f'{snr:g}'] = o
-    s2 = 10 ** (-FROZEN['snr_db_nominal'] / 10)
+        out['oracle'][snr_key(snr)] = o
+    nom = FROZEN['snr_db_nominal']
+    s2 = 10 ** (-nom / 10)
     out['l1_growth_to_target'] = growth(lambda a: l1_certificate(Q, Qc, s2, a)['tv_upper'], AN['target_tv'])
-    o30 = out['oracle'][f"{FROZEN['snr_db_nominal']:g}"]
-    out['oracle_growth_to_target'] = float(np.sqrt(oracle_d2_target() / o30['e_delta2'])) if o30['e_delta2'] > 0 else None
-    out['oracle_snr_db_for_target'] = (FROZEN['snr_db_nominal'] + 10 * np.log10(oracle_d2_target() / o30['e_delta2'])
-                                       if o30['e_delta2'] > 0 else None)
+    on = out['oracle'][snr_key(nom)]
+    out['oracle_growth_to_target'] = float(np.sqrt(oracle_d2_target() / on['e_delta2'])) if on['e_delta2'] > 0 else None
+    # where the oracle's upper bound stops excluding 95% at 5%: not a demonstration that any detector gets there
+    out['oracle_bound_stops_excluding_at_snr_db'] = (nom + 10 * np.log10(oracle_d2_target() / on['e_delta2'])
+                                                     if on['e_delta2'] > 0 else None)
     out['l1_disc'] = l1_certificate(integ['Q_disc'], Qc, s2)
-    out['oracle_disc'] = oracle(g, integ['disc_integral_m4'], FROZEN['snr_db_nominal'], osc)
-    out['oracle_obs_disc'] = oracle(g, integ['obs_disc_integral_m4'], FROZEN['snr_db_nominal'], osc)
+    out['oracle_disc'] = oracle(g, integ['disc_integral_m4'], nom, osc)
+    out['oracle_report_disc'] = oracle(g, integ['obs_disc_integral_m4'], nom, osc)
     out['tail_share_of_integral'] = 1 - integ['disc_integral_m4'] / integ['area_integral_m4']
     return out
+
+
+def l1_ensemble(Q_mean, Q_max, Qc_worst, sigma2):
+    """The quiet case averaged over the excitation's realisations, through a bound linear in each line's phase energy.
+    For every realisation with Q_l <= Q_max_l and each line's common motion within its worst-case envelope (floor
+    lambda_l from line_floor), rho = q (2 + q) <= q (2 + q_max) and 1 - rho >= 1 - rho_max, so
+    KL_l <= c_l Q_l / lambda_l with c_l = (2 + q_max)^2 / (2 (1 - rho_max)): linear in Q_l. Averaging, E KL <=
+    sum_l c_l E[Q_l] / lambda_l, and E TV <= min(sqrt(E KL / 2), sqrt(1 - exp(-E KL))) since both are concave in KL.
+    The worst realisation's own certificate (at Q_max) is returned beside it."""
+    Qc_worst = np.broadcast_to(np.asarray(Qc_worst, float), np.shape(Q_mean))
+    lam = np.array([finite.line_floor(qc, sigma2) or 0.0 for qc in np.ravel(Qc_worst)]).reshape(np.shape(Q_mean))
+    if np.any(lam <= 0):
+        return {'kl_upper': None, 'tv_upper': 1.0, 'informative': False}
+    qm = np.sqrt(np.asarray(Q_max) / lam)
+    rho_m = qm * (2 + qm)
+    if np.any(rho_m >= 1):
+        return {'kl_upper': None, 'tv_upper': 1.0, 'informative': False}
+    c = (2 + qm) ** 2 / (2 * (1 - rho_m))
+    kl = float(np.sum(c * np.asarray(Q_mean) / lam))
+    tv = min(1.0, np.sqrt(kl / 2), np.sqrt(-np.expm1(-kl)))
+    worst = finite.per_line_certificate(Q_max, Qc_worst, sigma2)
+    return {'kl_upper': kl, 'tv_upper': float(tv), 'c_max': float(c.max()), 'floor_min': float(lam.min()),
+            'worst_realisation_tv_upper': worst['tv_upper'], 'state': state(tv)}
+
+
+_S0_CACHE = {}
 
 
 def strong_pair(g, frame, F, fi, w0, w1, Qc_micro, quiet_Q=None, mult=1.0, atten=None, grid=1.0):
@@ -674,10 +733,13 @@ def strong_pair(g, frame, F, fi, w0, w1, Qc_micro, quiet_Q=None, mult=1.0, atten
     R = AN['recorded_disc_m']
     e = np.abs(D1 - D0) ** 2 * grid ** 2
     diff = lines_for(g, frame, e, xs, ys, R, AN['tail_ring_m'], 1.0, osc, mult, atten)
-    e0 = np.abs(D0) ** 2 * grid ** 2
-    src = (FROZEN['strong_source']['east_m'], FROZEN['strong_source']['north_m'])
-    A0 = ring_envelope(e0, xs, ys, (40.0, 55.0), 40.0, 1.0, centre=src)
-    S0 = line_integrals(g, frame, e0, xs, ys, R, envelope_fn(A0 * mult, 40.0, 1.0, centre=src, atten=atten))
+    key = (w0, fi, mult, atten, grid)
+    if key not in _S0_CACHE:                   # world 0's own motion, shared by every pair with the same world 0
+        e0 = np.abs(D0) ** 2 * grid ** 2
+        src = (FROZEN['strong_source']['east_m'], FROZEN['strong_source']['north_m'])
+        A0 = ring_envelope(e0, xs, ys, (40.0, 55.0), 40.0, 1.0, centre=src)
+        _S0_CACHE[key] = line_integrals(g, frame, e0, xs, ys, R, envelope_fn(A0 * mult, 40.0, 1.0, centre=src, atten=atten))
+    S0 = _S0_CACHE[key]
     Qc = (np.sqrt(phase_energy(g, S0, osc)) + np.sqrt(Qc_micro)) ** 2
     Q = diff['Q'] if quiet_Q is None else (np.sqrt(diff['Q']) + np.sqrt(quiet_Q)) ** 2
     return Q, Qc, diff, osc
@@ -690,13 +752,14 @@ def main():
     p30 = load('p2_30_finite_certificates')
     micro_env = p30['background_included']['los_peak_envelope_m']
     micro_phase = k0 * micro_env
-    Qc_micro = frame['n_band_along'] * micro_phase ** 2
+    # every realisation of the 24-wave field: its peak at most sqrt(24) times the envelope of one equal-power wave set
+    micro_worst = np.sqrt(AN['directions_quiet']) * micro_phase
+    Qc_micro = frame['n_band_along'] * micro_worst ** 2
     ql = quiet_level()
     params = {'frozen': FROZEN, 'frozen_hash': FROZEN_HASH, 'image_frame': {k: v for k, v in frame.items() if k != 'rho'},
               'pass_s': pass_seconds(g), 'microseism_los_peak_envelope_m': micro_env,
-              'microseism_envelope_source': 'P2-30 background_included (three regional harmonics)',
-              'quiet_level': ql, 'snr_status': 'assumed: sigma0 about 0 dB over ICEYE Dwell best NESZ -26.7 dB; the '
-              'acquisition\'s calibration and noise records are not in this repository'}
+              'microseism_envelope_source': 'P2-30 background_included (three regional harmonics), times sqrt(24) for '
+              'every realisation of the 24 directions', 'quiet_level': ql, 'snr': _SNR}
     with Run(RID, 'One auditable comparison: presence, location and shape, bounds beside achieved', params) as run:
         F = strong_fields(g)
         fs = F['f']
@@ -718,21 +781,27 @@ def main():
             xq, yq, eq, maps = quiet_energy(dK, g, eps0)
             integ_q = lines_for(g, frame, eq, xq, yq, AN['quiet_disc_m'], AN['quiet_ring_m'],
                                 AN['quiet_energy_exponent'], 0.0)
-            Qq = integ_q['Q']
+            Qq = integ_q['Q']                   # expected over the field's realisations
+            # every realisation: |dd| <= sum over directions of eps0 / sqrt(n) |M_phi|
+            e_max = (eps0 / np.sqrt(len(maps)) * np.sum(np.abs(maps), axis=0)) ** 2
+            Qq_max = lines_for(g, frame, e_max, xq, yq, AN['quiet_disc_m'], AN['quiet_ring_m'],
+                               AN['quiet_energy_exponent'], 0.0)['Q']
             Qc_q = np.full_like(Qq, Qc_micro)
-            if kern[w0] is not None:           # world 0's own imprint in its reference too
-                _, _, e0q, _ = quiet_energy(kern[w0], g, eps0)
-                i0q = lines_for(g, frame, e0q, xq, yq, AN['quiet_disc_m'], AN['quiet_ring_m'],
+            if kern[w0] is not None:           # world 0's own imprint in its reference too, at its worst realisation
+                _, _, _, maps0 = quiet_energy(kern[w0], g, eps0)
+                e0max = (eps0 / np.sqrt(len(maps0)) * np.sum(np.abs(maps0), axis=0)) ** 2
+                i0q = lines_for(g, frame, e0max, xq, yq, AN['quiet_disc_m'], AN['quiet_ring_m'],
                                 AN['quiet_energy_exponent'], 0.0)
                 Qc_q = (np.sqrt(Qc_q) + np.sqrt(i0q['Q'])) ** 2
             lay = layers(g, frame, Qq, Qc_q, integ_q, 0.0)
+            lay['l1_ensemble'] = l1_ensemble(Qq, Qq_max, Qc_q, 10 ** (-FROZEN['snr_db_nominal'] / 10))
             ach = memo(RID, f'achieved_quiet_{pname}', lambda: _achieved_quiet(g, xq, yq, maps, eps0, ql['f_hz']),
                        __file__, version='achq-v1')
             quiet[pname] = {'pair': [w0, w1], 'integrals': {k: v for k, v in integ_q.items() if k not in ('Q', 'Q_disc')},
                             **lay, 'achieved_score_test': ach,
                             'sigma_profile': sigma_profile(eq, xq, yq, step=4.0, r_max=AN['quiet_disc_m'])}
             # the strong case at the frozen frequency, and every frequency of the band for the curve
-            Q, Qc, integ, osc = strong_pair(g, frame, F, fi, w0, w1, Qc_micro, quiet_Q=Qq)
+            Q, Qc, integ, osc = strong_pair(g, frame, F, fi, w0, w1, Qc_micro, quiet_Q=Qq_max)
             lay = layers(g, frame, Q, Qc, integ, osc)
             D0, D1 = F['D'][w0][fi], F['D'][w1][fi]
             sens = {}
@@ -740,7 +809,7 @@ def main():
                     [(f'tail envelope x{m:g}', {'mult': m}) for m in AN['tail_multipliers'] if m != 1.0] + \
                     [(f'attenuation Q = {qa:g} (illustrative)', {'atten': 2 * np.pi * f_star / (qa * 1690.8)})
                      for qa in AN['attenuation_q']]:
-                Qs, Qcs, ints, _ = strong_pair(g, frame, F, fi, w0, w1, Qc_micro, quiet_Q=Qq, **kw)
+                Qs, Qcs, ints, _ = strong_pair(g, frame, F, fi, w0, w1, Qc_micro, quiet_Q=Qq_max, **kw)
                 c = l1_certificate(Qs, Qcs, 10 ** (-FROZEN['snr_db_nominal'] / 10))
                 o = oracle(g, ints['area_integral_m4'], FROZEN['snr_db_nominal'], osc)
                 sens[label] = {'l1_tv_upper': c['tv_upper'], 'l1_state': state(c['tv_upper']),
@@ -757,18 +826,22 @@ def main():
                              **lay, 'sensitivity': sens, 'achieved_score_test': ach, 'verify_line': ver,
                              'fixed_scenes': fx,
                              'sigma_profile': sigma_profile(np.abs(D1 - D0) ** 2, F['xs'], F['ys'])}
-            curves[pname] = memo(RID, f'curve_{pname}', lambda: _curve(g, frame, F, w0, w1, Qc_micro, Qq), __file__,
-                                 version='curve-v1')
-            print(f"  {pname}: quiet L1 {quiet[pname]['l1']['30']['tv_upper']:.2e}, oracle "
-                  f"{quiet[pname]['oracle']['30']['tv_upper']:.2e}; strong at {f_star:.0f} Hz L1 "
-                  f"{strong[pname]['l1']['30']['tv_upper']:.3f}, oracle {strong[pname]['oracle']['30']['tv_upper']:.3f} "
-                  f"({time.time() - t0:.0f} s)", flush=True)
+            curves[pname] = memo(RID, f'curve_{pname}', lambda: _curve(g, frame, F, w0, w1, Qc_micro, Qq_max), __file__,
+                                 version='curve-v2')
+            nk = snr_key(FROZEN['snr_db_nominal'])
+            print(f"  {pname}: quiet L1 {quiet[pname]['l1_ensemble']['tv_upper']:.2e} (averaged), oracle "
+                  f"{quiet[pname]['oracle'][nk]['tv_upper']:.2e}; strong at {f_star:.0f} Hz L1 "
+                  f"{strong[pname]['l1'][nk]['tv_upper']:.3f} (within 70 m {strong[pname]['l1_disc']['tv_upper']:.3f}), "
+                  f"oracle {strong[pname]['oracle'][nk]['tv_upper']:.3f} ({time.time() - t0:.0f} s)", flush=True)
         w0, w1 = FROZEN['pairs']['presence (room)']
         mc = memo(RID, 'score_mc', lambda: score_mc(g, F['D'][w0][fi], F['D'][w1][fi], F['xs'], F['ys'], f_star,
-                                                    10 ** (-FROZEN['snr_db_nominal'] / 10), amps=(1.0, 800.0), seeds=24),
-                  __file__, version='mc-v1')
+                                                    10 ** (-FROZEN['snr_db_nominal'] / 10), amps=(1.0, 800.0),
+                                                    n_cal=200, n_eval=60),
+                  __file__, version='mc-v3')
         strong['presence (room)']['score_monte_carlo'] = mc
-        run.save({'f_star_hz': f_star, 'frequency_rule': 'the presence (room) pair\'s oracle on the measured 70 m disc, '
+        run.save({'snr_db_nominal': FROZEN['snr_db_nominal'], 'snr_db_generous': FROZEN['snr_db_generous'],
+                  'snr_key_nominal': snr_key(FROZEN['snr_db_nominal']), 'snr_key_generous': snr_key(FROZEN['snr_db_generous']),
+                  'f_star_hz': f_star, 'frequency_rule': 'the presence (room) pair\'s oracle on the measured 70 m disc, '
                   'largest over the FTA band', 'disc_integral_by_f': {'f_hz': fs.tolist(), 'presence_room_m4': disc},
                   'field_decay_last_10pct': F['decay'], 'scale_per_unit_force': {'f_hz': fs.tolist(),
                                                                                   'scale': F['scale'].tolist()},
@@ -797,7 +870,9 @@ def _curve(g, frame, F, w0, w1, Qc_micro, Qq):
         c = l1_certificate(Q, Qc, 10 ** (-FROZEN['snr_db_nominal'] / 10))
         o = oracle(g, integ['area_integral_m4'], FROZEN['snr_db_nominal'], osc)
         od = oracle(g, integ['disc_integral_m4'], FROZEN['snr_db_nominal'], osc)
+        og = oracle(g, integ['area_integral_m4'], FROZEN['snr_db_generous'], osc)
         rows.append({'f_hz': float(F['f'][i]), 'l1_tv_upper': c['tv_upper'], 'oracle_tv_upper': o['tv_upper'],
+                     'oracle_generous_tv_upper': og['tv_upper'],
                      'oracle_disc_tv_upper': od['tv_upper'], 'tail_share': 1 - integ['disc_integral_m4'] /
                      integ['area_integral_m4']})
     return rows
@@ -810,88 +885,99 @@ def _fmt(x):
 
 
 def finding(quiet, strong, curves, f_star):
-    n = f"{FROZEN['snr_db_nominal']:g}"
-    q_l1 = max(r['l1'][n]['tv_upper'] for r in quiet.values())
-    q_or = max(r['oracle'][n]['tv_upper'] for r in quiet.values())
-    q_gr = min(r['l1_growth_to_target'] or np.inf for r in quiet.values())
-    q_go = min(r['oracle_growth_to_target'] or np.inf for r in quiet.values())
+    n = snr_key(FROZEN['snr_db_nominal'])
+    gen = FROZEN['snr_db_generous']
+    names = list(strong)
     s = strong
-    names = list(s)
-    l1 = {k: s[k]['l1'][n] for k in names}
-    orc = {k: s[k]['oracle'][n] for k in names}
-    worst_l1_band = {k: max(r['l1_tv_upper'] for r in curves[k]) for k in names}
-    worst_or_band = {k: max(r['oracle_tv_upper'] for r in curves[k]) for k in names}
+    pct = lambda v: f"{100 * v:.1f}%"
+    q_ens = max(r['l1_ensemble']['tv_upper'] for r in quiet.values())
+    q_worst = max(r['l1_ensemble']['worst_realisation_tv_upper'] for r in quiet.values())
+    q_or = max(r['oracle'][n]['tv_upper'] for r in quiet.values())
+    tail = min(s[k]['tail_share_of_integral'] for k in names), max(s[k]['tail_share_of_integral'] for k in names)
+    l1 = {k: s[k]['l1'][n]['tv_upper'] for k in names}
+    l1_disc = {k: s[k]['l1_disc']['tv_upper'] for k in names}
+    band = {k: max(r['l1_tv_upper'] for r in curves[k]) for k in names}
+    q50 = {k: v['l1_tv_upper'] for k in names for lab, v in s[k]['sensitivity'].items() if 'Q = 50' in lab}
+    x5 = {k: v['l1_tv_upper'] for k in names for lab, v in s[k]['sensitivity'].items() if 'x5' in lab}
+    orn = {k: s[k]['oracle'][n]['tv_upper'] for k in names}
+    org = {k: s[k]['oracle'][snr_key(gen)]['tv_upper'] for k in names}
+    stop = {k: s[k]['oracle_bound_stops_excluding_at_snr_db'] for k in names}
     gr = min(s[k]['l1_growth_to_target'] or np.inf for k in names)
+    rng_ = lambda d: f"{min(d.values()):.3f} to {max(d.values()):.3f}"
     fx = s[names[0]]['fixed_scenes']['summary']
-    ver = s[names[0]]['verify_line']['rows'][0]
-    ach = {k: s[k]['achieved_score_test']['tv_achieved_best_phase'] for k in names}
-    tail = max(s[k]['tail_share_of_integral'] for k in names)
-    sens_worst = max(v['l1_tv_upper'] for k in names for v in s[k]['sensitivity'].values())
-    snr_need = {k: s[k]['oracle_snr_db_for_target'] for k in names}
-    listing = lambda d, f=_fmt: '; '.join(f"{k} {f(v)}" for k, v in d.items())
-    single_ok = q_l1 < AN['target_tv'] and max(worst_l1_band.values()) < AN['target_tv'] and sens_worst < AN['target_tv']
-    oracle_ok = max(orc[k]['tv_upper'] for k in names) < AN['target_tv']
-    conclusion = (("So in this benchmark one image under fully developed speckle does not reach 95% at 5% for presence, a "
-                   "6 m location or shape, quiet or favourable, whatever reads it; only a detector told the reflectivity "
-                   + ("could, and only at an SNR above the assumed one." if oracle_ok else "reaches it at the assumed SNR."))
-                  if single_ok else
-                  "So in this benchmark the favourable case is not excluded for a single image under every allowance; "
-                  "the pairs and allowances where it is not are listed in the report.")
-    states = lambda d: '; '.join(f"{k} {v['tv_upper']:.3f} ({v['state']})" for k, v in d.items())
+    ver = [x['exact_over_certificate'] for k in names for x in s[k]['verify_line']['rows'][:1]]
+    mc = s[names[0]].get('score_monte_carlo', {}).get('rows')
+    wc = s.get('presence (10 m room)')
+    single_ok = max(band.values()) < AN['target_tv'] and max(x5.values()) < AN['target_tv'] and q_worst < AN['target_tv']
     return (
-        f"One auditable comparison (BENCHMARK.md): four worlds identical but for the cavity (none; a room 6 m on a side, roof "
-        f"5 m down; an L-shaped tunnel at the same depth; the room 6 m east), the same source, scatterers and noise law in "
-        f"each, the whole image observed, the tail beyond the measured 70 m an assumed envelope. Quiet ground (Giza's "
-        f"regional microseisms, expected over the field): every pair near chance on every layer, any single-image reader "
-        f"at most {_fmt(q_l1)} above its false-alarm rate, the oracle told every scatterer's reflectivity at most {_fmt(q_or)} "
-        f"at {n} dB (assumed); the differential motion would have to grow {_fmt(q_gr)} times (single image) and "
-        f"{_fmt(q_go)} times (oracle) to reach 95% found at 5%. Favourable strong shaking (a truck over a bump 15 m away, "
-        f"its FTA level held at {f_star:.0f} Hz for the whole pass, the scattered wave carried unattenuated to the image's "
-        f"edge, {100 * tail:.0f}% of it beyond the measured disc): for any method reading the one image, told the "
-        f"excitation and both worlds' motion but not the speckle, the per-line certificate, each line's reference holding "
-        f"the lorry's wave, gives {states(l1)}; the worst over the band {listing(worst_l1_band)}; under the tabulated "
-        f"allowances at most {_fmt(sens_worst)}; the motion would have to grow {_fmt(gr)} times. The oracle told every "
-        f"reflectivity, a privileged detector (a perfect reference image), gives at {n} dB {states(orc)} (worst over the "
-        f"band {listing(worst_or_band)}) and reaches 0.9 at {listing(snr_need, lambda v: f'{v:.0f} dB')}. Pulse by pulse on "
-        f"fixed scenes the coherent echo difference is {fx['common_x1']['mean']:.3f} +- {fx['common_x1']['se']:.3f} of the "
-        f"ensemble formula ({fx['common_x10']['mean']:.3f} +- {fx['common_x10']['se']:.3f} with the lorry's wave ten times "
-        f"larger); on one line of the model the exact KL is {_fmt(ver['exact_over_certificate'])} of the certificate. The "
-        f"score test told the pattern (achieved, within 70 m) reaches {listing(ach)}"
-        + (lambda mc: (f"; implemented on synthesised images it reaches the predicted deflection (mean shift "
-                       f"{mc[-1]['mean_shift_over_sd']:.2f} spreads against {mc[-1]['deflection_predicted']:.2f} predicted, "
-                       f"with the difference amplified {mc[-1]['amplification']:g} times; AUC {mc[0]['auc_empirical']:.2f} at the "
-                       f"real level)" if mc else ''))(s[names[0]].get('score_monte_carlo', {}).get('rows'))
-        + ". " + conclusion
-        + " It rests on the elastic model without attenuation, the tail envelope, the speckle model (bright points are "
-        "covered by the oracle only) "
-        f"and the assumed SNR."
-    )
+        f"One auditable comparison (BENCHMARK.md, revision 2): five worlds identical but for the cavity (none; a room 6 m on "
+        f"a side under a 5 m roof; an L-shaped tunnel at that depth; the room 6 m east; and the 10 m room under a 5 m roof "
+        f"that earlier runs left open), the same lorry 15 m west at the FTA's truck-over-a-bump level held at {f_star:.0f} Hz "
+        f"all pass, the same scatterers and noise law, one geology (uniform limestone, no attenuation in the solver), fully "
+        f"developed speckle. The whole image is observed: the solver's field within 70 m, and beyond it an assumed envelope, "
+        f"a surface wave carried undiminished to the image's edge, which supplies {100 * tail[0]:.0f} to {100 * tail[1]:.0f}% "
+        f"of the strong case's signal. For any method reading the one image, told the excitation and both worlds' whole "
+        f"motion but not the speckle (the certificate line by line, each line's reference holding the lorry's wave, the "
+        f"microseisms' worst-case envelope and the noise), detection may exceed false alarms by at most {rng_(l1_disc)} "
+        f"within 70 m; with the envelope, {rng_(l1)}"
+        + (f" (the 10 m room {wc['l1'][n]['tv_upper']:.3f})" if wc else '')
+        + f"; with the scattered wave attenuated at Q = 50, a realistic rock, {rng_(q50)}; with the envelope five times "
+        f"larger, {rng_(x5)}; the largest over the sampled band (every 2 Hz) {rng_(band)}. Found at 5% false alarms is at most "
+        f"{pct(0.05 + max(l1.values()))} for any of these questions; the lorry's differential motion would have to grow "
+        f"{gr:.0f} times to reach 95% at 5%. The oracle told every scatterer's reflectivity as well: at the calibrated "
+        f"{FROZEN['snr_db_nominal']:.1f} dB (the site's median sigma0 over ICEYE's best specified noise floor) {rng_(orn)}, at "
+        f"{gen:.0f} dB (ground at 0 dB) {rng_(org)}; its upper bound stops excluding 95% at 5% only at "
+        f"{min(stop.values()):.0f} to {max(stop.values()):.0f} dB, which no specified ICEYE noise floor reaches over natural "
+        f"ground. Under Giza's regional microseisms, averaged over the field's realisations through a bound linear in each "
+        f"line's phase energy, one image is at most {q_ens:.1e} above chance ({q_worst:.1e} at the worst realisation) and the "
+        f"oracle {q_or:.1e}. Checks: the exact divergence on lines of the model is {min(ver):.2f} to {max(ver):.2f} of the "
+        f"certificate; pulse by pulse on fixed scenes the coherent echo difference is {fx['common_x1']['mean']:.3f} +- "
+        f"{fx['common_x1']['se']:.3f} of the ensemble formula, the same with the lorry's wave ten times larger."
+        + (f" Achieved: the score test, implemented on synthesised images with one noise law and a threshold set on separate "
+           f"grounds, reaches AUC {mc[-1]['auc_achieved']:.2f} (predicted {mc[-1]['auc_predicted']:.2f}) with the "
+           f"difference amplified {mc[-1]['amplification']:g} times, and {mc[0]['auc_achieved']:.2f} at the real level."
+           if mc else '')
+        + (" So in this benchmark one image does not reach 95% at 5% for presence, a 6 m location or shape, quiet or beside a "
+           "lorry, under every tabulated allowance, and at the calibrated noise level neither does the oracle's bound. "
+           if single_ok else " Some allowances leave cases open; see the report. ")
+        + "The scope is the benchmark's: five layouts, one geology, the declared excitation, fully developed speckle "
+        "(bright points are covered by the oracle only), the assumed envelope beyond 70 m; a shallow room is not by itself an "
+        "upper bound on every larger or deeper structure.")
 
 
 def report(res):
     """The benchmark's tables, generated from the summary."""
-    n = f"{FROZEN['snr_db_nominal']:g}"
-    L = [f"# P2-36 benchmark: generated report", '', f"Frozen parameters hash `{FROZEN_HASH}`; frozen frequency "
-         f"{res['f_star_hz']:.0f} Hz ({res['frequency_rule']}). SNR {n} dB assumed. States: near chance (TV < 0.05), "
-         f"95% at 5% excluded (TV < 0.9), unresolved.", '']
+    n = snr_key(FROZEN['snr_db_nominal'])
+    L = [f"# P2-36 benchmark (revision 2): generated report", '',
+         f"Frozen parameters hash `{FROZEN_HASH}`; frozen frequency {res['f_star_hz']:.0f} Hz ({res['frequency_rule']}). "
+         f"SNR {FROZEN['snr_db_nominal']:.2f} dB calibrated (the site's median sigma0 over ICEYE's best specified NESZ; "
+         f"{FROZEN['snr_db_generous']:.0f} dB generous). States: near chance (TV < 0.05), 95% at 5% excluded (TV < 0.9), "
+         f"unresolved. Each entry bounds detection rate minus false-alarm rate; 'predicted' is a weak-signal calculation, "
+         f"'achieved' a simulated detector.", '']
     for exc in ('quiet', 'strong'):
-        L += [f"## {exc}", '', '| pair | L1 single image, TV | state | growth to 0.9 | L1 within 70 m | oracle, TV | state | '
-              'SNR for 0.9 | oracle within 70 m | oracle within 39 m | achieved (score test) | tail share |',
-              '|---|---|---|---|---|---|---|---|---|---|---|---|']
+        L += [f"## {exc}", '', '| pair | L1 whole image | state | L1 within 70 m | growth to 0.9 | oracle | state | '
+              'oracle bound stops excluding 95/5 at | oracle within 70 m | predicted (score test, within 70 m) | tail share |'
+              + (' L1 averaged over realisations (linear bound) | worst realisation |' if exc == 'quiet' else ''),
+              '|---|---|---|---|---|---|---|---|---|---|---|' + ('---|---|' if exc == 'quiet' else '')]
         for k, r in res[exc].items():
             ach = r['achieved_score_test']
-            a = ach.get('tv_achieved_best_phase', ach.get('tv_achieved'))
-            L.append(f"| {k} | {_fmt(r['l1'][n]['tv_upper'])} | {r['l1'][n]['state']} | {_fmt(r['l1_growth_to_target'])} | "
-                     f"{_fmt(r['l1_disc']['tv_upper'])} | {_fmt(r['oracle'][n]['tv_upper'])} | {r['oracle'][n]['state']} | "
-                     f"{_fmt(r['oracle_snr_db_for_target'])} dB | {_fmt(r['oracle_disc']['tv_upper'])} | "
-                     f"{_fmt(r['oracle_obs_disc']['tv_upper'])} | {_fmt(a)} | {100 * r['tail_share_of_integral']:.0f}% |")
-        L += ['', f"SNR sweep (L1 and oracle, TV):", '', '| pair | ' + ' | '.join(f'{d:g} dB' for d in FROZEN['snr_db_sweep'])
+            a_ = ach.get('tv_achieved_best_phase', ach.get('tv_achieved'))
+            row = (f"| {k} | {_fmt(r['l1'][n]['tv_upper'])} | {r['l1'][n]['state']} | {_fmt(r['l1_disc']['tv_upper'])} | "
+                   f"{_fmt(r['l1_growth_to_target'])} | {_fmt(r['oracle'][n]['tv_upper'])} | {r['oracle'][n]['state']} | "
+                   f"{_fmt(r['oracle_bound_stops_excluding_at_snr_db'])} dB | {_fmt(r['oracle_disc']['tv_upper'])} | "
+                   f"{_fmt(a_)} | {100 * r['tail_share_of_integral']:.0f}% |")
+            if exc == 'quiet':
+                e = r['l1_ensemble']
+                row += f" {_fmt(e['tv_upper'])} | {_fmt(e['worst_realisation_tv_upper'])} |"
+            L.append(row)
+        L += ['', "SNR sweep (L1 / oracle):", '', '| pair | ' + ' | '.join(f'{d:g} dB' for d in FROZEN['snr_db_sweep'])
               + ' |', '|---|' + '---|' * len(FROZEN['snr_db_sweep'])]
         for k, r in res[exc].items():
-            L.append(f"| {k} | " + ' | '.join(f"{_fmt(r['l1'][f'{d:g}']['tv_upper'])} / {_fmt(r['oracle'][f'{d:g}']['tv_upper'])}"
+            L.append(f"| {k} | " + ' | '.join(f"{_fmt(r['l1'][snr_key(d)]['tv_upper'])} / {_fmt(r['oracle'][snr_key(d)]['tv_upper'])}"
                                              for d in FROZEN['snr_db_sweep']) + ' |')
         L.append('')
-    L += ['## strong: allowances', '', '| pair | allowance | L1 | oracle |', '|---|---|---|---|']
+    L += ['## strong: allowances and sensitivity (the envelope is a declared assumption; these are robustness tests, '
+          'not its verification)', '', '| pair | case | L1 | oracle |', '|---|---|---|---|']
     for k, r in res['strong'].items():
         for lab, v in r['sensitivity'].items():
             L.append(f"| {k} | {lab} | {_fmt(v['l1_tv_upper'])} ({v['l1_state']}) | {_fmt(v['oracle_tv_upper'])} "
@@ -906,23 +992,23 @@ def report(res):
                  f"{sp['outer_over_40m']:.2f}")
     mc = res['strong'].get('presence (room)', {}).get('score_monte_carlo')
     if mc:
-        L += ['', f"## strong: the score test on synthesised images (presence, room; {mc['seeds']} grounds, a cyclic patch "
-              f"{mc['patch_m'][0]:.0f} × {mc['patch_m'][1]:.0f} m)", '', '| amplification | AUC empirical | AUC predicted | '
-              'shift / sd | predicted deflection | found at 5%, empirical | predicted | patch certificate |',
-              '|---|---|---|---|---|---|---|---|']
+        L += ['', f"## strong: the score test achieved on synthesised images (presence, room; a cyclic patch "
+              f"{mc['patch_m'][0]:.0f} × {mc['patch_m'][1]:.0f} m; threshold from {mc['calibration_grounds']} calibration "
+              f"grounds, evaluation on {mc['evaluation_grounds_each']} + {mc['evaluation_grounds_each']} disjoint grounds)", '',
+              '| amplification | AUC achieved | AUC predicted | found, achieved | false alarms, achieved | found at 5%, predicted | '
+              'patch certificate |', '|---|---|---|---|---|---|---|']
         for x in mc['rows']:
-            L.append(f"| ×{x['amplification']:g} | {x['auc_empirical']:.3f} | {x['auc_predicted']:.3f} | "
-                     f"{x['mean_shift_over_sd']:.2f} | {x['deflection_predicted']:.3f} | {x['tpr_at_005_empirical']:.2f} | "
-                     f"{x['tpr_at_005_predicted']:.2f} | {_fmt(x['certificate_tv_upper_patch'])} |")
-    L += ['', '## strong: over the FTA band (every 2 Hz)', '', '| f (Hz) | ' + ' | '.join(res['curves']) + ' |',
-          '|---|' + '---|' * len(res['curves'])]
+            L.append(f"| ×{x['amplification']:g} | {x['auc_achieved']:.3f} | {x['auc_predicted']:.3f} | "
+                     f"{x['found_at_threshold_achieved']:.2f} | {x['false_alarms_at_threshold_achieved']:.2f} | "
+                     f"{x['found_at_005_predicted']:.2f} | {_fmt(x['certificate_tv_upper_patch'])} |")
+    L += ['', '## strong: over the sampled FTA band (every 2 Hz; not a proved maximum between samples)', '',
+          '| f (Hz) | ' + ' | '.join(res['curves']) + ' |', '|---|' + '---|' * len(res['curves'])]
     names = list(res['curves'])
     for i, row in enumerate(res['curves'][names[0]]):
         L.append(f"| {row['f_hz']:.0f} | " + ' | '.join(
             f"{_fmt(res['curves'][k][i]['l1_tv_upper'])} / {_fmt(res['curves'][k][i]['oracle_tv_upper'])}" for k in names) + ' |')
-    L += ['', 'Each cell of the band table: L1 / oracle at the nominal SNR.', '']
+    L += ['', 'Each cell of the band table: L1 / oracle at the calibrated SNR.', '']
     return '\n'.join(L)
-
 
 if __name__ == '__main__':
     import sys

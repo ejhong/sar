@@ -3,9 +3,9 @@
   "id": "p2_30_finite_certificates",
   "title": "Finite certificates: the bound on every processor, the common background included",
   "date": "2026-09-30",
-  "started_utc": "2026-09-30T18:11:25+00:00",
+  "started_utc": "2026-09-30T21:37:15+00:00",
   "runtime_s": 0.1,
-  "commit": "ecff0e5+",
+  "commit": "914a473+",
   "params": {
    "target": {
     "tpr": 0.95,
@@ -420,21 +420,21 @@
  "inherited_average_oracle": [
   {
    "case": "Giza microseisms, measured",
-   "energy_upper_assumed": 7.459e-12,
-   "tv_upper": 1.541e-06,
-   "tpr_upper_at_fpr_005": 0.050002,
+   "energy_upper_assumed": 1.375e-13,
+   "tv_upper": 2.092e-07,
+   "tpr_upper_at_fpr_005": 0.05,
    "status": "conditional average oracle, inherited phase-energy estimate with 1% allowance",
-   "noise_snr_db_assumed": 30,
+   "noise_snr_db": 12.655911,
    "extra_allowance_fraction": 0.01,
    "allowance_is_certified_physics_error": false
   },
   {
    "case": "truck over a bump, 15 m (surface wave)",
-   "energy_upper_assumed": 0.513101,
-   "tv_upper": 0.3875,
-   "tpr_upper_at_fpr_005": 0.4375,
+   "energy_upper_assumed": 0.009458,
+   "tv_upper": 0.054824,
+   "tpr_upper_at_fpr_005": 0.104824,
    "status": "conditional average oracle, inherited phase-energy estimate with 1% allowance",
-   "noise_snr_db_assumed": 30,
+   "noise_snr_db": 12.655911,
    "extra_allowance_fraction": 0.01,
    "allowance_is_certified_physics_error": false
   }

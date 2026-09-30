@@ -26,7 +26,7 @@ difference between two layouts' imprints is what any reader would have to see. T
 - the oracle told everything but which layout is there, on the difference itself: given the reflectivity and the
   background motion the two worlds' echoes differ in mean by exp(i k u_A) - exp(i k u_B), of size 2 |sin(k (u_A - u_B) / 2)|
   whatever the background, so the difference is exact there: TV <= erf(sqrt(d) / 2), d from the difference's phase
-  energy at 30 dB per cell (P2-29), any texture, an upper bound (Jensen over the phases).
+  energy at the calibrated SNR per cell (P2-29), any texture, an upper bound (Jensen over the phases).
 The directions of the ambient waves are sampled every 15 degrees; the peak over directions is enlarged by sec(15 deg)
 (a function a + b cos 2 phi + c sin 2 phi sampled at that spacing can peak at most that factor above its samples).
 Reported beside each: how many times the signal would have to grow for the oracle to tell the pair apart at 95% / 5%,
@@ -43,6 +43,7 @@ import numpy as np
 
 from katabasis.runs import RESULTS, Run, load, memo
 from sarsim import information as inf
+from sarsim.radiometry import snr_per_cell
 from sarsim import finite as fin
 from sarsim.acquisition import DwellGeometry
 
@@ -63,7 +64,7 @@ GUARD = 1 / np.cos(DIRECTIONS[1] - DIRECTIONS[0])   # sec(15 deg): the peak betw
 GRID_ALLOWANCE = 0.11                              # P2-26's grid check: at most 10.5% in amplitude on halving the grid
 HALF = 60.0
 TAPER = (50.0, 59.0)
-SNR_DB = 30.0
+SNR_DB = snr_per_cell('giza-20250827')['nominal_db']   # calibrated per cell (sarsim.radiometry); was 30, untraced
 D_TARGET = 3.29
 DYN_TAPER = (32.0, 39.0)
 
@@ -246,7 +247,7 @@ def main():
         for n in sorted({x for pair in PAIRS for x in pair} - {'none'}):
             t1 = time.time()
             single[n] = memo(RID, f'single-{n}', lambda: static_layer(g, get(n), bands, m25, snr, floor), __file__,
-                             version=f'static-v3-{GUARD:.6f}')
+                             version=f'static-v3-{GUARD:.6f}-snr{SNR_DB:.2f}')
             print(f"  {n} against none: tight {single[n][0][0]['tight_ceiling']:.2e} ({time.time() - t1:.0f} s)", flush=True)
         static = []
         for a, b in PAIRS:
@@ -254,7 +255,7 @@ def main():
             KA, KB = get(a), get(b)
             diff = {'xy': KA['xy'], **{k: KA[k] - KB[k] for k in ('Kxx', 'Kyy', 'Kxy')}}
             rows, fb = memo(RID, f'pair-{a}-{b}', lambda: static_layer(g, diff, bands, m25, snr, floor), __file__,
-                            version=f'static-v3-{GUARD:.6f}')
+                            version=f'static-v3-{GUARD:.6f}-snr{SNR_DB:.2f}')
             for i, r in enumerate(rows):
                 ra = single[a][0][i]
                 rb = single[b][0][i] if b != 'none' else None

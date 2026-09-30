@@ -51,6 +51,7 @@ from scipy.fft import next_fast_len
 
 from katabasis.runs import RESULTS, Run, load, memo
 from sarsim import synthesize
+from sarsim.radiometry import snr_per_cell
 from sarsim import information as inf
 from sarsim.acquisition import DwellGeometry
 from sarsim.scene import Scatterers
@@ -63,7 +64,7 @@ TAPER_DYNAMIC = (32.0, 39.0)         # m, P2-26's maps (recorded to 39.5 m)
 FAR_FROM = 32.0                      # m: the scattered wave counted from here out by the far-field bound
 HALF = 45.0                          # m: the image's own pixels within this of the axis (ground metres)
 D_RELIABLE = 3.29                    # d' for 95% detection at 5% false alarms
-SNR_GENIE_DB = 30.0
+SNR_GENIE_DB = snr_per_cell('giza-20250827')['nominal_db']   # calibrated per cell (sarsim.radiometry); was 30, untraced
 MC_REAL = 600
 MC_SYNTH = 80
 MC_DETECT = 4000

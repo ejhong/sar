@@ -132,11 +132,13 @@ const bd = bound as unknown as {
 };
 const microEdge = bd.static[0].ceiling;
 // the benchmark (P2-36): one image with a lorry beside a shallow room, and the oracle's SNR for 95% at 5%
-type BmP = { l1: Record<string, { tv_upper: number }>; oracle_snr_db_for_target: number | null };
-const bmS = (bench as unknown as { strong: Record<string, BmP> }).strong;
-const bmMaxL1 = Math.max(...Object.values(bmS).map((p) => p.l1['30'].tv_upper));
-const bmSnr = Math.min(...Object.values(bmS).map((p) => p.oracle_snr_db_for_target ?? Infinity));
-const tvWords = (v: number) => (v >= 0.095 ? `${Math.round(100 * v)} percentage points` : `${(100 * v).toFixed(0)} percentage points (${v.toFixed(2)})`);
+type BmP = { l1: Record<string, { tv_upper: number }>; oracle: Record<string, { tv_upper: number }>; oracle_bound_stops_excluding_at_snr_db: number | null };
+const bmRec = bench as unknown as { strong: Record<string, BmP>; curves: Record<string, { l1_tv_upper: number }[]>; snr_key_nominal: string; snr_db_nominal: number };
+const bmS = bmRec.strong;
+const bmMaxL1 = Math.max(...Object.values(bmRec.curves).flatMap((c) => c.map((r) => r.l1_tv_upper)));   // the band's largest sampled
+const bmMaxOr = Math.max(...Object.values(bmS).map((p) => p.oracle[bmRec.snr_key_nominal].tv_upper));
+const bmStop = Math.min(...Object.values(bmS).map((p) => p.oracle_bound_stops_excluding_at_snr_db ?? Infinity));
+const tvWords = (v: number) => `${Math.round(100 * (0.05 + v))}% of the time at 5% false alarms`;
 const noisyEdge = bd.static[1].ceiling;
 const detOver = Math.max(...bd.checks.detection.map((d) => d.pinsker_from_exact_kl / d.likelihood_ratio.largest_pd_minus_pfa));
 // P2-27: what a detection would need, under stated conditions
@@ -511,13 +513,14 @@ const explore = [
         </p>
         <p>
           A lorry shakes the ground far harder, and faster, and a shallow room scatters that more. So we built one fully
-          specified comparison: a room under a roof only 5 metres thick, an L-shaped tunnel, the same room 6 metres over, and
-          empty ground, identical but for the cavity, with a lorry bouncing over a bump 15 metres away for the whole pass and
-          the wave the room scatters carried undiminished to the edge of the image. Even then, reading the one image, no
-          method can raise its rate of finding the room above its false alarms by more than {tvWords(bmMaxL1)}, nor tell
-          where it is or which shape it has any better. Only a detector handed the exact texture of the ground as well, as a
-          perfect second image of the same ground would hand it, could reach a reliable detection, and only with a quieter
-          radar than we assume ({Math.round(bmSnr)} decibels above the noise, not 30). What stays open is what this model
+          specified comparison: rooms 6 and 10 metres across under a roof only 5 metres thick, an L-shaped tunnel, the same
+          room 6 metres over, and empty ground, identical but for the cavity, with a lorry bouncing over a bump 15 metres
+          away for the whole pass and the wave the room scatters carried undiminished to the edge of the image. Even then,
+          reading the one image, no method can find the room more than {Math.round(100 * (0.05 + bmMaxL1))}% of the time
+          at 5% false alarms, nor tell where it is or which shape it has any better. A detector handed the exact texture of
+          the ground as well, which no single image gives, stays below {Math.round(100 * (0.05 + bmMaxOr))}% at the image’s
+          measured noise level ({bmRec.snr_db_nominal.toFixed(0)} decibels above it); its bound stops ruling out a reliable
+          detection only at {Math.round(bmStop)} decibels. What stays open is what this model
           leaves out: two images, bright fixtures on the ground, and mechanisms nobody has yet specified well enough to compute.
         </p>
       </div>
@@ -534,7 +537,7 @@ const explore = [
       <div class="qa">
         <details class="q">
           <summary>What if the ground shook harder?</summary>
-          <p>At the most restless places on Earth the ground moves 70 times more than at Giza’s regional level, and in our model no way of reading the image raises its rate of finding the room above its false alarms by more than one in {inWords(1 / noisyEdge)} (step 10). A lorry close by shakes the ground far harder, and faster, which the room scatters more; yet with a lorry bouncing over a bump 15 metres from a room under a 5-metre roof for the whole pass, one image still lets no method raise its rate of finding the room above its false alarms by more than {tvWords(bmMaxL1)} (step 10); a detector told the ground’s exact texture as well could do better, up to {orTrkTv != null ? orTrkTv.toFixed(2) : '—'} for the deeper bench room, if the wave the room scatters carries undiminished across the scene. A detection would need the room itself to add at least {umWords(rqAt(80, 8))} of motion to the ground over it as a smooth mound, or as much summed over the ground in some other pattern. The method’s own slices fare worse: one short enough to follow such shaking blurs the ground over 30 metres.</p>
+          <p>At the most restless places on Earth the ground moves 70 times more than at Giza’s regional level, and in our model no way of reading the image raises its rate of finding the room above its false alarms by more than one in {inWords(1 / noisyEdge)} (step 10). A lorry close by shakes the ground far harder, and faster, which the room scatters more; yet with a lorry bouncing over a bump 15 metres from a room under a 5-metre roof for the whole pass, one image still lets no method find the room more than {tvWords(bmMaxL1)} (step 10); a detector told the ground’s exact texture as well, at the image’s measured noise level, gains at most {orTrkTv != null ? orTrkTv.toFixed(2) : '—'} for the deeper bench room, even if the wave the room scatters carries undiminished across the scene. A detection would need the room itself to add at least {umWords(rqAt(80, 8))} of motion to the ground over it as a smooth mound, or as much summed over the ground in some other pattern. The method’s own slices fare worse: one short enough to follow such shaking blurs the ground over 30 metres.</p>
         </details>
         <details class="q">
           <summary>What about a shinier target?</summary>

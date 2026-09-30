@@ -1,0 +1,95 @@
+---
+/**
+ * The benchmark's worlds in plan (P2-36): identical ground, the same lorry 15 m west, only the cavity differs. Drawn at
+ * build time from the boxes frozen in the run's own record, north up, each panel 44 m across; roof depth under each.
+ */
+import bench from '../../public/data/runs/p2_36_benchmark.json';
+
+type Box = [number[], number[]];
+const fr = (bench as unknown as { manifest: { params: { frozen: { worlds: Record<string, Box[]>; strong_source: { east_m: number; north_m: number } } } } })
+  .manifest.params.frozen;
+const names: Record<string, string> = {
+  W0: 'no cavity',
+  WA: 'room, 6 m',
+  WB: 'L tunnel',
+  WA6: 'room, 6 m east',
+  WC: 'room, 10 m',
+};
+const order = ['W0', 'WA', 'WB', 'WA6', 'WC'].filter((w) => fr.worlds[w] !== undefined);
+const HALF = 22;
+const P = 88; // panel size, px
+const GAP = 14;
+const W = order.length * P + (order.length - 1) * GAP;
+const H = P + 34;
+const sx = (x: number) => ((x + HALF) / (2 * HALF)) * P;
+const sy = (y: number) => ((HALF - y) / (2 * HALF)) * P;
+const roof = (boxes: Box[]) => (boxes.length ? Math.min(...boxes.map(([c, s]) => -(c[2] + s[2] / 2))) : null);
+const roofs = [...new Set(order.map((w) => roof(fr.worlds[w])).filter((r) => r != null))];
+---
+<figure class="worlds">
+  <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="The benchmark's five worlds in plan: no cavity, a 6 m room, an L-shaped tunnel, the room 6 m east and a 10 m room, with the lorry 15 m west">
+    {
+      order.map((w, i) => {
+        const ox = i * (P + GAP);
+        return (
+          <g transform={`translate(${ox},0)`}>
+            <rect width={P} height={P} class="ground" rx="3" />
+            <line x1={sx(0)} y1={2} x2={sx(0)} y2={P - 2} class="axis" />
+            <line x1={2} y1={sy(0)} x2={P - 2} y2={sy(0)} class="axis" />
+            {fr.worlds[w].map(([c, s]) => (
+              <rect x={sx(c[0] - s[0] / 2)} y={sy(c[1] + s[1] / 2)} width={(s[0] / (2 * HALF)) * P} height={(s[1] / (2 * HALF)) * P} class="void" />
+            ))}
+            <circle cx={sx(fr.strong_source.east_m)} cy={sy(fr.strong_source.north_m)} r="3" class="lorry" />
+            <text x={P / 2} y={P + 14} class="name">{w}</text>
+            <text x={P / 2} y={P + 27} class="sub">{names[w] ?? w}</text>
+          </g>
+        );
+      })
+    }
+  </svg>
+  <figcaption>Plan views, north up, 44 m across; every roof {roofs.join(' and ')} m down; the dot is the lorry 15 m west, the same in every world. The ground, the scatterers and the noise are identical; only the cavity differs.</figcaption>
+</figure>
+
+<style>
+  .worlds {
+    margin: 12px 0 8px;
+  }
+  .worlds svg {
+    width: 100%;
+    max-width: 560px;
+    height: auto;
+    display: block;
+  }
+  .ground {
+    fill: var(--sheet);
+    stroke: var(--border);
+  }
+  .axis {
+    stroke: var(--border);
+    stroke-width: 0.6;
+    stroke-dasharray: 2 2;
+  }
+  .void {
+    fill: var(--lapis);
+    fill-opacity: 0.85;
+  }
+  .lorry {
+    fill: var(--ochre);
+  }
+  .name {
+    font: 600 10px var(--font-mono);
+    fill: var(--text);
+    text-anchor: middle;
+  }
+  .sub {
+    font: 9.5px var(--font-sans);
+    fill: var(--muted);
+    text-anchor: middle;
+  }
+  figcaption {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-top: 4px;
+    max-width: 80ch;
+  }
+</style>

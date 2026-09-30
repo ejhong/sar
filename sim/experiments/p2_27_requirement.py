@@ -32,11 +32,11 @@ Computed.
 2. Linearised: KL = F / 2 at the worst phase, F exact on the image's own pixels (fisher_grid) or by the continuum
    (fisher_sinusoid, with its bound on the phase swing) for wide footprints, to 300 m; and what the best test needs by
    weak-signal theory (deflection 3.29 for TV 0.9), an estimate, not a bound.
-3. Helped: the method handed the ground's reflectivity, every pixel 30 dB over receiver noise, KL <= SNR sum_cells
+3. Helped: the method handed the ground's reflectivity, every pixel at the calibrated SNR over receiver noise (sarsim.radiometry), KL <= SNR sum_cells
    <Phi^2>; and a corner reflector (50 dB, P2-23) on the footprint's peak, KL <= SCR (k0 D)^2 / 2.
 5. For every pattern and time history, on the displacement integral E = integral max_t |du_los|^2 dA (m^4: an integrated
    squared displacement envelope, not a mechanical energy). The oracle of P2-29, told the reflectivity, the excitation
-   and both models, with receiver noise at 30 dB per cell: its mean echoes differ by exp(i k u_A) - exp(i k u_0), so
+   and both models, with receiver noise at the calibrated SNR per cell: its mean echoes differ by exp(i k u_A) - exp(i k u_0), so
    motion common to both worlds cancels whatever excites it, and E Delta^2 <= 2 snr cells k0^2 E; it bounds every method
    told less, under any shaking. Theorem C (P2-30), fully developed speckle without receiver noise, holds only where the
    no-cavity world's motion is the background whose covariance floor is proved: quiet ground. Both at three targets:
@@ -68,6 +68,7 @@ from scipy.special import ndtr, ndtri
 
 from katabasis.runs import RESULTS, Run, load, memo
 from sarsim import finite as fin
+from sarsim.radiometry import snr_per_cell
 from sarsim import information as inf
 from sarsim.acquisition import DwellGeometry
 
@@ -83,8 +84,8 @@ L_GRID_MAX = 4.0                                      # m: fisher_grid on the pi
 TARGETS = (0.9, 0.5)
 PSI_ALL = (0.0, np.pi / 4, np.pi / 2, 3 * np.pi / 4)
 PSI_FAST = (0.0, np.pi / 2)                           # above 1 Hz, where the swing over psi is below 0.5%
-SNR_GENIE_DB = 30.0
-SNR_ORACLE_DB = 30.0                                  # per cell: above ICEYE Dwell's best NESZ (-26.7 dB) under the brightest natural ground (P2-29)
+SNR_GENIE_DB = snr_per_cell('giza-20250827')['nominal_db']   # calibrated per cell (sarsim.radiometry); was 30, untraced
+SNR_ORACLE_DB = snr_per_cell('giza-20250827')['nominal_db']   # per cell, calibrated: the site's median sigma0 over ICEYE's best specified NESZ (-18 dB); was 30 dB on an untraced -26.7 dB
 TARGETS_ANY = (0.05, 0.5, 0.9)                         # near chance, even odds, 95% found at 5% false alarms
 EXTENT = 5.3                                          # the footprint is cut at this many L (exp(-14) of its peak)
 

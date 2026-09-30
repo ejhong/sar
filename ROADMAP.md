@@ -22,8 +22,9 @@ in order of strength:
 4. **A bound on every way of reading one image (P2-25), with the imprint at every frequency (P2-26):** for ordinary
    ground modelled as fully developed speckle, whatever reads one image raises its detection rate above its false-alarm
    rate on the bench chamber by at most 1.3e-9 under Giza's microseisms. Under a truck close by a whole-image reference
-   fails, but one line's does not: in the benchmark (P2-36) one image allows at most 0.06 for a room under a 5 m roof,
-   its 6 m location or its shape; only an oracle told the texture could reach 95% at 5%, above 33 to 38 dB. A theorem under stated models; a bound, not what a detector achieves (on small
+   fails, but one line's does not: in the benchmark (P2-36, revision 2) one image lets no method find a shallow room,
+   its place or its shape reliably, beside a bouncing lorry; at the image's calibrated noise level (12.7 dB per cell)
+   not even an oracle told every reflectivity reaches 95% at 5%. A theorem under stated models; a bound, not what a detector achieves (on small
    test images the best test comes within 1.3 to 1.4 times of it).
 
 Run whole (P2-07), over simulated desert shaking at Giza's level with the chamber's imprint, imaged on the real dwell
@@ -192,6 +193,16 @@ Then (29 September, evening; the cloud session, on branch `claude/upbeat-pascal-
   Code-level corrections adopted with it (audit, fifth review). **Next:** the Khafre claim on the real image's powers
   (needs a power map from the desktop), a calibrated noise floor for the real product, the published method on the
   benchmark's strong-case images, then declared parameter ranges around the benchmark.
+- **Sixth review: the noise floor traced, the benchmark frozen** (30 September; audit, sixth review). P2-29's −26.7 dB
+  NESZ had no source; ICEYE's Table 2-11 gives −18 to −15 dB for Dwell and neither product carries a noise field, so
+  the SNR per cell is calibrated from the image (`sarsim.radiometry`: median ground −5.3 dB over −18 dB, 12.7 dB) and
+  every oracle row moves with it: the oracle told every reflectivity now excludes 95% at 5% for every case computed.
+  The benchmark gained the 10 m room, a correct average for the quiet case, the microseisms' worst-case envelope, a
+  Monte Carlo with one noise law and separate calibration grounds, and wording that keeps the envelope beyond 70 m,
+  the oracle's crossing and "achieved" in their place; frozen as revision 2. P2-38 computes the claimed deep structure;
+  P2-37 reads the benchmark's images with the published method and a told detector. **Next:** the real acquisition, a
+  diffuse-plus-bright-scatterer model informed by the image, with Khafre's geometry and a 2 km map of summed power
+  (desktop); the claimed shafts; the scattered field measured beyond 70 m.
 
 ## The goal
 

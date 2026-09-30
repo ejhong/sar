@@ -647,27 +647,25 @@ investigation's record, and what it leaves open follow.
     ingredients, and these settings finish the look.
 
 28. **One auditable comparison: one image under speckle does not reach 95% at 5% for presence, a 6 m location or
-    shape of a shallow room, quiet or beside a lorry (P2-36, BENCHMARK.md).** Four worlds identical but for the cavity
-    (none; a room 6 m on a side under a 5 m roof; an L-shaped tunnel at that depth; the room 6 m east), the same force
-    15 m west in every world (the FTA's truck over a bump, held at 69 Hz for the whole pass, the frequency fixed by a
-    rule before the bounds), the same scatterers and noise law, the whole 5 km image observed, the solver's field within
-    70 m and an assumed surface-wave envelope beyond it to the image's edge (97 to 98% of the signal). The certificate
-    applied along track line by line, each line independent once the range band is widened and each line's reference
-    holding that line's own motion (the lorry's wave, the microseisms' envelope, world 0's cavity) and the receiver noise,
-    gives a floor of 0.95 where the whole image gives none; any reader of the one image is then at most 0.033 (room,
-    near chance), 0.062 (L tunnel), 0.044 (6 m apart, near chance) and 0.056 (shape) above its false-alarm rate, at
-    most 0.072 at the worst frequency of the band and 0.14 under the tabulated allowances (tail envelope x5); the
-    motion would have to grow 15 to 27 times. The oracle told every scatterer's reflectivity as well (a perfect reference
-    image) gives 0.47 to 0.75 at the assumed 30 dB and reaches 0.9 at 33 to 38 dB: the favourable case is open only for a
-    detector told the texture, and only above the assumed SNR. Under Giza's regional microseisms (expected over the
-    field) every pair is below 3 x 10^-7 for one image and 4 x 10^-6 for the oracle. Checks: the exact divergence on a
-    line of the model is 0.12 to 0.18 of the line's certificate; pulse by pulse on fixed scenes the coherent echo
-    difference is 0.994 +- 0.006 of the ensemble formula, the same with the lorry's wave ten times larger; the scattered
-    wave's energy per metre of radius falls as r^-0.3 to r^-0.6 from 40 to 70 m, so the constant envelope beyond is
-    generous. Achieved: the score test told the pattern reaches 0.002 to 0.004 within 70 m; implemented on 24
-    synthesised grounds it reaches its predicted deflection (2.4 spreads against 2.1 predicted, with the difference
-    amplified 800 times; chance at the real level). Rests on the elastic model without attenuation, the tail envelope,
-    fully developed speckle (bright points only under the oracle) and the assumed SNR.
+    shape of a shallow room, quiet or beside a lorry; at the image's calibrated noise level neither does an oracle told
+    every reflectivity (P2-36, BENCHMARK.md, revision 2).** Five worlds identical but for the cavity (none; rooms 6 and
+    10 m on a side under a 5 m roof; an L-shaped tunnel at that depth; the 6 m room 6 m east), the same force 15 m west in
+    every world (the FTA's truck over a bump, held at 69 Hz for the whole pass, the frequency fixed by a rule before the
+    bounds), the same scatterers and noise law, the whole 5 km image observed: the solver's field within 70 m and an
+    assumed surface-wave envelope beyond it to the image's edge (97 to 98% of the signal; a declared assumption, its
+    fall to 70 m measured, not a proved enclosure). The certificate applied along track line by line, each line
+    independent once the range band is widened and each line's reference holding that line's own motion (the lorry's
+    wave, the microseisms' worst-case envelope, world 0's cavity) and the receiver noise, keeps a floor near one where the
+    whole image gives none: any reader of the one image then finds at most 8.4 to 16% at 5% false alarms (5.6 to 6.7%
+    from the computed field alone, 6.1 to 8.4% with realistic damping), at most 30% with the envelope five times larger;
+    the motion would have to grow 8 times. The oracle, at the SNR calibrated from the image (12.7 dB), finds at most 12 to
+    27%; its bound stops excluding only at 28 to 38 dB. Under Giza's regional microseisms, averaged over the field's
+    realisations through a bound linear in each line's phase energy, every pair is within 10^-6 of chance. Checks: the
+    exact divergence on lines of the model is 0.12 to 0.18 of the certificate; pulse by pulse on fixed scenes the
+    coherent echo difference is 0.994 +- 0.006 of the ensemble formula, the same with the lorry's wave ten times larger.
+    Achieved: the score test implemented on synthesised images reaches its predicted AUC (0.94 against 0.93, the
+    difference amplified 800 times; chance at the real level). Scope: five layouts, one geology, the declared excitation,
+    fully developed speckle (bright points only under the oracle).
 
 These reasons differ in kind and strength. 4 is algebraic and holds whatever the ground does: the depth axis is a
 frequency axis with a repeat and a mirror, and no validated model turns it into a physical depth; that makes depth
@@ -920,6 +918,59 @@ fourth review's six points against the code (FOURTH_REVIEW.md, on another branch
   which needs a power map exported from the desktop); more incidence directions for the older strong-shaking rows
   (P2-26's four sides stay "worst of four sampled"; the benchmark declares one source position); the published method
   run on the benchmark's strong-case images (it is bounded by the single-image certificate, 0.07 at most over the band).
+
+### Sixth review, 30 September 2026: the noise floor traced, the benchmark revised and frozen
+
+The external reviewer's five comments on acf24fc, a second review of the benchmark (BENCHMARK_REVIEW.md, on another
+branch), and the desktop's radiometry for both Giza passes (sites/acquisitions, from the products). Adopted:
+
+- **The noise floor, traced; an untraced number withdrawn.** P2-29 had taken ICEYE Dwell's best NESZ as -26.7 dB,
+  citing the product specification's Table 2-11; that table (Product Documentation 6.0.0) gives -18 to -15 dB, and no
+  source for -26.7 dB exists in this repository. Neither product carries a noise field. The SNR per cell is now
+  calibrated in one place (`sarsim.radiometry`): the site's median sigma0 measured in the 2025 image over 10 m cells,
+  -5.3 dB, over the specified best -18 dB, 12.7 dB (10.1 dB for the 2022 pass); 18 dB for ground at 0 dB, the generous
+  case; 30 dB, the withdrawn value, stays in the sweeps for comparison. Every oracle and genie row moves with it
+  (P2-25, P2-27, P2-29, P2-30, P2-32, P2-36): under the calibrated noise the oracle told every reflectivity excludes 95%
+  at 5% for every case computed, the room under a 5 m roof beside a lorry included (P2-29: 0.31, where 30 dB gave 0.996);
+  the single-image layer barely depends on the SNR.
+- **The benchmark revised (revision 2) and frozen.** Five worlds (the 10 m room added), the SNR calibrated, the quiet
+  case averaged correctly, the microseisms' worst-case envelope in every reference. Beside the lorry, any method reading
+  one image finds at most 8.4% (6 m room), 11% (L tunnel), 9.5% (6 m location), 11% (shape) and 16% (10 m room) at 5%
+  false alarms with the assumed envelope (5.6 to 6.7% from the computed field within 70 m; 6.1 to 8.4% with realistic
+  damping, Q = 50); at the largest sampled frequency at most 16%; with the envelope five times larger at most 30%; the
+  lorry's differential motion would have to grow 8 times. The oracle told every reflectivity: 12 to 27% at the
+  calibrated 12.7 dB, 17 to 45% at 18 dB; its bound stops excluding only at 28 to 38 dB. Under Giza's trembling every
+  pair is within 10^-6 of chance. The 10 m room, the case earlier runs left open, is excluded in the benchmark's frame,
+  with the smallest margin of the five.
+- **The quiet case averaged correctly.** A certificate evaluated at the expected phase energy bounds nothing (it is
+  convex); the average over the field's realisations now goes through a bound linear in each line's phase energy, valid
+  for every realisation (each line's worst-case energy, the 24 directions in phase, and the microseisms' common motion
+  within sqrt(24) times its envelope in every reference), then averaged; the worst realisation's own certificate is
+  reported beside it. The same in P2-38.
+- **The oracle's crossing, stated as what it is.** Where the oracle's upper bound reaches 0.9 is where this argument
+  stops excluding 95% at 5%, not where a detector succeeds: the bound includes the assumed envelope, and the fixed-scene
+  checks cover small patches. "Only a detector told the exact texture could" is withdrawn: excluding the no-reference
+  case does not show complete texture knowledge necessary, partial reference information is not bounded, and a second
+  image is not equivalent to knowing every scatterer's reflectivity.
+- **The tail, a declared assumption.** The envelope beyond 70 m supplies 97 to 98% of the strong case's signal; the
+  measured fall of the scattered energy between 40 and 70 m supports it but does not prove that it encloses the field to
+  kilometres, and the x2 and x5 rows are robustness tests, not its verification. Results are now led by the computed
+  field within 70 m, the realistic attenuation (Q = 50) and the envelope side by side; the band's largest value is the
+  largest sampled (every 2 Hz), not a proved maximum.
+- **Achieved against predicted.** The score test's Monte Carlo now uses one noise law for every image (its variance
+  fixed once from a separate ground), a 5% threshold set on 24 calibration grounds and the performance read on 24 + 24
+  disjoint grounds; the Fisher-information numbers are labelled predictions.
+- **Like for like.** The case earlier runs left open was a 10 m room under a plane wave; the benchmark's room is 6 m
+  beside a point source. The 10 m room is now the benchmark's fifth world.
+- **Scope.** Five layouts, one geology, the declared excitation, fully developed speckle: a shallow room is not by itself
+  an upper bound on every larger or deeper structure. P2-31's published-method result is a diagnostic of the pipeline as
+  implemented here on three grounds, not a test of the authors' own software.
+- **The claim computed (P2-38).** The structure announced 1,220 m under Khafre, a void 80 m on a side (the size
+  representative), as Eshelby's void through Okada's point source under Giza's trembling: its imprint peaks at
+  1.9 x 10^-12 m over 0.45 km^2; any single-image reader at most 3.6 x 10^-6 above chance, the oracle 7.2 x 10^-6 at the
+  calibrated SNR (Khafre's own measured brightness over its footprint changes it by 1%); the motion would have to grow
+  2 x 10^5 times, 4 x 10^3 after a cube's moment, a local level ten times the regional and site amplification three
+  times. A lorry's wave does not reach that depth. The eight claimed shafts are not computed.
 
 ### Motion measured from orbit, 2026
 

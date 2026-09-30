@@ -30,8 +30,9 @@ raised by the processed band's share since the raw echoes hold the whole illumin
    realisation by realisation, against the formula.
 2. The chamber: P2-25's cases (the static imprint under the ambient levels; P2-26's dynamic imprint under the urban
    background and a truck over a bump 15 m away, the scattered wave carried unattenuated across the scene, and within 32 m
-   alone), with SNR 30 dB, above the brightest natural ground (sigma0 about 0 dB, assumed) over the best Dwell NESZ
-   (-26.7 dB, ICEYE's product specification); and a corner reflector 50 dB over the ground on the imprint's peak.
+   alone), with the SNR per cell calibrated from the acquisition (sarsim.radiometry: the site's median sigma0 measured
+   in the image, -5.3 dB, over ICEYE's best specified Dwell NESZ, -18 dB: 12.7 dB; an earlier 30 dB rested on an
+   untraced -26.7 dB and is withdrawn); and a corner reflector 50 dB over the ground on the imprint's peak.
 3. Margins: how many times the room-specific motion would have to grow for the oracle to reach 95% found at 5% false
    alarms (Delta = 3.29; the phase saturating only raises it), and what survives stated, assumed allowances (the local level
    ten times the regional, site amplification three times, SNR 10 dB higher). A case whose margin does not survive them is marked not excluded after allowances.
@@ -53,13 +54,15 @@ from scipy.special import ndtr
 
 from katabasis.runs import RESULTS, Run, load, memo
 from sarsim import information as inf
+from sarsim.radiometry import snr_per_cell
 from sarsim.acquisition import DwellGeometry
 from sarsim.echo import EchoSetup, window
 
 RID = 'p2_29_oracle'
 SITES = Path(__file__).resolve().parents[2] / 'sites'
-SNR_DB = 30.0
-NESZ_BEST_DB = -26.7                  # ICEYE product specification, Dwell (Table 2-11), best of its range
+_SNR = snr_per_cell('giza-20250827')
+SNR_DB = _SNR['nominal_db']           # calibrated per cell (sarsim.radiometry); was 30 dB on an untraced -26.7 dB NESZ
+NESZ_BEST_DB = _SNR['nesz_specified_db'][0]   # ICEYE Product Documentation 6.0.0, Table 2-11 (Dwell): -18 to -15 dB
 REFLECTOR_DB = 50.0                   # over the ground, as P2-23
 D_TARGET = 3.29                       # Delta for 95% found at 5% false alarms (2 Phi(D / 2) - 1 = 0.9)
 STATIC_GRID = 1.10                    # P2-04's grid check: the static imprint within 10% in amplitude
@@ -356,8 +359,8 @@ def main():
     val = lambda q: rock[q]['value'] if isinstance(rock[q], dict) else rock[q]
     host = (val('rho') * val('vp') ** 2 - 2 * val('rho') * val('vs') ** 2, val('rho') * val('vs') ** 2)
     params = {'acquisition': 'giza-20250827', 'snr_db': SNR_DB, 'nesz_best_db': NESZ_BEST_DB,
-              'nesz_source': 'ICEYE product specification, imaging modes, Table 2-11 (Dwell): -26.7 to -15.6 dB',
-              'sigma0_bright_natural_db': 0.0, 'sigma0_status': 'assumed', 'reflector_db': REFLECTOR_DB,
+              'nesz_source': _SNR['nesz_source'], 'snr': _SNR,
+              'sigma0_ground_db': _SNR['ground_sigma0_median_db'], 'sigma0_status': 'measured in the image (median, 10 m cells)', 'reflector_db': REFLECTOR_DB,
               'target_delta': D_TARGET, 'allowances': ALLOWANCES, 'allowance_status': 'assumed',
               'check': {'prf_hz': CHECK_PRF, 'realisations': CHECK_REALISATIONS},
               'depth': {'small_room': SMALL, 'spacing_m': SHIFT_CELLS * 2.0, 'reach_m': SHIFT_MAX * SHIFT_CELLS * 2.0}}
