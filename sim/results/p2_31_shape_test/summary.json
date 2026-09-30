@@ -3,9 +3,9 @@
   "id": "p2_31_shape_test",
   "title": "The shape test: location and shape, with depth allowed to be wrong",
   "date": "2026-09-30",
-  "started_utc": "2026-09-30T03:55:16+00:00",
-  "runtime_s": 8031.7,
-  "commit": "e931725",
+  "started_utc": "2026-09-30T08:52:28+00:00",
+  "runtime_s": 9.4,
+  "commit": "74c62d5+",
   "params": {
    "layouts": {
     "room": [
@@ -83,7 +83,8 @@
    "levels": {
     "real": null,
     "diagnostic_0.3_rad": 0.3,
-    "diagnostic_2_rad": 2.0
+    "diagnostic_2_rad": 2.0,
+    "diagnostic_20_rad": 20.0
    },
    "taper_m": [
     45.0,
@@ -121,21 +122,30 @@
     "presence_auc_vs_controls": 0.537037,
     "shape_accuracy": 0.333333,
     "shape_chance": 0.333333,
-    "median_location_error_m": 36.486533
+    "median_location_error_m": 36.486533,
+    "shape_p_vs_chance": 0.622822,
+    "images": 9,
+    "median_presence_z_at_true_place": 0.15583
    },
    "published_blind": {
     "presence_auc_vs_controls": 0.5,
     "shape_accuracy": 0.333333,
     "shape_chance": 0.333333,
     "median_location_error_m": 3.406832,
-    "mean_extra_structures": 27.666667
+    "shape_p_vs_chance": 0.622822,
+    "images": 9,
+    "mean_extra_structures": 27.666667,
+    "median_centroid_error_m": 6.228822
    },
    "published_paired": {
     "presence_auc_vs_controls": 0.5,
     "shape_accuracy": 0.444444,
     "shape_chance": 0.333333,
     "median_location_error_m": 1.977882,
-    "mean_extra_structures": 27.777778
+    "shape_p_vs_chance": 0.349693,
+    "images": 9,
+    "mean_extra_structures": 27.777778,
+    "median_centroid_error_m": 6.056545
    },
    "published_depth_error_after_allowance_m": 0.860958
   },
@@ -144,21 +154,30 @@
     "presence_auc_vs_controls": 0.666667,
     "shape_accuracy": 0.444444,
     "shape_chance": 0.333333,
-    "median_location_error_m": 36.486533
+    "median_location_error_m": 36.486533,
+    "shape_p_vs_chance": 0.349693,
+    "images": 9,
+    "median_presence_z_at_true_place": 0.388364
    },
    "published_blind": {
     "presence_auc_vs_controls": 0.62963,
     "shape_accuracy": 0.333333,
     "shape_chance": 0.333333,
     "median_location_error_m": 3.522516,
-    "mean_extra_structures": 27.333333
+    "shape_p_vs_chance": 0.622822,
+    "images": 9,
+    "mean_extra_structures": 27.333333,
+    "median_centroid_error_m": 6.610972
    },
    "published_paired": {
     "presence_auc_vs_controls": 0.5,
     "shape_accuracy": 0.666667,
     "shape_chance": 0.333333,
     "median_location_error_m": 2.709623,
-    "mean_extra_structures": 1.777778
+    "shape_p_vs_chance": 0.042422,
+    "images": 9,
+    "mean_extra_structures": 1.777778,
+    "median_centroid_error_m": 5.266661
    },
    "published_depth_error_after_allowance_m": 1.163574
   },
@@ -167,25 +186,69 @@
     "presence_auc_vs_controls": 1.0,
     "shape_accuracy": 0.777778,
     "shape_chance": 0.333333,
-    "median_location_error_m": 33.863645
+    "median_location_error_m": 33.863645,
+    "shape_p_vs_chance": 0.008281,
+    "images": 9,
+    "median_presence_z_at_true_place": 1.946367
    },
    "published_blind": {
     "presence_auc_vs_controls": 0.62963,
     "shape_accuracy": 0.333333,
     "shape_chance": 0.333333,
     "median_location_error_m": 3.128577,
-    "mean_extra_structures": 28.444444
+    "shape_p_vs_chance": 0.622822,
+    "images": 9,
+    "mean_extra_structures": 28.444444,
+    "median_centroid_error_m": 6.022969
    },
    "published_paired": {
     "presence_auc_vs_controls": 0.5,
     "shape_accuracy": 0.666667,
     "shape_chance": 0.333333,
     "median_location_error_m": 2.539236,
-    "mean_extra_structures": 2.111111
+    "shape_p_vs_chance": 0.042422,
+    "images": 9,
+    "mean_extra_structures": 2.111111,
+    "median_centroid_error_m": 5.169719
    },
    "published_depth_error_after_allowance_m": 1.163574
   },
+  "diagnostic_20_rad": {
+   "reference": {
+    "presence_auc_vs_controls": 1.0,
+    "shape_accuracy": 1.0,
+    "shape_chance": 0.333333,
+    "median_location_error_m": 0.395806,
+    "shape_p_vs_chance": 5.081e-05,
+    "images": 9,
+    "median_presence_z_at_true_place": 18.272515
+   },
+   "published_blind": {
+    "presence_auc_vs_controls": 0.592593,
+    "shape_accuracy": 0.555556,
+    "shape_chance": 0.333333,
+    "median_location_error_m": 2.046407,
+    "shape_p_vs_chance": 0.144846,
+    "images": 9,
+    "mean_extra_structures": 27.444444,
+    "median_centroid_error_m": 5.600897
+   },
+   "published_paired": {
+    "presence_auc_vs_controls": 0.5,
+    "shape_accuracy": 0.333333,
+    "shape_chance": 0.333333,
+    "median_location_error_m": 4.372988,
+    "shape_p_vs_chance": 0.622822,
+    "images": 9,
+    "mean_extra_structures": 11.0,
+    "median_centroid_error_m": 9.035655
+   },
+   "published_depth_error_after_allowance_m": 1.486685
+  },
   "control_location_error_to_layouts_m": 3.406832,
+  "control_depth_error_after_allowance_m": 1.19323,
+  "control_centroid_error_blind_m": 6.228822,
+  "control_centroid_error_paired_m": 12.107009,
   "control_reference_peak_distance_m": 36.486533
  },
  "results": {
@@ -1491,6 +1554,440 @@
     }
    }
   ],
+  "diagnostic_20_rad": [
+   {
+    "seed": 71,
+    "scene": "room",
+    "reference": {
+     "presence": 14.623548,
+     "z_by_layout": {
+      "room": 14.623548,
+      "L_tunnel": 9.424256,
+      "branching_tunnel": 12.115193
+     },
+     "shape": "room",
+     "shape_correct": true,
+     "location_error_m": 0.043978,
+     "room_template_peak_over_null": 13.99719
+    },
+    "published_blind": {
+     "presence": 3.651586,
+     "correlation_by_layout": {
+      "room": 0.002207,
+      "L_tunnel": 0.015384,
+      "branching_tunnel": -0.047684
+     },
+     "shape": "L_tunnel",
+     "shape_correct": false,
+     "location_error_m": 5.331516,
+     "centroid_error_m": 7.529557,
+     "extra_structures": 29
+    },
+    "published_paired": {
+     "presence": 2.151665,
+     "correlation_by_layout": {
+      "room": 0.126108,
+      "L_tunnel": 0.175308,
+      "branching_tunnel": 0.175966
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": false,
+     "location_error_m": 8.170037,
+     "centroid_error_m": 11.424108,
+     "extra_structures": 11
+    },
+    "published_depth": {
+     "peak_axis_m": 7.629842,
+     "true_m": 12.0,
+     "best_error_after_allowance_m": 2.399814,
+     "family_size": 12
+    }
+   },
+   {
+    "seed": 71,
+    "scene": "L_tunnel",
+    "reference": {
+     "presence": 17.169764,
+     "z_by_layout": {
+      "room": 14.066867,
+      "L_tunnel": 17.169764,
+      "branching_tunnel": 13.939043
+     },
+     "shape": "L_tunnel",
+     "shape_correct": true,
+     "location_error_m": 0.864895,
+     "room_template_peak_over_null": 15.622769
+    },
+    "published_blind": {
+     "presence": 3.677237,
+     "correlation_by_layout": {
+      "room": -0.056604,
+      "L_tunnel": 0.013158,
+      "branching_tunnel": -0.068719
+     },
+     "shape": "L_tunnel",
+     "shape_correct": true,
+     "location_error_m": 5.046933,
+     "centroid_error_m": 11.775316,
+     "extra_structures": 27
+    },
+    "published_paired": {
+     "presence": 2.266343,
+     "correlation_by_layout": {
+      "room": 0.109855,
+      "L_tunnel": 0.177467,
+      "branching_tunnel": 0.161855
+     },
+     "shape": "L_tunnel",
+     "shape_correct": true,
+     "location_error_m": 9.033794,
+     "centroid_error_m": 15.469377,
+     "extra_structures": 11
+    },
+    "published_depth": {
+     "peak_axis_m": 6.372176,
+     "true_m": 10.0,
+     "best_error_after_allowance_m": 0.229019,
+     "family_size": 12
+    }
+   },
+   {
+    "seed": 71,
+    "scene": "branching_tunnel",
+    "reference": {
+     "presence": 24.356197,
+     "z_by_layout": {
+      "room": 18.317561,
+      "L_tunnel": 14.447722,
+      "branching_tunnel": 24.356197
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": true,
+     "location_error_m": 0.219892,
+     "room_template_peak_over_null": 15.440137
+    },
+    "published_blind": {
+     "presence": 3.415631,
+     "correlation_by_layout": {
+      "room": 0.112142,
+      "L_tunnel": 0.131117,
+      "branching_tunnel": 0.099054
+     },
+     "shape": "L_tunnel",
+     "shape_correct": false,
+     "location_error_m": 3.123744,
+     "centroid_error_m": 7.894706,
+     "extra_structures": 23
+    },
+    "published_paired": {
+     "presence": 2.271511,
+     "correlation_by_layout": {
+      "room": 0.15617,
+      "L_tunnel": 0.21435,
+      "branching_tunnel": 0.205517
+     },
+     "shape": "L_tunnel",
+     "shape_correct": false,
+     "location_error_m": 1.693524,
+     "centroid_error_m": 11.615809,
+     "extra_structures": 11
+    },
+    "published_depth": {
+     "peak_axis_m": 6.204487,
+     "true_m": 10.0,
+     "best_error_after_allowance_m": 0.312864,
+     "family_size": 12
+    }
+   },
+   {
+    "seed": 171,
+    "scene": "room",
+    "reference": {
+     "presence": 16.259269,
+     "z_by_layout": {
+      "room": 16.259269,
+      "L_tunnel": 10.779221,
+      "branching_tunnel": 13.479921
+     },
+     "shape": "room",
+     "shape_correct": true,
+     "location_error_m": 0.395806,
+     "room_template_peak_over_null": 13.473835
+    },
+    "published_blind": {
+     "presence": 4.482871,
+     "correlation_by_layout": {
+      "room": -0.007319,
+      "L_tunnel": -0.042502,
+      "branching_tunnel": 0.010161
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": false,
+     "location_error_m": 0.916997,
+     "centroid_error_m": 1.155859,
+     "extra_structures": 30
+    },
+    "published_paired": {
+     "presence": 2.521614,
+     "correlation_by_layout": {
+      "room": 0.13554,
+      "L_tunnel": 0.183165,
+      "branching_tunnel": 0.235042
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": false,
+     "location_error_m": 4.84662,
+     "centroid_error_m": 8.892063,
+     "extra_structures": 10
+    },
+    "published_depth": {
+     "peak_axis_m": 5.11451,
+     "true_m": 12.0,
+     "best_error_after_allowance_m": 1.142148,
+     "family_size": 12
+    }
+   },
+   {
+    "seed": 171,
+    "scene": "L_tunnel",
+    "reference": {
+     "presence": 19.107965,
+     "z_by_layout": {
+      "room": 15.36488,
+      "L_tunnel": 19.107965,
+      "branching_tunnel": 15.522402
+     },
+     "shape": "L_tunnel",
+     "shape_correct": true,
+     "location_error_m": 1.036779,
+     "room_template_peak_over_null": 15.526717
+    },
+    "published_blind": {
+     "presence": 4.37055,
+     "correlation_by_layout": {
+      "room": -0.036065,
+      "L_tunnel": -0.02889,
+      "branching_tunnel": -0.01282
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": false,
+     "location_error_m": 0.11582,
+     "centroid_error_m": 3.41236,
+     "extra_structures": 26
+    },
+    "published_paired": {
+     "presence": 2.383349,
+     "correlation_by_layout": {
+      "room": 0.119532,
+      "L_tunnel": 0.170818,
+      "branching_tunnel": 0.206616
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": false,
+     "location_error_m": 2.501938,
+     "centroid_error_m": 9.035655,
+     "extra_structures": 8
+    },
+    "published_depth": {
+     "peak_axis_m": 0.083844,
+     "true_m": 10.0,
+     "best_error_after_allowance_m": 3.373185,
+     "family_size": 12
+    }
+   },
+   {
+    "seed": 171,
+    "scene": "branching_tunnel",
+    "reference": {
+     "presence": 26.327778,
+     "z_by_layout": {
+      "room": 19.724281,
+      "L_tunnel": 16.306485,
+      "branching_tunnel": 26.327778
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": true,
+     "location_error_m": 0.452126,
+     "room_template_peak_over_null": 15.388652
+    },
+    "published_blind": {
+     "presence": 3.965139,
+     "correlation_by_layout": {
+      "room": 0.097241,
+      "L_tunnel": 0.080627,
+      "branching_tunnel": 0.113611
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": true,
+     "location_error_m": 3.192283,
+     "centroid_error_m": 5.600897,
+     "extra_structures": 25
+    },
+    "published_paired": {
+     "presence": 2.681879,
+     "correlation_by_layout": {
+      "room": 0.159265,
+      "L_tunnel": 0.193977,
+      "branching_tunnel": 0.256866
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": true,
+     "location_error_m": 3.119029,
+     "centroid_error_m": 2.552641,
+     "extra_structures": 7
+    },
+    "published_depth": {
+     "peak_axis_m": 1.341511,
+     "true_m": 10.0,
+     "best_error_after_allowance_m": 2.744352,
+     "family_size": 12
+    }
+   },
+   {
+    "seed": 271,
+    "scene": "room",
+    "reference": {
+     "presence": 14.680235,
+     "z_by_layout": {
+      "room": 14.680235,
+      "L_tunnel": 10.081116,
+      "branching_tunnel": 11.632296
+     },
+     "shape": "room",
+     "shape_correct": true,
+     "location_error_m": 0.131935,
+     "room_template_peak_over_null": 13.098768
+    },
+    "published_blind": {
+     "presence": 4.006213,
+     "correlation_by_layout": {
+      "room": 0.108293,
+      "L_tunnel": 0.073136,
+      "branching_tunnel": 0.084382
+     },
+     "shape": "room",
+     "shape_correct": true,
+     "location_error_m": 2.028551,
+     "centroid_error_m": 2.254199,
+     "extra_structures": 32
+    },
+    "published_paired": {
+     "presence": 1.916207,
+     "correlation_by_layout": {
+      "room": 0.139676,
+      "L_tunnel": 0.178885,
+      "branching_tunnel": 0.199992
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": false,
+     "location_error_m": 5.697086,
+     "centroid_error_m": 8.817309,
+     "extra_structures": 16
+    },
+    "published_depth": {
+     "peak_axis_m": 1.257666,
+     "true_m": 12.0,
+     "best_error_after_allowance_m": 0.786274,
+     "family_size": 12
+    }
+   },
+   {
+    "seed": 271,
+    "scene": "L_tunnel",
+    "reference": {
+     "presence": 18.272515,
+     "z_by_layout": {
+      "room": 14.34839,
+      "L_tunnel": 18.272515,
+      "branching_tunnel": 13.798861
+     },
+     "shape": "L_tunnel",
+     "shape_correct": true,
+     "location_error_m": 0.866012,
+     "room_template_peak_over_null": 14.469838
+    },
+    "published_blind": {
+     "presence": 4.019592,
+     "correlation_by_layout": {
+      "room": 0.00224,
+      "L_tunnel": 0.013999,
+      "branching_tunnel": 0.002596
+     },
+     "shape": "L_tunnel",
+     "shape_correct": true,
+     "location_error_m": 2.046407,
+     "centroid_error_m": 6.257237,
+     "extra_structures": 29
+    },
+    "published_paired": {
+     "presence": 2.464138,
+     "correlation_by_layout": {
+      "room": 0.099733,
+      "L_tunnel": 0.147042,
+      "branching_tunnel": 0.174629
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": false,
+     "location_error_m": 2.576337,
+     "centroid_error_m": 9.147866,
+     "extra_structures": 12
+    },
+    "published_depth": {
+     "peak_axis_m": 3.856843,
+     "true_m": 10.0,
+     "best_error_after_allowance_m": 1.486685,
+     "family_size": 12
+    }
+   },
+   {
+    "seed": 271,
+    "scene": "branching_tunnel",
+    "reference": {
+     "presence": 24.597776,
+     "z_by_layout": {
+      "room": 18.608453,
+      "L_tunnel": 15.364131,
+      "branching_tunnel": 24.597776
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": true,
+     "location_error_m": 0.043978,
+     "room_template_peak_over_null": 15.329536
+    },
+    "published_blind": {
+     "presence": 4.078085,
+     "correlation_by_layout": {
+      "room": 0.104664,
+      "L_tunnel": 0.053851,
+      "branching_tunnel": 0.133927
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": true,
+     "location_error_m": 1.025451,
+     "centroid_error_m": 5.106299,
+     "extra_structures": 26
+    },
+    "published_paired": {
+     "presence": 2.517748,
+     "correlation_by_layout": {
+      "room": 0.13465,
+      "L_tunnel": 0.151304,
+      "branching_tunnel": 0.215894
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": true,
+     "location_error_m": 4.372988,
+     "centroid_error_m": 8.451302,
+     "extra_structures": 13
+    },
+    "published_depth": {
+     "peak_axis_m": 12.660507,
+     "true_m": 10.0,
+     "best_error_after_allowance_m": 2.660507,
+     "family_size": 12
+    }
+   }
+  ],
   "control": [
    {
     "seed": 71,
@@ -1574,7 +2071,12 @@
      "location_error_m": null,
      "centroid_error_m": null,
      "extra_structures": 28
-    }
+    },
+    "published_depth_control": [
+     0.80677,
+     1.19323,
+     1.19323
+    ]
    },
    {
     "seed": 171,
@@ -1658,7 +2160,12 @@
      "location_error_m": null,
      "centroid_error_m": null,
      "extra_structures": 8
-    }
+    },
+    "published_depth_control": [
+     1.267914,
+     0.06133,
+     0.06133
+    ]
    },
    {
     "seed": 271,
@@ -1742,7 +2249,12 @@
      "location_error_m": null,
      "centroid_error_m": null,
      "extra_structures": 26
-    }
+    },
+    "published_depth_control": [
+     1.28934,
+     3.079729,
+     2.073596
+    ]
    }
   ]
  },
@@ -1803,5 +2315,5 @@
    "branching_tunnel": 3.328e-09
   }
  },
- "finding": "Scenes generated through the forward model (the lab's solver for each cavity's imprint, the synthesizer for the image), with the unrelated ground and shaking matched. At the strongest amplified diagnostic (each imprint boosted to 2 rad) the reference detector told the shaking names the layout in 78% of images (chance 33%) and places it 33.9 m from where it lies (median; the controls' peaks lie 36.5 m away); the published method's plan map read blind names it in 33% and places it 3.1 m away, and its change against the same ground without the cavity (a diagnostic it never has) 67% and 2.5 m (the controls' top places lie a median 3.4 m from the footprints). At the real level the reference detector names 33% and the published blind map 33%. The reference detector recovers the imposed layouts at the diagnostic, so the experiment can reveal a real signal. Amplified levels are diagnostics, not physical predictions."
+ "finding": "Scenes generated through the forward model (the lab's solver for each cavity's imprint, the synthesizer for the image), with the unrelated ground and shaking matched. At the positive control (each imprint boosted to 20 rad) the reference detector told the shaking and read where the cavity lies names the layout in 100% of images (chance 33%); scanning every placement, its strongest response lies a median 0.4 m from the layout's centre (the controls' 36 m). At 2 rad, near what any reader needs at these frequencies (P2-27), it still names 78% when told where to look, but its response there stands a median 1.9 spreads above the placements' scatter and a scan of the whole image peaks 34 m away: not knowing where costs more than knowing what. The published method's plan map, read blind, names the layout in 56% at 20 rad (p = 0.14 against guessing, nine images) and centres its top places 5.6 m from the layout's centre (the controls' 6.2 m); its change against the same ground without the cavity, a diagnostic it never has, 33% and 9.0 m (the motionless copy's change, 12.1 m); at 2 rad that change names 67% (p = 0.04, before allowing for the dozen comparisons) and centres 5.2 m away: the picture changes near where the image changes (P2-28). The blind map's largest value separates cavities from controls with AUC 0.59 (0.5 is chance) at 20 rad. At the real level the reference detector names 33% and the published blind map 33%, chance. After the predeclared depth family the published change's peak lies 1.5 m from the true depth at 20 rad and the motionless copy's 1.2 m: with 12 candidate depths, closeness alone says little. The reference detector recovers the imposed layouts at the positive control, so the experiment can reveal a real signal. Amplified levels are diagnostics, not physical predictions."
 }

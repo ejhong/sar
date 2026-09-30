@@ -97,7 +97,8 @@ const shMaxCert = Math.max(...sh.static.map((p) => p.rows[0].certificate_tpr_at_
 const shWorstDyn = sh.dynamic.length ? sh.dynamic.reduce((a, d) => (d.oracle_tv > a.oracle_tv ? d : a)) : null;
 
 // ---- the shape test (P2-31): generated scenes, read blind
-type StR = { presence_auc_vs_controls: number | null; shape_accuracy: number | null; median_location_error_m: number | null; median_centroid_error_m?: number | null; median_presence_z_at_true_place?: number | null };
+type StR = { presence_auc_vs_controls: number | null; shape_accuracy: number | null; shape_p_vs_chance?: number | null; median_location_error_m: number | null; median_centroid_error_m?: number | null; median_presence_z_at_true_place?: number | null };
+type StLvD = StLv & { published_depth_error_after_allowance_m: number | null };
 type StLv = { reference: StR; published_blind: StR; published_paired: StR };
 const stSum = (shapeTest as unknown as { summary: Record<string, unknown> }).summary;
 const stNum = (k: string) => (typeof stSum[k] === 'number' ? (stSum[k] as number) : null);
@@ -106,6 +107,7 @@ const stLevels = ([['real', 'real level (the microseisms)'], ['diagnostic_0.3_ra
 const stPos = stLevels.find((l) => l.k === 'diagnostic_20_rad')?.v;
 const stMid = stLevels.find((l) => l.k === 'diagnostic_2_rad')?.v;
 const pc0 = (v: number | null | undefined) => (v == null ? '—' : `${Math.round(100 * v)}%`);
+const named = (r: StR) => `${pc0(r.shape_accuracy)}${r.shape_p_vs_chance != null && r.shape_p_vs_chance < 0.2 ? ` (p ${r.shape_p_vs_chance < 0.001 ? '< 0.001' : r.shape_p_vs_chance.toFixed(2)})` : ''}`;
 const m1 = (v: number | null | undefined) => (v == null ? '—' : `${v < 10 ? v.toFixed(1) : Math.round(v)} m`);
 
 // ---- the requirement (P2-27)
@@ -176,8 +178,8 @@ const conc = (r: DRes) => r.over_room / r.elsewhere;
       <thead><tr><th>claim</th><th>what bounds or tests it</th><th>where it stands</th></tr></thead>
       <tbody>
         <tr><td>Presence: a room here or not</td><td>the three layers below, which bound every processor within the model</td><td>under the ground’s own trembling, no useful detection ({pctp(micro.tpr_upper_at_fpr_005, 3)} found at 5% false alarms, at most); under strong shaking close by, known exactly, open</td></tr>
-        <tr><td>Horizontal location</td><td>the same bounds: telling a room here from a room there is a test between two worlds, and TV(A, B) ≤ TV(A, none) + TV(none, B)</td><td>bounded wherever presence is; where the data hold the room (boosted), the published picture changes most over it in a paired comparison (P2-07); blind recovery is the shape test’s</td></tr>
-        <tr><td>Shape: a room, an L-shaped or a branching tunnel</td><td>the same inequality between any two layouts; the shape test (P2-31) on physically generated scenes, scored blind</td><td>bounded under the ground’s own trembling; the decisive experiment for the strong-signal regime, with a reference detector and a positive control</td></tr>
+        <tr><td>Horizontal location</td><td>the same bounds: telling a room here from a room there is a test between two worlds, and TV(A, B) ≤ TV(A, none) + TV(none, B)</td><td>bounded wherever presence is; in the shape test (P2-31, below), where the data hold a layout (amplified to 20 rad) a reference detector told the shaking places it {m1(stPos?.reference.median_location_error_m)} from its centre, but at 2 rad cannot find it by scanning; the published picture read blind centres {m1(stPos?.published_blind.median_centroid_error_m)} off even at 20 rad, the controls {m1(stNum('control_centroid_error_blind_m'))}</td></tr>
+        <tr><td>Shape: a room, an L-shaped or a branching tunnel</td><td>the same inequality between any two layouts; the shape test (P2-31) on physically generated scenes, scored blind</td><td>bounded under the ground’s own trembling (P2-32); in the shape test the reference detector names {pc0(stPos?.reference.shape_accuracy)} of layouts at 20 rad and {pc0(stMid?.reference.shape_accuracy)} at 2 rad when told where to look; the published picture read blind {named(stPos?.published_blind ?? ({} as StR))} at 20 rad, chance at the real level</td></tr>
         <tr><td>Relative vertical geometry</td><td>whether deeper parts are drawn deeper, whatever the scale</td><td>not shown: the published axis is the registration’s frequency (P2-06, P2-28)</td></tr>
         <tr><td>Absolute depth</td><td>the axis’s calibration, and whether different depths leave different marks</td><td>uncalibrated and aliased in the published method; physically, in this model, the mark’s shape carries depth (below), so a reader that could detect could also tell depths apart</td></tr>
       </tbody>
@@ -212,7 +214,9 @@ const conc = (r: DRes) => r.over_room / r.elsewhere;
       that detects the first layout is needed to tell the two apart. Shallow, bench-scale layouts in uniform rock: more
       favourable than anything claimed, and only these.
     </p>
-    <h3 class="subhead">The shape test: a room, an L-shaped and a branching tunnel generated through the forward model and read blind</h3>
+    <h3 class="subhead">{stPos && (stPos.reference.shape_accuracy ?? 0) >= 2 / 3
+      ? 'The shape test: where the data hold a layout, a reference detector names and places it; the published picture, read blind, does neither'
+      : 'The shape test: a room, an L-shaped and a branching tunnel generated through the forward model and read blind'}</h3>
     <p class="sub">
       Each layout’s imprint is the lab’s solver; the image is the synthesizer’s, with the unrelated ground and the shaking
       matched across layouts and controls (no cavity, and a motionless copy), three realisations each (P2-31). The
@@ -224,14 +228,18 @@ const conc = (r: DRes) => r.over_room / r.elsewhere;
       <thead><tr><th>imprint</th><th>reference: names</th><th>reference: scan peaks from the centre</th><th>published, blind: names</th><th>its top places from the centre</th><th>published change (diagnostic): names</th><th>its top places</th></tr></thead>
       <tbody>
         {stLevels.map(({ label, v }) => (
-          <tr><td>{label}</td><td>{pc0(v.reference.shape_accuracy)}</td><td>{m1(v.reference.median_location_error_m)}</td><td>{pc0(v.published_blind.shape_accuracy)}</td><td>{m1(v.published_blind.median_centroid_error_m)}</td><td>{pc0(v.published_paired.shape_accuracy)}</td><td>{m1(v.published_paired.median_centroid_error_m)}</td></tr>
+          <tr><td>{label}</td><td>{named(v.reference)}</td><td>{m1(v.reference.median_location_error_m)}</td><td>{named(v.published_blind)}</td><td>{m1(v.published_blind.median_centroid_error_m)}</td><td>{named(v.published_paired)}</td><td>{m1(v.published_paired.median_centroid_error_m)}</td></tr>
         ))}
         <tr><td>chance (the controls)</td><td>33%</td><td>{m1(stNum('control_reference_peak_distance_m'))}</td><td>33%</td><td>{m1(stNum('control_centroid_error_blind_m'))}</td><td>33%</td><td>{m1(stNum('control_centroid_error_paired_m'))}</td></tr>
       </tbody>
     </table>
     <p class="note">
-      Medians over nine images per row (three layouts, three realisations). {stPos && stMid && stMid.reference.median_presence_z_at_true_place != null
+      Nine images per row (three layouts, three realisations); distances are medians; p is the one-sided chance of naming as
+      many by guessing, shown where below 0.2 and not corrected for the dozen comparisons. The paired chance is the motionless
+      copy’s change (the no-cavity image’s change against itself is zero). {stPos && stMid && stMid.reference.median_presence_z_at_true_place != null
         ? `At 2 rad the reference detector’s response at the true place stands a median ${stMid.reference.median_presence_z_at_true_place.toFixed(1)} spreads above the scatter over placements: enough to name a layout when told where to look, not enough to find it by scanning the image.`
+        : ''} {stPos && stNum('control_depth_error_after_allowance_m') != null
+        ? `Depth, for the published change after the predeclared family of transformations (12 candidate depths): ${m1((stPos as StLvD).published_depth_error_after_allowance_m)} from the truth at 20 rad, ${m1(stNum('control_depth_error_after_allowance_m'))} for the motionless copy; closeness alone says little.`
         : ''}
     </p>
   </section>
@@ -402,8 +410,8 @@ const conc = (r: DRes) => r.over_room / r.elsewhere;
         Horizontally its change does gather over the room ({conc(d15).toFixed(1)} times elsewhere), but a random perturbation of the
         same pixels gathers almost as much ({conc(dNull).toFixed(1)} times): in this paired comparison the picture changes where the image
         changes. Its depth coordinate is an uncalibrated focus coordinate, the frequency of the registration series (P2-06): a calibration
-        and aliasing problem, which a method that recovered the right layout would survive. Whether it recovers the layout is
-        the shape test’s question.</p>
+        and aliasing problem, which a method that recovered the right layout would survive. It does not recover the layout: in
+        the shape test (above) its blind map names a layout no better than guessing even where a reference detector names every one.</p>
       </div>
     </div>
   </section>

@@ -36,6 +36,7 @@ import bound from '../../public/data/runs/p2_25_information_bound.json';
 import spectrum from '../../public/data/runs/p2_26_imprint_spectrum.json';
 import requirement from '../../public/data/runs/p2_27_requirement.json';
 import oracle from '../../public/data/runs/p2_29_oracle.json';
+import shapeTest from '../../public/data/runs/p2_31_shape_test.json';
 import Figure from '../components/Figure.astro';
 import Ceiling from '../components/Ceiling.astro';
 import Routes from '../components/Routes.astro';
@@ -437,6 +438,10 @@ const orc = oracle as unknown as {
   manifest: { params: { snr_db: number; nesz_best_db: number } };
 };
 const orAmb = orc.chamber.filter((r) => r.kind === 'ambient');
+type StR = { shape_accuracy: number; shape_p_vs_chance: number; median_location_error_m: number; median_centroid_error_m?: number };
+const stS = (shapeTest as unknown as { summary: Record<string, { reference: StR; published_blind: StR; published_paired: StR }> & Record<string, unknown> }).summary;
+const st20 = stS['diagnostic_20_rad'];
+const stChance = stS['control_centroid_error_blind_m'] as unknown as number;
 const orChk = orc.raw_echo_check.summary;
 const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m >= 1e-6 ? `${+(m * 1e6).toPrecision(2)} µm` : `${+(m * 1e9).toPrecision(2)} nm`);
 ---
@@ -733,7 +738,7 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
       <thead><tr><th>claim</th><th>status</th><th>rests on</th><th>what would change it</th></tr></thead>
       <tbody>
         <tr><td>The published and reconstructed depth axes are frequency axes of the registration, with a repeat and a mirror: absolute depth is uncalibrated and not unique</td><td>established</td><td>the processing’s algebra (P2-06), its code (P2-13, P2-14), an independent check</td><td>a physical model deriving depth from the registration, validated on known voids; it does not decide horizontal location or shape</td></tr>
-        <tr><td>Whether the method recovers horizontal location or outline where the data hold them, at any depth</td><td>open; the shape test runs next</td><td>boosted, the published picture changes most over the chamber (P2-07, paired); P2-31 scores layouts blind</td><td>a frozen method recovering withheld layouts, with the same depth freedom given to nulls</td></tr>
+        <tr><td>The published method does not recover horizontal location or outline where the data hold them, at any depth</td><td>measured in simulation: it does not, where a reference detector does</td><td>a room, an L-shaped and a branching tunnel generated through the forward model and amplified to 20 rad: a reference detector told the shaking names {Math.round(100 * st20.reference.shape_accuracy)}% and places them {st20.reference.median_location_error_m.toFixed(1)} m from their centres; the published map read blind names {Math.round(100 * st20.published_blind.shape_accuracy)}% (p {st20.published_blind.shape_p_vs_chance.toFixed(2)} against guessing) and centres {st20.published_blind.median_centroid_error_m!.toFixed(1)} m off, the controls {stChance.toFixed(1)} m (P2-31)</td><td>a frozen method recovering withheld layouts, with the same depth freedom given to nulls; a physically strong positive control (a lorry or vibrator beside the layouts)</td></tr>
         <tr><td>Correlating one image’s looks registers little of ordinary ground’s motion</td><td>measured, for that estimator</td><td>P2-03 on real texture; an exact identity for whole images, an approximation for patches</td><td>an estimator shown to recover planted ground motion on real texture</td></tr>
         <tr><td>The six-second pairs register little of a vibration</td><td>measured in simulation</td><td>P2-15, confirmed pulse by pulse (P2-18)</td><td>shaker and reflector data showing more</td></tr>
         <tr><td>The gated reconstruction does not respond to a known vibration a standard tracker measures</td><td>measured in simulation</td><td>synthetic products through its own loader (P2-19)</td><td>a frozen setting at which it recovers a planted vibration’s frequency, place and amplitude</td></tr>

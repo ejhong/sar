@@ -57,6 +57,7 @@ import numpy as np
 from scipy.interpolate import RegularGridInterpolator
 from scipy.ndimage import binary_dilation, gaussian_filter, label
 from scipy.signal import fftconvolve
+from scipy.stats import binom
 
 from katabasis.ambient.field import microseisms, rayleigh_hv
 from katabasis.runs import Run, memo
@@ -79,6 +80,7 @@ TAPER = (45.0, 54.0)
 TOP_SHARE = 0.05
 EXTRA_M = 5.0
 LAM_S_FAMILY = (0.24, 0.48)
+DEPTH_FAMILY_SIZE = 2 * len(LAM_S_FAMILY) * 3        # both branches, three repeats, each lambda_s
 
 
 def module(name, path):
@@ -285,6 +287,20 @@ def main():
         sd_loc = float(np.std(np.concatenate([r['loc'][200:-200, 20:-20].ravel() for r in ctrl])))
         sd_stat = {n: float(np.sqrt(np.mean([r['spread'][n] ** 2 for r in ctrl]))) for n in SHAPES}
         pub_norm = lambda M: (M - np.median(M)) / (np.std(M) + 1e-30)
+        def depth_after_allowance(r, name):
+            zt = BOXES[name][0][0][2] * -1.0
+            foot = truth_pub[name].ravel()
+            prof = np.abs(r['paired_T'])[foot].mean(axis=0) if foot.any() else np.zeros_like(r['z'])
+            zpk = float(r['z'][int(np.argmax(prof))])
+            Z = float(r['z'][-1])
+            cands = []
+            for lam in LAM_S_FAMILY:
+                a = lam / 0.48
+                for k in range(3):
+                    cands += [a * (2 * k * Z + zpk), a * (2 * (k + 1) * Z - zpk)]
+            return {'peak_axis_m': zpk, 'true_m': zt, 'best_error_after_allowance_m': float(min(abs(c - zt) for c in cands)),
+                    'family_size': len(cands)}
+
         results = {}
         for lv in list(LEVELS) + ['control']:
             rs = [r for r in records if r['level'] == lv]
@@ -317,19 +333,10 @@ def main():
                                    'extra_structures': extras(sel, truth_pub[truth_s] if truth_s else np.zeros_like(sel), step_pub)}
                 # depth, for the published change (paired), under the predeclared family
                 if r.get('paired_T') is not None and truth_s:
-                    zt = BOXES[truth_s][0][0][2] * -1.0
-                    foot = truth_pub[truth_s].ravel()
-                    prof = np.abs(r['paired_T'])[foot].mean(axis=0) if foot.any() else np.zeros_like(r['z'])
-                    zpk = float(r['z'][int(np.argmax(prof))])
-                    Z = float(r['z'][-1])
-                    cands = []
-                    for lam in LAM_S_FAMILY:
-                        a = lam / 0.48
-                        for k in range(3):
-                            cands += [a * (2 * k * Z + zpk), a * (2 * (k + 1) * Z - zpk)]
-                    row['published_depth'] = {'peak_axis_m': zpk, 'true_m': zt,
-                                              'best_error_after_allowance_m': float(min(abs(c - zt) for c in cands)),
-                                              'family_size': len(cands)}
+                    row['published_depth'] = depth_after_allowance(r, truth_s)
+                elif r['key'] == 'motionless':
+                    # the controls given the same freedom: the motionless copy's change over each layout's footprint
+                    row['published_depth_control'] = [depth_after_allowance(r, n)['best_error_after_allowance_m'] for n in SHAPES]
                 out.append(row)
             results[lv] = out
 
@@ -348,7 +355,10 @@ def main():
                 sc = summarise(cav, reader, 'shape_correct')
                 le = summarise(cav, reader, 'location_error_m')
                 s[reader] = {'presence_auc_vs_controls': auc, 'shape_accuracy': float(np.mean(sc)) if sc else None,
-                             'shape_chance': 1 / len(SHAPES), 'median_location_error_m': float(np.median(le)) if le else None}
+                             'shape_chance': 1 / len(SHAPES), 'median_location_error_m': float(np.median(le)) if le else None,
+                             # one-sided binomial: the chance of naming at least this many by guessing
+                             'shape_p_vs_chance': float(binom.sf(int(np.sum(sc)) - 1, len(sc), 1 / len(SHAPES))) if sc else None,
+                             'images': len(sc)}
                 if reader == 'reference':
                     # presence and shape are read at the true placement (told where to look); location by scanning
                     s[reader]['median_presence_z_at_true_place'] = float(np.median(pres_c)) if pres_c else None
@@ -366,6 +376,7 @@ def main():
             ce, cn, _ = top_centroid(pub_norm(gaussian_filter(r['blind'], 1.0)), GE, GN)
             chance_loc += [distance_to(truth_pub[n], GE, GN, ce, cn) for n in SHAPES]
         summary['control_location_error_to_layouts_m'] = float(np.median(chance_loc))
+        summary['control_depth_error_after_allowance_m'] = float(np.median([e for x in ctrl_rows for e in x.get('published_depth_control', [])]))
         # chance for the centroid: the controls' top places against each layout's footprint centroid; for the paired map
         # the motionless copy's change (the no-cavity image's change against itself is identically zero)
         def chance_centroid(maps_):
@@ -387,6 +398,7 @@ def main():
         ok_ref = (pos['reference']['shape_accuracy'] or 0) >= 2 / 3
         rp, rm = pos['reference'], mid['reference']
         bp, pp = pos['published_blind'], pos['published_paired']
+        mp = mid['published_paired']
         finding = (
             f"Scenes generated through the forward model (the lab's solver for each cavity's imprint, the synthesizer for "
             f"the image), with the unrelated ground and shaking matched. At the positive control (each imprint boosted to "
@@ -398,13 +410,21 @@ def main():
             f"response there stands a median {rm['median_presence_z_at_true_place']:.1f} spreads above the placements' "
             f"scatter and a scan of the whole image peaks {rm['median_location_error_m']:.0f} m away: not knowing where "
             f"costs more than knowing what. The published method's plan map, read blind, names the layout in "
-            f"{100 * bp['shape_accuracy']:.0f}% at 20 rad and centres its top places {bp['median_centroid_error_m']:.1f} m "
+            f"{100 * bp['shape_accuracy']:.0f}% at 20 rad (p = {bp['shape_p_vs_chance']:.2f} against guessing, nine images) "
+            f"and centres its top places {bp['median_centroid_error_m']:.1f} m "
             f"from the layout's centre (the controls' {summary['control_centroid_error_blind_m']:.1f} m); its change "
             f"against the same ground without the cavity, a diagnostic it never has, {100 * pp['shape_accuracy']:.0f}% and "
             f"{pp['median_centroid_error_m']:.1f} m (the motionless copy's change, "
-            f"{summary['control_centroid_error_paired_m']:.1f} m). At the real level the reference detector names "
+            f"{summary['control_centroid_error_paired_m']:.1f} m); at 2 rad that change names {100 * mp['shape_accuracy']:.0f}% "
+            f"(p = {mp['shape_p_vs_chance']:.2f}, before allowing for the dozen comparisons) and centres "
+            f"{mp['median_centroid_error_m']:.1f} m away: the picture changes near where the image changes (P2-28). The blind "
+            f"map's largest value separates cavities from controls with AUC {bp['presence_auc_vs_controls']:.2f} (0.5 is chance) "
+            f"at 20 rad. At the real level the reference detector names "
             f"{100 * real['reference']['shape_accuracy']:.0f}% and the published blind map "
-            f"{100 * real['published_blind']['shape_accuracy']:.0f}%, chance. "
+            f"{100 * real['published_blind']['shape_accuracy']:.0f}%, chance. After the predeclared depth family the "
+            f"published change's peak lies {pos['published_depth_error_after_allowance_m']:.1f} m from the true depth at 20 rad "
+            f"and the motionless copy's {summary['control_depth_error_after_allowance_m']:.1f} m: with {DEPTH_FAMILY_SIZE} "
+            f"candidate depths, closeness alone says little. "
             + ("The reference detector recovers the imposed layouts at the positive control, so the experiment can reveal "
                "a real signal." if ok_ref else "The reference detector does not recover the imposed layouts even at the positive control: "
                "the forward model or the acquisition's sensitivity must be examined before any reader is judged.")

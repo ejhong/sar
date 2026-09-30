@@ -580,9 +580,27 @@ investigation's record, and what it leaves open follow.
     known exactly, the oracle reaches 0.81 for an L-shaped against a branching tunnel: open, as detection is. Only these
     shallow bench-scale layouts in uniform rock are covered.
 
+24. **Where the data hold a layout, a reference detector names and places it; the published picture does neither (P2-31).**
+    A room, an L-shaped and a branching tunnel, each imprint from the lab's solver, the image from the synthesizer, the
+    unrelated ground and shaking matched across layouts and controls (no cavity, a motionless copy), three realisations,
+    read at the real level and at labelled amplified diagnostics (0.3, 2 and 20 rad). At 20 rad (the positive control) a
+    reference detector told the shaking names 100% of layouts and, scanning every placement, puts its peak a median 0.4 m
+    from the layout's centre (controls 36 m). At 2 rad it names 78% when told where to look (p = 0.008), but its response
+    there stands only 1.9 spreads above the scatter over placements and a scan peaks 34 m away. The published method's plan
+    map, read blind, names 56% at 20 rad (p = 0.14 against guessing, nine images) and centres its top places 5.6 m from the
+    layout's centre against the controls' 6.2 m; its largest value separates cavities from controls with AUC 0.59. Its
+    change against the same ground without the cavity, a diagnostic it never has, names 67% at 0.3 and 2 rad (p = 0.04 each,
+    uncorrected for a dozen comparisons) and centres 5.2 m away against the motionless copy's 12.1 m (the picture changes
+    near where the image changes, as in P2-28), and 33% at 20 rad. After the predeclared depth family its change peaks
+    1.5 m from the true depth at 20 rad and the motionless copy's 1.2 m: with 12 candidates, closeness says little. At
+    the real level every reader is at chance. Location was first scored as the distance to the nearest footprint point;
+    because the tunnels reach within a few metres of almost any central place (chance 3.4 m), the centroid distance was
+    added after the first run and is the one reported. Amplified levels are diagnostics, not physical predictions; nine
+    images per level is small, and a physically strong positive control (a lorry or vibrator beside the layouts) is next.
+
 These reasons differ in kind and strength. 4 is algebraic and holds whatever the ground does: the depth axis is a
 frequency axis with a repeat and a mirror, and no validated model turns it into a physical depth; that makes depth
-uncalibrated and non-unique, and does not by itself decide horizontal location or shape (P2-31 tests those). 1 and 12 are
+uncalibrated and non-unique, and does not by itself decide horizontal location or shape; P2-31 tests those directly, and the published picture recovers neither where a reference detector recovers both (24). 1 and 12 are
 measured, for particular estimators and configurations; 13 is a known-truth test of one of them, on synthetic products. 2, 3 and 8 are models with stated assumptions (a small chamber
 in uniform rock, quasi-static strain, the regional microseism level, dry sand's penetration as a bound for limestone).
 Together they show that the methods tested do not establish subsurface imaging; they do not prove every conceivable
@@ -638,7 +656,8 @@ open ground (P2-13, P2-14), pictures that do not survive a change of pass (P2-21
 chamber where the data demonstrably hold it (P2-24). The finite bounds (P2-25, P2-29, P2-30) bound presence within their
 model, and location and shape with it, since telling two layouts apart is harder than telling either from none; a bound
 that excludes 95% at 5% is not by itself a proof of no prospecting value, which is excluded only where the bound on
-detection minus false alarm is itself small. The shape test (P2-31) is the next decisive experiment.
+detection minus false alarm is itself small. The shape test (P2-31, item 24) found that where the data hold a layout
+a reference detector names and places it and the published picture does neither.
 
 ### What the proof can and cannot claim (29 September 2026)
 

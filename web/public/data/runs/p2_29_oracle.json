@@ -3,9 +3,9 @@
   "id": "p2_29_oracle",
   "title": "The oracle: what an ideal detector could learn, told more than any method knows",
   "date": "2026-09-30",
-  "started_utc": "2026-09-30T06:09:09+00:00",
-  "runtime_s": 1953.9,
-  "commit": "35f6726",
+  "started_utc": "2026-09-30T08:49:50+00:00",
+  "runtime_s": 171.0,
+  "commit": "74c62d5+",
   "params": {
    "acquisition": "giza-20250827",
    "snr_db": 30.0,
@@ -229,20 +229,20 @@
    "delta": 4.121e-06,
    "tv_exact": 1.644e-06,
    "tv_pinsker": 2.061e-06,
-   "growth_to_target": 798299.251904,
+   "growth_to_target": 798338.390093,
    "note": "",
-   "growth_after_allowances": 8414.812968,
+   "growth_after_allowances": 8415.225521,
    "open": false
   },
   {
    "case": "The world's noisiest stations (static imprint)",
    "kind": "ambient",
-   "delta": 0.0002965,
+   "delta": 0.0002964,
    "tv_exact": 0.0001183,
    "tv_pinsker": 0.0001482,
-   "growth_to_target": 11096.925771,
+   "growth_to_target": 11098.315337,
    "note": "",
-   "growth_after_allowances": 116.971868,
+   "growth_after_allowances": 116.986516,
    "open": false
   },
   {
@@ -251,9 +251,9 @@
    "delta": 4.328e-06,
    "tv_exact": 1.727e-06,
    "tv_pinsker": 2.164e-06,
-   "growth_to_target": 760209.140609,
+   "growth_to_target": 760168.480467,
    "note": "",
-   "growth_after_allowances": 8013.307941,
+   "growth_after_allowances": 8012.879346,
    "open": false
   },
   {
@@ -262,9 +262,9 @@
    "delta": 3.731e-06,
    "tv_exact": 1.488e-06,
    "tv_pinsker": 1.865e-06,
-   "growth_to_target": 881842.603106,
+   "growth_to_target": 881883.169721,
    "note": "",
-   "growth_after_allowances": 9295.437212,
+   "growth_after_allowances": 9295.864822,
    "open": false
   },
   {
@@ -447,22 +447,22 @@
    "case": "corner reflector on the peak, microseisms",
    "kind": "helped",
    "delta": 1.626e-05,
-   "tv_exact": 6.488e-06,
-   "tv_pinsker": 8.132e-06,
-   "growth_to_target": 202291.436919,
+   "tv_exact": 6.487e-06,
+   "tv_pinsker": 8.131e-06,
+   "growth_to_target": 202317.034813,
    "note": "",
-   "growth_after_allowances": 2132.338973,
+   "growth_after_allowances": 2132.608798,
    "open": false
   },
   {
    "case": "corner reflector on the peak, truck over a bump, 15 m",
    "kind": "helped",
-   "delta": 0.245563,
+   "delta": 0.245564,
    "tv_exact": 0.09772,
-   "tv_pinsker": 0.122781,
-   "growth_to_target": 13.397799,
+   "tv_pinsker": 0.122782,
+   "growth_to_target": 13.397726,
    "note": "",
-   "growth_after_allowances": 0.141225,
+   "growth_after_allowances": 0.141224,
    "open": true
   }
  ],
@@ -613,5 +613,5 @@
   "inner_m": 40.0,
   "spacing_m": 6.0
  },
- "finding": "An oracle told the exact reflectivity, the background motion, the shaking's realisation and both physical models, lacking only which is true and the receiver noise, is bounded exactly: its detection rate exceeds its false-alarm rate by 2 Phi(Delta / 2) - 1, and no method told less does better, whatever the ground's texture. Pulse by pulse on the real dwell the formula for Delta holds (0.993 +- 0.025 of it; 1.011 +- 0.030 with the background ten times larger, which cancels). At 30 dB per resolution cell, under the ambient levels the bench room gives the oracle at most 1.2e-04: its imprint would have to grow 1.1e+04 times, 1.2e+02 after allowing the local level ten times the regional, site amplification three times and 10 dB more SNR. The open regime is strong nearby shaking known exactly: truck over a bump 15 m away, all pass, at 72 Hz (surface_favourable) gives the oracle 0.99, 0.6 times short of 95% found at 5% false alarms, which the allowances erase (14 cases open). Depth is another matter: rooms 15 m down, small and spread, match the mark of a room 30 m down to 71.3% (the bench room itself only to 78%), so telling the two depths apart takes 1 times the signal that detecting either takes, for any method; the superposition of small rooms holds to 3.7%."
+ "finding": "An oracle told the exact reflectivity, the background motion, the shaking's realisation and both physical models, lacking only which is true and the receiver noise, is bounded exactly: its detection rate exceeds its false-alarm rate by 2 Phi(Delta / 2) - 1, and no method told less does better, whatever the ground's texture. Pulse by pulse on the real dwell the formula for Delta holds (0.993 +- 0.025 of it; 1.011 +- 0.030 with the background ten times larger, which cancels). At 30 dB per resolution cell, under Giza's regional microseisms the bench room gives the oracle 1.6e-06: its imprint would have to grow 8.0e+05 times, 8.4e+03 after allowing the local level ten times the regional, site amplification three times and 10 dB more SNR; at the noisiest stations on Earth 1.2e-04 (1.1e+04 and 1.2e+02 times). The open regime is strong nearby shaking known exactly, the scattered wave carried unattenuated across the scene: truck over a bump 15 m away, all pass, at 72 Hz (surface_favourable) gives the oracle 0.99, enough within the model for 95% found at 5% false alarms (it would need only 0.64 of its motion); 14 cases are open after the allowances. Depth is carried by the mark's shape in this model: rooms 15 m down, small and spread, leave 71% of the mark of a room 30 m down unmatched (the bench room 15 m down, 78%), so telling those two depths apart takes only 1.4 times the signal that detecting either takes; the superposition of small rooms holds to 3.7%."
 }

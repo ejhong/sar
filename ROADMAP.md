@@ -141,9 +141,11 @@ Then (29 September, evening; the cloud session, on branch `claude/upbeat-pascal-
   reproducible information about actual underground presence, location or geometry that survives controls and predicts
   withheld ground, even if depth stays uncertain? Presence, horizontal location, shape, relative vertical geometry and
   absolute depth are scored apart; an aliased or uncalibrated depth scale no longer dismisses a method by itself. The site
-  now reads the alias tests as a calibration ambiguity. P2-31 (the shape test) is the next decisive experiment: an
-  isolated room, an L-shaped and a branching tunnel and no cavity, generated through the forward model, read by the
-  published method and a reference detector at the real level and at labelled amplified diagnostics. After it: a
+  now reads the alias tests as a calibration ambiguity. P2-31 (the shape test) ran: an isolated room, an L-shaped and a
+  branching tunnel and no cavity, generated through the forward model, read by the published method and a reference
+  detector at the real level and at labelled amplified diagnostics. At 20 rad the reference detector names every layout
+  and places it within 0.4 m; the published blind map names 5 of 9 (p = 0.14) and centres no closer than the controls;
+  at the real level every reader is at chance (audit item 24). P2-32 bounds shape discrimination as detection is. Next: a
   physically strong positive control (a vibrator or a lorry beside the layouts, not a boosted imprint), multi-level
   layouts for relative vertical geometry, the gated reconstruction on the same products (desktop), and real withheld
   ground (`BLIND_TEST.md`).

@@ -2123,9 +2123,9 @@
   "id": "p2_29_oracle",
   "title": "The oracle: what an ideal detector could learn, told more than any method knows",
   "date": "2026-09-30",
-  "started_utc": "2026-09-30T06:09:09+00:00",
-  "runtime_s": 1953.9,
-  "commit": "35f6726",
+  "started_utc": "2026-09-30T08:49:50+00:00",
+  "runtime_s": 171.0,
+  "commit": "74c62d5+",
   "params": {
    "acquisition": "giza-20250827",
    "snr_db": 30.0,
@@ -2176,9 +2176,9 @@
   "id": "p2_30_finite_certificates",
   "title": "Finite certificates: the bound on every processor, the common background included",
   "date": "2026-09-30",
-  "started_utc": "2026-09-30T06:41:43+00:00",
+  "started_utc": "2026-09-30T08:52:42+00:00",
   "runtime_s": 0.2,
-  "commit": "35f6726",
+  "commit": "74c62d5+",
   "params": {
    "target": {
     "tpr": 0.95,
@@ -2207,9 +2207,9 @@
   "id": "p2_31_shape_test",
   "title": "The shape test: location and shape, with depth allowed to be wrong",
   "date": "2026-09-30",
-  "started_utc": "2026-09-30T03:55:16+00:00",
-  "runtime_s": 8031.7,
-  "commit": "e931725",
+  "started_utc": "2026-09-30T08:52:28+00:00",
+  "runtime_s": 9.4,
+  "commit": "74c62d5+",
   "params": {
    "layouts": {
     "room": [
@@ -2287,7 +2287,8 @@
    "levels": {
     "real": null,
     "diagnostic_0.3_rad": 0.3,
-    "diagnostic_2_rad": 2.0
+    "diagnostic_2_rad": 2.0,
+    "diagnostic_20_rad": 20.0
    },
    "taper_m": [
     45.0,
