@@ -99,6 +99,7 @@ const frac = imp.cases[0].imprint_over_motion as number;
   }
   .closed {
     opacity: 0.8;
+    border-style: dashed;
   }
   .closed em,
   .surface em {
@@ -135,8 +136,7 @@ const frac = imp.cases[0].imprint_over_motion as number;
     font: 14px var(--font-mono);
   }
   .closed::after {
-    content: '×' !important;
-    color: var(--muted) !important;
+    content: none !important;
   }
   @media (max-width: 820px) {
     .routes {

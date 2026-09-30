@@ -21,9 +21,9 @@ in order of strength:
    pass).
 4. **A bound on every way of reading one image (P2-25), with the imprint at every frequency (P2-26):** for ordinary
    ground modelled as fully developed speckle, whatever reads one image raises its detection rate above its false-alarm
-   rate on the bench chamber by at most 1.3e-9 under Giza's microseisms. Under a truck close by the speckle bound's
-   reference leaves out the truck's own motion, so only the oracle with receiver noise bounds that case (P2-29: 0.43 for
-   the bench room, 0.996 under a 5 m roof). A theorem under stated models; a bound, not what a detector achieves (on small
+   rate on the bench chamber by at most 1.3e-9 under Giza's microseisms. Under a truck close by a whole-image reference
+   fails, but one line's does not: in the benchmark (P2-36) one image allows at most 0.06 for a room under a 5 m roof,
+   its 6 m location or its shape; only an oracle told the texture could reach 95% at 5%, above 33 to 38 dB. A theorem under stated models; a bound, not what a detector achieves (on small
    test images the best test comes within 1.3 to 1.4 times of it).
 
 Run whole (P2-07), over simulated desert shaking at Giza's level with the chamber's imprint, imaged on the real dwell
@@ -181,6 +181,16 @@ Then (29 September, evening; the cloud session, on branch `claude/upbeat-pascal-
   unresolved), the blind test's statistics corrected. **Next milestone:** one fully specified, auditable comparison:
   the same source in both worlds, a valid reference covariance or calibrated noise floor, bounded tails and numerical
   error, a stated scattering and noise model, and bounds for presence, location and shape; parameter ranges after it.
+- **Fifth review: the benchmark** (30 September, P2-36, `BENCHMARK.md`): four worlds identical but for the cavity (none,
+  a room under a 5 m roof, an L tunnel, the room 6 m east), one force 15 m west (the FTA's truck over a bump, held at
+  69 Hz all pass), the whole image, the tail an assumed surface-wave envelope. The certificate applied line by line
+  gives each world a valid reference (floor 0.95 beside the lorry; the whole image gives none): one image reaches at
+  most 0.03 to 0.06 above chance for presence, a 6 m location or shape (0.14 under every tabulated allowance); only
+  the oracle told the texture reaches 0.9, above 33 to 38 dB (30 dB assumed). Checked pulse by pulse on fixed scenes
+  and against the exact divergence on lines; the score test implemented on synthesised images reaches its prediction.
+  Code-level corrections adopted with it (audit, fifth review). **Next:** the Khafre claim on the real image's powers
+  (needs a power map from the desktop), a calibrated noise floor for the real product, the published method on the
+  benchmark's strong-case images, then declared parameter ranges around the benchmark.
 
 ## The goal
 

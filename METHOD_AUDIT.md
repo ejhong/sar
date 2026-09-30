@@ -642,6 +642,29 @@ investigation's record, and what it leaves open follow.
     Earlier wording that P2-08 "draws the same shapes" as the published pictures is corrected: it finds the same
     ingredients, and these settings finish the look.
 
+28. **One auditable comparison: one image under speckle does not reach 95% at 5% for presence, a 6 m location or
+    shape of a shallow room, quiet or beside a lorry (P2-36, BENCHMARK.md).** Four worlds identical but for the cavity
+    (none; a room 6 m on a side under a 5 m roof; an L-shaped tunnel at that depth; the room 6 m east), the same force
+    15 m west in every world (the FTA's truck over a bump, held at 69 Hz for the whole pass, the frequency fixed by a
+    rule before the bounds), the same scatterers and noise law, the whole 5 km image observed, the solver's field within
+    70 m and an assumed surface-wave envelope beyond it to the image's edge (97 to 98% of the signal). The certificate
+    applied along track line by line, each line independent once the range band is widened and each line's reference
+    holding that line's own motion (the lorry's wave, the microseisms' envelope, world 0's cavity) and the receiver noise,
+    gives a floor of 0.95 where the whole image gives none; any reader of the one image is then at most 0.033 (room,
+    near chance), 0.062 (L tunnel), 0.044 (6 m apart, near chance) and 0.056 (shape) above its false-alarm rate, at
+    most 0.072 at the worst frequency of the band and 0.14 under the tabulated allowances (tail envelope x5); the
+    motion would have to grow 15 to 27 times. The oracle told every scatterer's reflectivity as well (a perfect reference
+    image) gives 0.47 to 0.75 at the assumed 30 dB and reaches 0.9 at 33 to 38 dB: the favourable case is open only for a
+    detector told the texture, and only above the assumed SNR. Under Giza's regional microseisms (expected over the
+    field) every pair is below 3 x 10^-7 for one image and 4 x 10^-6 for the oracle. Checks: the exact divergence on a
+    line of the model is 0.12 to 0.18 of the line's certificate; pulse by pulse on fixed scenes the coherent echo
+    difference is 0.994 +- 0.006 of the ensemble formula, the same with the lorry's wave ten times larger; the scattered
+    wave's energy per metre of radius falls as r^-0.3 to r^-0.6 from 40 to 70 m, so the constant envelope beyond is
+    generous. Achieved: the score test told the pattern reaches 0.002 to 0.004 within 70 m; implemented on 24
+    synthesised grounds it reaches its predicted deflection (2.4 spreads against 2.1 predicted, with the difference
+    amplified 800 times; chance at the real level). Rests on the elastic model without attenuation, the tail envelope,
+    fully developed speckle (bright points only under the oracle) and the assumed SNR.
+
 These reasons differ in kind and strength. 4 is algebraic and holds whatever the ground does: the depth axis is a
 frequency axis with a repeat and a mirror, and no validated model turns it into a physical depth; that makes depth
 uncalibrated and non-unique, and does not by itself decide horizontal location or shape; P2-31 tests those directly, and the published picture recovers neither where a reference detector recovers both (24). 1 and 12 are
@@ -855,6 +878,44 @@ A fourth independent review of the branch (commit 439c48b) found one remaining g
   worlds, a valid reference covariance or a calibrated noise floor, bounded displacement tails and numerical error, a
   stated scattering and noise model, and performance bounds for presence, location and shape; parameter ranges after
   that comparison is sound.
+
+### Fifth review, 30 September 2026: the auditable benchmark, and corrections adopted
+
+The external reviewer asked for the auditable benchmark (instructions on 560c3a7), and a second review verified the
+fourth review's six points against the code (FOURTH_REVIEW.md, on another branch, commit 08b0332). Adopted:
+
+- **The benchmark (item 28, BENCHMARK.md, P2-36).** Worlds, the same source, the observation and its tails, the
+  scattering and noise model, presence, location and shape, and implemented detectors beside the bounds, each layer with
+  what it is told; the frozen parameters hashed into every result; results generated, with a report.
+- **A valid single-image reference under strong shaking.** The fourth review found no floor for the ground moving with
+  the lorry (the whole image's common phase energy exceeds one). One along-track line's does not: with the range band
+  widened the lines are independent, the widening can only add information, and each line's floor is
+  sigma^2 + (1 - ||B0 - E||_F)^2 with that line's own motion in B0 (0.95 beside the lorry, 0.98 under the microseisms).
+  In the library as `sarsim.finite.per_line_certificate` and `line_floor`, tested against the exact divergence on random
+  lines; checked on the benchmark's own lines (the exact divergence 0.12 to 0.18 of the certificate).
+- **The oracle's statistics kept visible.** Its bound is on the average over scenes (Jensen); for fixed scenes the
+  complete coherent echo difference is computed pulse by pulse with each world's whole motion (0.994 +- 0.006 of the
+  ensemble formula); Markov's inequality for one scene, the cost of every realisation of a random excitation (sqrt(2n)),
+  mixtures of alternatives and N images are stated on the proof page. The quiet case takes the expected squared motion
+  over the field, not a 3-sigma peak.
+- **Noise.** 30 dB per cell stays assumed (the acquisition's calibration and noise records are not in this repository)
+  and every result is swept over 20 to 60 dB: the oracle's favourable-case bound crosses 0.9 at 33 to 38 dB (8 dB more
+  than assumed would erase it); the single-image bound barely moves.
+- **Tails and numerics as assumed envelopes and empirical allowances.** The tail's trend is measured to 70 m (falling),
+  and the conclusion is shown under the grid allowance, the tail x2 and x5 and illustrative attenuation.
+- **Corrections from the code-level verification.** The certificate's constant tightened to the derivation's
+  (KL <= rho^2 / (2(1 - rho)), TV by the better of Pinsker and Bretagnolle-Huber; q for 0.9 from 0.282 to 0.344), and
+  every run carries one of the three states; P2-31 synthesised in double precision (its first real-level row measured
+  single precision's rounding) with exact within-ground permutation p-values; the cube's cos 4 phi guard withdrawn (the
+  static kernel is exactly quadratic in the wave's direction); finite.py's reference to a PROOF.md that does not exist;
+  ROADMAP's "reached by the best detector"; the Routes figure's stray glyph; the satellite page's review count; the
+  overview's hard-coded 128 m^2 (the phase-only area is now stated as a condition a mechanism must meet); an unused
+  formatter; the requirement chart cut to four lines with its axis named peak displacement; over-precise percentages
+  rounded; the overview's step 10 cut from an essay to one paragraph on the benchmark beside its figures.
+- **Not yet done.** The Khafre claim computed (the review suggests the real image's pixel powers over the footprint,
+  which needs a power map exported from the desktop); more incidence directions for the older strong-shaking rows
+  (P2-26's four sides stay "worst of four sampled"; the benchmark declares one source position); the published method
+  run on the benchmark's strong-case images (it is bounded by the single-image certificate, 0.07 at most over the band).
 
 ### Motion measured from orbit, 2026
 

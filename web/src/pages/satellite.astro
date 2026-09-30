@@ -56,6 +56,7 @@ const sacsLabs = Object.entries(import.meta.glob('../../public/data/runs/lab_sac
 import Figure from '../components/Figure.astro';
 import Ceiling from '../components/Ceiling.astro';
 import Routes from '../components/Routes.astro';
+import benchmark36 from '../../public/data/runs/p2_36_benchmark.json';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 // ---- formatting
@@ -463,6 +464,10 @@ const orAmb = orc.chamber.filter((r) => r.kind === 'ambient');
 // under strong shaking only the oracle (receiver noise, motion common to both worlds cancelling) is a valid bound
 const orUrb = orc.chamber.find((r) => r.case === 'urban background, all pass (surface)');
 const orTrk = orc.chamber.filter((r) => r.case.startsWith('truck over a bump 15 m away, all pass, at') && r.case.endsWith('(surface)'))[0];
+// one image with a lorry beside a shallow room, bounded line by line (P2-36, the benchmark)
+const bmStrong = (benchmark36 as unknown as { strong: Record<string, { l1: Record<string, { tv_upper: number }>; oracle_snr_db_for_target: number | null }> }).strong;
+const bmOne = Math.max(...Object.values(bmStrong).map((p) => p.l1['30'].tv_upper));
+const bmSnr = Math.min(...Object.values(bmStrong).map((p) => p.oracle_snr_db_for_target ?? Infinity));
 type StR = { shape_accuracy: number; shape_p_permutation: number; median_location_error_m: number; median_centroid_error_m?: number };
 const stS = (shapeTest as unknown as { summary: Record<string, { reference: StR; published_blind: StR; published_paired: StR }> & Record<string, unknown> }).summary;
 const st20 = stS['diagnostic_20_rad'];
@@ -475,7 +480,7 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
   kicker="From orbit · what one radar image can show, and what it has not"
   current="satellite"
   lede="Can one satellite radar image show chambers under the ground? The real ICEYE passes over Giza are simulated over ground whose contents are known, and the published method and a stricter reconstruction of it are run on real and simulated images beside controls. The methods tested do not show chambers, while single images can measure strong vibration of bright targets. Where this rests on models, and what would test it, is set out below."
-  state="status · tested, not closed · 29 September 2026 · revised after two independent reviews"
+  state="status · tested, not closed · 29 September 2026 · revised after each of four independent reviews"
   index={[
     { id: 'verdict', label: 'Where it stands' },
     { id: 'bound', label: 'Any method, bounded' },
@@ -507,7 +512,7 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
       <div class="stat"><span class="value">{pct(blk.gain_complex)}</span><span class="what">of a stretch of real ground’s planted motion recovered by correlating one image’s looks against each other, the published way</span><span class="src">P2-03 · measured on the real Giza image, for that estimator</span></div>
       <div class="stat"><span class="value"><Sci v={imp.cases[0].imprint_over_motion} /></span><span class="what">the fraction of the ground’s own motion a 6 m chamber 15 m down changes as a microseism passes, in uniform rock</span><span class="src">P2-04 · a quasi-static model</span></div>
       <div class="stat"><span class="value">{order(ground.shortfall!)}<small>×</small></span><span class="what">short, in our model: the smallest imprint one dwell could detect on the plateau against the imprint modelled ({order(bright.shortfall!)} on a bright scatterer)</span><span class="src">P2-05 · a model, every advantage we could name allowed</span></div>
-      <div class="stat"><span class="value">{sci(bd.static[0].ceiling)}</span><span class="what">the most any way of reading one image of ordinary ground can raise its detection rate above its false-alarm rate on that chamber under Giza’s regional microseism level (with a truck bouncing beside it all pass, only the oracle’s bound is valid: {orTrk ? orTrk.tv_upper.toFixed(2) : '—'})</span><span class="src">P2-25 · a bound within the speckle model</span></div>
+      <div class="stat"><span class="value">{sci(bd.static[0].ceiling)}</span><span class="what">the most any way of reading one image of ordinary ground can raise its detection rate above its false-alarm rate on that chamber under Giza’s regional microseism level (with a lorry bouncing beside a room under a 5 m roof all pass, one image allows at most {bmOne.toFixed(2)}, the benchmark, P2-36)</span><span class="src">P2-25 · a bound within the speckle model</span></div>
     </div>
     <p class="sub">
       The first is a property of the processing and holds whatever the ground does: the published depth coordinate is the
@@ -665,7 +670,7 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
       </div>
     </div>
 
-    <h3 class="bound-h">Told everything but the answer, an oracle still gains at most {sci(orAmb[0].tv_upper)} under Giza’s regional trembling ({sci(Math.max(...orAmb.map((r) => r.tv_upper)))} at the noisiest stations); strong shaking close by, known exactly, is not excluded by it</h3>
+    <h3 class="bound-h">Told everything but the answer, an oracle still gains at most {sci(orAmb[0].tv_upper)} under Giza’s regional trembling ({sci(Math.max(...orAmb.map((r) => r.tv_upper)))} at the noisiest stations); strong shaking close by, known exactly, is not excluded by it, though one image without the texture is (the benchmark, P2-36)</h3>
     <div class="grid-2">
       <div class="note-card">
         <span class="tag">an upper bound · any texture · P2-29</span>
@@ -780,7 +785,7 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
         <tr><td>A small chamber changes ambient motion by under a ten-thousandth; one dwell falls far short</td><td>modelled</td><td>uniform rock, quasi-static strain, regional ambient level (P2-04, P2-05)</td><td>motion measured on the plateau during a pass; resonant or larger structures</td></tr>
         <tr><td>Other routes carry far too little at X band</td><td>modelled estimates</td><td>penetration, loads, heat, surface (P2-11)</td><td>measured penetration in Mokattam limestone; deformation over known voids</td></tr>
         <tr><td>Single images measure vibration of bright targets</td><td>established</td><td>2026 papers with ground truth; P2-03</td><td>none</td></tr>
-        <tr><td>However one image of ordinary ground is read, the bench chamber’s imprint on the ground’s motion lets no test’s detection rate exceed its false-alarm rate by more than {sci(bd.static[0].ceiling)} under Giza’s regional microseism level; under an urban hum or a truck bouncing 15 m away all pass the valid bound is the oracle’s, {orUrb ? sci(orUrb.tv_upper) : '—'} and {orTrk ? orTrk.tv_upper.toFixed(2) : '—'}, the speckle bound’s reference lacking the source’s own motion</td><td>bounded: a theorem within a model</td><td>fully developed speckle, the Doppler-to-time relation, linear elasticity, the chamber’s imprint by the elastic solver at every frequency, the regional ambient levels; a bound, within {Math.max(...detOver).toFixed(1)} times of the best test on small test images (P2-25, P2-26)</td><td>ground whose texture departs from speckle beyond bright points; shaking far above these levels for a whole pass; an imprint beyond linear elasticity; measured ground motion and radar data that disagree</td></tr>
+        <tr><td>However one image of ordinary ground is read, the bench chamber’s imprint on the ground’s motion lets no test’s detection rate exceed its false-alarm rate by more than {sci(bd.static[0].ceiling)} under Giza’s regional microseism level; under an urban hum or a truck bouncing 15 m away all pass the oracle’s bound, told the texture, is {orUrb ? sci(orUrb.tv_upper) : '—'} and {orTrk ? orTrk.tv_upper.toFixed(2) : '—'}; one image without the texture, bounded line by line with the lorry’s wave in each line’s reference, allows at most {bmOne.toFixed(2)} for a room under a 5 m roof, its location to 6 m or its shape (the benchmark, P2-36; the oracle reaches 95% at 5% only above {Math.round(bmSnr)} dB)</td><td>bounded: a theorem within a model</td><td>fully developed speckle, the Doppler-to-time relation, linear elasticity, the chamber’s imprint by the elastic solver at every frequency, the regional ambient levels; a bound, within {Math.max(...detOver).toFixed(1)} times of the best test on small test images (P2-25, P2-26)</td><td>ground whose texture departs from speckle beyond bright points; shaking far above these levels for a whole pass; an imprint beyond linear elasticity; measured ground motion and radar data that disagree</td></tr>
         <tr><td>Under stated conditions a detection needs the room-specific motion to reach a displacement integral (∫ max<sub>t</sub>|Δu|² dA) of {rqEor != null ? `${sci(rqEor)} m⁴` : 'a stated value'}, whatever its pattern and whatever motion both worlds share; for a smooth pattern, at least {umText(rqAt(0.2, 8).D_necessary_m['0.9'])} at microseism frequencies, {umText(rqAt(80, 8).D_necessary_m['0.9'])} at 80 Hz</td><td>a conditional requirement</td><td>the Giza dwell, the oracle told everything but the answer with receiver noise at 30 dB per cell (above ICEYE Dwell’s best noise floor under the brightest natural ground), 95% found at 5% false alarms (P2-27, P2-29); the speckle certificate agrees under quiet ground; corrected after two reviews</td><td>a mechanism shown to put that much motion on the ground over a justified extent; a calibrated noise floor for the real product; routes outside the model (reflectivity changes, the echo from beneath, more than one image)</td></tr>
         <tr><td>Whether a single image at a longer wavelength, or many images, could sense a subsurface structure</td><td>open</td><td>estimates only (P2-11)</td><td>the tests under <a href="#settle">What would settle it</a></td></tr>
       </tbody>

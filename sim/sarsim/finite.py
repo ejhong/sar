@@ -185,6 +185,37 @@ def baseline_floor_from_phase_energy(background_energy):
     return (1-r)**2 if r < 1 else None
 
 
+def line_floor(common_energy, noise_var=0.0):
+    """Lower bound on the smallest eigenvalue of one image line's in-band covariance, C0 = B0 B0* + noise_var I, where B0 =
+    E o exp(-i phi0), E the in-band rows of the unitary DFT (orthonormal), and ||B0 - E||_F^2 <= common_energy (the
+    line's own motion, sum over its pixels of (n_b / n) <4 sin^2(phi0 / 2)>): sigma_min(B0) >= 1 - ||B0 - E||_2 >=
+    1 - sqrt(common_energy) (Weyl), so lambda_min >= noise_var + (1 - sqrt(common_energy))^2. None past one."""
+    r = math.sqrt(common_energy)
+    return noise_var + (1 - r) ** 2 if r < 1 else None
+
+
+def per_line_certificate(phase_energy, common_energy, noise_var=0.0):
+    """Theorem C line by line, KL summed over lines that are independent (the range band widened to every bin, which can
+    only add information; white scatterers and noise; each scatterer's motion its own). Per line q^2 = Q / floor, Q =
+    ||B1 - B0||_F^2 the differential motion's phase energy, the floor from line_floor with that line's own common motion;
+    KL_line <= rho^2 / (2 (1 - rho)), rho = 2 q + q^2. Returns the summed KL and the TV bound (Pinsker and
+    Bretagnolle-Huber, the smaller), or tv_upper 1 where any line is uninformative."""
+    Q = np.asarray(phase_energy, float)
+    Qc = np.broadcast_to(np.asarray(common_energy, float), Q.shape)
+    sq = np.sqrt(Qc)
+    if np.any(sq >= 1):
+        return {"kl_upper": None, "tv_upper": 1.0, "informative": False}
+    floor = noise_var + (1 - sq) ** 2
+    q = np.sqrt(Q / floor)
+    rho = 2 * q + q * q
+    if np.any(rho >= 1):
+        return {"kl_upper": None, "tv_upper": 1.0, "informative": False, "rho_max": float(rho.max())}
+    kl = float(np.sum(rho * rho / (2 * (1 - rho))))
+    tv = min(1.0, math.sqrt(kl / 2), math.sqrt(-math.expm1(-kl)))
+    return {"kl_upper": kl, "tv_upper": tv, "informative": tv < 1, "rho_max": float(rho.max()),
+            "floor_min": float(floor.min())}
+
+
 def required_q_for_tv(tv_target):
     """Where this sufficient exclusion ceases to certify TV < tv_target.
 

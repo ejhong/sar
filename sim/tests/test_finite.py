@@ -12,7 +12,7 @@ import numpy as np
 from scipy.special import ndtri
 
 from sarsim.finite import (baseline_floor_from_phase_energy, certificate_from_energy, conditional_gaussian_roc,
-    finite_complex_kl, oracle_mean_energy, oracle_tv_from_mean_energy,
+    finite_complex_kl, line_floor, oracle_mean_energy, oracle_tv_from_mean_energy, per_line_certificate,
     perturbation_certificate, required_oracle_energy, required_q_for_tv,
     stable_covariance_difference, stable_exp_difference, stable_range_difference)
 
@@ -212,3 +212,45 @@ class PatternTests(unittest.TestCase):
             kl, q2 = self.model(pattern)
             cert = perturbation_certificate(math.sqrt(q2))
             self.assertLessEqual(min(1.0, math.sqrt(kl / 2)), cert['tv_upper'] + 1e-12)
+
+
+class PerLineTests(unittest.TestCase):
+    """The per-line certificate (P2-36): one along-track line of the model, each world moving by its own phase field (a
+    large common part and a small difference), white receiver noise; the exact divergence from the eigenvalues of the
+    whitened change never exceeds the certificate, and the floor never exceeds the covariance's smallest eigenvalue."""
+
+    def line(self, rng, n=256, keep=200, common=0.03, diff=0.004, noise=1e-3):
+        k = np.arange(n)
+        rows = np.r_[0:keep // 2, n - keep // 2:n]
+        E = np.exp(-2j * np.pi * np.outer(rows, k) / n) / math.sqrt(n)
+        t = np.linspace(-0.5, 0.5, keep)[:, None]
+        x = k[None, :] / n
+        f = rng.uniform(3, 40)
+        phi0 = common * rng.uniform(0.3, 1) * np.cos(2 * np.pi * (f * t + rng.uniform(1, 5) * x) + rng.uniform(0, 6.3))
+        dphi = diff * np.exp(-((k - n / 2) / rng.uniform(4, 30)) ** 2)[None, :] * np.cos(2 * np.pi * f * t + rng.uniform(0, 6.3))
+        B0 = E * np.exp(-1j * phi0)
+        D = B0 * np.expm1(-1j * dphi)
+        c0 = B0 @ B0.conj().T + noise * np.eye(len(rows))
+        dC = stable_covariance_difference(B0, D)
+        kl = finite_complex_kl(c0, dC)['kl']
+        Q = float(np.sum(np.abs(D) ** 2))
+        Qc = float(np.sum(np.abs(E * np.expm1(-1j * phi0)) ** 2))
+        return kl, Q, Qc, float(np.linalg.eigvalsh(c0).min()), noise
+
+    def test_certificate_and_floor_hold(self):
+        rng = np.random.default_rng(36)
+        for _ in range(12):
+            kl, Q, Qc, lam_min, noise = self.line(rng)
+            floor = line_floor(Qc, noise)
+            self.assertIsNotNone(floor)
+            self.assertLessEqual(floor, lam_min + 1e-12)
+            cert = per_line_certificate([Q], [Qc], noise)
+            self.assertTrue(cert['informative'])
+            self.assertLessEqual(kl, cert['kl_upper'])
+
+    def test_lines_add(self):
+        rng = np.random.default_rng(37)
+        rows = [self.line(rng) for _ in range(4)]
+        cert = per_line_certificate([r[1] for r in rows], [r[2] for r in rows], rows[0][4])
+        self.assertLessEqual(sum(r[0] for r in rows), cert['kl_upper'])
+

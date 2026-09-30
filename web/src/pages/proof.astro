@@ -9,6 +9,7 @@ import oracle from '../../public/data/runs/p2_29_oracle.json';
 import finite from '../../public/data/runs/p2_30_finite_certificates.json';
 import shapes from '../../public/data/runs/p2_32_shape_bounds.json';
 import shapeTest from '../../public/data/runs/p2_31_shape_test.json';
+import bench from '../../public/data/runs/p2_36_benchmark.json';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 // ---- formatting
@@ -20,6 +21,48 @@ const sci = (v: number, p = 1) => {
   return Math.abs(e) < 3 ? String(+v.toPrecision(p + 1)) : `${(v / 10 ** e).toFixed(p)} × 10${sup(e)}`;
 };
 const pctp = (v: number, d = 2) => `${(100 * v).toFixed(d)}%`;
+
+// ---- the benchmark (P2-36): one auditable comparison
+type BmLayer = { tv_upper: number; state: string };
+type BmPair = {
+  pair: string[];
+  l1: Record<string, BmLayer>;
+  oracle: Record<string, BmLayer & { e_delta2: number }>;
+  l1_growth_to_target: number | null;
+  oracle_growth_to_target: number | null;
+  oracle_snr_db_for_target: number | null;
+  l1_disc: BmLayer;
+  oracle_disc: BmLayer;
+  tail_share_of_integral: number;
+  achieved_score_test: { tv_achieved?: number; tv_achieved_best_phase?: number };
+  sensitivity?: Record<string, { l1_tv_upper: number; l1_state: string; oracle_tv_upper: number; oracle_state: string }>;
+  fixed_scenes?: { summary: Record<string, { mean: number; se: number }> };
+  verify_line?: { rows: { amplification: number; exact_over_certificate: number | null }[]; floor: number };
+  sigma_profile: { slope_40_70: number | null; outer_over_40m: number };
+};
+type BmCurve = { f_hz: number; l1_tv_upper: number; oracle_tv_upper: number; oracle_disc_tv_upper: number; tail_share: number };
+const bm = bench as unknown as { f_star_hz: number; quiet: Record<string, BmPair>; strong: Record<string, BmPair>; curves: Record<string, BmCurve[]>; finding: string; manifest: { params: { frozen_hash: string } } };
+const bmPairs = Object.keys(bm.strong);
+const bmName: Record<string, string> = {
+  'presence (room)': 'Presence: a room, or none',
+  'presence (L tunnel)': 'Presence: an L-shaped tunnel, or none',
+  'location (6 m)': 'Location: the room, or the room 6 m east',
+  'shape (room or L tunnel)': 'Shape: the room, or the L tunnel',
+};
+const bmN = '30';
+const bmMax = (exc: 'quiet' | 'strong', layer: 'l1' | 'oracle') => Math.max(...bmPairs.map((p) => bm[exc][p][layer][bmN].tv_upper));
+const bmBandL1 = Math.max(...bmPairs.flatMap((p) => bm.curves[p].map((r) => r.l1_tv_upper)));
+const bmBandOr = Math.max(...bmPairs.flatMap((p) => bm.curves[p].map((r) => r.oracle_tv_upper)));
+const bmSnr = Math.min(...bmPairs.map((p) => bm.strong[p].oracle_snr_db_for_target ?? Infinity));
+const bmGrowth = Math.min(...bmPairs.map((p) => bm.strong[p].l1_growth_to_target ?? Infinity));
+const bmSensL1 = Math.max(...bmPairs.flatMap((p) => Object.values(bm.strong[p].sensitivity ?? {}).map((v) => v.l1_tv_upper)));
+const bmFix = bm.strong[bmPairs[0]].fixed_scenes?.summary;
+const bmVer = bm.strong[bmPairs[0]].verify_line?.rows[0]?.exact_over_certificate ?? null;
+const bmTail = Math.max(...bmPairs.map((p) => bm.strong[p].tail_share_of_integral));
+const bmSlope = bm.strong[bmPairs[0]].sigma_profile.slope_40_70;
+const bmAch = (r: BmPair) => r.achieved_score_test.tv_achieved_best_phase ?? r.achieved_score_test.tv_achieved ?? null;
+const stCls = (s: string) => (s === 'near chance' ? 'st-near' : s === 'unresolved' ? 'st-open' : 'st-excl');
+const bmSingleOk = bmMax('strong', 'l1') < 0.9 && bmBandL1 < 0.9;
 
 // ---- the three layers
 type Cert = { case: string; tv_upper: number; tpr_upper_at_fpr_005: number; tight_ceiling_p2_25?: number | null };
@@ -154,6 +197,7 @@ const conc = (r: DRes) => r.over_room / r.elsewhere;
   state="status · proved within a stated model; physical inputs not certified · corrected after review, 30 September 2026"
   index={[
     { id: 'answer', label: 'The answer' },
+    { id: 'benchmark', label: 'The benchmark' },
     { id: 'claims', label: 'Five claims, apart' },
     { id: 'shape', label: 'Shape, bounded' },
     { id: 'boundary', label: 'The boundary' },
@@ -165,24 +209,101 @@ const conc = (r: DRes) => r.over_room / r.elsewhere;
   ]}
 >
   <section id="answer">
-    <h2>Within the model, under the ground’s own trembling, no way of reading one image can reach a useful detection of the bench room; strong shaking close by, known exactly, is not excluded</h2>
+    <h2>{bmSingleOk
+      ? 'Within the model no way of reading one image reaches a useful detection under the ground’s own trembling, nor, in the benchmark, with a lorry beside a shallow room: only a detector told every scatterer’s reflectivity could, at a higher SNR than assumed'
+      : 'Within the model no way of reading one image reaches a useful detection under the ground’s own trembling; with a lorry beside a shallow room the benchmark leaves cases open'}</h2>
     <div class="stat-row">
-      <div class="stat"><span class="value">{pctp(micro.tpr_upper_at_fpr_005, 3)}</span><span class="what">the most any processor could find the room at 5% false alarms, under the regional microseism envelope, the common background included (a loose certificate)</span><span class="src">P2-30 · Theorem C</span></div>
-      <div class="stat"><span class="value">{sci(s0[0].ceiling)}</span><span class="what">detection rate − false-alarm rate, at most, by the tight calculation (the reference covariance taken as the identity)</span><span class="src">P2-25 · Fisher with an explicit remainder</span></div>
-      <div class="stat"><span class="value">{sci(orReg)}</span><span class="what">the same for an oracle told the ground’s exact texture, the shaking and both physical models, under the regional microseisms, whatever the texture ({sci(orAmb)} at the noisiest stations on Earth)</span><span class="src">P2-29 · Theorem D, pulse by pulse</span></div>
-      <div class="stat"><span class="value">{orThin ? tvTxt(orThin.tv_upper) : '—'}</span><span class="what">the oracle’s upper bound for a room under a 5 m roof with a lorry bouncing beside it all pass, the lorry’s motion in both worlds and the scattered wave carried undiminished across the scene: not excluded, unresolved. An upper bound, not a detection</span><span class="src">P2-29 · the unresolved case</span></div>
+      <div class="stat"><span class="value">+{tvTxt(bmMax('quiet', 'l1'))}</span><span class="what">found ≤ false alarms + this, for any way of reading one image, under Giza’s regional microseisms: presence, a 6 m location or shape of a room under a 5 m roof</span><span class="src">P2-36 · per-line certificate</span></div>
+      <div class="stat"><span class="value">+{tvTxt(bmMax('strong', 'l1'))}</span><span class="what">the same with a lorry over a bump 15 m away all pass, its wave in every line’s reference ({tvTxt(bmBandL1)} at the worst frequency of the band; {tvTxt(bmSensL1)} under the tabulated allowances)</span><span class="src">P2-36 · the benchmark</span></div>
+      <div class="stat"><span class="value">+{tvTxt(bmMax('strong', 'oracle'))}</span><span class="what">an oracle told every scatterer’s reflectivity as well (a perfect reference image, which one image does not give), at 30 dB assumed; it reaches 0.9 at {Math.round(bmSnr)} dB. An upper bound, not a detection</span><span class="src">P2-36 · the oracle, pulse by pulse</span></div>
     </div>
     <p class="sub">
-      A detection target of 95% found with 5% false alarms needs the two hypotheses, room and no room, to differ by a total
-      variation of at least 0.9; every processor of the same measurements, tomograms and learned models included, inherits
-      whatever total variation the measurements have. The three layers bound it differently. The certificate is simple and
-      robust: it gives the room’s largest phase to every pixel of the whole image and proves a floor under the reference
-      covariance with the ground’s background motion in it. The tight calculation uses the structure speckle imposes (motion
-      shared by the scene holds nothing) and bounds the finite change with an explicit remainder. The oracle needs no model of
-      the texture at all. All three agree that the ground’s own trembling leaves nothing useful; they differ by orders of
-      magnitude in how little, which is what their different assumptions buy.
+      A detection target of 95% found with 5% false alarms needs the two hypotheses to differ by a total variation of at
+      least 0.9; every processor of the same measurements, tomograms and learned models included, inherits whatever total
+      variation the measurements have. The certificate applied line by line bounds every reader of the one image within
+      fully developed speckle, with each world’s own motion in its reference; the oracle, told the reflectivity too, needs
+      no model of the texture, so it bounds what even a perfect reference image could add. Under the ground’s own
+      trembling both leave nothing useful. With a lorry beside a shallow room the single image still holds too little for
+      95% at 5% ({bmPairs.filter((p) => bm.strong[p].l1[bmN].state === 'near chance').length} of the four questions near chance); what the oracle’s larger bound
+      shows is that a detector told the reflectivity could, at a higher SNR than the 30 dB assumed.
     </p>
     <Routes />
+  </section>
+
+  <section id="benchmark">
+    <h2>{bmSingleOk
+      ? `One auditable comparison: one image under speckle reaches neither presence, a 6 m location nor shape, quiet or with a lorry 15 m away; only a detector told every reflectivity could, above ${Math.round(bmSnr)} dB`
+      : 'One auditable comparison: presence, location and shape, bounded and achieved, quiet and with a lorry 15 m away'}</h2>
+    <p class="sub">
+      Four worlds identical but for the cavity: none; a room 6 m on a side under a 5 m roof; an L-shaped tunnel at the same
+      depth; the room 6 m east. The same source, scatterers and noise law in each; the whole 5 km image observed; the
+      solver’s field within 70 m, an assumed envelope beyond (a surface wave carried to the image’s edge without
+      attenuation, {Math.round(100 * bmTail)}% of the signal). Quiet: Giza’s regional microseisms, expected over the field.
+      Favourable: a lorry over a bump 15 m west, its FTA level held at {Math.round(bm.f_star_hz)} Hz for the whole pass (the
+      frequency fixed by a rule before the bounds). Specification: <a href="https://github.com/ejhong/sar/blob/main/BENCHMARK.md">BENCHMARK.md</a>; run P2-36.
+    </p>
+    <table class="data compact">
+      <thead><tr><th>which of the two?</th><th>quiet: any reader, one image</th><th>quiet: oracle</th><th>lorry: any reader, one image</th><th>lorry: oracle, {bmN} dB</th><th>oracle reaches 0.9 at</th><th>achieved, lorry: score test</th></tr></thead>
+      <tbody>
+        {bmPairs.map((p) => {
+          const q = bm.quiet[p], st = bm.strong[p];
+          return (
+            <tr>
+              <td>{bmName[p] ?? p}</td>
+              <td class={stCls(q.l1[bmN].state)}>{tvTxt(q.l1[bmN].tv_upper)}<br /><span class="dim">{q.l1[bmN].state}</span></td>
+              <td class={stCls(q.oracle[bmN].state)}>{tvTxt(q.oracle[bmN].tv_upper)}<br /><span class="dim">{q.oracle[bmN].state}</span></td>
+              <td class={stCls(st.l1[bmN].state)}>{tvTxt(st.l1[bmN].tv_upper)}<br /><span class="dim">{st.l1[bmN].state}; motion ×{st.l1_growth_to_target != null ? (st.l1_growth_to_target < 100 ? st.l1_growth_to_target.toFixed(0) : sci(st.l1_growth_to_target)) : '—'} to reach 0.9</span></td>
+              <td class={stCls(st.oracle[bmN].state)}>{tvTxt(st.oracle[bmN].tv_upper)}<br /><span class="dim">{st.oracle[bmN].state}</span></td>
+              <td>{st.oracle_snr_db_for_target != null ? `${Math.round(st.oracle_snr_db_for_target)} dB` : '—'}</td>
+              <td>{tvTxt(bmAch(st))}<br /><span class="dim">within 70 m</span></td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+    <p class="note">
+      Detection rate − false-alarm rate, at most (found ≤ false alarms + the entry, at every operating point); near chance
+      below 0.05, 95% at 5% excluded below 0.9, unresolved above. “Any reader, one image”: the per-line certificate, told
+      the excitation and both worlds’ whole motion but not the speckle, each along-track line’s reference holding the
+      lorry’s own wave and the receiver noise (the whole-image floor failed there; one line’s floor stays near one); it
+      bounds every method that reads the single image, the published one included. The oracle is told every scatterer’s
+      reflectivity as well, as a perfect reference image would tell it; its bound failing is a strong exclusion, its bound
+      succeeding shows only that a privileged detector could. SNR {bmN} dB is assumed (the acquisition’s calibration is not
+      in this repository); the single-image layer barely depends on it. Over the whole band the single-image bound is at
+      most {tvTxt(bmBandL1)} (the oracle’s {tvTxt(bmBandOr)}); under the tabulated allowances (grid, tail ×2 and ×5,
+      attenuation) at most {tvTxt(bmSensL1)}; the lorry’s motion would have to grow {bmGrowth < 100 ? bmGrowth.toFixed(0) : sci(bmGrowth)} times.
+      Checks: pulse by pulse on fixed scenes the coherent echo difference is {bmFix ? `${bmFix.common_x1.mean.toFixed(3)} ± ${bmFix.common_x1.se.toFixed(3)}` : '—'} of
+      the ensemble formula ({bmFix ? `${bmFix.common_x10.mean.toFixed(3)}` : '—'} with the lorry’s wave ten times larger); on one line of the model the exact
+      divergence is {bmVer != null ? bmVer.toFixed(2) : '—'} of its certificate; the scattered wave’s energy per metre of radius from 40 to 70 m
+      scales as r^{bmSlope != null ? bmSlope.toFixed(1) : '—'} (flat for an unattenuated surface wave). The score test, told the pattern, is an implemented
+      statistic’s weak-signal performance, not a bound.
+    </p>
+    <div class="grid-2 charts">
+      <LineChart
+        title={`${bmName[bmPairs[0]]}, with the lorry, across the FTA band`}
+        series={[
+          { name: 'any reader, one image (per-line certificate)', x: bm.curves[bmPairs[0]].map((r) => r.f_hz), y: bm.curves[bmPairs[0]].map((r) => r.l1_tv_upper), color: 'var(--verdigris)', width: 1.8 },
+          { name: `oracle, ${bmN} dB, whole image`, x: bm.curves[bmPairs[0]].map((r) => r.f_hz), y: bm.curves[bmPairs[0]].map((r) => r.oracle_tv_upper), color: 'var(--cinnabar)', width: 1.6 },
+          { name: 'oracle, within 70 m only', x: bm.curves[bmPairs[0]].map((r) => r.f_hz), y: bm.curves[bmPairs[0]].map((r) => r.oracle_disc_tv_upper), color: 'var(--cinnabar)', dash: '4 3', width: 1.2 },
+          { name: '95% at 5% (0.9)', x: [8, 100], y: [0.9, 0.9], color: 'var(--muted)', dash: '2 3', width: 1 },
+        ]}
+        xLabel="frequency held all pass, Hz"
+        yLabel="detection − false alarm, at most"
+        yDomain={[0, 1]}
+        height={210}
+        directLabels={false}
+      />
+      <div><table class="data compact">
+        <thead><tr><th>layer</th><th>told</th><th>not told</th><th>kind</th></tr></thead>
+        <tbody>
+          <tr><td>Any reader, one image</td><td>the excitation, both worlds’ whole motion, the noise level</td><td>the speckle</td><td>proved upper bound within the model</td></tr>
+          <tr><td>Oracle</td><td>all that, and every scatterer’s reflectivity</td><td>which world; the noise</td><td>proved upper bound, averaged over scenes</td></tr>
+          <tr><td>Oracle’s test, fixed scenes</td><td>as the oracle</td><td>as the oracle</td><td>achieved: exact for each fixed scene</td></tr>
+          <tr><td>Score test</td><td>the difference’s pattern and timing</td><td>the speckle</td><td>achieved, weak-signal, within 70 m</td></tr>
+          <tr><td>The published method</td><td>nothing about the cavity</td><td>everything</td><td>achieved, read blind (the shape test, below, quiet case)</td></tr>
+        </tbody>
+      </table></div>
+    </div>
   </section>
 
   <section id="claims">
@@ -196,9 +317,9 @@ const conc = (r: DRes) => r.over_room / r.elsewhere;
     <table class="data compact">
       <thead><tr><th>claim</th><th>what bounds or tests it</th><th>where it stands</th></tr></thead>
       <tbody>
-        <tr><td>Presence: a room here or not</td><td>the three layers below, which bound every processor within the model</td><td>under the ground’s own trembling, no useful detection ({pctp(micro.tpr_upper_at_fpr_005, 3)} found at 5% false alarms, at most); under strong shaking close by, known exactly, not excluded: unresolved</td></tr>
-        <tr><td>Horizontal location</td><td>the same bounds: telling a room here from a room there is a test between two worlds, and TV(A, B) ≤ TV(A, none) + TV(none, B)</td><td>bounded wherever presence is; in the shape test (P2-31, below), where the data hold a layout (amplified to 20 rad) a reference detector told the shaking places it {m1(stPos?.reference.median_location_error_m)} from its centre, but at 2 rad cannot find it by scanning; the published picture read blind centres {m1(stPos?.published_blind.median_centroid_error_m)} off even at 20 rad, the controls {m1(stNum('control_centroid_error_blind_m'))}</td></tr>
-        <tr><td>Shape: a room, an L-shaped or a branching tunnel</td><td>the same inequality between any two layouts; the shape test (P2-31) on physically generated scenes, scored blind</td><td>bounded under the ground’s own trembling (P2-32); in the shape test the reference detector names {pc0(stPos?.reference.shape_accuracy)} of layouts at 20 rad and {pc0(stMid?.reference.shape_accuracy)} at 2 rad when told where to look; the published picture read blind {named(stPos?.published_blind ?? ({} as StR))} at 20 rad, chance at the real level</td></tr>
+        <tr><td>Presence: a room here or not</td><td>the three layers below, which bound every processor within the model</td><td>under the ground’s own trembling, no useful detection ({pctp(micro.tpr_upper_at_fpr_005, 2)} found at 5% false alarms, at most, for the bench room); with a lorry beside a room under a 5 m roof, one image holds at most {tvTxt(bm.strong['presence (room)'].l1[bmN].tv_upper)} (an L tunnel {tvTxt(bm.strong['presence (L tunnel)'].l1[bmN].tv_upper)}); only a detector told the reflectivity could reach 95% at 5%, above {Math.round(bm.strong['presence (room)'].oracle_snr_db_for_target ?? 0)} dB (the benchmark)</td></tr>
+        <tr><td>Horizontal location</td><td>the same bounds: telling a room here from a room there is a test between two worlds, and TV(A, B) ≤ TV(A, none) + TV(none, B)</td><td>bounded wherever presence is; in the benchmark, the room or the same room 6 m east, with a lorry beside it: one image holds at most {tvTxt(bm.strong['location (6 m)'].l1[bmN].tv_upper)}, so any estimate’s mean error over the pair is at least {(3 * (1 - bm.strong['location (6 m)'].l1[bmN].tv_upper)).toFixed(1)} m of the 3 m that guessing leaves; in the shape test (P2-31, below), where the data hold a layout (amplified to 20 rad) a reference detector told the shaking places it {m1(stPos?.reference.median_location_error_m)} from its centre, but at 2 rad cannot find it by scanning; the published picture read blind centres {m1(stPos?.published_blind.median_centroid_error_m)} off even at 20 rad, the controls {m1(stNum('control_centroid_error_blind_m'))}</td></tr>
+        <tr><td>Shape: a room, an L-shaped or a branching tunnel</td><td>the same inequality between any two layouts; the shape test (P2-31) on physically generated scenes, scored blind</td><td>bounded under the ground’s own trembling (P2-32); in the benchmark, the room or the L tunnel with a lorry beside them, one image at most {tvTxt(bm.strong['shape (room or L tunnel)'].l1[bmN].tv_upper)}; in the shape test the reference detector names {pc0(stPos?.reference.shape_accuracy)} of layouts at 20 rad and {pc0(stMid?.reference.shape_accuracy)} at 2 rad when told where to look; the published picture read blind {named(stPos?.published_blind ?? ({} as StR))} at 20 rad, chance at the real level</td></tr>
         <tr><td>Relative vertical geometry</td><td>whether deeper parts are drawn deeper, whatever the scale</td><td>not shown: the published axis is the registration’s frequency (P2-06, P2-28)</td></tr>
         <tr><td>Absolute depth</td><td>the axis’s calibration, and whether different depths leave different marks</td><td>uncalibrated and aliased in the published method; physically, in this model, the mark’s shape carries depth (below), so a reader that could detect could also tell depths apart</td></tr>
       </tbody>
@@ -235,7 +356,7 @@ const conc = (r: DRes) => r.over_room / r.elsewhere;
       TV(A, B) ≤ TV(A, none) + TV(none, B), each layout certified against the same reference, since subtracting two layouts’
       motions does not remove the reference covariance; the oracle uses the difference itself, where, told the reflectivity
       and the background, it is exact. The loose certificate with the background caps every pair at
-      {' '}{pctp(shMaxCert, 3)} found at 5% false alarms under the microseisms. “Signal over detection’s”: how many times the signal
+      {' '}{pctp(shMaxCert, 1)} found at 5% false alarms under the microseisms. “Signal over detection’s”: how many times the signal
       that detects the first layout is needed to tell the two apart. Shallow, bench-scale layouts in uniform rock: more
       favourable than anything claimed, and only these.
     </p>
@@ -272,13 +393,14 @@ const conc = (r: DRes) => r.over_room / r.elsewhere;
   </section>
 
   <section id="boundary">
-    <h2>The boundary: the ground’s own trembling rules out useful recovery within the model; strong, known shaking close by does not, and deserves experiments</h2>
+    <h2>The boundary: the ground’s own trembling rules out useful recovery within the model, and in the benchmark so does a lorry beside a shallow room for one image; a reference image at high SNR, bright points and unspecified mechanisms stay open</h2>
     <table class="data compact">
       <thead><tr><th>conditions</th><th>presence</th><th>location and shape</th><th>absolute depth</th></tr></thead>
       <tbody>
-        <tr><td>Giza’s regional trembling, any reader, one image</td><td>excluded: ≤ {pctp(micro.tpr_upper_at_fpr_005, 3)} found at 5% (certificate), {sci(orReg)} for the oracle</td><td>excluded: each pair ≤ {pctp(shMaxCert, 3)} at 5%</td><td>excluded with presence; aliased in the published method</td></tr>
+        <tr><td>Giza’s regional trembling, any reader, one image</td><td>excluded: ≤ {pctp(micro.tpr_upper_at_fpr_005, 2)} found at 5% (certificate), {sci(orReg)} for the oracle</td><td>excluded: each pair ≤ {pctp(shMaxCert, 1)} at 5%</td><td>excluded with presence; aliased in the published method</td></tr>
         <tr><td>The noisiest ground on Earth</td><td>excluded (tight {sci(s0[1].ceiling)})</td><td>excluded with presence</td><td>excluded with presence</td></tr>
-        <tr><td>A lorry beside a room all pass, known exactly</td><td>unresolved: the oracle’s upper bound reaches {tvTxt(orThin?.tv_upper)} for a room under a 5 m roof ({tvTxt(orBenchTruck?.tv_upper)} for the bench room, which still excludes 95% at 5%); large bounds, not demonstrated detections, and they rest on how far the scattered wave carries</td><td>{shWorstDyn ? `unresolved: the oracle’s upper bound reaches ${shWorstDyn.oracle_tv.toFixed(2)} for the hardest pair` : 'to compute'}</td><td>about as hard as detection in this model ({orc.depth.signal_factor_depth_over_detection.toFixed(1)}× its signal, P2-29)</td></tr>
+        <tr><td>A lorry beside a room all pass, known exactly, one image</td><td>excluded in the benchmark: ≤ {tvTxt(bm.strong['presence (room)'].l1[bmN].tv_upper)} for a room under a 5 m roof ({bm.strong['presence (room)'].l1[bmN].state}), ≤ {tvTxt(bm.strong['presence (L tunnel)'].l1[bmN].tv_upper)} for an L tunnel ({bm.strong['presence (L tunnel)'].l1[bmN].state}); the scattered wave carried to the image’s edge undiminished</td><td>excluded in the benchmark: ≤ {tvTxt(bm.strong['location (6 m)'].l1[bmN].tv_upper)} (6 m), ≤ {tvTxt(bm.strong['shape (room or L tunnel)'].l1[bmN].tv_upper)} (shape)</td><td>about as hard as detection in this model ({orc.depth.signal_factor_depth_over_detection.toFixed(1)}× its signal, P2-29)</td></tr>
+        <tr><td>The same, with a perfect reference image (the oracle)</td><td>{tvTxt(bm.strong['presence (room)'].oracle[bmN].tv_upper)} at 30 dB assumed, unresolved above {Math.round(bm.strong['presence (room)'].oracle_snr_db_for_target ?? 0)} dB; P2-29’s plane wave at the worst of four sides gives {tvTxt(orThin?.tv_upper)} under a 5 m roof, {tvTxt(orBenchTruck?.tv_upper)} for the bench room. Upper bounds, not detections</td><td>{tvTxt(bm.strong['location (6 m)'].oracle[bmN].tv_upper)} and {tvTxt(bm.strong['shape (room or L tunnel)'].oracle[bmN].tv_upper)} at 30 dB; {shWorstDyn ? `${shWorstDyn.oracle_tv.toFixed(2)} for P2-32’s hardest pair` : ''}</td><td>not computed</td></tr>
         <tr><td>Any mechanism with gain, not yet specified</td><td colspan="3">not covered: it must state the motion it adds over the room (source, footprint, amplitude and phase, losses, duration); the requirement curve above says how much is needed</td></tr>
       </tbody>
     </table>
@@ -290,7 +412,7 @@ const conc = (r: DRes) => r.over_room / r.elsewhere;
   </section>
 
   <section id="layers">
-    <h2>Three layers, one answer for the ground’s own trembling; under strong shaking only the oracle is a valid bound</h2>
+    <h2>Three layers, one answer for the ground’s own trembling; under strong shaking the whole-image references fail, and the benchmark’s per-line certificate replaces them</h2>
     <table class="data compact">
       <thead><tr><th>shaking</th><th>level</th><th>certificate (P2-30)</th><th>tight (P2-25)</th><th>oracle (P2-29)</th></tr></thead>
       <tbody>
@@ -305,10 +427,11 @@ const conc = (r: DRes) => r.over_room / r.elsewhere;
       (checked pulse by pulse, P2-25); the oracle holds for any texture with independent phases, at {orc.manifest.params.snr_db} dB
       per resolution cell (above the brightest natural ground over ICEYE’s best Dwell noise floor, {orc.manifest.params.nesz_best_db} dB).
       The ambient levels are regional, not upper limits at the pyramids. Under traffic or a lorry the ground without a room
-      already moves with the source, so the certificate’s and the tight bound’s reference (no such motion) is a restricted
-      surrogate there and those entries are not bounds; the oracle, whose mean echoes differ only by the added motion, stays
-      valid, with the scattered wave carried undiminished across the scene at the worst of four sampled sides and the grid
-      checks’ allowances. On small test images the best test comes within {' '}{detOver.toFixed(1)} times of the tight
+      already moves with the source, so these rows’ certificate and tight bound (no such motion in the reference) are
+      restricted surrogates, not bounds; the whole image gives no floor with the lorry’s wave in it, but one along-track
+      line does, and the benchmark above bounds a single image that way. The oracle, whose mean echoes differ only by the
+      added motion, stays valid, with the scattered wave carried undiminished across the scene at the worst of four sampled
+      sides and the grid checks’ allowances. On small test images the best test comes within {' '}{detOver.toFixed(1)} times of the tight
       bound: these are bounds, not what a detector achieves.
     </p>
   </section>
@@ -350,7 +473,12 @@ const conc = (r: DRes) => r.over_room / r.elsewhere;
         noise’s covariance and means that differ by the echo of the room-specific motion alone: TV = erf(√d/2) exactly, d the
         noise-normalised energy of that difference. Averaged over what the oracle was told (only independent uniform phases
         needed), TV ≤ erf(√(E d)/2); the background motion cancels; 95% at 5% needs E d ≥ {fc.requirements.oracle_energy_necessary_for_tv_090.toFixed(2)}.
-        Checked against pulse-by-pulse echoes on the real dwell: {orc.raw_echo_check.summary.background_x1.mean.toFixed(3)} ± {orc.raw_echo_check.summary.background_x1.se.toFixed(3)} of the formula.</p>
+        Checked against pulse-by-pulse echoes on the real dwell: {orc.raw_echo_check.summary.background_x1.mean.toFixed(3)} ± {orc.raw_echo_check.summary.background_x1.se.toFixed(3)} of the formula.
+        The bound is on the average over scenes; for one scene, by Markov’s inequality, d ≤ t E d with probability at least
+        1 − 1/t (the spread measured on fixed scenes is a few per cent, P2-29, P2-36). Every realisation of a random
+        excitation, rather than its expectation, costs at most √(2n) in amplitude for n equally loud independent directions.
+        A mixture of alternatives (any prior over rooms and layouts) is no easier to detect than its hardest member; N
+        independent images raise the divergence N times, TV at most √N times.</p>
       </div>
       <div class="note-card">
         <span class="tag">E · depth</span>
@@ -388,18 +516,17 @@ const conc = (r: DRes) => r.over_room / r.elsewhere;
       <LineChart
         title="The least room-specific line-of-sight motion for 95% found at 5% false alarms, against footprint"
         series={[
-          ...rqMain.map((r, i) => ({ name: `${r.f_hz} Hz, a smooth Gaussian pattern (P2-27)`, x: r.exact.map((e) => e.area_half_m2), y: r.exact.map((e) => e.D_necessary_m['0.9']), color: rqColours[i], width: 1.8 })),
-          { name: 'any pattern, the oracle with receiver noise: valid under any shaking', x: anyCurve(Eor).map((c) => c.A), y: anyCurve(Eor).map((c) => c.D), color: 'var(--text)', dash: '2 3', width: 1.3 },
-          { name: 'any pattern, the certificate with Giza’s background: quiet ground only', x: anyCurve(Emin).map((c) => c.A), y: anyCurve(Emin).map((c) => c.D), color: 'var(--muted)', dash: '4 3', width: 1.3 },
+          ...rqMain.filter((r) => r.f_hz === 0.2 || r.f_hz === 80).map((r, i) => ({ name: `${r.f_hz} Hz, smooth pattern`, x: r.exact.map((e) => e.area_half_m2), y: r.exact.map((e) => e.D_necessary_m['0.9']), color: rqColours[i === 0 ? 0 : 4], width: 1.8 })),
+          { name: 'any pattern, oracle', x: anyCurve(Eor).map((c) => c.A), y: anyCurve(Eor).map((c) => c.D), color: 'var(--text)', dash: '2 3', width: 1.3 },
+          { name: 'any pattern, certificate (quiet)', x: anyCurve(Emin).map((c) => c.A), y: anyCurve(Emin).map((c) => c.D), color: 'var(--muted)', dash: '4 3', width: 1.3 },
         ]}
         xLabel="footprint, m²"
-        yLabel="m, line of sight"
+        yLabel="peak displacement, m, line of sight"
         logX
         logY
         yFormat="exp"
         height={240}
-        directLabels={false}
-        caption="Solid: exact within the model for one smooth pattern (P2-27), per frequency. Dotted and dashed: every pattern and time history, by the displacement integral, drawn as the temporal peak displacement of a motion filling the footprint evenly (a spatial rms of temporal peaks), the same at every frequency. Below a line the bound excludes 95% at 5%; between a dotted line and a solid one only the smooth pattern is excluded. Crossing a line shows neither detectability nor usefulness."
+        caption="Solid: exact within the model for one smooth (Gaussian) pattern (P2-27), at 0.2 and 80 Hz; 2, 5 and 20 Hz lie between them in the run (20 Hz almost on the 80 Hz line). Dotted (the oracle with receiver noise, valid under any shaking) and dashed (the certificate with Giza’s background, quiet ground only): every pattern and time history, by the displacement integral, drawn as the temporal peak displacement of a motion filling the footprint evenly (a spatial rms of temporal peaks), the same at every frequency. Below a line the bound excludes 95% at 5%; between a dotted line and a solid one only the smooth pattern is excluded. Crossing a line shows neither detectability nor usefulness."
       />
       <div class="note-card">
         <span class="tag">conditional</span>
@@ -542,6 +669,15 @@ const conc = (r: DRes) => r.over_room / r.elsewhere;
   .dim {
     color: var(--muted);
     font-size: 0.72rem;
+  }
+  td.st-near {
+    color: var(--verdigris);
+  }
+  td.st-excl {
+    color: var(--text);
+  }
+  td.st-open {
+    color: var(--cinnabar);
   }
   .note {
     font-size: 0.82rem;

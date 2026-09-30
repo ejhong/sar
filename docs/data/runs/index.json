@@ -2769,6 +2769,201 @@
   },
   "command": "uv run python experiments/p2_35_rungs_and_rooms.py"
  },
+ "p2_36_benchmark": {
+  "id": "p2_36_benchmark",
+  "title": "One auditable comparison: presence, location and shape, bounds beside achieved",
+  "date": "2026-09-30",
+  "started_utc": "2026-09-30T20:33:03+00:00",
+  "runtime_s": 82.9,
+  "commit": "1bf937d+",
+  "params": {
+   "frozen": {
+    "worlds": {
+     "W0": [],
+     "WA": [
+      [
+       [
+        0.0,
+        0.0,
+        -8.0
+       ],
+       [
+        6.0,
+        6.0,
+        6.0
+       ]
+      ]
+     ],
+     "WB": [
+      [
+       [
+        -5.0,
+        0.0,
+        -6.25
+       ],
+       [
+        18.0,
+        2.5,
+        2.5
+       ]
+      ],
+      [
+       [
+        2.75,
+        7.375,
+        -6.25
+       ],
+       [
+        2.5,
+        17.25,
+        2.5
+       ]
+      ]
+     ],
+     "WA6": [
+      [
+       [
+        6.0,
+        0.0,
+        -8.0
+       ],
+       [
+        6.0,
+        6.0,
+        6.0
+       ]
+      ]
+     ]
+    },
+    "pairs": {
+     "presence (room)": [
+      "W0",
+      "WA"
+     ],
+     "presence (L tunnel)": [
+      "W0",
+      "WB"
+     ],
+     "location (6 m)": [
+      "WA",
+      "WA6"
+     ],
+     "shape (room or L tunnel)": [
+      "WA",
+      "WB"
+     ]
+    },
+    "strong_source": {
+     "kind": "vertical point force",
+     "east_m": -15.0,
+     "north_m": 0.0,
+     "level": "FTA truck over a bump, 15 m"
+    },
+    "solver": {
+     "extent": [
+      [
+       -100.0,
+       100.0
+      ],
+      [
+       -100.0,
+       100.0
+      ],
+      [
+       -100.0,
+       3.0
+      ]
+     ],
+     "h": 1.0,
+     "pml_m": 20.0,
+     "half_m": 70.0,
+     "record_s": 0.5,
+     "f_top": 120.0,
+     "record_every": 4
+    },
+    "r_obs_m": 39.0,
+    "snr_db_nominal": 30.0,
+    "snr_db_sweep": [
+     20.0,
+     30.0,
+     40.0,
+     50.0,
+     60.0
+    ],
+    "acquisition": "giza-20250827",
+    "rock": "limestone-mokattam",
+    "analysis": {
+     "f_step_hz": 1.0,
+     "recorded_disc_m": 70.0,
+     "tail_ring_m": [
+      55.0,
+      70.0
+     ],
+     "azimuth_bins": 36,
+     "quiet_disc_m": 58.0,
+     "quiet_ring_m": [
+      46.0,
+      58.0
+     ],
+     "quiet_energy_exponent": 2.8,
+     "directions_quiet": 24,
+     "near_chance_tv": 0.05,
+     "target_tv": 0.9,
+     "check_prf_hz": 400.0,
+     "check_realisations": 12,
+     "check_patch_m": [
+      6.0,
+      1.5
+     ],
+     "verify_line_px": 2048,
+     "verify_amplifications": [
+      1.0,
+      10.0,
+      100.0,
+      1000.0
+     ],
+     "grid_allowance_amplitude": 0.11,
+     "tail_multipliers": [
+      1.0,
+      2.0,
+      5.0
+     ],
+     "attenuation_q": [
+      50.0,
+      20.0
+     ]
+    }
+   },
+   "frozen_hash": "1c58de9ffe7c",
+   "image_frame": {
+    "dg": 0.432448,
+    "half_along_m": 2500.0,
+    "n_along": 113692,
+    "n_band_along": 98843,
+    "n_lines": 11562
+   },
+   "pass_s": 24.485484,
+   "microseism_los_peak_envelope_m": 7.158e-08,
+   "microseism_envelope_source": "P2-30 background_included (three regional harmonics)",
+   "quiet_level": {
+    "case": "Giza microseisms, measured",
+    "rms_velocity_m_s": 4.9e-08,
+    "f_hz": 0.2,
+    "phase_speed_m_s": 3000,
+    "hv": 0.667438,
+    "strain_amplitude": 1.542e-11
+   },
+   "snr_status": "assumed: sigma0 about 0 dB over ICEYE Dwell best NESZ -26.7 dB; the acquisition's calibration and noise records are not in this repository"
+  },
+  "environment": {
+   "python": "3.11.15",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 4,
+   "cpus": 4
+  },
+  "command": "uv run python experiments/p2_36_benchmark.py"
+ },
  "lab_khafre": {
   "id": "lab_khafre",
   "title": "The gated reconstruction across Khafre, from the 2022 image",
