@@ -82,5 +82,75 @@
   "time_space_m_s": 1.2386057771957553,
   "aspect_span_deg": 17.68551422502812
  },
- "about": "Acquisition record for the Phase 2 simulator, read from the product metadata by sim/experiments/p2_01_geometry.py. Imagery is not included."
+ "about": "Acquisition record for the Phase 2 simulator, read from the product metadata by sim/experiments/p2_01_geometry.py. Imagery is not included.",
+ "radiometry": {
+  "about": "Written by sim/katabasis/compose/acquisition_radiometry.py from the product and its delivery XMLs.",
+  "product": {
+   "calibration_factor": 0.00010183875772801176,
+   "range_spread_comp_flag": 1,
+   "ant_elev_corr_flag": 0,
+   "antenna_pattern_compensation": [
+    [
+     0.0
+    ]
+   ],
+   "sample_precision": "float32",
+   "window_function_azimuth": "NONE",
+   "window_function_range": "NONE",
+   "incidence_near": 20.562030293702477,
+   "incidence_center": 20.805111922042048,
+   "incidence_far": 21.047507869500684,
+   "avg_scene_height": 71.6567153930664,
+   "processor_version": 1.11,
+   "spec_version": 2.4,
+   "product_name": "ICEYE_X33_SLC_SLEDF_951562307_20250827T202654",
+   "fsl_compensation": {
+    "samples": 11562,
+    "all_zero": true
+   },
+   "local_incidence_angle_deg": {
+    "first": 20.562030293702477,
+    "last": 21.047507869500684,
+    "samples": 11562
+   }
+  },
+  "delivery": {
+   "files": [
+    "ICEYE_X33_SICD_SLEDF_951562307_20250827T202654.xml",
+    "ICEYE_X33_VID_SLEDF_951562307_20250827T202654.xml",
+    "ICEYE_X33_SLC_SLEDF_951562307_20250827T202654.xml",
+    "ICEYE_X33_CSI_SLEDF_951562307_20250827T202654.xml"
+   ],
+   "sicd_radiometric": {
+    "RCSSFPoly": 3.8035646388401798e-06,
+    "SigmaZeroSFPoly": 3.6170124654242136e-05,
+    "BetaZeroSFPoly": 0.00010183829234599658,
+    "GammaZeroSFPoly": 3.869286527475515e-05,
+    "NoiseLevel_present": false
+   },
+   "slc_xml_calibration_factor": 0.00010183875772801176,
+   "slc_xml_noise_fields": []
+  },
+  "beta0": "beta0 = calibration_factor x (I^2 + Q^2); sigma0 = beta0 x sin(incidence) (ICEYE); the product sets range_spread_comp_flag and leaves antenna_pattern_compensation and fsl_compensation at zero",
+  "noise_floor": {
+   "in_product": false,
+   "note": "No noise-floor field in the product: no NESZ in the HDF5 or the SLC XML, and no Radiometric/NoiseLevel in the SICD XML where the delivery has one.",
+   "specification": {
+    "nesz_db": [
+     -18.0,
+     -15.0
+    ],
+    "source": "ICEYE Product Documentation 6.0.0, Product Specification, 2. Imaging Modes, Table 2-11 (Dwell and Dwell Fine): \"Noise Equivalent Sigma-Zero [dBm2/m2]: -18 to -15\" (scene-centre values)"
+   },
+   "measured_upper_bound": {
+    "cell_m": 10.0,
+    "cells": 33901,
+    "sigma0_db_min": -11.2224295119575,
+    "sigma0_db_p0_1": -10.860807837056248,
+    "sigma0_db_p1": -10.04692552797962,
+    "sigma0_db_median": -5.344088963809911,
+    "note": "sigma0 = calibration_factor x mean |z|^2 x sin(local incidence), over 10 m cells of the Giza site in the image; the darkest cells hold the noise floor plus any signal left, so the noise floor is at most their level"
+   }
+  }
+ }
 }

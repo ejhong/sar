@@ -32,3 +32,5 @@ shots/
 # experiments built on private correspondence: kept local until the owner clears them
 sim/private/
 sim/results/p2_10_*/
+# the Khafre power maps read from the ICEYE products (a few hundred kB each), kept for the cloud
+!sites/acquisitions/*.npz

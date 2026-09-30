@@ -46,6 +46,9 @@ def geometry(name):
         rec = g.record()
         rec['about'] = ('Acquisition record for the Phase 2 simulator, read from the product metadata by '
                         'sim/experiments/p2_01_geometry.py. Imagery is not included.')
+        prior = RECORDS / f'{name}.json'
+        if prior.exists() and 'radiometry' in (old := json.loads(prior.read_text())):
+            rec['radiometry'] = old['radiometry']          # written by katabasis.compose.acquisition_radiometry
         (RECORDS / f'{name}.json').write_text(json.dumps(rec, indent=1))
         return g, 'product'
     return DwellGeometry.from_record(name), 'record'
