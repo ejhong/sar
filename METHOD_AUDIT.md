@@ -663,7 +663,7 @@ investigation's record, and what it leaves open follow.
     realisations through a bound linear in each line's phase energy, every pair is within 10^-6 of chance. Checks: the
     exact divergence on lines of the model is 0.12 to 0.18 of the certificate; pulse by pulse on fixed scenes the
     coherent echo difference is 0.994 +- 0.006 of the ensemble formula, the same with the lorry's wave ten times larger.
-    Achieved: the score test implemented on synthesised images reaches its predicted AUC (0.94 against 0.93, the
+    Achieved: the score test implemented on synthesised images reaches its predicted AUC (0.96 against 0.93, the
     difference amplified 800 times; chance at the real level). Scope: five layouts, one geology, the declared excitation,
     fully developed speckle (bright points only under the oracle).
 
@@ -958,8 +958,11 @@ branch), and the desktop's radiometry for both Giza passes (sites/acquisitions, 
   field within 70 m, the realistic attenuation (Q = 50) and the envelope side by side; the band's largest value is the
   largest sampled (every 2 Hz), not a proved maximum.
 - **Achieved against predicted.** The score test's Monte Carlo now uses one noise law for every image (its variance
-  fixed once from a separate ground), a 5% threshold set on 24 calibration grounds and the performance read on 24 + 24
-  disjoint grounds; the Fisher-information numbers are labelled predictions.
+  fixed once from a separate ground), a 5% threshold set on 200 calibration grounds (a first rerun with 24 gave 21%
+  false alarms on the evaluation grounds: too few to pin a 5% threshold) and the performance read on 60 + 60 disjoint
+  grounds, where the false alarms came out at 5%; with the difference amplified 800 times it finds 78% (predicted 67%),
+  AUC 0.96 (predicted 0.93), and at the real level it is at chance within sampling error; the Fisher-information
+  numbers are labelled predictions.
 - **Like for like.** The case earlier runs left open was a 10 m room under a plane wave; the benchmark's room is 6 m
   beside a point source. The 10 m room is now the benchmark's fifth world.
 - **Scope.** Five layouts, one geology, the declared excitation, fully developed speckle: a shallow room is not by itself

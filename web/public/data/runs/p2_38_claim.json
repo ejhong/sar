@@ -3,9 +3,9 @@
   "id": "p2_38_claim",
   "title": "The claim computed: the structure announced 1,220 m under Khafre",
   "date": "2026-09-30",
-  "started_utc": "2026-09-30T22:29:46+00:00",
-  "runtime_s": 7.2,
-  "commit": "914a473+",
+  "started_utc": "2026-09-30T23:37:57+00:00",
+  "runtime_s": 6.7,
+  "commit": "6f2fff5",
   "params": {
    "structure": {
     "centre": [

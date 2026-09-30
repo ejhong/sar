@@ -3,9 +3,9 @@
   "id": "p2_36_benchmark",
   "title": "One auditable comparison: presence, location and shape, bounds beside achieved",
   "date": "2026-09-30",
-  "started_utc": "2026-09-30T21:58:33+00:00",
-  "runtime_s": 1817.3,
-  "commit": "914a473+",
+  "started_utc": "2026-09-30T22:29:55+00:00",
+  "runtime_s": 4081.8,
+  "commit": "6f2fff5",
   "params": {
    "frozen": {
     "worlds": {
@@ -1847,35 +1847,35 @@
      -1.5,
      -0.5
     ],
-    "calibration_grounds": 24,
-    "evaluation_grounds_each": 24,
+    "calibration_grounds": 200,
+    "evaluation_grounds_each": 60,
     "noise_sd": 0.224021,
     "rows": [
      {
       "amplification": 1.0,
-      "auc_achieved": 0.529514,
+      "auc_achieved": 0.553056,
       "auc_predicted": 0.500734,
-      "found_at_threshold_achieved": 0.083333,
-      "false_alarms_at_threshold_achieved": 0.208333,
+      "found_at_threshold_achieved": 0.1,
+      "false_alarms_at_threshold_achieved": 0.05,
       "found_at_005_predicted": 0.050269,
       "deflection_predicted": 0.002604,
       "tv_predicted": 0.001039,
       "certificate_tv_upper_patch": 0.00408,
       "sign": 1.0,
-      "mean_shift_over_sd": 0.088329
+      "mean_shift_over_sd": 0.229637
      },
      {
       "amplification": 800.0,
-      "auc_achieved": 0.940972,
+      "auc_achieved": 0.963333,
       "auc_predicted": 0.929602,
-      "found_at_threshold_achieved": 0.875,
-      "false_alarms_at_threshold_achieved": 0.208333,
+      "found_at_threshold_achieved": 0.783333,
+      "false_alarms_at_threshold_achieved": 0.05,
       "found_at_005_predicted": 0.669323,
       "deflection_predicted": 2.082899,
       "tv_predicted": 0.702333,
       "certificate_tv_upper_patch": 1.0,
       "sign": 1.0,
-      "mean_shift_over_sd": 1.946689
+      "mean_shift_over_sd": 2.305843
      }
     ]
    }
@@ -5417,5 +5417,5 @@
    }
   ]
  },
- "finding": "One auditable comparison (BENCHMARK.md, revision 2): five worlds identical but for the cavity (none; a room 6 m on a side under a 5 m roof; an L-shaped tunnel at that depth; the room 6 m east; and the 10 m room under a 5 m roof that earlier runs left open), the same lorry 15 m west at the FTA's truck-over-a-bump level held at 69 Hz all pass, the same scatterers and noise law, one geology (uniform limestone, no attenuation in the solver), fully developed speckle. The whole image is observed: the solver's field within 70 m, and beyond it an assumed envelope, a surface wave carried undiminished to the image's edge, which supplies 97 to 98% of the strong case's signal. For any method reading the one image, told the excitation and both worlds' whole motion but not the speckle (the certificate line by line, each line's reference holding the lorry's wave, the microseisms' worst-case envelope and the noise), detection may exceed false alarms by at most 0.006 to 0.017 within 70 m; with the envelope, 0.034 to 0.113 (the 10 m room 0.113); with the scattered wave attenuated at Q = 50, a realistic rock, 0.011 to 0.034; with the envelope five times larger, 0.075 to 0.253; the largest over the sampled band (every 2 Hz) 0.041 to 0.114. Found at 5% false alarms is at most 16.3% for any of these questions; the lorry's differential motion would have to grow 8 times to reach 95% at 5%. The oracle told every scatterer's reflectivity as well: at the calibrated 12.7 dB (the site's median sigma0 over ICEYE's best specified noise floor) 0.067 to 0.223, at 18 dB (ground at 0 dB) 0.124 to 0.400; its upper bound stops excluding 95% at 5% only at 28 to 38 dB, which no specified ICEYE noise floor reaches over natural ground. Under Giza's regional microseisms, averaged over the field's realisations through a bound linear in each line's phase energy, one image is at most 7.7e-07 above chance (3.4e-06 at the worst realisation) and the oracle 1.6e-06. Checks: the exact divergence on lines of the model is 0.12 to 0.18 of the certificate; pulse by pulse on fixed scenes the coherent echo difference is 0.994 +- 0.006 of the ensemble formula, the same with the lorry's wave ten times larger. Achieved: the score test, implemented on synthesised images with one noise law and a threshold set on separate grounds, reaches AUC 0.94 (predicted 0.93) with the difference amplified 800 times, and 0.53 at the real level. So in this benchmark one image does not reach 95% at 5% for presence, a 6 m location or shape, quiet or beside a lorry, under every tabulated allowance, and at the calibrated noise level neither does the oracle's bound. The scope is the benchmark's: five layouts, one geology, the declared excitation, fully developed speckle (bright points are covered by the oracle only), the assumed envelope beyond 70 m; a shallow room is not by itself an upper bound on every larger or deeper structure."
+ "finding": "One auditable comparison (BENCHMARK.md, revision 2): five worlds identical but for the cavity (none; a room 6 m on a side under a 5 m roof; an L-shaped tunnel at that depth; the room 6 m east; and the 10 m room under a 5 m roof that earlier runs left open), the same lorry 15 m west at the FTA's truck-over-a-bump level held at 69 Hz all pass, the same scatterers and noise law, one geology (uniform limestone, no attenuation in the solver), fully developed speckle. The whole image is observed: the solver's field within 70 m, and beyond it an assumed envelope, a surface wave carried undiminished to the image's edge, which supplies 97 to 98% of the strong case's signal. For any method reading the one image, told the excitation and both worlds' whole motion but not the speckle (the certificate line by line, each line's reference holding the lorry's wave, the microseisms' worst-case envelope and the noise), detection may exceed false alarms by at most 0.006 to 0.017 within 70 m; with the envelope, 0.034 to 0.113 (the 10 m room 0.113); with the scattered wave attenuated at Q = 50, a realistic rock, 0.011 to 0.034; with the envelope five times larger, 0.075 to 0.253; the largest over the sampled band (every 2 Hz) 0.041 to 0.114. Found at 5% false alarms is at most 16.3% for any of these questions; the lorry's differential motion would have to grow 8 times to reach 95% at 5%. The oracle told every scatterer's reflectivity as well: at the calibrated 12.7 dB (the site's median sigma0 over ICEYE's best specified noise floor) 0.067 to 0.223, at 18 dB (ground at 0 dB) 0.124 to 0.400; its upper bound stops excluding 95% at 5% only at 28 to 38 dB, which no specified ICEYE noise floor reaches over natural ground. Under Giza's regional microseisms, averaged over the field's realisations through a bound linear in each line's phase energy, one image is at most 7.7e-07 above chance (3.4e-06 at the worst realisation) and the oracle 1.6e-06. Checks: the exact divergence on lines of the model is 0.12 to 0.18 of the certificate; pulse by pulse on fixed scenes the coherent echo difference is 0.994 +- 0.006 of the ensemble formula, the same with the lorry's wave ten times larger. Achieved: the score test, implemented on synthesised images with one noise law and a threshold set on separate grounds, reaches AUC 0.96 (predicted 0.93) with the difference amplified 800 times, and 0.55 at the real level. So in this benchmark one image does not reach 95% at 5% for presence, a 6 m location or shape, quiet or beside a lorry, under every tabulated allowance, and at the calibrated noise level neither does the oracle's bound. The scope is the benchmark's: five layouts, one geology, the declared excitation, fully developed speckle (bright points are covered by the oracle only), the assumed envelope beyond 70 m; a shallow room is not by itself an upper bound on every larger or deeper structure."
 }

@@ -2789,9 +2789,9 @@
   "id": "p2_36_benchmark",
   "title": "One auditable comparison: presence, location and shape, bounds beside achieved",
   "date": "2026-09-30",
-  "started_utc": "2026-09-30T21:58:33+00:00",
-  "runtime_s": 1817.3,
-  "commit": "914a473+",
+  "started_utc": "2026-09-30T22:29:55+00:00",
+  "runtime_s": 4081.8,
+  "commit": "6f2fff5",
   "params": {
    "frozen": {
     "worlds": {
@@ -3019,9 +3019,9 @@
   "id": "p2_38_claim",
   "title": "The claim computed: the structure announced 1,220 m under Khafre",
   "date": "2026-09-30",
-  "started_utc": "2026-09-30T22:29:46+00:00",
-  "runtime_s": 7.2,
-  "commit": "914a473+",
+  "started_utc": "2026-09-30T23:37:57+00:00",
+  "runtime_s": 6.7,
+  "commit": "6f2fff5",
   "params": {
    "structure": {
     "centre": [

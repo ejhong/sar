@@ -80,12 +80,12 @@ SNR sweep (L1 / oracle):
 - shape (room or L tunnel): fixed scenes exact/formula 0.996 ± 0.006 (common wave ×10: 0.996 ± 0.006); one line, exact KL / certificate ×1: 0.181, ×10: 0.175, ×100: 0.122, ×1000: none; line floor 0.9927; σ(r) slope over 40–70 m -0.58, σ(67.5)/σ(42.5) 0.78
 - presence (10 m room): fixed scenes exact/formula 0.995 ± 0.006 (common wave ×10: 0.995 ± 0.006); one line, exact KL / certificate ×1: 0.135, ×10: 0.127, ×100: 0.055, ×1000: none; line floor 1.0486; σ(r) slope over 40–70 m -0.37, σ(67.5)/σ(42.5) 0.85
 
-## strong: the score test achieved on synthesised images (presence, room; a cyclic patch 45 × 28 m; threshold from 24 calibration grounds, evaluation on 24 + 24 disjoint grounds)
+## strong: the score test achieved on synthesised images (presence, room; a cyclic patch 45 × 28 m; threshold from 200 calibration grounds, evaluation on 60 + 60 disjoint grounds)
 
 | amplification | AUC achieved | AUC predicted | found, achieved | false alarms, achieved | found at 5%, predicted | patch certificate |
 |---|---|---|---|---|---|---|
-| ×1 | 0.530 | 0.501 | 0.08 | 0.21 | 0.05 | 0.004 |
-| ×800 | 0.941 | 0.930 | 0.88 | 0.21 | 0.67 | 1 |
+| ×1 | 0.553 | 0.501 | 0.10 | 0.05 | 0.05 | 0.004 |
+| ×800 | 0.963 | 0.930 | 0.78 | 0.05 | 0.67 | 1 |
 
 ## strong: over the sampled FTA band (every 2 Hz; not a proved maximum between samples)
 

@@ -101,7 +101,7 @@ Bright persistent points break the speckle model; they are covered by the oracle
 | L1, per-line certificate | the excitation's realisation, both worlds' whole motion, the noise level | the texture (speckle) | proved upper bound within the model, any method reading the one image |
 | L2, oracle (ensemble) | as L1, and every scatterer's reflectivity | which world; the noise's realisation | proved upper bound on the average over scenes |
 | D1, oracle's test on fixed scenes | as L2 | as L2 | achieved: exact for each fixed scene, pulse by pulse |
-| D2, score test | the differential pattern and its time history | the texture | predicted: its weak-signal deflection from the exact Fisher information on the real image's band within 70 m; achieved: the statistic implemented on synthesised images of a patch, one noise law, the 5% threshold set on 24 calibration grounds and the performance read on 24 + 24 disjoint grounds |
+| D2, score test | the differential pattern and its time history | the texture | predicted: its weak-signal deflection from the exact Fisher information on the real image's band within 70 m; achieved: the statistic implemented on synthesised images of a patch, one noise law, the 5% threshold set on 200 calibration grounds and the performance read on 60 + 60 disjoint grounds |
 | D3, the published method | nothing about the cavity | everything | achieved, read blind: P2-31 for the quiet case at amplified levels; P2-37 on the benchmark's strong-case images, with a positive control |
 
 An oracle's bound that excludes (TV below 0.9) is a strong exclusion: a detector told less does no better. Where the
