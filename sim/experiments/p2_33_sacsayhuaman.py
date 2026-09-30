@@ -216,6 +216,7 @@ def main():
         keys = {kind: [a[0] for a in AREAS if a[4] == kind] for kind in ('monument', 'control', 'houses')}
         within_houses = [cc(a, b) for i, a in enumerate(keys['houses']) for b in keys['houses'][i + 1:]]
         walls_vs = {k: cc('walls', k) for k in keys['houses'] + keys['control'] + ['rodadero']}
+        rod_vs = {k: cc('rodadero', k) for k in keys['houses'] + keys['control']}
         mon_vs_rest = [cc(a, b) for a in keys['monument'] for b in keys['houses'] + keys['control']]
         all_pairs = [cc(a[0], b[0]) for i, a in enumerate(AREAS) for b in AREAS[i + 1:]]
         tc = lambda a, b: float(np.corrcoef(tprof[a], tprof[b])[0, 1])
@@ -224,6 +225,8 @@ def main():
         twin_mon_vs_rest = [tc(a, b) for a in keys['monument'] for b in keys['houses'] + keys['control']]
         real_vs_twin = {k: float(np.corrcoef(profiles[k], tprof[k])[0, 1]) for k in profiles}
         twin_apart = sum(c < min(twin_within_houses) for c in twin_mon_vs_rest) == len(twin_mon_vs_rest)
+        all_twin_pairs = [tc(a[0], b[0]) for i, a in enumerate(AREAS) for b in AREAS[i + 1:]]
+        follows = min(real_vs_twin.values()) > 0.8
         for x in patches:
             x['twin_median_energy'] = float(np.median(tw[x['key']][1]))
         share = lambda kind: [x['share_in_top5'] for x in patches if x['kind'] == kind]
@@ -241,37 +244,43 @@ def main():
             f"zigzag walls, the Rodadero outcrop, open fields and three stretches of houses, draws its columns wherever the "
             f"registration wanders (the power at a pixel follows its trajectory's energy at "
             f"{min(x['pillar_power_vs_energy'] for x in patches):.4f} or better). Its mean depth profiles correlate at "
-            f"{min(all_pairs):.2f} to {max(all_pairs):.2f} across all six areas: the walls' with the houses' at "
+            f"{min(all_pairs):.2f} to {max(all_pairs):.2f} across the six areas. The walls' correlates with the houses' at "
             f"{min(walls_vs[k] for k in keys['houses']):.2f} to {max(walls_vs[k] for k in keys['houses']):.2f} and with the "
             f"fields' at {walls_vs['fields']:.2f}, while the houses' correlate with one another at {min(within_houses):.2f} to "
-            f"{max(within_houses):.2f}. "
-            + ('The monuments stand apart: every pairing of a monument with houses or fields is less alike than any two '
-               'stretches of houses. ' if apart else
-               'The monuments stand no further from houses and fields than houses stand from one another. ' if below == 0 else
+            f"{max(within_houses):.2f} and the Rodadero's with the houses' and fields' at {min(rod_vs.values()):.2f} to "
+            f"{max(rod_vs.values()):.2f}. By the test stated before the run, "
+            + ('the monuments stand apart: every pairing of a monument with houses or fields is less alike than any two '
+               'stretches of houses, the walls by a wide margin and the Rodadero only just. ' if apart else
+               'the monuments stand no further from houses and fields than houses stand from one another. ' if below == 0 else
                f'{below} of the {len(mon_vs_rest)} pairings of a monument with houses or fields are less alike than any two '
                f'stretches of houses, the rest within their range. ')
-            + f"The strongest columns go to the busiest surfaces: {min(share('houses')) * 100:.0f} to "
-            f"{max(share('houses')) * 100:.0f}% of the houses' pixels are among the noisiest 5% of all, "
-            f"{min(share('monument')) * 100:.0f} to {max(share('monument')) * 100:.0f}% of the monuments', "
-            f"{share('control')[0] * 100:.1f}% of the fields'; the typical pixel's median wander differs by "
-            f"{(max(med) / min(med) - 1) * 100:.0f}% across the six, the walls' the quietest. Each area's motionless copy, "
-            f"its brightness pattern with nothing moving, draws the same way: the copies' profiles follow the real ones "
-            f"({min(real_vs_twin.values()):.2f} to {max(real_vs_twin.values()):.2f}), the walls' copy correlates with the houses' "
-            f"copies at {min(twin_walls_vs[k] for k in keys['houses']):.2f} to {max(twin_walls_vs[k] for k in keys['houses']):.2f} "
-            f"and the houses' copies with one another at {min(twin_within_houses):.2f} to {max(twin_within_houses):.2f}: "
-            + ('what sets the walls apart comes with how they look in the image, not with anything moving in it.'
-               if twin_apart else 'the walls\' difference does not survive in their copy, so the image holds something the brightness pattern does not.'))
+            + f"The strongest columns go to the houses: {min(share('houses')) * 100:.0f} to {max(share('houses')) * 100:.0f}% "
+            f"of their pixels are among the noisiest 5% of all, against {max(share('monument')) * 100:.1f}% at most of the "
+            f"monuments' and {share('control')[0] * 100:.1f}% of the fields'; the typical pixel's wander differs by "
+            f"{(max(med) / min(med) - 1) * 100:.0f}% across the six, the walls' the quietest. "
+            + (f"Each area's motionless copy, its brightness pattern with nothing moving, draws as the area does (profiles "
+               f"correlating at {min(real_vs_twin.values()):.2f} to {max(real_vs_twin.values()):.2f}), so the difference comes "
+               f"with how the areas look in the image." if follows else
+               f"The areas' motionless copies, each area's brightness pattern and spectrum with fresh speckle and nothing moving, "
+               f"keep neither the shared profile nor the walls' departure from it: the copies' profiles correlate with the real "
+               f"ones at {min(real_vs_twin.values()):.2f} to {max(real_vs_twin.values()):.2f} and with one another at "
+               f"{min(all_twin_pairs):.2f} to {max(all_twin_pairs):.2f}. Both come from something the real image holds beyond its "
+               f"brightness pattern; this run does not say what, and it is not below the surface, which the X-band wave "
+               f"reaches no further into than about 0.3 m (P2-11).")
+            )
         run.save({'acquisition': g.record()['derived'] | {'heading_deg': g.heading_deg, 'incidence_deg': g.theta_deg},
                   'registration': {'shift_px': list(shift), 'correlation': corr,
                                    'shift_m': [shift[0] * g.dx, shift[1] * g.dr / np.sin(g.theta)]},
                   'image': {'file': 'ground.jpg', 'extent': {'x': [x0, x1], 'y': [y0, y1]}, 'cell_m': ORTHO_M,
                             'look_px': [la, lr], 'db_range': [float(lo), float(hi)], 'covered': covered},
                   'reach_m': 0.3, 'patches': patches,
-                  'profile_corr': {'within_houses': within_houses, 'walls_vs': walls_vs, 'monuments_vs_rest': mon_vs_rest,
+                  'profile_corr': {'within_houses': within_houses, 'walls_vs': walls_vs, 'rodadero_vs': rod_vs,
+                                   'monuments_vs_rest': mon_vs_rest,
                                    'all_pairs_range': [min(all_pairs), max(all_pairs)]},
                   'monuments_apart': bool(apart), 'monument_pairs_below_houses': int(below),
                   'twins': {'seed': TWIN_SEED, 'within_houses': twin_within_houses, 'walls_vs': twin_walls_vs,
                             'monuments_vs_rest': twin_mon_vs_rest, 'real_vs_twin': real_vs_twin, 'apart': bool(twin_apart),
+                            'all_pairs_range': [min(all_twin_pairs), max(all_twin_pairs)], 'follow_real': bool(follows),
                             'profiles': {k: v[::4].round(4).tolist() for k, v in tprof.items()}},
                   'profiles': {k: v[::4].round(4).tolist() for k, v in profiles.items()},
                   'profile_depth_m': (z_raw[::4] * CLAIM_REPEAT_M / patches[0]['repeat_depth_raw_m']).round(1).tolist(),
