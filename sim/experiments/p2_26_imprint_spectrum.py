@@ -429,7 +429,12 @@ def main():
         w = lambda c: 'its band cut by the model\'s upper limit' if c['band_truncated'] else \
             f"envelope width ratio {c['envelope_width_ratio']:.1f}"
         ring_q = {k: max([r['largest_resolved_q'] or 0 for r in v['records'].values()]) for k, v in rings.items()}
-        ring_t60 = {k: max([r['t60_s'] or 0 for r in v['records'].values()]) for k, v in rings.items()}
+        # decay times against intact rock's: the same pulse with no room decays through the model's own residual floor
+        # (absorbing edges, grid dispersion above the band), so a room's decay time means something only beside it
+        t60_ratio = [r['t60_s'] / r['control_t60_s'] for v in rings.values() for r in v['records'].values()
+                     if r['t60_s'] and r['control_t60_s']]
+        ctl_t60 = [r['control_t60_s'] for v in rings.values() for r in v['records'].values() if r['control_t60_s']]
+        unresolved = sorted({f for v in rings.values() for r in v['records'].values() for f in r['unresolved_peaks']})
         finding = (
             (f"In these models no response peaks narrowly: no case shows a peak standing 20% above its surroundings "
              f"between {F_LOW:.0f} and {fine['f_hz'][-1]:.0f} Hz. " if not sharp else
@@ -439,8 +444,13 @@ def main():
             f"{out['surface_deep']['peak_value']:.3f} for the bench room 30 m down. Waves from below: "
             f"{out['p_below']['peak_value']:.3f} (P, {w(out['p_below'])}) and {out['s_below']['peak_value']:.3f} "
             f"(S, {w(out['s_below'])}). Rung on its ceiling and recorded for {MODELS['ring']['record_s']:.0f} s, the "
-            f"largest modal Q resolved is {max(ring_q.values()):.1f} and the energy falls 60 dB within "
-            f"{max(ring_t60.values()):.2f} s; over {MODELS['long']['record_s']:.0f} s of a passing surface wave, "
+            f"largest modal Q resolved from the spectra (0.25 Hz bins) is {max(ring_q.values()):.1f}, "
+            + (f"with peaks narrower than a bin at {unresolved} Hz; " if unresolved else
+               "with no peak within 30 dB of the largest narrower than a bin; ")
+            + f"the energy's decay time is set by the model's residual floor, not by the rooms (intact rock with no room "
+            f"{min(ctl_t60):.1f} to {max(ctl_t60):.1f} s; a room's at most {max(t60_ratio):.2f} of intact rock's), so a "
+            f"long-lived mode weaker than that floor is not excluded; over {MODELS['long']['record_s']:.0f} s of a "
+            f"passing surface wave, "
             f"{100 * max(v['energy_after_pass_fraction'] for v in longs.values()):.2f}% of the imprint's energy "
             f"at the ground comes after the wave has passed. At the low end the imprint approaches P2-04's static answer "
             f"({static_ratio.min():.2f} to {static_ratio.max():.2f} of it between {F_LOW:.0f} and 12 Hz). Halving the "
