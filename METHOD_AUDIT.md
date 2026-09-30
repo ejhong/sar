@@ -524,6 +524,52 @@ investigation's record, and what it leaves open follow.
     excitations and windows are covered: fractured, layered or coupled structures, the air inside a room and the rock's
     nonlinear response are not modelled.
 
+19. **What one image would need: a conditional requirement curve (P2-27).** The bound turned around: for the Giza
+    dwell (and the 2022 acquisition), fully developed speckle without a reference image or receiver noise, one
+    room-specific motion pattern coherent for the whole pass at its worst phase, and a target of 95% found at 5% false
+    alarms, the least room-specific line-of-sight motion over a footprint. Exact within the model: the range band widened
+    (the narrower image is a function of the wider, so this only adds information), each line's KL for the finite change
+    from its covariance's determinant, no linearisation (the exact KL stays within 5% of its quadratic start even at
+    these amplitudes). At least 3.0 mm at 0.2 Hz, where only the motion's gradient counts and the footprint hardly
+    matters; 47 um at 80 Hz over 279 m^2 (the half-maximum area of a Gaussian footprint with L = 8 m). The bench room's
+    modelled imprints fall short: 8.3e+08 under the regional microseisms, 136 to 1055 with a
+    truck all pass. Any mechanism that acts through the surface's motion, linear or not, must supply such motion; a change
+    of the ambient motion's phase alone moves the ground by at most twice that motion, and at the regional levels falls
+    short 2e+04 times or more. It says nothing of routes outside the model or of mechanisms with gain.
+
+20. **The published picture's depth does not follow the room; its horizontal change follows the image's (P2-28).** The
+    published chain run whole (P2-07's) over the bench room 15 m down, the same room 30 m down and a granite block 15 m
+    down, each imprint by the solver settling under strain (the 15 m room's peak 1.000 of P2-04's), boosted to 0.5
+    and 2 rad, with lambda_s = 1.45 m so the axis passes below both rooms. At 2 rad each room puts 16% of its change in
+    its own depth band where 15% of the axis lies; both peak near 14 m. The granite block's change is the hollow
+    room's with its sign flipped (-0.45), as their marks on the ground are (-0.88). Horizontally the change gathers over the
+    room (2.6 times elsewhere) and a random perturbation of the same pixels gathers almost as much (2.4): in a
+    paired comparison the picture changes where the image changes. The blind question is P2-31's.
+
+21. **The oracle told everything but the answer (P2-29).** Given the reflectivity, the background motion, the shaking and
+    both models, the raw echoes are Gaussian with the receiver noise's covariance, and the best test's detection minus
+    false alarm is exactly 2 Phi(Delta/2) - 1; a method told less does no better, whatever the texture (only independent
+    uniform phases needed), and the background motion cancels exactly. Pulse by pulse on the real dwell the formula holds
+    (0.993 +- 0.025; 1.011 +- 0.030 with the background ten times larger). At 30 dB per cell (above the
+    brightest natural ground over ICEYE's best Dwell NESZ, -26.7 dB): 1.6e-06 under the regional microseisms,
+    1.2e-04 at the noisiest stations; the imprint would have to grow 8,415 times (117 at the noisiest stations) even after assumed
+    allowances (local level 10x the regional, site amplification 3x, 10 dB more SNR). Strong shaking close by, known exactly,
+    is open: a truck bouncing beside the bench room all pass 0.40, beside a room under a 5 m roof 0.99 (enough, within
+    the model, for 95% at 5%) with the scattered wave carried unattenuated to the scene's corner, 0.24 within 32 m alone;
+    14 cases are open after the allowances. Depth: small rooms 15 m down in any non-negative mix leave 71% of the
+    bench room 30 m down's mark unmatched (78% for the bench room 15 m down; two small rooms solved together agree with their
+    sum to 3.7%): in uniform rock the mark's shape carries depth, and telling those depths apart takes about
+    1.4 times detection's signal. The sought depth obstruction was not found.
+
+22. **Finite certificates, loose but simple, the background included (P2-30).** An independent derivation's theorems
+    (`sim/sarsim/finite.py`, its checks ported): processing contracts TV; the exact complex Gaussian divergence; a
+    certificate straight from a phase-energy envelope (|C0^-1/2 dA|_F <= q gives |E| <= 2q + q^2), with a proved covariance
+    floor for the common background (0.056); the oracle; two-world depth risk. On the lab's runs: at most
+    5.017% found at 5% false alarms under the regional microseism envelope with the background included (TV
+    1.7e-04, where P2-25's tighter bound gives 1.3e-09); an arbitrary phase modulation within the background envelope
+    on 52,600 pixels at most 9.55%, over the whole image undecided; the thin-roof room with a truck-level
+    harmonic at most 89.1%, undecided with 11% more phase.
+
 These reasons differ in kind and strength. 4 is algebraic and holds whatever the ground does: the depth axis is a
 frequency axis with a repeat and a mirror, and no validated model turns it into a physical depth; that makes depth
 uncalibrated and non-unique, and does not by itself decide horizontal location or shape (P2-31 tests those). 1 and 12 are
