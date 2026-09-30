@@ -3,9 +3,9 @@
   "id": "p2_26_imprint_spectrum",
   "title": "The chamber's imprint at every frequency, and how long a room rings",
   "date": "2026-09-30",
-  "started_utc": "2026-09-30T00:38:35+00:00",
-  "runtime_s": 4587.7,
-  "commit": "2ef6515",
+  "started_utc": "2026-09-30T02:26:07+00:00",
+  "runtime_s": 52.4,
+  "commit": "626337c",
   "params": {
    "site": "bench-void",
    "models": {
@@ -16451,5 +16451,5 @@
    "max_amplitude_change": 0.105301
   }
  },
- "finding": "In these models no response peaks narrowly: no case shows a peak standing 20% above its surroundings between 6 and 240 Hz. Under a surface wave the imprint's largest value is 0.163 of the motion, at 79 Hz (its band cut by the model's upper limit); 1.980 for the room under a 5 m roof (its band cut by the model's upper limit); 0.043 for the bench room 30 m down. Waves from below: 0.306 (P, envelope width ratio 1.4) and 0.344 (S, its band cut by the model's upper limit). Rung on its ceiling and recorded for 4 s, the largest modal Q resolved is 2.2 and the energy falls 60 dB within 13.34 s; over 4 s of a passing surface wave, 0.01% of the imprint's energy at the ground comes after the wave has passed. At the low end the imprint approaches P2-04's static answer (0.96 to 1.82 of it between 6 and 12 Hz). Halving the grid changes the imprint by at most 6% below 120 Hz (11% for the thin roof)."
+ "finding": "In these models no response peaks narrowly: no case shows a peak standing 20% above its surroundings between 6 and 240 Hz. Under a surface wave the imprint's largest value is 0.163 of the motion, at 79 Hz (its band cut by the model's upper limit); 1.980 for the room under a 5 m roof (its band cut by the model's upper limit); 0.043 for the bench room 30 m down. Waves from below: 0.306 (P, envelope width ratio 1.4) and 0.344 (S, its band cut by the model's upper limit). Rung on its ceiling and recorded for 4 s, the largest modal Q resolved from the spectra (0.25 Hz bins) is 2.2, with no peak within 30 dB of the largest narrower than a bin; the energy's decay time is set by the model's residual floor, not by the rooms (intact rock with no room 5.7 to 16.5 s; a room's at most 1.07 of intact rock's), so a long-lived mode weaker than that floor is not excluded; over 4 s of a passing surface wave, 0.01% of the imprint's energy at the ground comes after the wave has passed. At the low end the imprint approaches P2-04's static answer (0.96 to 1.82 of it between 6 and 12 Hz). Halving the grid changes the imprint by at most 6% below 120 Hz (11% for the thin roof)."
 }
