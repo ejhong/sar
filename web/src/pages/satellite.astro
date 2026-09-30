@@ -397,8 +397,9 @@ const spF = sp.cases.surface_favourable;
 const spFfine = sp.cases.surface_favourable_small_fine;
 const ringRecs = Object.values(sp.rings).flatMap((r) => Object.values(r.records));
 const ringQ = Math.max(...ringRecs.map((r) => r.largest_resolved_q ?? 0));
-const ringT60 = Math.max(...ringRecs.map((r) => r.t60_s ?? 0));
 const ringCtlT60 = Math.max(...ringRecs.map((r) => r.control_t60_s ?? 0));
+const ringCtlT60Min = Math.min(...ringRecs.filter((r) => r.control_t60_s).map((r) => r.control_t60_s!));
+const ringRatio = Math.max(...ringRecs.filter((r) => r.t60_s && r.control_t60_s).map((r) => r.t60_s! / r.control_t60_s!));
 const ringUnresolved = [...new Set(ringRecs.flatMap((r) => r.unresolved_peaks))].sort((a, b) => a - b);
 const ringRes = Math.max(...Object.values(sp.rings).map((r) => r.resolution_hz));
 const ringLen = Math.max(...Object.values(sp.rings).map((r) => (r.model === 'ring' ? 4 : 2)));
@@ -699,8 +700,10 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
         <p>A resonance is the one way physics could make the imprint far larger than the static answer, and a short record
         cannot exclude a long-lived narrow one (a 60 Hz mode with Q 600 takes 3 s to fall by 1/e). So each room was also struck
         on its ceiling and recorded for {ringLen} s beside intact rock: the largest modal Q resolved from the spectrum’s peaks
-        at {ringRes.toFixed(2)} Hz is {ringQ.toFixed(1)}, the energy falls 60 dB within {ringT60.toFixed(2)} s (intact rock:
-        {' '}{ringCtlT60.toFixed(2)} s){ringUnresolved.length ? `, and peaks narrower than the resolution appear at ${ringUnresolved.slice(0, 4).map((f) => f.toFixed(1)).join(', ')} Hz` : ''}.
+        at {ringRes.toFixed(2)} Hz is {ringQ.toFixed(1)}{ringUnresolved.length ? `, and peaks narrower than the resolution appear at ${ringUnresolved.slice(0, 4).map((f) => f.toFixed(1)).join(', ')} Hz` : ', with no peak within 30 dB of the largest narrower than that'}.
+        How long the energy lingers is set by the model’s own residual floor, not by the rooms: the same pulse in intact rock
+        with no room lingers {ringCtlT60Min.toFixed(0)}–{ringCtlT60.toFixed(0)} s, and a room at most {ringRatio.toFixed(2)} times as long, so a
+        long-lived mode weaker than that floor is not excluded.
         Over {longLen} s of a passing surface wave, {(100 * lateShare).toFixed(2)}% of the imprint’s energy at the ground comes
         after the wave has passed. Under the surface wave the bench room’s imprint grows with frequency until the wave is short
         enough to pass over the room; the room under a 5 m roof flexes with it, up to {spF.peak_value.toFixed(1)} times the
