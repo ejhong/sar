@@ -6,6 +6,7 @@ __pycache__/
 *.pyc
 .pytest_cache/
 results/cache/
+sim/results/cache/
 results/validation/*.partial.json
 # large data (raw products stay outside the repo); site data directories are tracked
 /data/
