@@ -300,9 +300,10 @@ def main():
             + f" if its phase is 11% larger. An arbitrary phase modulation within the background envelope on "
             f"{pm[0]['affected_scatterer_pixels_assumed']:,} pixels is capped at {100 * pm[0]['tpr_upper_at_fpr_005']:.2f}%; "
             f"on the whole image the certificate is uninformative."
-            + (f" Depth: with P2-29's spread rooms matching a room 30 m down to {100 * dep['residual_fraction']:.1f}%, where "
-               f"detection just reaches 95% at 5% any method's mean depth error between the two is at least "
-               f"{dep['rows'][0]['mean_depth_error_lower_m']:.1f} m of their 15 m separation." if dep else ""))
+            + (f" Depth: P2-29's spread rooms 15 m down leave {100 * dep['residual_fraction']:.0f}% of a room 30 m down's mark "
+               f"unmatched, so where detection just reaches 95% at 5% Theorem E's floor on any method's mean depth error between "
+               f"the two is only {dep['rows'][0]['mean_depth_error_lower_m']:.1f} m of their 15 m separation: in this model the "
+               f"mark's shape carries depth." if dep else ""))
         out['finding'] = finding
         run.save(out)
         print(finding)

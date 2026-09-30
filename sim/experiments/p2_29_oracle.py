@@ -372,14 +372,23 @@ def main():
             f"levels the bench room gives the oracle at most {max(r['tv_exact'] for r in amb_rows):.1e}: its imprint would "
             f"have to grow {min(r['growth_to_target'] for r in amb_rows):.1e} times, {min(r['growth_after_allowances'] for r in amb_rows):.1e} "
             f"after allowing the local level ten times the regional, site amplification three times and 10 dB more SNR. "
-            f"The open regime is strong nearby shaking known exactly: {worst['case']} gives the oracle {worst['tv_exact']:.2f}, "
-            f"{worst['growth_to_target']:.1f} times short of 95% found at 5% false alarms"
-            + (f", which the allowances erase ({len(opened)} cases open)." if opened else ".")
-            + f" Depth is another matter: rooms 15 m down, small and spread, match the mark of a room 30 m down to "
-            f"{100 * dep['residual_fraction']:.1f}% (the bench room itself only to {100 * dep['best_single_bench_room_residual']:.0f}%), "
-            f"so telling the two depths apart takes {dep['signal_factor_depth_over_detection']:.0f} times the signal that "
-            f"detecting either takes, for any method; the superposition of small rooms holds to "
-            f"{100 * dep['pair_interaction_fraction']:.1f}%.")
+            f"The open regime is strong nearby shaking known exactly, the scattered wave carried unattenuated across the "
+            f"scene: {worst['case']} gives the oracle {worst['tv_exact']:.2f}"
+            + (f", enough within the model for 95% found at 5% false alarms (it would need only {worst['growth_to_target']:.2f} "
+               f"of its motion)" if worst['growth_to_target'] < 1 else
+               f", {worst['growth_to_target']:.1f} times short of 95% found at 5% false alarms")
+            + f"; {len(opened)} cases are open after the allowances. "
+            + (f"Depth is carried by the mark's shape in this model: rooms 15 m down, small and spread, leave "
+               f"{100 * dep['residual_fraction']:.0f}% of the mark of a room 30 m down unmatched (the bench room 15 m down, "
+               f"{100 * dep['best_single_bench_room_residual']:.0f}%), so telling those two depths apart takes only "
+               f"{dep['signal_factor_depth_over_detection']:.1f} times the signal that detecting either takes; the "
+               f"superposition of small rooms holds to {100 * dep['pair_interaction_fraction']:.1f}%."
+               if dep['residual_fraction'] > 0.3 else
+               f"Depth is another matter: rooms 15 m down, small and spread, match the mark of a room 30 m down to within "
+               f"{100 * dep['residual_fraction']:.1f}% (the bench room itself only to "
+               f"{100 * dep['best_single_bench_room_residual']:.0f}%), so telling the two depths apart takes "
+               f"{dep['signal_factor_depth_over_detection']:.0f} times the signal that detecting either takes, for any method; "
+               f"the superposition of small rooms holds to {100 * dep['pair_interaction_fraction']:.1f}%."))
         run.save({'raw_echo_check': raw, 'chamber': rows, 'snr_per_cell_raw': snr, 'allowance_product': allowance,
                   'open_cases': opened, 'depth': dep, 'finding': finding})
         print(finding)
