@@ -45,7 +45,7 @@ from pathlib import Path
 import numpy as np
 from scipy.special import ndtri
 
-from katabasis.runs import RESULTS, Run, load
+from katabasis.runs import RESULTS, Run, load, memo
 from sarsim import information as inf
 from sarsim.acquisition import DwellGeometry
 
@@ -309,7 +309,7 @@ def main():
                 widths = L_EXACT + (L_EXACT_SLOW if f <= SLOW else ())
                 exact = []
                 for L in widths:
-                    ex = exact_requirement(g, f, L, TARGETS)
+                    ex = memo(RID, f'exact-{acq}-{f}-{L}', lambda: exact_requirement(g, f, L, TARGETS), __file__)
                     lin = linear_requirement(g, f, L, TARGETS)
                     exact.append({'L_m': L, 'area_half_m2': area_half(L), **ex,
                                   'lines_over_image_small': ex['kl_lines_per_D2_small'] / (lin['fisher_largest_per_m2'] / 2),

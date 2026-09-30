@@ -54,7 +54,7 @@ from scipy.ndimage import binary_dilation, gaussian_filter, label
 from scipy.signal import fftconvolve
 
 from katabasis.ambient.field import microseisms, rayleigh_hv
-from katabasis.runs import Run
+from katabasis.runs import Run, memo
 from sarsim import synthesize
 from sarsim import information as inf
 from sarsim.acquisition import DwellGeometry
@@ -230,38 +230,44 @@ def main():
         room_t = [T[SH[0] // 2 - int(24 / g.dx): SH[0] // 2 + int(24 / g.dx), SH[1] // 2 - int(24 * np.sin(g.theta) / g.dr): SH[1] // 2 + int(24 * np.sin(g.theta) / g.dr)]
                   for T in tmpl['room']]
 
-        records = []
-        maps_keep = {}
-        for seed in SEEDS:
+        def reading(seed, key):
+            """One image, made and read: kept on disk so a run cut short resumes (katabasis.runs.memo)."""
             scat = m07.scene(g, np.random.default_rng(seed))
-            imgs = {'none': synthesize(scat, g, SH, motion=m07.Shaking(g, field, interp['room'], 0.0)),
-                    'motionless': synthesize(scat, g, SH)}
+            if key == 'none':
+                img = synthesize(scat, g, SH, motion=m07.Shaking(g, field, interp['room'], 0.0))
+            elif key == 'motionless':
+                img = synthesize(scat, g, SH)
+            else:
+                n, lv = key.split('|')
+                G = 1.0 if LEVELS[lv] is None else LEVELS[lv] / unit[n]
+                img = synthesize(scat, g, SH, motion=m07.Shaking(g, field, interp[n], G))
+            T, z = m07.run_method(img, g, RR.ravel(), CC.ravel())
+            q = score_fields(img, g, taus)
+            # each layout's statistic at every placement; its value at the true placement (the scene's centre), and
+            # the spread of its values over placements (used from the controls as the null)
+            stats, spread, peak_at = {}, {}, {}
             for n in SHAPES:
-                for lv, ph in LEVELS.items():
-                    G = 1.0 if ph is None else ph / unit[n]
-                    imgs[f'{n}|{lv}'] = synthesize(scat, g, SH, motion=m07.Shaking(g, field, interp[n], G))
+                M = corr_map(q, tmpl[n])
+                stats[n] = float(M[SH[0] // 2, SH[1] // 2])
+                inner = M[SH[0] // 8: -SH[0] // 8, SH[1] // 8: -SH[1] // 8]
+                spread[n] = float(np.std(inner))
+                ia, ir = np.unravel_index(np.argmax(inner), inner.shape)
+                peak_at[n] = (float(PE[ia + SH[0] // 8, ir + SH[1] // 8]), float(PN[ia + SH[0] // 8, ir + SH[1] // 8]))
+            loc = corr_map(q, room_t).astype(np.float32)
+            return {'seed': seed, 'key': key, 'scene': key.split('|')[0],
+                    'level': key.split('|')[1] if '|' in key else 'control', 'stats': stats, 'spread': spread,
+                    'peak_at': peak_at, 'loc': loc, 'blind': T.sum(axis=1).reshape(RR.shape), 'T': T, 'z': z}
+
+        records = []
+        for seed in SEEDS:
+            keys = ['none', 'motionless'] + [f'{n}|{lv}' for n in SHAPES for lv in LEVELS]
             T_none = None
-            for key, img in imgs.items():
+            for key in keys:
                 t1 = time.time()
-                T, z = m07.run_method(img, g, RR.ravel(), CC.ravel())
+                r = memo(RID, f'reading-{seed}-{key}', lambda: reading(seed, key), __file__)
+                records.append(r)
                 if key == 'none':
-                    T_none = T
-                q = score_fields(img, g, taus)
-                # each layout's statistic at every placement; its value at the true placement (the scene's centre), and
-                # the spread of its values over placements (used from the controls as the null)
-                stats, spread, peak_at = {}, {}, {}
-                for n in SHAPES:
-                    M = corr_map(q, tmpl[n])
-                    stats[n] = float(M[SH[0] // 2, SH[1] // 2])
-                    inner = M[SH[0] // 8: -SH[0] // 8, SH[1] // 8: -SH[1] // 8]
-                    spread[n] = float(np.std(inner))
-                    ia, ir = np.unravel_index(np.argmax(inner), inner.shape)
-                    peak_at[n] = (float(PE[ia + SH[0] // 8, ir + SH[1] // 8]), float(PN[ia + SH[0] // 8, ir + SH[1] // 8]))
-                loc = corr_map(q, room_t)
-                blind = T.sum(axis=1).reshape(RR.shape)
-                records.append({'seed': seed, 'key': key, 'scene': key.split('|')[0],
-                                'level': key.split('|')[1] if '|' in key else 'control',
-                                'stats': stats, 'spread': spread, 'peak_at': peak_at, 'loc': loc, 'blind': blind, 'T': T, 'z': z})
+                    T_none = r['T']
                 print(f"  seed {seed} {key}: {time.time() - t1:.0f} s", flush=True)
             for r in records:
                 if r['seed'] == seed:

@@ -49,7 +49,7 @@ import numpy as np
 from scipy.ndimage import map_coordinates
 from scipy.fft import next_fast_len
 
-from katabasis.runs import RESULTS, Run, load
+from katabasis.runs import RESULTS, Run, load, memo
 from sarsim import synthesize
 from sarsim import information as inf
 from sarsim.acquisition import DwellGeometry
@@ -642,9 +642,9 @@ def main():
         checks['grid'] = check_grid(g)
         checks['continuum'] = check_continuum(g)
         checks['finite_kl'] = check_finite_kl(g)
-        checks['detection'] = check_detection(g)
-        checks['pulse_domain'] = check_pulse_domain(g)
-        checks['estimator'] = check_estimator(g)
+        checks['detection'] = memo(RID, 'detection', lambda: check_detection(g), __file__)
+        checks['pulse_domain'] = memo(RID, 'pulse_domain', lambda: check_pulse_domain(g), __file__)
+        checks['estimator'] = memo(RID, 'estimator', lambda: check_estimator(g), __file__)
 
         kern, kern_src = static_kernels()
         los = np.asarray(g.los_enu)
@@ -655,9 +655,9 @@ def main():
         kernel_check = {'source': kern_src, 'peak_m_per_strain': float(rms.max()),
                         'published_peak_m_per_strain': float(pub.max()),
                         'largest_difference_over_peak': float(np.max(np.abs(rms - pub)) / pub.max())}
-        static = static_cases(g, kern, p204, amb)
+        static = memo(RID, 'static', lambda: static_cases(g, kern, p204, amb), __file__)
 
-        dyn, scene_radius = dynamic_information(g, maps_path, p226)
+        dyn, scene_radius = memo(RID, 'dynamic', lambda: dynamic_information(g, maps_path, p226), __file__)
         dynamic = dynamic_cases(dyn, g, amb, maps_path)
 
         # 4. bright points over the imprint's peak: KL <= SCR <Phi^2> (the point's phase and position handed over, the
