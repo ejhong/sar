@@ -69,16 +69,17 @@ def main():
         by = lambda f: sorted({round(x['repeat_m']) for x in out.values() if f(x['product'])})
         p22 = [x for x in out.values() if '2022' in x['product']]
         p25 = [x for x in out.values() if '2025' in x['product']]
+        span = lambda xs: (f"{min(xs):.0f}" if round(min(xs)) == round(max(xs)) else f"{min(xs):.0f} to {max(xs):.0f}")
         finding = (
             f"The gated reconstruction's depth comes from the pass, not the ground. On the 2022 pass one turn of its fit "
-            f"spans {min(x['turn_m'] for x in p22):.2f} m and the scale repeats every {min(x['repeat_m'] for x in p22):.0f} m, "
-            f"past the 300 m it draws, so each position's fit stands near the surface "
-            f"({sum(x['shallow'] for x in p22):,} of {sum(x['positions'] for x in p22):,} positions within ten turns of it). "
-            f"On the 2025 passes, over Giza and over Sacsayhuamán, one turn spans {min(x['turn_m'] for x in p25):.2f} m and the "
-            f"scale repeats every {min(x['repeat_m'] for x in p25):.0f} to {max(x['repeat_m'] for x in p25):.0f} m, so the same "
-            f"fits stand twice, near the surface ({sum(x['shallow'] for x in p25):,} of {sum(x['positions'] for x in p25):,} "
-            f"positions) and at their mirror near {min(x['repeat_m'] for x in p25):.0f} m down "
-            f"({sum(x['mirror'] for x in p25):,}): one choice drawn at two levels.") if p22 and p25 else 'Runs missing.'
+            f"spans {min(x['turn_m'] for x in p22):.2f} m and the scale repeats every {span([x['repeat_m'] for x in p22])} m, "
+            f"so the mirror mostly falls past the 300 m it draws: {sum(x['shallow'] for x in p22):,} of "
+            f"{sum(x['positions'] for x in p22):,} passing positions stand within ten turns of the surface, "
+            f"{sum(x['mirror'] for x in p22):,} at the mirror's shallow end. On the 2025 passes, over Giza and over "
+            f"Sacsayhuamán, one turn spans {min(x['turn_m'] for x in p25):.2f} m and the scale repeats every "
+            f"{span([x['repeat_m'] for x in p25])} m, so the same fits stand twice: {sum(x['shallow'] for x in p25):,} of "
+            f"{sum(x['positions'] for x in p25):,} positions near the surface and {sum(x['mirror'] for x in p25):,} at the "
+            f"mirror, near {min(x['repeat_m'] for x in p25):.0f} m down. One choice, drawn at two levels.") if p22 and p25 else 'Runs missing.'
         run.save({'runs': out, 'finding': finding})
         print(finding)
 
