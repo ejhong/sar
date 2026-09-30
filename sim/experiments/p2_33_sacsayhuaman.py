@@ -23,6 +23,11 @@ ground?
 Stated before the run: if the method responds to what the walls are, their depth profiles will differ from the houses'
 and the fields' by more than the houses' differ from one another; if it responds to the image's texture, walls, houses
 and fields will draw alike, the busiest surfaces drawing the most columns.
+
+Added after the first run, which found the walls apart: each area's motionless copy (sarsim.looks.motionless_twin: the
+crop's own brightness pattern over about three resolution cells and its spectrum, fresh speckle, nothing moving), run
+through the same pipeline. If the walls' difference comes with how they look in the image, their copy will stand apart
+from the houses' copies as they do; if it comes from motion, or anything else only the real image holds, it will not.
 """
 import importlib
 import json
@@ -85,12 +90,28 @@ def patch_entry(key):
     return (f's33_{k}', label, float(lat), float(lon), z + geoid, kind)
 
 
-def run_area(key):
+TWIN_SEED = 101
+
+
+def run_area(key, twin=None):
+    """One area through the first investigation's pipeline: the real crop, or (twin = a seed) its motionless copy."""
     rc = legacy_module()
     entry = patch_entry(key)
+    crop = rc.DwellProduct.crop
+    if twin is not None:
+        from sarsim.looks import motionless_twin
+        entry = (f'{entry[0]}_twin{twin}',) + entry[1:]
+
+        def copy_crop(self, *a, **k):
+            c, origin = crop(self, *a, **k)
+            return motionless_twin(c, np.random.default_rng(twin)), origin
+        rc.DwellProduct.crop = copy_crop
     if not any(p[0] == entry[0] for p in rc.SACSAYHUAMAN_PATCHES):
         rc.SACSAYHUAMAN_PATCHES.append(entry)
-    return rc.run_patch('sacsayhuaman', entry[0], 'paper', n_rg=N_RG, verbose=False)
+    try:
+        return rc.run_patch('sacsayhuaman', entry[0], 'paper', n_rg=N_RG, verbose=False)
+    finally:
+        rc.DwellProduct.crop = crop                   # the real product's crops again, for whatever reads it next
 
 
 def main():
@@ -108,8 +129,9 @@ def main():
         figs.mkdir(exist_ok=True)
         # ---- what the method draws over each area, the areas in parallel (each is cached by the first investigation's code)
         with ProcessPoolExecutor(max_workers=len(AREAS)) as pool:
-            list(pool.map(run_area, [a[0] for a in AREAS]))
+            list(pool.map(run_area, [a[0] for a in AREAS] * 2, [None] * len(AREAS) + [TWIN_SEED] * len(AREAS)))
         outs = {a[0]: run_area(a[0]) for a in AREAS}
+        twins = {a[0]: run_area(a[0], TWIN_SEED) for a in AREAS}
         p = DwellProduct(PRODUCT)
         # ---- the image, averaged to about a metre, over the site's footprint in the product
         xs = np.arange(x0 + ORTHO_M / 2, x1, ORTHO_M)
@@ -172,6 +194,17 @@ def main():
                             'pillar_power_vs_energy': pillar, 'cells_on_site': int((idx >= 0).sum()),
                             'mean_energy': float(energy.mean())})
             print(f"  {key}: pillars follow energy at {pillar:.4f}; {int((idx >= 0).sum())} site cells", flush=True)
+        # ---- the motionless copies: the same mean depth profile, from the brightness pattern alone
+        def profile(out):
+            gr, gc = out['grid_rows'], out['grid_cols']
+            keep = np.zeros((len(gr), len(gc)), bool)
+            keep[::KEEP_EVERY_ROW] = True
+            q = out['q'][keep.ravel()].astype(np.float64)
+            zrep = 2 * np.pi / np.median(np.abs(np.diff(out['kz'])))
+            T = focus_paper(q[..., 0] + 1j * q[..., 1], out['kz'], np.linspace(0.0, zrep, NZ, endpoint=False))
+            return T.mean(axis=0) / T.mean(), np.sum(np.abs(q[..., 0] + 1j * q[..., 1]) ** 2, axis=1) / q.shape[1] ** 2
+        tw = {k: profile(o) for k, o in twins.items()}
+        tprof = {k: v[0] for k, v in tw.items()}
         # ---- alike or not: depth profiles within and across kinds; the strongest columns by kind
         top = np.percentile(np.concatenate(list(energies.values())), 95)
         for x in patches:
@@ -185,6 +218,14 @@ def main():
         walls_vs = {k: cc('walls', k) for k in keys['houses'] + keys['control'] + ['rodadero']}
         mon_vs_rest = [cc(a, b) for a in keys['monument'] for b in keys['houses'] + keys['control']]
         all_pairs = [cc(a[0], b[0]) for i, a in enumerate(AREAS) for b in AREAS[i + 1:]]
+        tc = lambda a, b: float(np.corrcoef(tprof[a], tprof[b])[0, 1])
+        twin_within_houses = [tc(a, b) for i, a in enumerate(keys['houses']) for b in keys['houses'][i + 1:]]
+        twin_walls_vs = {k: tc('walls', k) for k in keys['houses'] + keys['control'] + ['rodadero']}
+        twin_mon_vs_rest = [tc(a, b) for a in keys['monument'] for b in keys['houses'] + keys['control']]
+        real_vs_twin = {k: float(np.corrcoef(profiles[k], tprof[k])[0, 1]) for k in profiles}
+        twin_apart = sum(c < min(twin_within_houses) for c in twin_mon_vs_rest) == len(twin_mon_vs_rest)
+        for x in patches:
+            x['twin_median_energy'] = float(np.median(tw[x['key']][1]))
         share = lambda kind: [x['share_in_top5'] for x in patches if x['kind'] == kind]
         med = [x['median_energy'] for x in patches]
         below = sum(c < min(within_houses) for c in mon_vs_rest)      # monument pairs less alike than any two house areas
@@ -213,7 +254,13 @@ def main():
             f"{max(share('houses')) * 100:.0f}% of the houses' pixels are among the noisiest 5% of all, "
             f"{min(share('monument')) * 100:.0f} to {max(share('monument')) * 100:.0f}% of the monuments', "
             f"{share('control')[0] * 100:.1f}% of the fields'; the typical pixel's median wander differs by "
-            f"{(max(med) / min(med) - 1) * 100:.0f}% across the six.")
+            f"{(max(med) / min(med) - 1) * 100:.0f}% across the six, the walls' the quietest. Each area's motionless copy, "
+            f"its brightness pattern with nothing moving, draws the same way: the copies' profiles follow the real ones "
+            f"({min(real_vs_twin.values()):.2f} to {max(real_vs_twin.values()):.2f}), the walls' copy correlates with the houses' "
+            f"copies at {min(twin_walls_vs[k] for k in keys['houses']):.2f} to {max(twin_walls_vs[k] for k in keys['houses']):.2f} "
+            f"and the houses' copies with one another at {min(twin_within_houses):.2f} to {max(twin_within_houses):.2f}: "
+            + ('what sets the walls apart comes with how they look in the image, not with anything moving in it.'
+               if twin_apart else 'the walls\' difference does not survive in their copy, so the image holds something the brightness pattern does not.'))
         run.save({'acquisition': g.record()['derived'] | {'heading_deg': g.heading_deg, 'incidence_deg': g.theta_deg},
                   'registration': {'shift_px': list(shift), 'correlation': corr,
                                    'shift_m': [shift[0] * g.dx, shift[1] * g.dr / np.sin(g.theta)]},
@@ -223,6 +270,9 @@ def main():
                   'profile_corr': {'within_houses': within_houses, 'walls_vs': walls_vs, 'monuments_vs_rest': mon_vs_rest,
                                    'all_pairs_range': [min(all_pairs), max(all_pairs)]},
                   'monuments_apart': bool(apart), 'monument_pairs_below_houses': int(below),
+                  'twins': {'seed': TWIN_SEED, 'within_houses': twin_within_houses, 'walls_vs': twin_walls_vs,
+                            'monuments_vs_rest': twin_mon_vs_rest, 'real_vs_twin': real_vs_twin, 'apart': bool(twin_apart),
+                            'profiles': {k: v[::4].round(4).tolist() for k, v in tprof.items()}},
                   'profiles': {k: v[::4].round(4).tolist() for k, v in profiles.items()},
                   'profile_depth_m': (z_raw[::4] * CLAIM_REPEAT_M / patches[0]['repeat_depth_raw_m']).round(1).tolist(),
                   'finding': finding})
