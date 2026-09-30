@@ -1,0 +1,673 @@
+{
+ "manifest": {
+  "id": "p2_32_shape_bounds",
+  "title": "Shape discrimination, bounded",
+  "date": "2026-09-30",
+  "started_utc": "2026-09-30T06:58:00+00:00",
+  "runtime_s": 4800.4,
+  "commit": "1f77bd3",
+  "params": {
+   "layouts": {
+    "room": [
+     {
+      "centre": [
+       0.0,
+       0.0,
+       -12.0
+      ],
+      "size": [
+       6.0,
+       6.0,
+       6.0
+      ]
+     }
+    ],
+    "L_tunnel": [
+     {
+      "centre": [
+       -5.0,
+       0.0,
+       -10.0
+      ],
+      "size": [
+       18.0,
+       2.5,
+       2.5
+      ]
+     },
+     {
+      "centre": [
+       2.75,
+       7.375,
+       -10.0
+      ],
+      "size": [
+       2.5,
+       17.25,
+       2.5
+      ]
+     }
+    ],
+    "branching_tunnel": [
+     {
+      "centre": [
+       0.0,
+       0.0,
+       -10.0
+      ],
+      "size": [
+       28.0,
+       2.5,
+       2.5
+      ]
+     },
+     {
+      "centre": [
+       0.0,
+       -8.625,
+       -10.0
+      ],
+      "size": [
+       2.5,
+       14.75,
+       2.5
+      ]
+     }
+    ],
+    "none": [],
+    "straight_tunnel": [
+     {
+      "centre": [
+       0.0,
+       0.0,
+       -10.0
+      ],
+      "size": [
+       28.0,
+       2.5,
+       2.5
+      ]
+     }
+    ],
+    "column": [
+     {
+      "centre": [
+       0.0,
+       0.0,
+       -17.0
+      ],
+      "size": [
+       3.0,
+       3.0,
+       26.0
+      ]
+     }
+    ],
+    "column_spiral": [
+     {
+      "centre": [
+       0.0,
+       0.0,
+       -17.0
+      ],
+      "size": [
+       3.0,
+       3.0,
+       26.0
+      ]
+     },
+     {
+      "centre": [
+       4.5,
+       0.0,
+       -6.0
+      ],
+      "size": [
+       2.0,
+       2.0,
+       2.0
+      ]
+     },
+     {
+      "centre": [
+       3.181981,
+       3.181981,
+       -8.5
+      ],
+      "size": [
+       2.0,
+       2.0,
+       2.0
+      ]
+     },
+     {
+      "centre": [
+       2.755e-16,
+       4.5,
+       -11.0
+      ],
+      "size": [
+       2.0,
+       2.0,
+       2.0
+      ]
+     },
+     {
+      "centre": [
+       -3.181981,
+       3.181981,
+       -13.5
+      ],
+      "size": [
+       2.0,
+       2.0,
+       2.0
+      ]
+     },
+     {
+      "centre": [
+       -4.5,
+       5.511e-16,
+       -16.0
+      ],
+      "size": [
+       2.0,
+       2.0,
+       2.0
+      ]
+     },
+     {
+      "centre": [
+       -3.181981,
+       -3.181981,
+       -18.5
+      ],
+      "size": [
+       2.0,
+       2.0,
+       2.0
+      ]
+     },
+     {
+      "centre": [
+       -8.266e-16,
+       -4.5,
+       -21.0
+      ],
+      "size": [
+       2.0,
+       2.0,
+       2.0
+      ]
+     },
+     {
+      "centre": [
+       3.181981,
+       -3.181981,
+       -23.5
+      ],
+      "size": [
+       2.0,
+       2.0,
+       2.0
+      ]
+     }
+    ]
+   },
+   "pairs": [
+    [
+     "branching_tunnel",
+     "none"
+    ],
+    [
+     "L_tunnel",
+     "straight_tunnel"
+    ],
+    [
+     "column_spiral",
+     "column"
+    ],
+    [
+     "L_tunnel",
+     "branching_tunnel"
+    ],
+    [
+     "room",
+     "none"
+    ]
+   ],
+   "directions_deg": [
+    0.0,
+    14.999999999999998,
+    29.999999999999996,
+    45.0,
+    59.99999999999999,
+    75.0,
+    90.0,
+    105.00000000000001,
+    119.99999999999999,
+    135.0,
+    150.0,
+    165.0
+   ],
+   "half_width_m": 60.0,
+   "taper_m": [
+    50.0,
+    59.0
+   ],
+   "snr_db": 30.0,
+   "target_delta": 3.29,
+   "ambient_bands": [
+    {
+     "case": "Giza microseisms, measured",
+     "strain_amplitude": 1.542e-11,
+     "f_hz": 0.2
+    },
+    {
+     "case": "The world's noisiest stations",
+     "strain_amplitude": 1.109e-09,
+     "f_hz": 0.2
+    },
+    {
+     "case": "Giza 1-3 Hz, measured",
+     "strain_amplitude": 1.619e-11,
+     "f_hz": 2.0
+    },
+    {
+     "case": "Giza 3-8 Hz, measured",
+     "strain_amplitude": 1.396e-11,
+     "f_hz": 5.0
+    }
+   ],
+   "depth_allowance": "the same-depth pair bounds every allowed vertical transformation"
+  },
+  "environment": {
+   "python": "3.11.15",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 4,
+   "cpus": 4
+  }
+ },
+ "static": [
+  {
+   "pair": "branching_tunnel vs none",
+   "rows": [
+    {
+     "case": "Giza microseisms, measured",
+     "strain_amplitude": 1.542e-11,
+     "f_hz": 0.2,
+     "tight_ceiling": 1.439e-09,
+     "tight_fisher": 8.288e-18,
+     "remainder_eps": 1.233e-15,
+     "oracle_d": 1.446e-11,
+     "oracle_tv": 2.145e-06,
+     "oracle_growth_to_target": 611862.145991,
+     "certificate_tv": 0.0001469,
+     "certificate_tpr_at_005": 0.050147,
+     "phase_energy_unit": 105754487.095537,
+     "peak_phase_unit_rad": 84.993706
+    },
+    {
+     "case": "The world's noisiest stations",
+     "strain_amplitude": 1.109e-09,
+     "f_hz": 0.2,
+     "tight_ceiling": 1.036e-07,
+     "tight_fisher": 4.289e-14,
+     "remainder_eps": 6.38e-12,
+     "oracle_d": 7.481e-08,
+     "oracle_tv": 0.0001543,
+     "oracle_growth_to_target": 8505.317774,
+     "certificate_tv": 0.010852,
+     "certificate_tpr_at_005": 0.060852,
+     "phase_energy_unit": 105754487.095537,
+     "peak_phase_unit_rad": 84.993706
+    },
+    {
+     "case": "Giza 1-3 Hz, measured",
+     "strain_amplitude": 1.619e-11,
+     "f_hz": 2.0,
+     "tight_ceiling": 1.479e-08,
+     "tight_fisher": 8.748e-16,
+     "remainder_eps": 1.359e-15,
+     "oracle_d": 1.594e-11,
+     "oracle_tv": 2.253e-06,
+     "oracle_growth_to_target": 582667.708965,
+     "certificate_tv": 0.0001543,
+     "certificate_tpr_at_005": 0.050154,
+     "phase_energy_unit": 105754487.095537,
+     "peak_phase_unit_rad": 84.993706
+    },
+    {
+     "case": "Giza 3-8 Hz, measured",
+     "strain_amplitude": 1.396e-11,
+     "f_hz": 5.0,
+     "tight_ceiling": 2.855e-08,
+     "tight_fisher": 3.262e-15,
+     "remainder_eps": 1.01e-15,
+     "oracle_d": 1.185e-11,
+     "oracle_tv": 1.942e-06,
+     "oracle_growth_to_target": 675894.542399,
+     "certificate_tv": 0.000133,
+     "certificate_tpr_at_005": 0.050133,
+     "phase_energy_unit": 105754487.095537,
+     "peak_phase_unit_rad": 84.993706
+    }
+   ],
+   "discrimination_signal_factor": 1.0
+  },
+  {
+   "pair": "L_tunnel vs straight_tunnel",
+   "rows": [
+    {
+     "case": "Giza microseisms, measured",
+     "strain_amplitude": 1.542e-11,
+     "f_hz": 0.2,
+     "tight_ceiling": 1.004e-09,
+     "tight_fisher": 4.032e-18,
+     "remainder_eps": 9.692e-16,
+     "oracle_d": 6.873e-12,
+     "oracle_tv": 1.479e-06,
+     "oracle_growth_to_target": 887364.924291,
+     "certificate_tv": 0.0001547,
+     "certificate_tpr_at_005": 0.050155,
+     "phase_energy_unit": 50280716.589715,
+     "peak_phase_unit_rad": 89.470902
+    },
+    {
+     "case": "The world's noisiest stations",
+     "strain_amplitude": 1.109e-09,
+     "f_hz": 0.2,
+     "tight_ceiling": 7.222e-08,
+     "tight_fisher": 2.086e-14,
+     "remainder_eps": 5.016e-12,
+     "oracle_d": 3.557e-08,
+     "oracle_tv": 0.0001064,
+     "oracle_growth_to_target": 12335.001784,
+     "certificate_tv": 0.011439,
+     "certificate_tpr_at_005": 0.061439,
+     "phase_energy_unit": 50280716.589715,
+     "peak_phase_unit_rad": 89.470902
+    },
+    {
+     "case": "Giza 1-3 Hz, measured",
+     "strain_amplitude": 1.619e-11,
+     "f_hz": 2.0,
+     "tight_ceiling": 1.035e-08,
+     "tight_fisher": 4.283e-16,
+     "remainder_eps": 1.069e-15,
+     "oracle_d": 7.579e-12,
+     "oracle_tv": 1.553e-06,
+     "oracle_growth_to_target": 845025.126721,
+     "certificate_tv": 0.0001624,
+     "certificate_tpr_at_005": 0.050162,
+     "phase_energy_unit": 50280716.589715,
+     "peak_phase_unit_rad": 89.470902
+    },
+    {
+     "case": "Giza 3-8 Hz, measured",
+     "strain_amplitude": 1.396e-11,
+     "f_hz": 5.0,
+     "tight_ceiling": 2.031e-08,
+     "tight_fisher": 1.65e-15,
+     "remainder_eps": 7.943e-16,
+     "oracle_d": 5.633e-12,
+     "oracle_tv": 1.339e-06,
+     "oracle_growth_to_target": 980229.146997,
+     "certificate_tv": 0.00014,
+     "certificate_tpr_at_005": 0.05014,
+     "phase_energy_unit": 50280716.589715,
+     "peak_phase_unit_rad": 89.470902
+    }
+   ],
+   "discrimination_signal_factor": 1.33116
+  },
+  {
+   "pair": "column_spiral vs column",
+   "rows": [
+    {
+     "case": "Giza microseisms, measured",
+     "strain_amplitude": 1.542e-11,
+     "f_hz": 0.2,
+     "tight_ceiling": 1.337e-09,
+     "tight_fisher": 7.151e-18,
+     "remainder_eps": 1.012e-15,
+     "oracle_d": 1.296e-11,
+     "oracle_tv": 2.031e-06,
+     "oracle_growth_to_target": 646151.628318,
+     "certificate_tv": 0.0001553,
+     "certificate_tpr_at_005": 0.050155,
+     "phase_energy_unit": 94828108.565999,
+     "peak_phase_unit_rad": 89.847331
+    },
+    {
+     "case": "The world's noisiest stations",
+     "strain_amplitude": 1.109e-09,
+     "f_hz": 0.2,
+     "tight_ceiling": 9.619e-08,
+     "tight_fisher": 3.701e-14,
+     "remainder_eps": 5.239e-12,
+     "oracle_d": 6.708e-08,
+     "oracle_tv": 0.0001461,
+     "oracle_growth_to_target": 8981.965897,
+     "certificate_tv": 0.011489,
+     "certificate_tpr_at_005": 0.061489,
+     "phase_energy_unit": 94828108.565999,
+     "peak_phase_unit_rad": 89.847331
+    },
+    {
+     "case": "Giza 1-3 Hz, measured",
+     "strain_amplitude": 1.619e-11,
+     "f_hz": 2.0,
+     "tight_ceiling": 1.365e-08,
+     "tight_fisher": 7.448e-16,
+     "remainder_eps": 1.116e-15,
+     "oracle_d": 1.429e-11,
+     "oracle_tv": 2.133e-06,
+     "oracle_growth_to_target": 615321.100321,
+     "certificate_tv": 0.0001631,
+     "certificate_tpr_at_005": 0.050163,
+     "phase_energy_unit": 94828108.565999,
+     "peak_phase_unit_rad": 89.847331
+    },
+    {
+     "case": "Giza 3-8 Hz, measured",
+     "strain_amplitude": 1.396e-11,
+     "f_hz": 5.0,
+     "tight_ceiling": 2.574e-08,
+     "tight_fisher": 2.651e-15,
+     "remainder_eps": 8.297e-16,
+     "oracle_d": 1.062e-11,
+     "oracle_tv": 1.839e-06,
+     "oracle_growth_to_target": 713772.476372,
+     "certificate_tv": 0.0001406,
+     "certificate_tpr_at_005": 0.050141,
+     "phase_energy_unit": 94828108.565999,
+     "peak_phase_unit_rad": 89.847331
+    }
+   ],
+   "discrimination_signal_factor": 4.060682
+  },
+  {
+   "pair": "L_tunnel vs branching_tunnel",
+   "rows": [
+    {
+     "case": "Giza microseisms, measured",
+     "strain_amplitude": 1.542e-11,
+     "f_hz": 0.2,
+     "tight_ceiling": 1.142e-09,
+     "tight_fisher": 5.212e-18,
+     "remainder_eps": 1.016e-15,
+     "oracle_d": 7.931e-12,
+     "oracle_tv": 1.589e-06,
+     "oracle_growth_to_target": 826049.58565,
+     "certificate_tv": 0.000154,
+     "certificate_tpr_at_005": 0.050154,
+     "phase_energy_unit": 58022139.523074,
+     "peak_phase_unit_rad": 89.110232
+    },
+    {
+     "case": "The world's noisiest stations",
+     "strain_amplitude": 1.109e-09,
+     "f_hz": 0.2,
+     "tight_ceiling": 8.212e-08,
+     "tight_fisher": 2.698e-14,
+     "remainder_eps": 5.257e-12,
+     "oracle_d": 4.105e-08,
+     "oracle_tv": 0.0001143,
+     "oracle_growth_to_target": 11482.675091,
+     "certificate_tv": 0.011392,
+     "certificate_tpr_at_005": 0.061392,
+     "phase_energy_unit": 58022139.523074,
+     "peak_phase_unit_rad": 89.110232
+    },
+    {
+     "case": "Giza 1-3 Hz, measured",
+     "strain_amplitude": 1.619e-11,
+     "f_hz": 2.0,
+     "tight_ceiling": 1.179e-08,
+     "tight_fisher": 5.56e-16,
+     "remainder_eps": 1.12e-15,
+     "oracle_d": 8.746e-12,
+     "oracle_tv": 1.669e-06,
+     "oracle_growth_to_target": 786635.392818,
+     "certificate_tv": 0.0001618,
+     "certificate_tpr_at_005": 0.050162,
+     "phase_energy_unit": 58022139.523074,
+     "peak_phase_unit_rad": 89.110232
+    },
+    {
+     "case": "Giza 3-8 Hz, measured",
+     "strain_amplitude": 1.396e-11,
+     "f_hz": 5.0,
+     "tight_ceiling": 2.337e-08,
+     "tight_fisher": 2.185e-15,
+     "remainder_eps": 8.326e-16,
+     "oracle_d": 6.5e-12,
+     "oracle_tv": 1.438e-06,
+     "oracle_growth_to_target": 912497.055668,
+     "certificate_tv": 0.0001394,
+     "certificate_tpr_at_005": 0.050139,
+     "phase_energy_unit": 58022139.523074,
+     "peak_phase_unit_rad": 89.110232
+    }
+   ],
+   "discrimination_signal_factor": 1.239179
+  },
+  {
+   "pair": "room vs none",
+   "rows": [
+    {
+     "case": "Giza microseisms, measured",
+     "strain_amplitude": 1.542e-11,
+     "f_hz": 0.2,
+     "tight_ceiling": 1.862e-09,
+     "tight_fisher": 1.387e-17,
+     "remainder_eps": 3.466e-15,
+     "oracle_d": 3.064e-11,
+     "oracle_tv": 3.123e-06,
+     "oracle_growth_to_target": 420266.244834,
+     "certificate_tv": 0.0002436,
+     "certificate_tpr_at_005": 0.050244,
+     "phase_energy_unit": 224159399.961316,
+     "peak_phase_unit_rad": 140.910894
+    },
+    {
+     "case": "The world's noisiest stations",
+     "strain_amplitude": 1.109e-09,
+     "f_hz": 0.2,
+     "tight_ceiling": 1.34e-07,
+     "tight_fisher": 7.18e-14,
+     "remainder_eps": 1.794e-11,
+     "oracle_d": 1.586e-07,
+     "oracle_tv": 0.0002247,
+     "oracle_growth_to_target": 5841.998864,
+     "certificate_tv": 0.018317,
+     "certificate_tpr_at_005": 0.068317,
+     "phase_energy_unit": 224159399.961316,
+     "peak_phase_unit_rad": 140.910894
+    },
+    {
+     "case": "Giza 1-3 Hz, measured",
+     "strain_amplitude": 1.619e-11,
+     "f_hz": 2.0,
+     "tight_ceiling": 1.929e-08,
+     "tight_fisher": 1.488e-15,
+     "remainder_eps": 3.822e-15,
+     "oracle_d": 3.379e-11,
+     "oracle_tv": 3.28e-06,
+     "oracle_growth_to_target": 400213.629225,
+     "certificate_tv": 0.0002558,
+     "certificate_tpr_at_005": 0.050256,
+     "phase_energy_unit": 224159399.961316,
+     "peak_phase_unit_rad": 140.910894
+    },
+    {
+     "case": "Giza 3-8 Hz, measured",
+     "strain_amplitude": 1.396e-11,
+     "f_hz": 5.0,
+     "tight_ceiling": 3.873e-08,
+     "tight_fisher": 6e-15,
+     "remainder_eps": 2.84e-15,
+     "oracle_d": 2.511e-11,
+     "oracle_tv": 2.827e-06,
+     "oracle_growth_to_target": 464247.809901,
+     "certificate_tv": 0.0002205,
+     "certificate_tpr_at_005": 0.050221,
+     "phase_energy_unit": 224159399.961316,
+     "peak_phase_unit_rad": 140.910894
+    }
+   ],
+   "discrimination_signal_factor": 1.0
+  }
+ ],
+ "dynamic": [
+  {
+   "pair": "branching_tunnel vs none",
+   "worst_f_hz": 70.975167,
+   "oracle_d": 2.365783,
+   "oracle_tv": 0.723232,
+   "oracle_growth_to_target": 1.512493,
+   "oracle_tv_within_32m": 0.076848,
+   "largest_difference_over_motion": 0.335521
+  },
+  {
+   "pair": "L_tunnel vs straight_tunnel",
+   "worst_f_hz": 63.302176,
+   "oracle_d": 2.3374,
+   "oracle_tv": 0.720332,
+   "oracle_growth_to_target": 1.521649,
+   "oracle_tv_within_32m": 0.074699,
+   "largest_difference_over_motion": 0.368772
+  },
+  {
+   "pair": "column_spiral vs column",
+   "worst_f_hz": 54.670061,
+   "oracle_d": 0.536253,
+   "oracle_tv": 0.395409,
+   "oracle_growth_to_target": 3.176845,
+   "oracle_tv_within_32m": 0.041501,
+   "largest_difference_over_motion": 0.30234
+  },
+  {
+   "pair": "L_tunnel vs branching_tunnel",
+   "worst_f_hz": 70.016044,
+   "oracle_d": 3.48065,
+   "oracle_tv": 0.812902,
+   "oracle_growth_to_target": 1.246955,
+   "oracle_tv_within_32m": 0.090019,
+   "largest_difference_over_motion": 0.383349
+  },
+  {
+   "pair": "room vs none",
+   "worst_f_hz": 58.506557,
+   "oracle_d": 1.795459,
+   "oracle_tv": 0.656609,
+   "oracle_growth_to_target": 1.736174,
+   "oracle_tv_within_32m": 0.068438,
+   "largest_difference_over_motion": 0.272659
+  }
+ ],
+ "background_floor": 0.055937,
+ "finding": "Telling one layout from another is bounded as detection is, and depth ambiguity does not rescue a reader: the same-depth bound holds for every allowed vertical transformation. Under Giza's regional microseism level the oracle, told everything but which layout is there, tells an L-shaped from a straight tunnel with detection minus false alarm at most 1.5e-06, and a column with a spiral from a plain column at most 2.0e-06; the tight bound gives 1.0e-09 and 1.3e-09; the loose certificate with the background caps discrimination at 5.024% at 5% for every pair. Discrimination needs 1.2 to 4.1 times the signal that detecting the first layout needs. With a lorry bouncing beside the layouts all pass, known exactly, the hardest-to-exclude pair (L_tunnel vs branching_tunnel) gives the oracle 0.81 at 70 Hz, 1.2 times short of 95% at 5%: the open regime for shape as for detection. Only these layouts, this rock and these sources are covered."
+}
