@@ -678,7 +678,7 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
       how much motion a room can add, which the statistics cannot supply.
     </p>
 
-    <h3 class="bound-h">{sharpAny ? 'Faster shaking reaches a room better; some responses peak sharply' : `In the rooms modelled the responses are broad: rung on its ceiling, the longest-lived mode resolved has Q ${ringQ.toFixed(0)}; a room under a 5 m roof moves the ground over it up to ${spF.peak_value.toFixed(1)} times the passing motion`}</h3>
+    <h3 class="bound-h">{sharpAny || ringQ > 20 || ringUnresolved.length ? `Faster shaking reaches a room better, and ${ringQ > 20 ? `a room rung on its ceiling holds a mode with Q ${ringQ.toFixed(0)}` : 'some responses peak sharply'}: the bounds use the imprint as the solver finds it` : `In the rooms modelled the responses are broad: rung on its ceiling, the longest-lived mode resolved has Q ${ringQ.toFixed(0)}; a room under a 5 m roof moves the ground over it up to ${spF.peak_value.toFixed(1)} times the passing motion`}</h3>
     <div class="grid-2 charts">
       <LineChart
         title="The chamber’s imprint at every frequency: its largest line-of-sight value over the incident motion"

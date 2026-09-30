@@ -506,8 +506,7 @@ const explore = [
           The cap is a bound, not what a detector achieves: on small test images the best possible detector comes within
           {' '}{detOver.toFixed(1)} times of it. Faster shaking reaches the room better, and the room scatters it more; a room
           under a roof only 5 metres thick even moves the ground over it twice as much as the passing wave. Struck directly
-          and listened to for four seconds, the rooms we modelled rang only briefly (the longest-lived tone we could resolve
-          had a quality factor of {Math.round(ringQ)}). Yet a city’s traffic hum for the whole pass leaves the cap at{' '}
+          and listened to for four seconds, {ringQ > 20 ? `one of the rooms we modelled held a tone with a quality factor of ${Math.round(ringQ)}, which the bound counts as the solver finds it` : `the rooms we modelled rang only briefly (the longest-lived tone we could resolve had a quality factor of ${Math.round(ringQ)})`}. Yet a city’s traffic hum for the whole pass leaves the cap at{' '}
           <Sci v={hum.urban.ceiling} p={0} />. Only a lorry bouncing over a bump 15 metres from the room for all 25 seconds
           lifts it to <Sci v={hum.truck.ceiling} p={0} /> (<Sci v={thin.truck.ceiling} p={0} /> under the thin roof).
         </p>
