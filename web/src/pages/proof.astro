@@ -24,7 +24,7 @@ const len = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m >=
 
 // ---- the three layers
 type Cert = { case: string; tv_upper: number; tpr_upper_at_fpr_005: number; tight_ceiling_p2_25?: number | null };
-type Dyn = Cert & { stress_11pct_tv_upper: number; stress_11pct_tpr_upper_at_fpr_005: number; stress_11pct_excludes_095_at_005: boolean; source_frequency_hz: number };
+type Dyn = Cert & { stress_11pct_tv_upper: number; stress_11pct_tpr_upper_at_fpr_005: number; stress_11pct_excludes_095_at_005: boolean; source_frequency_hz: number; background_tpr_upper_at_fpr_005?: number; background_excludes_095_at_005?: boolean };
 const fc = finite as unknown as {
   static: Cert[];
   dynamic: Dyn[];
@@ -167,7 +167,7 @@ const conc = (r: DRes) => r.over_room / r.elsewhere;
       <div class="stat"><span class="value">{pctp(micro.tpr_upper_at_fpr_005, 3)}</span><span class="what">the most any processor could find the room at 5% false alarms, under the regional microseism envelope, the common background included (a loose certificate)</span><span class="src">P2-30 · Theorem C</span></div>
       <div class="stat"><span class="value">{sci(s0[0].ceiling)}</span><span class="what">detection rate − false-alarm rate, at most, by the tight calculation (the reference covariance taken as the identity)</span><span class="src">P2-25 · Fisher with an explicit remainder</span></div>
       <div class="stat"><span class="value">{sci(orReg)}</span><span class="what">the same for an oracle told the ground’s exact texture, the shaking and both physical models, under the regional microseisms, whatever the texture ({sci(orAmb)} at the noisiest stations on Earth)</span><span class="src">P2-29 · Theorem D, pulse by pulse</span></div>
-      <div class="stat"><span class="value">{pctp(thin.tpr_upper_at_fpr_005, 0)}</span><span class="what">the loose certificate’s ceiling for a room under a 5 m roof with a lorry bouncing beside it all pass: not excluded if its phase is 11% larger. An upper bound, not a detection</span><span class="src">P2-30 · the open case</span></div>
+      <div class="stat"><span class="value">{pctp(thin.tpr_upper_at_fpr_005, 0)}</span><span class="what">the loose certificate’s ceiling for a room under a 5 m roof with a lorry bouncing beside it all pass, the reference covariance taken as the identity{thin.stress_11pct_excludes_095_at_005 ? '' : ', not excluded if its phase is 11% larger'}; with Giza’s background motion in the reference, {thin.background_excludes_095_at_005 ? `${pctp(thin.background_tpr_upper_at_fpr_005 ?? 1, 0)}` : 'not excluded'}. Upper bounds, not detections</span><span class="src">P2-30 · the unresolved case</span></div>
     </div>
     <p class="sub">
       A detection target of 95% found with 5% false alarms needs the two hypotheses, room and no room, to differ by a total
@@ -273,7 +273,7 @@ const conc = (r: DRes) => r.over_room / r.elsewhere;
       <tbody>
         <tr><td>Giza’s regional trembling, any reader, one image</td><td>excluded: ≤ {pctp(micro.tpr_upper_at_fpr_005, 3)} found at 5% (certificate), {sci(orReg)} for the oracle</td><td>excluded: each pair ≤ {pctp(shMaxCert, 3)} at 5%</td><td>excluded with presence; aliased in the published method</td></tr>
         <tr><td>The noisiest ground on Earth</td><td>excluded (tight {sci(s0[1].ceiling)})</td><td>excluded with presence</td><td>excluded with presence</td></tr>
-        <tr><td>A lorry beside a room all pass, known exactly</td><td>not excluded, unresolved: the oracle’s upper bound reaches {orWorst_tv(orc)} and the certificate {pctp(thin.tpr_upper_at_fpr_005, 0)} at 5% for a thin roof; large bounds, not demonstrated detections</td><td>{shWorstDyn ? `not excluded: the oracle’s upper bound reaches ${shWorstDyn.oracle_tv.toFixed(2)} for the hardest pair` : 'to compute'}</td><td>about as hard as detection in this model ({orc.depth.signal_factor_depth_over_detection.toFixed(1)}× its signal, P2-29)</td></tr>
+        <tr><td>A lorry beside a room all pass, known exactly</td><td>not excluded, unresolved: the oracle’s upper bound reaches {orWorst_tv(orc)} and, for a thin roof, the certificate {pctp(thin.tpr_upper_at_fpr_005, 0)} at 5% with the reference as the identity{thin.background_excludes_095_at_005 === false ? ', no exclusion with the background in it' : ''}; large bounds, not demonstrated detections</td><td>{shWorstDyn ? `not excluded: the oracle’s upper bound reaches ${shWorstDyn.oracle_tv.toFixed(2)} for the hardest pair` : 'to compute'}</td><td>about as hard as detection in this model ({orc.depth.signal_factor_depth_over_detection.toFixed(1)}× its signal, P2-29)</td></tr>
         <tr><td>Any mechanism with gain, not yet specified</td><td colspan="3">not covered: it must state the motion it adds over the room (source, footprint, amplitude and phase, losses, duration); the requirement curve above says how much is needed</td></tr>
       </tbody>
     </table>
@@ -469,7 +469,7 @@ const conc = (r: DRes) => r.over_room / r.elsewhere;
     <table class="data compact">
       <thead><tr><th>open</th><th>why</th><th>what would close or open it</th></tr></thead>
       <tbody>
-        <tr><td>Strong shaking close by, known exactly</td><td>a room under a 5 m roof with a lorry beside it all pass: the certificate allows {pctp(thin.tpr_upper_at_fpr_005, 0)} at 5%, uninformative with 11% more phase; the oracle, {orOpen.length ? `${orOpen.length} cases open after allowances (×${Math.round(orc.allowance_product)})` : 'excluded after allowances'}</td><td>a physical limit on the motion a room adds under such forcing; a measurement over a known void</td></tr>
+        <tr><td>Strong shaking close by, known exactly</td><td>a room under a 5 m roof with a lorry beside it all pass: the certificate allows {pctp(thin.tpr_upper_at_fpr_005, 0)} at 5% with the reference as the identity{thin.background_excludes_095_at_005 === false ? ' and does not exclude it with the background in the reference' : ''}; the oracle, {orOpen.length ? `${orOpen.length} cases not excluded after allowances (×${Math.round(orc.allowance_product)})` : 'excluded after allowances'}; under the lorry the every-pattern margin rests on how far the scattered wave carries</td><td>a physical limit on the motion a room adds under such forcing; a measurement over a known void</td></tr>
         <tr><td>The physical envelopes</td><td>the imprint is the lab’s linear solver in uniform bare rock (P2-04, P2-26); the ambient levels are regional; nonlinear or parametric coupling is not modelled</td><td>ground motion measured on the plateau during a pass; a proponent’s quantitative prediction of the room-specific motion</td></tr>
         <tr><td>The measurement model</td><td>speckle and the Doppler-to-time relation for the certificate and the tight layer; the radiometry for the oracle (30 dB assumed)</td><td>a qualified observation operator and noise floor for the real product</td></tr>
         <tr><td>Measured validation</td><td>the geophone-and-satellite comparison (P2-22, P2-23) is simulated</td><td>shaker or reflector data with instruments on them; surveyed voids and matched controls, blind</td></tr>

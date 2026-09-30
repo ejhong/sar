@@ -576,7 +576,9 @@ investigation's record, and what it leaves open follow.
     5.017% found at 5% false alarms under the regional microseism envelope with the background included (TV
     1.7e-04, where P2-25's tighter bound gives 1.3e-09); an arbitrary phase modulation within the background envelope
     on 52,600 pixels at most 9.55%, over the whole image undecided; the thin-roof room with a truck-level
-    harmonic at most 89.1%, undecided with 11% more phase.
+    harmonic at most 27.3% with the reference covariance taken as the identity, still excluded with 11% more phase (89.1%
+    before the far field was taken direction by direction; the old bound took four times the average), and not excluded
+    with Giza's background motion in the reference.
 
 23. **Telling one layout from another is bounded as detection is (P2-32).** For any two layouts A and B,
     TV(A, B) <= TV(A, none) + TV(none, B), and the closest admissible pair of depth variants is no easier than the pair at
@@ -756,7 +758,9 @@ checks, and found that some conclusions went beyond what the calculations establ
   background.
 - **The far field by direction.** P2-25 (and P2-29, P2-30 and P2-32 after it) averaged the scattered wave's far-field
   energy over directions and combined it with the worst direction's near field. Each direction is now paired with its own
-  far field (the truck's bound for the bench room moves from 0.022 to 0.023).
+  far field (the truck's bound for the bench room moves from 0.022 to 0.023; P2-30's certificate for the thin-roof room,
+  which had bounded the far field by four times the average, tightens from 89.1% to 27.3% at 5% with the reference as the
+  identity, and stays unexcluded with the background in it).
 - **Phase modulation.** A cavity's influence need not appear as a new frequency, and a change of phase can carry
   information; the linear solver's complex response already includes amplitude and phase. A fixed-amplitude phase change
   moves the ground by at most twice its amplitude, but turning that into an exclusion needs a justified extent: the

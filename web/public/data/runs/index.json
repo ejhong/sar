@@ -2176,9 +2176,9 @@
   "id": "p2_30_finite_certificates",
   "title": "Finite certificates: the bound on every processor, the common background included",
   "date": "2026-09-30",
-  "started_utc": "2026-09-30T13:00:11+00:00",
-  "runtime_s": 0.2,
-  "commit": "afc7174",
+  "started_utc": "2026-09-30T13:08:47+00:00",
+  "runtime_s": 0.1,
+  "commit": "14644e8+",
   "params": {
    "target": {
     "tpr": 0.95,

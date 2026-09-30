@@ -165,6 +165,13 @@ def certificates():
                     covering_scene_radius_m=covering_radius,
                     oracle_energy_upper_30db=1000 * Q,
                     oracle_tv_upper_30db=oracle_tv_from_mean_energy(1000 * Q))
+            if background_floor is not None:
+                # the same energy with Giza's common background motion in the reference covariance (the static rows' way)
+                bg = certificate_from_energy(Q, background_floor)
+                r.update({'reference_covariance': 'identity (the background in the next fields)',
+                          'background_tv_upper': bg['tv_upper'],
+                          'background_tpr_upper_at_fpr_005': min(1, .05 + bg['tv_upper']),
+                          'background_excludes_095_at_005': bg['tv_upper'] < .9})
             stress=certificate_from_energy(Q*1.11**2)
             r.update({"stress_11pct_phase_multiplier":1.11,
                 "stress_11pct_tv_upper":stress['tv_upper'],
@@ -296,10 +303,13 @@ def main():
             f"detection rate at {100 * micro['tpr_upper_at_fpr_005']:.4f}% at 5% false alarms under the regional microseism "
             f"envelope (detection minus false alarm at most {micro['tv_upper']:.2e}; P2-25's tighter bound, reference "
             f"covariance I: {micro['tight_ceiling_p2_25']:.1e}). Every static row excludes 95% at 5%. Of P2-26's dynamic "
-            f"rows the thin-roof room under a truck-level harmonic is the open one: at most "
-            f"{100 * thin['tpr_upper_at_fpr_005']:.1f}% at 5%, and "
+            f"rows (the reference covariance taken as the identity, each wave direction's far field its own) the largest is "
+            f"the thin-roof room under a truck-level harmonic: at most {100 * thin['tpr_upper_at_fpr_005']:.1f}% at 5%, "
             + ("no longer excluded" if not thin['stress_11pct_excludes_095_at_005'] else "still excluded")
-            + f" if its phase is 11% larger. An arbitrary phase modulation within the background envelope on "
+            + f" if its phase is 11% larger; with Giza's background motion in the reference "
+            + (f"at most {100 * thin['background_tpr_upper_at_fpr_005']:.1f}%" if thin.get('background_excludes_095_at_005')
+               else "the certificate no longer excludes it")
+            + f". An arbitrary phase modulation within the background envelope on "
             f"{pm[0]['affected_scatterer_pixels_assumed']:,} pixels is capped at {100 * pm[0]['tpr_upper_at_fpr_005']:.2f}%; "
             f"on the whole image the certificate is uninformative."
             + (f" Depth: P2-29's spread rooms 15 m down leave {100 * dep['residual_fraction']:.0f}% of a room 30 m down's mark "
