@@ -414,21 +414,27 @@ type RqLin = { L_m: number; area_half_m2: number; D_linearised_m: Record<string,
 type RqF = { f_hz: number; exact: RqRow[]; linear: RqLin[] };
 const rq = requirement as unknown as {
   acquisitions: Record<string, { look_angle_deg: number; frequencies: RqF[] }>;
-  ambient: { label: string; f_hz: number; displacement_amplitude_m: number; note: string; least_necessary_m: number; constrained_short_by: number }[];
+  ambient: { label: string; f_hz: number; displacement_amplitude_m: number; note: string; least_necessary_m: number; constrained_short_by: number; phase_only_area_m2?: number }[];
   constrained: { ratio: number; modelled_ratio: number; case: string; f_hz: number };
-  imprints: { label: string; f_hz: number; area_half_m2: number; peak_m: number; necessary_m: number; short_by: number }[];
+  imprints: { label: string; f_hz: number; area_half_m2: number; peak_m: number; necessary_m: number; short_by: number; energy_m4?: number; short_by_any_pattern?: number }[];
   checks: { largest_nonlinearity: number; largest_psi_swing: number; lines_over_image: Record<string, number[]> };
+  any_pattern?: { E_min_m4: Record<string, number>; E_min_identity_m4: Record<string, number> };
+  pattern_check?: { f_hz: number; gaussian_share_of_envelope_ceiling: number; ratio_to_gaussian: Record<string, number> }[];
 };
 const rqMain = rq.acquisitions['giza-20250827'].frequencies;
-const rqOld = rq.acquisitions['giza-20220715'].frequencies;
 const rqColours = ['var(--lapis)', 'var(--verdigris)', 'var(--ochre)', 'var(--porphyry)', 'var(--cinnabar)'];
 const rqAt = (f: number, L: number) => rqMain.find((r) => r.f_hz === f)!.exact.find((e) => e.L_m === L)!;
 const rqStatic = rq.imprints.find((i) => i.label.includes('static') && i.label.includes('microseisms'))!;
 const rqDyn = rq.imprints.filter((i) => i.label.includes('dynamic'));
-const rqLeast = Math.min(...rq.ambient.filter((a) => a.label.includes('regional')).map((a) => a.constrained_short_by));
-const rqLeastAll = Math.min(...rq.ambient.map((a) => a.constrained_short_by));
+const rqEmin = rq.any_pattern?.E_min_m4['0.9'] ?? null;
+const rqEid = rq.any_pattern?.E_min_identity_m4['0.9'] ?? null;
+const rqPat02 = rq.pattern_check?.find((r) => r.f_hz === 0.2);
+const rqPhaseArea = rq.ambient.find((a) => a.label.includes('microseisms, regional'))?.phase_only_area_m2 ?? null;
+const rqAnyStatic = rqStatic.short_by_any_pattern ?? null;
+const rqAnyDyn = rqDyn.map((i) => i.short_by_any_pattern ?? NaN).filter((v) => Number.isFinite(v));
+const rqShort = (v: number) => (v < 1 ? `not excluded (${v.toFixed(2)})` : sci(v));
 // P2-29: the oracle, told everything but the answer
-type OrRow = { case: string; kind: string; delta: number; tv_exact: number; growth_to_target: number; growth_after_allowances: number; open: boolean; note: string };
+type OrRow = { case: string; kind: string; delta: number; tv_upper: number; growth_to_target: number; growth_after_allowances: number; open: boolean; note: string };
 const orc = oracle as unknown as {
   raw_echo_check: { scatterers: number; pulses: number; summary: Record<string, { mean: number; se: number; spread: number }> };
   chamber: OrRow[];
@@ -595,13 +601,14 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
       visitors, is unmeasured, and none of these is an upper limit there; the urban and truck rows stand in for louder ground.
     </p>
 
-    <h3 class="bound-h">What one image would need: under the stated conditions, a detection needs the room itself to move the ground over it by at least {umText(rqAt(0.2, 8).D_necessary_m['0.9'])} at microseism frequencies, or {umText(rqAt(80, 8).D_necessary_m['0.9'])} at 80 Hz</h3>
+    <h3 class="bound-h">What one image would need: for every pattern, added motion with enough energy over the ground; for a smooth pattern, at least {umText(rqAt(0.2, 8).D_necessary_m['0.9'])} at microseism frequencies or {umText(rqAt(80, 8).D_necessary_m['0.9'])} at 80 Hz</h3>
     <div class="grid-2 charts">
       <LineChart
-        title="The least room-specific line-of-sight motion for a detection at 95% with 5% false alarms, against the footprint’s area"
+        title="The least room-specific line-of-sight motion for a detection at 95% with 5% false alarms, for a smooth Gaussian pattern, against the footprint’s area"
         series={[
           ...rqMain.map((r, i) => ({ name: `${r.f_hz} Hz`, x: r.exact.map((e) => e.area_half_m2), y: r.exact.map((e) => e.D_necessary_m['0.9']), color: rqColours[i], width: 1.8 })),
           ...rqMain.map((r, i) => ({ name: `${r.f_hz} Hz, linearised`, x: r.linear.filter((e) => e.area_half_m2 >= r.exact[r.exact.length - 1].area_half_m2).map((e) => e.area_half_m2), y: r.linear.filter((e) => e.area_half_m2 >= r.exact[r.exact.length - 1].area_half_m2).map((e) => e.D_linearised_m['0.9']), color: rqColours[i], dash: '4 3', width: 1.2 })),
+          ...(rqEmin != null ? [{ name: 'any pattern, by its energy, the background in (Theorem C)', x: [1, 10, 100, 1e3, 1e4, 1e5], y: [1, 10, 100, 1e3, 1e4, 1e5].map((A) => Math.sqrt(rqEmin / A)), color: 'var(--text)', dash: '2 3', width: 1.3 }] : []),
           { name: 'the bench room’s imprints (P2-04, P2-26)', x: rq.imprints.map((i) => i.area_half_m2), y: rq.imprints.map((i) => i.peak_m), color: 'var(--muted)', markers: true, width: 0 },
         ]}
         xLabel="footprint, m² within half the peak"
@@ -611,36 +618,35 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
         yFormat="exp"
         height={250}
         directLabels={false}
-        caption={`P2-27, on the Giza dwell of 27 August 2025. Solid: exact within the model (each line of the image’s KL computed from its covariance’s determinant, the range band widened, which can only add information); dashed: linearised, for footprints wider than the exact computation reaches. Points: the bench room’s modelled imprints, ${sci(rqStatic.short_by)} below the curve under the regional microseism level and ${sci(Math.min(...rqDyn.map((i) => i.short_by)))} to ${sci(Math.max(...rqDyn.map((i) => i.short_by)))} below it under a truck over a bump 15 m away.`}
+        caption={`P2-27, on the Giza dwell of 27 August 2025. Solid: exact within the model for one smooth pattern (each line of the image’s KL from its covariance’s determinant, the range band widened, which can only add information); dashed: linearised, beyond the exact computation. Dotted: every pattern, by its energy, as the peak of a motion filling the footprint evenly. Points: the bench room’s modelled imprints, ${sci(rqStatic.short_by)} below the smooth-pattern curve under the regional microseism level${rqAnyStatic != null ? ` and ${sci(rqAnyStatic)} short of the every-pattern energy` : ''}; under a truck over a bump 15 m away ${sci(Math.min(...rqDyn.map((i) => i.short_by)))} to ${sci(Math.max(...rqDyn.map((i) => i.short_by)))} below the smooth-pattern curve${rqAnyDyn.length ? `, and against the energy, its scattered wave carried to the scene’s corner, ${rqShort(Math.min(...rqAnyDyn))} to ${rqShort(Math.max(...rqAnyDyn))}` : ''}.`}
       />
       <div class="note-card">
-        <span class="tag">conditional · P2-27</span>
-        <h3>A requirement curve, not an exclusion of mechanisms</h3>
+        <span class="tag">conditional · P2-27 · corrected after review</span>
+        <h3>A requirement curve for one family of patterns, and an energy requirement for all</h3>
         <p>The bound turned around: how large must the motion the room itself adds to the ground be before any way of reading
         one image could find it? For the Giza dwell, ordinary ground as fully developed speckle with no reference image and no
-        receiver noise, one room-specific motion pattern coherent for the whole pass at its worst phase, and a target of 95%
-        found with 5% false alarms, at least {umText(rqAt(0.2, 8).D_necessary_m['0.9'])} of line-of-sight motion at 0.2 Hz
-        (the stretch regime, where only its gradient counts and the footprint hardly matters) and
-        {' '}{umText(rqAt(80, 8).D_necessary_m['0.9'])} at 80 Hz over {Math.round(rqAt(80, 8).area_half_m2)} m². The exact
-        computation stays within {((rq.checks.largest_nonlinearity - 1) * 100).toFixed(1)}% of its quadratic start even at
-        those amplitudes; the 2022 acquisition (look angle {rq.acquisitions['giza-20220715'].look_angle_deg.toFixed(0)}°) gives
-        {' '}{umText(rqOld.find((r) => r.f_hz === 0.2)!.exact.find((e) => e.L_m === 8)!.D_necessary_m['0.9'])} and
-        {' '}{umText(rqOld.find((r) => r.f_hz === 80)!.exact.find((e) => e.L_m === 8)!.D_necessary_m['0.9'])}.</p>
-        <p>Any mechanism that acts through the surface’s motion must put such motion on the ground, whatever drives it, linear
-        or not. A change of the ambient motion’s phase alone, of any size, moves the ground by at most twice that motion; P2-26’s
-        rooms scatter at most {rq.constrained.modelled_ratio.toFixed(1)} times it. A mechanism limited so would need Giza’s regional
-        levels raised at least {sci(rqLeast)} times ({sci(rqLeastAll)} for a lorry bouncing 15 m away all pass); one with gain,
-        gathering energy over the room for the whole pass, would have to be specified before it could be computed. Outside the curve: changes
-        of the surface’s reflectivity during the pass, the echo from beneath, scatterers that are not speckle, and more than
-        one image. A corner reflector on the footprint’s peak needs {umText(rqMain[0].linear[0].D_reflector_m['0.9'])} whatever
-        the footprint; a method handed the ground’s reflectivity, far less.</p>
+        receiver noise, one smooth room-specific pattern (a Gaussian) coherent for the whole pass at its worst phase, and a
+        target of 95% found with 5% false alarms: at least {umText(rqAt(0.2, 8).D_necessary_m['0.9'])} of line-of-sight
+        motion at 0.2 Hz (where only its gradient counts) and {umText(rqAt(80, 8).D_necessary_m['0.9'])} at 80 Hz over
+        {' '}{Math.round(rqAt(80, 8).area_half_m2)} m². The exact computation stays within
+        {' '}{((rq.checks.largest_nonlinearity - 1) * 100).toFixed(1)}% of its quadratic start even at those amplitudes.</p>
+        <p>That curve is for that family only. What the image holds depends on the pattern as well as its size:
+        {rqPat02 ? ` the same Gaussian multiplied by a cosine of 4 m period along track holds ${rqPat02.ratio_to_gaussian['cos along track, 4 m period'].toFixed(0)} times its information at 0.2 Hz, though nowhere larger (an independent review’s example, reproduced), and the Gaussian holds only ${sci(rqPat02.gaussian_share_of_envelope_ceiling)} of what the most informative pattern inside its envelope could.` : ''}
+        {' '}For every pattern the requirement is on energy (Theorem C, <a href={`${base}/proof/#mechanism`}>the proof</a>):
+        a room-specific motion whose ∫ max|u|² dA stays below {rqEmin != null ? `${sci(rqEmin)} m⁴` : 'the boundary'} (with
+        Giza’s background motion in the reference{rqEid != null ? `; ${sci(rqEid)} m⁴ without` : ''}) is excluded whatever its
+        shape. A change of the ambient motion’s phase alone moves the ground by at most twice that motion, so such a mechanism is
+        excluded only while the area it changes stays below {rqPhaseArea != null ? `${Math.round(rqPhaseArea).toLocaleString('en-US')} m²` : 'a bound'}
+        {' '}under the regional microseisms: its extent is the mechanism’s to justify. One with gain would have to be specified
+        before it could be computed. Outside: changes of the surface’s reflectivity during the pass, the echo from beneath,
+        scatterers that are not speckle, more than one image.</p>
       </div>
     </div>
 
-    <h3 class="bound-h">Told everything but the answer, an oracle still gains at most {sci(orAmb[0].tv_exact)} under Giza’s regional trembling ({sci(Math.max(...orAmb.map((r) => r.tv_exact)))} at the noisiest stations); the open regime is strong shaking close by, known exactly</h3>
+    <h3 class="bound-h">Told everything but the answer, an oracle still gains at most {sci(orAmb[0].tv_upper)} under Giza’s regional trembling ({sci(Math.max(...orAmb.map((r) => r.tv_upper)))} at the noisiest stations); strong shaking close by, known exactly, is not excluded by it</h3>
     <div class="grid-2">
       <div class="note-card">
-        <span class="tag">exact · any texture · P2-29</span>
+        <span class="tag">an upper bound · any texture · P2-29</span>
         <h3>The oracle</h3>
         <p>Give a detector more than any method has: the exact reflectivity of every scatterer, the background motion, the
         shaking’s realisation and both physical models, with the room and without. All it lacks is which is true, and the
@@ -670,16 +676,18 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
       <thead><tr><th>the oracle, the bench room</th><th>Δ</th><th>detection − false alarm</th><th>motion must grow, for 95% at 5%</th><th>after allowances (×{Math.round(orc.allowance_product)})</th></tr></thead>
       <tbody>
         {orc.chamber.map((r) => (
-          <tr><td>{r.case}</td><td>{sci(r.delta)}</td><td>{sci(r.tv_exact)}</td><td>{r.growth_to_target >= 100 ? sci(r.growth_to_target) : r.growth_to_target.toFixed(1)}×</td><td>{r.open ? 'open' : `${r.growth_after_allowances >= 100 ? sci(r.growth_after_allowances) : r.growth_after_allowances.toFixed(1)}×`}</td></tr>
+          <tr><td>{r.case}</td><td>{sci(r.delta)}</td><td>{sci(r.tv_upper)}</td><td>{r.growth_to_target >= 100 ? sci(r.growth_to_target) : r.growth_to_target.toFixed(1)}×</td><td>{r.open ? 'open' : `${r.growth_after_allowances >= 100 ? sci(r.growth_after_allowances) : r.growth_after_allowances.toFixed(1)}×`}</td></tr>
         ))}
       </tbody>
     </table>
     <p class="note">
       The allowances are assumptions, stated so the margin can be judged: the local ambient level ten times the regional,
       site amplification three times, and 10 dB more signal-to-noise. Where the margin does not survive them the case is
-      open, and it is reported as open: strong shaking close to the room for the whole pass, with the oracle told that
-      shaking exactly and the scattered wave carried unattenuated across the whole scene. That regime needs a physical limit on
-      how much motion a room can add, which the statistics cannot supply.
+      marked open: not excluded by this argument, which is not the same as detectable. The values are upper bounds (energy
+      bounds, averaged over phases, the scattered wave carried unattenuated across the whole scene, each wave direction with
+      its own); a large one says only that this argument does not exclude detection, and only an implemented detector
+      succeeding on independent tests would show a regime works. That regime needs a physical limit on how much motion a
+      room can add, which the statistics cannot supply.
     </p>
 
     <h3 class="bound-h">{sharpAny || ringQ > 20 || ringUnresolved.length ? `Faster shaking reaches a room better, and ${ringQ > 20 ? `a room rung on its ceiling holds a mode with Q ${ringQ.toFixed(0)}` : 'some responses peak sharply'}: the bounds use the imprint as the solver finds it` : `In the rooms modelled the responses are broad: rung on its ceiling, the longest-lived mode resolved has Q ${ringQ.toFixed(0)}; a room under a 5 m roof moves the ground over it up to ${spF.peak_value.toFixed(1)} times the passing motion`}</h3>
@@ -750,7 +758,7 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
         <tr><td>Other routes carry far too little at X band</td><td>modelled estimates</td><td>penetration, loads, heat, surface (P2-11)</td><td>measured penetration in Mokattam limestone; deformation over known voids</td></tr>
         <tr><td>Single images measure vibration of bright targets</td><td>established</td><td>2026 papers with ground truth; P2-03</td><td>none</td></tr>
         <tr><td>However one image of ordinary ground is read, the bench chamber’s imprint on the ground’s motion lets no test’s detection rate exceed its false-alarm rate by more than {sci(bd.static[0].ceiling)} under Giza’s regional microseism level, {sci(bSurf.urban.ceiling)} under an urban hum, {sci(bSurf.truck.ceiling)} with a truck bouncing 15 m away all pass</td><td>bounded: a theorem within a model</td><td>fully developed speckle, the Doppler-to-time relation, linear elasticity, the chamber’s imprint by the elastic solver at every frequency, the regional ambient levels; a bound, within {Math.max(...detOver).toFixed(1)} times of the best test on small test images (P2-25, P2-26)</td><td>ground whose texture departs from speckle beyond bright points; shaking far above these levels for a whole pass; an imprint beyond linear elasticity; measured ground motion and radar data that disagree</td></tr>
-        <tr><td>Under stated conditions a detection needs the room to move the ground over it by at least {umText(rqAt(0.2, 8).D_necessary_m['0.9'])} at microseism frequencies, {umText(rqAt(80, 8).D_necessary_m['0.9'])} at 80 Hz</td><td>a conditional requirement</td><td>the Giza dwell, fully developed speckle without a reference, one coherent pattern at its worst phase, 95% found at 5% false alarms (P2-27)</td><td>a mechanism shown to put such motion on the ground; routes outside the model (reflectivity changes, the echo from beneath, more than one image)</td></tr>
+        <tr><td>Under stated conditions a detection needs the room-specific motion over the ground to carry at least {rqEmin != null ? `${sci(rqEmin)} m⁴` : 'a stated'} of energy (∫ max|u|² dA), whatever its pattern; for a smooth pattern, at least {umText(rqAt(0.2, 8).D_necessary_m['0.9'])} at microseism frequencies, {umText(rqAt(80, 8).D_necessary_m['0.9'])} at 80 Hz</td><td>a conditional requirement</td><td>the Giza dwell, fully developed speckle without a reference, Theorem C for every pattern with Giza’s background in the reference, 95% found at 5% false alarms (P2-27, P2-30); corrected after review, the smooth-pattern curve having been stated as universal</td><td>a mechanism shown to put that energy on the ground over a justified extent; routes outside the model (reflectivity changes, the echo from beneath, more than one image)</td></tr>
         <tr><td>Whether a single image at a longer wavelength, or many images, could sense a subsurface structure</td><td>open</td><td>estimates only (P2-11)</td><td>the tests under <a href="#settle">What would settle it</a></td></tr>
       </tbody>
     </table>
