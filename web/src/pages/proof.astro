@@ -106,10 +106,12 @@ const rqPhase = Math.min(...rq.ambient.filter((a) => a.label.includes('regional'
 const certCurve = [1, 10, 100, 1e3, 1e4].map((A) => ({ A, D: fc.requirements.q_exclusion_boundary_095_005 / ((4 * Math.PI) / fc.geometry.wavelength_m * Math.sqrt(fc.geometry.area_density_used * A)) }));
 
 // ---- depth (P2-28, P2-29, P2-30)
-type DRes = { share_12_18_m: number; share_27_33_m: number; axis_share_12_18_m: number; axis_share_27_33_m: number; peak_depth_m: number };
+type DRes = { share_12_18_m: number; share_27_33_m: number; axis_share_12_18_m: number; axis_share_27_33_m: number; peak_depth_m: number; over_room: number; elsewhere: number };
 const dp = depths as unknown as { results: Record<string, DRes>; follows_depth: boolean; depth_axis_m: number[] };
 const d15 = dp.results['hollow_15_phase_2'];
 const d30 = dp.results['hollow_30_phase_2'];
+const dNull = dp.results['null'];
+const conc = (r: DRes) => r.over_room / r.elsewhere;
 ---
 <Doc
   title="The bound, finite and stated"
@@ -361,7 +363,9 @@ const d30 = dp.results['hollow_30_phase_2'];
         <p>Run whole over the bench room 15 m down, the same room 30 m down and a granite block, each imprint boosted to 2 rad, the
         published focusing spreads each change over its whole axis: {pctp(d15.share_12_18_m, 0)} of the 15 m room’s change lies between 12 and 18 m
         and {pctp(d30.share_27_33_m, 0)} of the 30 m room’s between 27 and 33 m, where {pctp(d15.axis_share_12_18_m, 0)} and {pctp(d30.axis_share_27_33_m, 0)} of the axis lie.
-        Its depth coordinate is an uncalibrated focus coordinate, the frequency of the registration series (P2-06): a calibration
+        Horizontally its change does gather over the room ({conc(d15).toFixed(1)} times elsewhere), but a random perturbation of the
+        same pixels gathers almost as much ({conc(dNull).toFixed(1)} times): in this paired comparison the picture changes where the image
+        changes. Its depth coordinate is an uncalibrated focus coordinate, the frequency of the registration series (P2-06): a calibration
         and aliasing problem, which a method that recovered the right layout would survive. Whether it recovers the layout is
         the shape test’s question.</p>
       </div>
