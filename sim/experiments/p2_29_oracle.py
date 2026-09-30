@@ -377,7 +377,7 @@ def main():
             f"{reg['growth_to_target']:.1e} times, {reg['growth_after_allowances']:.1e} after allowing the local level ten "
             f"times the regional, site amplification three times and 10 dB more SNR; at the noisiest stations on Earth "
             f"{loud['tv_upper']:.1e} ({loud['growth_to_target']:.1e} and {loud['growth_after_allowances']:.1e} times). "
-            f"The open regime is strong nearby shaking known exactly, the scattered wave carried unattenuated across the "
+            f"What this argument does not exclude is strong nearby shaking known exactly, the scattered wave carried unattenuated across the "
             f"scene: for {worst['case']} the oracle's bound reaches {worst['tv_upper']:.2f}"
             + (f", so this argument no longer excludes 95% found at 5% false alarms (it would below "
                f"{worst['growth_to_target']:.2f} of that motion)" if worst['growth_to_target'] < 1 else

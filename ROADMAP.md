@@ -145,7 +145,14 @@ Then (29 September, evening; the cloud session, on branch `claude/upbeat-pascal-
   branching tunnel and no cavity, generated through the forward model, read by the published method and a reference
   detector at the real level and at labelled amplified diagnostics. At 20 rad the reference detector names every layout
   and places it within 0.4 m; the published blind map names 5 of 9 (p = 0.14) and centres no closer than the controls;
-  at the real level every reader is at chance (audit item 24). P2-32 bounds shape discrimination as detection is. Next: a
+  at the real level every reader is at chance (audit item 24). P2-32 bounds shape discrimination as detection is.
+- **Third review** (30 September): P2-27's smooth-pattern curve is not a universal requirement (a pattern with more
+  structure in the same envelope holds far more); the requirement for every pattern is on energy (Theorem C), and
+  under a truck close by it rests on how far the scattered wave carries. Large upper bounds are not working regimes;
+  shape pairs go through empty ground; the direction guard and the far field by direction are fixed (audit, third
+  review). Next, in the review's order: quantify the physical assumptions as declared ranges (excitation, material,
+  geometry, coupling, scattering, the far field's attenuation, spatial tails, numerical error), then a shape proof
+  over that declared range for two meaningfully different layouts. After it: a
   physically strong positive control (a vibrator or a lorry beside the layouts, not a boosted imprint), multi-level
   layouts for relative vertical geometry, the gated reconstruction on the same products (desktop), and real withheld
   ground (`BLIND_TEST.md`).

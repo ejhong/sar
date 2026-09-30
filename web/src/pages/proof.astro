@@ -112,7 +112,7 @@ const m1 = (v: number | null | undefined) => (v == null ? '—' : `${v < 10 ? v.
 // ---- the requirement (P2-27)
 type RqRow = { L_m: number; area_half_m2: number; D_necessary_m: Record<string, number> };
 type RqLin = { L_m: number; area_half_m2: number; D_linearised_m: Record<string, number> };
-type RqImp = { label: string; f_hz: number; area_half_m2: number; peak_m: number; short_by: number; energy_m4?: number; short_by_any_pattern?: number };
+type RqImp = { label: string; f_hz: number; area_half_m2: number; peak_m: number; short_by: number; energy_m4?: number; short_by_any_pattern?: number; short_by_any_pattern_near_only?: number };
 type RqAmb = { label: string; f_hz: number; constrained_short_by: number; phase_only_area_m2?: number };
 type RqPat = { f_hz: number; gaussian_share_of_envelope_ceiling: number; ratio_to_gaussian: Record<string, number> };
 const rq = requirement as unknown as {
@@ -417,18 +417,21 @@ const conc = (r: DRes) => r.over_room / r.elsewhere;
       </div>
     </div>
     <table class="data compact">
-      <thead><tr><th>the bench room’s modelled imprint</th><th>short of a smooth pattern of its peak and footprint</th><th>short of any pattern of its energy, the background in</th></tr></thead>
+      <thead><tr><th>the bench room’s modelled imprint</th><th>short of a smooth pattern of its peak and footprint</th><th>short of any pattern of its energy, the background in</th><th>the same, the scattered wave counted within 39 m only</th></tr></thead>
       <tbody>
         {rq.imprints.map((im) => (
-          <tr><td>{im.label.replace('bench room, ', '').replace(', measured', '').replace('dynamic, ', 'dynamic, ')}{im.label.includes('dynamic') ? `, ${Math.round(im.f_hz)} Hz` : ''}</td><td>{sci(im.short_by)}</td><td>{shortTxt(im.short_by_any_pattern)}</td></tr>
+          <tr><td>{im.label.replace('bench room, ', '').replace(', measured', '').replace('The world', 'the world')}{im.label.includes('dynamic') ? `, ${Math.round(im.f_hz)} Hz` : ''}</td><td>{sci(im.short_by)}</td><td>{shortTxt(im.short_by_any_pattern)}</td><td>{im.short_by_any_pattern_near_only != null ? shortTxt(im.short_by_any_pattern_near_only) : '—'}</td></tr>
         ))}
       </tbody>
     </table>
     <p class="note">
       “Short” is how many times the imprint’s amplitude would have to grow before the bound stops excluding 95% at 5%; below 1
       the bound does not exclude it. The energy counts the static imprint on the solver’s whole grid with a tail beyond, and the
-      dynamic imprint’s scattered wave carried unattenuated to the scene’s farthest corner, each wave direction with its own:
-      generous, so a small factor here is an upper bound’s margin, not a demonstrated detection.
+      dynamic imprint’s scattered wave carried unattenuated to the scene’s farthest corner, each wave direction with its own.
+      Under the ground’s own trembling the margin is hundreds of thousands, and survives the allowances assumed for the oracle
+      (the local level ten times the regional, site amplification three times: thirty in amplitude). Under a
+      lorry close by it is a few times at most, and it rests on how far the scattered wave carries: counted within 39 m it is
+      tens. That is an assumption to measure, and a small factor is an upper bound’s margin, not a demonstrated detection.
     </p>
   </section>
 

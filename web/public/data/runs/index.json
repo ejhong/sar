@@ -1521,9 +1521,9 @@
   "id": "p2_25_information_bound",
   "title": "What one image can hold about the chamber, whatever reads it",
   "date": "2026-09-30",
-  "started_utc": "2026-09-30T08:24:17+00:00",
-  "runtime_s": 353.5,
-  "commit": "cfb8852",
+  "started_utc": "2026-09-30T12:46:39+00:00",
+  "runtime_s": 808.4,
+  "commit": "afc7174",
   "params": {
    "acquisition": "giza-20250827",
    "half_width_m": 45.0,
@@ -1964,9 +1964,9 @@
   "id": "p2_27_requirement",
   "title": "What one image would need: the motion a room must add to the ground",
   "date": "2026-09-30",
-  "started_utc": "2026-09-30T06:41:44+00:00",
-  "runtime_s": 974.7,
-  "commit": "1214539",
+  "started_utc": "2026-09-30T13:01:09+00:00",
+  "runtime_s": 10.9,
+  "commit": "afc7174+",
   "params": {
    "acquisitions": [
     "giza-20250827",
@@ -2123,9 +2123,9 @@
   "id": "p2_29_oracle",
   "title": "The oracle: what an ideal detector could learn, told more than any method knows",
   "date": "2026-09-30",
-  "started_utc": "2026-09-30T08:49:50+00:00",
-  "runtime_s": 171.0,
-  "commit": "74c62d5+",
+  "started_utc": "2026-09-30T13:00:34+00:00",
+  "runtime_s": 0.9,
+  "commit": "afc7174+",
   "params": {
    "acquisition": "giza-20250827",
    "snr_db": 30.0,
@@ -2176,9 +2176,9 @@
   "id": "p2_30_finite_certificates",
   "title": "Finite certificates: the bound on every processor, the common background included",
   "date": "2026-09-30",
-  "started_utc": "2026-09-30T08:52:42+00:00",
+  "started_utc": "2026-09-30T13:00:11+00:00",
   "runtime_s": 0.2,
-  "commit": "74c62d5+",
+  "commit": "afc7174",
   "params": {
    "target": {
     "tpr": 0.95,

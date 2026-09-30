@@ -524,18 +524,25 @@ investigation's record, and what it leaves open follow.
     excitations and windows are covered: fractured, layered or coupled structures, the air inside a room and the rock's
     nonlinear response are not modelled.
 
-19. **What one image would need: a conditional requirement curve (P2-27).** The bound turned around: for the Giza
-    dwell (and the 2022 acquisition), fully developed speckle without a reference image or receiver noise, one
-    room-specific motion pattern coherent for the whole pass at its worst phase, and a target of 95% found at 5% false
-    alarms, the least room-specific line-of-sight motion over a footprint. Exact within the model: the range band widened
-    (the narrower image is a function of the wider, so this only adds information), each line's KL for the finite change
-    from its covariance's determinant, no linearisation (the exact KL stays within 5% of its quadratic start even at
-    these amplitudes). At least 3.0 mm at 0.2 Hz, where only the motion's gradient counts and the footprint hardly
-    matters; 47 um at 80 Hz over 279 m^2 (the half-maximum area of a Gaussian footprint with L = 8 m). The bench room's
-    modelled imprints fall short: 8.3e+08 under the regional microseisms, 136 to 1055 with a
-    truck all pass. Any mechanism that acts through the surface's motion, linear or not, must supply such motion; a change
-    of the ambient motion's phase alone moves the ground by at most twice that motion, and at the regional levels falls
-    short 2e+04 times or more. It says nothing of routes outside the model or of mechanisms with gain.
+19. **What one image would need: an energy requirement for every pattern, and a curve for smooth ones (P2-27).** The
+    bound turned around, for the Giza dwell (and the 2022 acquisition), fully developed speckle without a reference image
+    or receiver noise, motion coherent for the whole pass at its worst phase, and a target of 95% found at 5% false
+    alarms. For every pattern, from Theorem C: a room-specific motion whose energy, the integral of max_t |u_los|^2 over
+    the ground, stays below 9.8e-10 m^4 (Giza's background motion in the reference covariance; 1.7e-8 m^4 with the
+    reference taken as the identity) is excluded whatever its shape, frequency or time history, an rms of 1.0 um over
+    1,000 m^2. For one smooth (Gaussian) pattern, exactly within the model (each line's KL from its covariance's
+    determinant, the range band widened): at least 3.0 mm at 0.2 Hz, where only the gradient counts, and 47 um at 80 Hz over
+    279 m^2. The smooth curve binds only that family: at 0.2 Hz the Gaussian holds 4.7e-4 of what the most informative
+    pattern inside its envelope could (the same envelope times a cosine of 4 m period holds 39 times as much, of 1 m period
+    489 times); at 20 to 80 Hz it holds half, and the pattern matters little. The bench room's modelled static imprint under
+    the regional microseisms falls short of the energy requirement by 4.6e5 in amplitude (8.3e8 against the smooth curve).
+    Under a truck over a bump 15 m away all pass, with the scattered wave carried unattenuated to the scene's farthest
+    corner, the bench room's dynamic imprint falls short by only 2.5 to 3.7, and the room under a 5 m roof not at all
+    (0.45 to 0.97); counted within 39 m, 33 to 35 and 5.2 to 8.1: under strong shaking the conclusion rests on how far the
+    scattered wave carries. A change of the ambient motion's phase alone moves the ground by at most twice that motion, so
+    such a mechanism is excluded only while the area it changes stays below E_min / (2a)^2: 5.5e4 m^2 under the regional
+    microseisms (the room's footprint is 128 m^2), 11 m^2 at the noisiest stations, 2,131 m^2 under the truck at 80 Hz. It
+    says nothing of routes outside the model or of mechanisms with gain.
 
 20. **The published picture's depth does not follow the room; its horizontal change follows the image's (P2-28).** The
     published chain run whole (P2-07's) over the bench room 15 m down, the same room 30 m down and a granite block 15 m
@@ -554,9 +561,10 @@ investigation's record, and what it leaves open follow.
     brightest natural ground over ICEYE's best Dwell NESZ, -26.7 dB): 1.6e-06 under the regional microseisms,
     1.2e-04 at the noisiest stations; the imprint would have to grow 8,415 times (117 at the noisiest stations) even after assumed
     allowances (local level 10x the regional, site amplification 3x, 10 dB more SNR). Strong shaking close by, known exactly,
-    is open: a truck bouncing beside the bench room all pass 0.40, beside a room under a 5 m roof 0.99 (enough, within
-    the model, for 95% at 5%) with the scattered wave carried unattenuated to the scene's corner, 0.24 within 32 m alone;
-    14 cases are open after the allowances. Depth: small rooms 15 m down in any non-negative mix leave 71% of the
+    is not excluded: the oracle's bound reaches 0.41 with a truck bouncing beside the bench room all pass, and 0.99 beside
+    a room under a 5 m roof, with the scattered wave carried unattenuated to the scene's corner (0.24 within 32 m alone); 14
+    cases are not excluded after the allowances. These are upper bounds (energy bounds, averaged over phases): a large one
+    shows that this argument does not exclude detection, not that any detector achieves it. Depth: small rooms 15 m down in any non-negative mix leave 71% of the
     bench room 30 m down's mark unmatched (78% for the bench room 15 m down; two small rooms solved together agree with their
     sum to 3.7%): in uniform rock the mark's shape carries depth, and telling those depths apart takes about
     1.4 times detection's signal. The sought depth obstruction was not found.
@@ -610,8 +618,8 @@ image at once, tested or not, including methods with strong prior information, w
 ordinary ground as fully developed speckle with no reference image, the Doppler-to-time relation (checked against
 pulse-by-pulse physics), bright points bounded separately, and any scene by a genie that knows the reflectivity. Its
 inputs, the chamber's imprint (2, 18) and the regional ambient levels, are models. It is a bound: on small test images
-the best test comes within a factor of about 1.3 to 1.4 of it, not onto it. 19 turns it into a conditional requirement
-on the motion a room would have to add to the ground. None of it covers penetration at longer wavelengths, changes of
+the best test comes within a factor of about 1.3 to 1.4 of it, not onto it. 19 turns it into a conditional requirement: on the energy of the motion a room would have to add, for any pattern, and
+on its amplitude for smooth ones. None of it covers penetration at longer wavelengths, changes of
 reflectivity during the pass, texture between speckle and bright points, or many images; and none of it has been
 checked against measured ground motion and radar data taken together.
 
@@ -714,6 +722,52 @@ as a completed proof. Adopted:
   remains a separate, unfinished task.
 - **Next, in the order the review gave:** two depths and hollow against solid (P2-28), then a frozen, blinded calibration
   test (`BLIND_TEST.md`, written before any product for it exists).
+
+### Third review, 30 September 2026: corrections adopted
+
+A third independent review of the branch (commit 579754e) re-ran the finite-proof tests, built its own numerical
+checks, and found that some conclusions went beyond what the calculations establish. Adopted:
+
+- **The requirement curve is not universal.** P2-27 computed detectability for one smooth pattern (a Gaussian envelope
+  oscillating at a stated frequency) and then said any mechanism must supply motion of that size. What an image holds
+  depends on the spatial pattern, not only on amplitude, frequency and area. The review's example, reproduced with the
+  lab's own `fisher_grid`: a Gaussian 4 m wide at 0.2 Hz multiplied by a cosine of 4 m period is nowhere larger and holds
+  39 times the information (489 times for a 1 m period); in a small phase-only model with the exact finite divergence the
+  modulated pattern, with half the energy, is 16 times more distinguishable (`tests/test_finite.py`). P2-27 now labels
+  its curves as that family's and states the requirement for every pattern from Theorem C, on the motion's energy
+  (item 19). The quiet-ground conclusion survives with a smaller margin (4.6e5 in amplitude instead of 8.3e8); under a
+  truck close by, with the scattered wave carried unattenuated across the scene, the margin shrinks to a few times for the
+  bench room and vanishes under a thin roof, so there the conclusion rests on how far the scattered wave carries.
+- **A large upper bound is not a working regime.** P2-29 called an oracle value of 0.99 "enough" for 95% at 5%. Its
+  applications use energy bounds and averages over phases, so the values are upper bounds (now `tv_upper`). A small valid
+  bound shows every permitted detector performs poorly; a large one shows only that the argument does not exclude
+  detection; an implemented detector succeeding on independent tests would be the evidence that a task is achievable.
+  The strong-shaking cases are unresolved, not demonstrated opportunities.
+- **The angular guard.** P2-32 sampled wave directions every 15 degrees and enlarged the peak by 1.01; a function
+  a + b cos 2 phi + c sin 2 phi sampled so can peak sec(15 deg) = 1.0353 above its samples, now used. (P2-25 and P2-30
+  sample every 7.5 degrees, where sec(7.5 deg) = 1.0086 < 1.01, unchanged.)
+- **The reference covariance.** P2-32 bounded two layouts through the difference of their displacement fields with the
+  empty ground's covariance. In the speckle model the same added phase is more or less distinguishable depending on the
+  motion already present, so subtraction does not remove the reference. The tight bound and the certificate now take each
+  pair through empty ground, TV(A, B) <= TV(A, none) + TV(none, B); the oracle keeps the difference, where, told the
+  reflectivity and the background, the two worlds' mean echoes differ by exp(i k u_A) - exp(i k u_B) whatever the
+  background.
+- **The far field by direction.** P2-25 (and P2-29, P2-30 and P2-32 after it) averaged the scattered wave's far-field
+  energy over directions and combined it with the worst direction's near field. Each direction is now paired with its own
+  far field (the truck's bound for the bench room moves from 0.022 to 0.023).
+- **Phase modulation.** A cavity's influence need not appear as a new frequency, and a change of phase can carry
+  information; the linear solver's complex response already includes amplitude and phase. A fixed-amplitude phase change
+  moves the ground by at most twice its amplitude, but turning that into an exclusion needs a justified extent: the
+  affected area cannot be assumed to be the room's footprint. P2-27 now gives the area such a mechanism would have to
+  change to escape the bound (5.5e4 m^2 under the regional microseisms).
+- **The defensible conclusion** is that useful recovery is excluded under explicitly bounded conditions, not that
+  vibration-based underground mapping from one SAR acquisition can never work.
+- **Next, in the order the review gave:** the corrections above; then quantify the physical assumptions (excitation,
+  material properties, geometry, coupling, radar scattering, the far field's attenuation, omitted spatial tails and
+  numerical error) as declared ranges; then a shape proof organised around two meaningfully different layouts,
+  distinguishable after the allowed depth ambiguity, with a conservative bound on their differing echoes throughout the
+  declared range, so that every algorithm receiving less information inherits it. One hard pair rules out uniformly
+  reliable mapping across a class, not detection of every member.
 
 ### Motion measured from orbit, 2026
 

@@ -374,7 +374,9 @@ def markers(amb, p204, p226, maps):
 
 
 def sci(v):
-    """1.2e6 as '1.2e6', for the finding."""
+    """1.2e6 as '1.2e6', for the finding; plain below ten thousand."""
+    if 0.01 <= abs(v) < 1e4:
+        return f"{v:.2g}" if abs(v) < 10 else f"{v:,.0f}"
     m, e = f'{v:.1e}'.split('e')
     return f"{m}e{int(e)}"
 
@@ -467,6 +469,7 @@ def main():
             im['energy_note'] = e['energy_note']
             if 'energy_near_m4' in e:
                 im['energy_near_m4'] = e['energy_near_m4']
+                im['short_by_any_pattern_near_only'] = float(np.sqrt(E_min / e['energy_near_m4']))
             im['short_by_any_pattern'] = float(np.sqrt(E_min / e['energy_m4']))
             im['short_by_any_pattern_identity'] = float(np.sqrt(E_id / e['energy_m4']))
         hv = p204['hv']
@@ -511,7 +514,10 @@ def main():
             f"energy by {sci(sb['short_by_any_pattern'])} in amplitude (against a Gaussian of its peak and footprint, "
             f"{sci(sb['short_by'])}); its dynamic imprints under a truck over a bump 15 m away for the whole pass, the "
             f"scattered wave carried unattenuated to the scene's corner, by {sci(min(im['short_by_any_pattern'] for im in dyn))} "
-            f"to {sci(max(im['short_by_any_pattern'] for im in dyn))}. A mechanism that only changes the ambient motion's "
+            f"to {sci(max(im['short_by_any_pattern'] for im in dyn))} (below 1, not excluded: the room under a 5 m roof), and "
+            f"with the scattered wave counted only within 39 m, by {sci(min(im['short_by_any_pattern_near_only'] for im in dyn))} "
+            f"to {sci(max(im['short_by_any_pattern_near_only'] for im in dyn))}: under strong shaking close by the conclusion "
+            f"rests on how far the scattered wave carries, an assumption to measure. A mechanism that only changes the ambient motion's "
             f"phase (moving the ground by at most twice its amplitude, linear or not) is excluded only while the area it "
             f"changes stays below {sci(amb_reg['phase_only_area_m2'])} m^2 under the regional microseisms, "
             f"{sci(amb_loud['phase_only_area_m2'])} m^2 at the noisiest stations and {sci(amb_t80['phase_only_area_m2'])} m^2 "
