@@ -91,6 +91,15 @@ Then (29 September):
   1,218 of 9,595 positions at a support of one and none at four, its motionless copy 539 and none, Khufu's pattern.
 - **The lab reorganised by instrument** (the owner found "instruments" beside "satellite" confusing): the ground,
   geophones, satellite; methods as cards with their controls one click away; colour by instrument.
+- **Sacsayhuamán, a second real site (P2-33 and three lab runs)** (the owner's request): the ICEYE X35 pass of
+  22 August 2025 laid on Copernicus terrain with the site's own EGM2008 undulation (46.2 m; the lab command now reads
+  each site's), places from OpenStreetMap, and six areas chosen on the laid image before any method ran: the zigzag
+  walls, the Rodadero, fields, three stretches of houses. The paper-style pipeline draws the houses alike (0.98-1.00) and
+  gives them the strongest columns (8-12% of their pixels among the noisiest 5%); the walls draw apart (0.84-0.89), the
+  Rodadero near the houses (0.93-0.97). The areas' motionless copies keep neither the shared profile nor the walls'
+  difference, so both come from something the real image holds beyond its brightness pattern (X band reaches about
+  30 cm); what, is open. The gated reconstruction passes 463, 2,411 and 1,126 of 9,595 positions over the walls, the
+  city grid and the fields at a support of one (its copies 293, 1,743 and 657).
 
 - **Start here:** `CLAUDE.md`, this file, `web/DESIGN.md`. `cd sim && uv sync` then `uv run pytest` (≈35 s here);
   `cd web && npm ci && npm run check && npm test && npm run build`. On this Mac, scikit-fmm builds only with

@@ -32,6 +32,21 @@ import onShaking from '../../public/data/runs/p2_24_gated_on_the_shaking.json';
 import shaking from '../../public/data/runs/p2_22_one_shaking.json';
 import passive from '../../public/data/runs/p1_04_ambient.json';
 import echo from '../../public/data/runs/p1_03_scattered.json';
+// P2-33 and the lab's gated runs at Sacsayhuamán, once exported
+type SacsPatch = { key: string; kind: string; share_in_top5: number };
+type Sacs = {
+  manifest: typeof realpass.manifest;
+  registration: { shift_m: [number, number] };
+  patches: SacsPatch[];
+  profile_corr: { within_houses: number[]; walls_vs: Record<string, number>; rodadero_vs: Record<string, number> };
+  monuments_apart: boolean;
+  twins: { all_pairs_range: [number, number]; real_vs_twin: Record<string, number>; follow_real: boolean };
+};
+const sacs = Object.values(import.meta.glob('../../public/data/runs/p2_33_sacsayhuaman.json', { eager: true, import: 'default' }))[0] as Sacs | undefined;
+type LabRun = { manifest: { params: { area?: string } }; results: Record<string, { supported_positions: Record<string, number> }>; grid: { shape: number[] } };
+const sacsLabs = Object.entries(import.meta.glob('../../public/data/runs/lab_sacsay_*.json', { eager: true, import: 'default' }) as Record<string, LabRun>)
+  .map(([, r]) => r)
+  .filter((r) => r.results?.real);
 import Figure from '../components/Figure.astro';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
@@ -1194,6 +1209,48 @@ const lk = labKhafre.results as unknown as LRes;
       </div>
     </div>
     <RunDetails manifest={realpass.manifest} />
+    {sacs && (() => {
+      const lo = (a: number[]) => Math.min(...a).toFixed(2);
+      const hi = (a: number[]) => Math.max(...a).toFixed(2);
+      const wallsRest = Object.entries(sacs.profile_corr.walls_vs).filter(([k]) => k !== 'rodadero').map(([, v]) => v);
+      const rod = Object.values(sacs.profile_corr.rodadero_vs);
+      const share = (kind: string) => sacs.patches.filter((x) => x.kind === kind).map((x) => x.share_in_top5 * 100);
+      const copies = Object.values(sacs.twins.real_vs_twin);
+      const labLine = sacsLabs.length
+        ? sacsLabs.map((r) => {
+            const n = r.grid.shape[0] * r.grid.shape[1];
+            const cp = Object.entries(r.results).find(([k]) => k.startsWith('twin'))?.[1];
+            return `${r.results.real.supported_positions['1'].toLocaleString('en-US')} of ${n.toLocaleString('en-US')} positions over the ${(r.manifest.params.area ?? '').toLowerCase()}${cp ? ` (its motionless copy ${cp.supported_positions['1'].toLocaleString('en-US')})` : ''}`;
+          })
+        : [];
+      return (
+        <div class="grid-2 second-site">
+          <Figure src={`${base}/data/sites/sacsayhuaman/radar-ground.jpg`} alt="The real radar image over Sacsayhuamán and Cusco, resampled onto the ground" label="The 2025 pass over Sacsayhuamán" caption="north up; Cusco’s streets below, the zigzag walls and the Rodadero above them" aspect="1700 / 1950" widthM={1700} bar={200} />
+          <div class="note-card">
+            <span class="tag measured">real image · P2-33</span>
+            <h3>{sacs.monuments_apart && !sacs.twins.follow_real ? 'At Sacsayhuamán the houses draw alike and the walls apart, from what the image holds of the surface' : 'At Sacsayhuamán the walls draw as houses and fields do'}</h3>
+            <p>
+              A second pass (ICEYE X35, 22 August 2025), laid on its terrain within {Math.abs(sacs.registration.shift_m[0]).toFixed(0)} m along
+              the track and {Math.abs(sacs.registration.shift_m[1]).toFixed(0)} m across, and six areas chosen on it before the method ran:
+              the zigzag walls, the Rodadero outcrop, open fields and three stretches of houses. The houses draw alike (depth profiles
+              correlating at {lo(sacs.profile_corr.within_houses)}–{hi(sacs.profile_corr.within_houses)}) and take the strongest columns
+              ({Math.round(Math.min(...share('houses')))}–{Math.round(Math.max(...share('houses')))}% of their pixels among the noisiest 5%, against
+              {' '}{Math.max(...share('monument')).toFixed(0)}% of the monuments’); the walls draw apart ({lo(wallsRest)}–{hi(wallsRest)} with houses
+              and fields), the Rodadero close to the houses ({lo(rod)}–{hi(rod)}).
+            </p>
+            <p>
+              Motionless copies of the six areas, each area’s brightness pattern with nothing moving, keep neither the shared profile
+              nor the walls’ difference (they correlate with the real ones at {lo(copies)}–{hi(copies)}): both come from something the real
+              image holds beyond its brightness pattern, and not from below the surface, which X band reaches no further into than about
+              30 cm.{labLine.length ? ` The gated reconstruction, run unchanged, passes ${labLine.join('; ')} at a support of one.` : ''}
+            </p>
+            <p><a href={`${base}/underworld/#sacsayhuaman/satellite`}>Sacsayhuamán in the lab</a>: the pass, the image on the terrain and
+            each method’s pictures, area by area.</p>
+          </div>
+        </div>
+      );
+    })()}
+    {sacs && <RunDetails manifest={sacs.manifest} />}
     </details>
   </section>
 
@@ -1350,6 +1407,9 @@ const lk = labKhafre.results as unknown as LRes;
   }
   details.fold > :not(summary) {
     margin-bottom: 18px;
+  }
+  .second-site {
+    margin-top: 28px;
   }
 </style>
 

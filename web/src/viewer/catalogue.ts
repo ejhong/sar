@@ -199,14 +199,14 @@ export function satelliteMethods(s: SiteScene): Method[] {
       why: !r
         ? 'Here the method’s depth axis is drawn whole, relabelled so that it repeats where the claim puts the bottoms of its shafts. Its pillars run the full depth, where the surface reading is noisiest, and bright blocks sit at each repeat, where every steering phase coincides: that is how the published pictures get their shafts and their deep structure. Over the Giza plateau the same kind of volume is cut at the block’s floor, well above the first repeat, and shares one brightness scale with open ground, so neither the repeat blocks nor one patch’s own stretch appear there.'
         : real
-        ? 'Pillars: a pixel whose registration wanders is bright at every depth. Bands: along a pillar the power rises and falls once per step of the axis’s resolution. Blocks: at the surface and at each repeat depth every steering phase coincides. Open plateau draws the same shapes.'
+        ? 'Pillars: a pixel whose registration wanders is bright at every depth. Bands: along a pillar the power rises and falls once per step of the axis’s resolution. Blocks: at the surface and at each repeat depth every steering phase coincides. Open ground draws the same shapes.'
         : 'Pillars where a pixel’s registration wanders, bands at each step of the axis’s resolution, blocks where every steering phase coincides; none of it depends on what is below.',
       choices: paper.map((c) =>
         real && r?.stats
           ? {
               ...c,
-              note: 'The 2025 image through the pipeline as the 2022 paper describes it: 50 half-band pairs, no selection gates, focused power on a log scale, depth relabelled so it repeats at 648 m as the claim does, and smoothed for display.',
-              stats: `Over the pyramids and over empty plateau its depth profiles correlate at ${r.stats.monument_vs_control_profile_corr.toFixed(3)}; at every pixel its power follows how much the registration wandered (${r.stats.pillar_power_vs_energy_min.toFixed(3)}).`,
+              note: `The ${r.acquisition.date?.slice(0, 4) ?? ''} image through the pipeline as the 2022 paper describes it: 50 half-band pairs, no selection gates, focused power on a log scale, depth relabelled so it repeats at 648 m as the claim does, and smoothed for display.`,
+              stats: r.stats.text,
             }
           : c,
       ),
@@ -260,7 +260,7 @@ export function satelliteMethods(s: SiteScene): Method[] {
         rank,
         id: v.id,
         kind: 'volume',
-        area: areaOf(lab.title) ?? cap(lab.name),
+        area: lab.area ?? areaOf(lab.title) ?? cap(lab.name),
         pass: lab.pass === 'both' ? 'Both passes agree' : `${lab.pass ?? '2022'} pass`,
         lines: lab.lines === 'both' ? 'Both layouts agree' : lab.lines === 'ns' ? 'North–south lines' : 'East–west lines',
         input,

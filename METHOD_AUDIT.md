@@ -476,6 +476,18 @@ investigation's record, and what it leaves open follow.
     646 positions, 32 within 12 m of the axis; the random noise at 648, also 32. At a thousandth of the force, 454 and 456.
     The chamber changes the method's picture exactly as noise of its size does.
 
+17. **At Sacsayhuamán the houses draw alike and the walls apart, from what the image holds of the surface (P2-33).** A
+    second pass (ICEYE X35, 22 August 2025) laid on its terrain within 10 m and 12 m, six areas chosen on it before the
+    method ran. The paper-style pipeline's mean depth profiles: houses 0.98-1.00 with one another, the walls 0.84-0.89
+    with houses and fields, the Rodadero 0.93-0.97; by the test stated before the run the monuments stand apart, the walls
+    by a wide margin and the Rodadero only just. The houses take the strongest columns. Motionless copies of each area,
+    added after the first run, keep neither the shared profile nor the walls' difference (correlating with the real
+    profiles at -0.05 to 0.41), so the difference lies in something the real image holds beyond its brightness pattern;
+    it is not below the surface, which X band reaches no further into than about 30 cm, and this run does not say what
+    it is (the scatterers' own heights and layout on steep ground are candidates). The gated reconstruction, unchanged,
+    passes 463, 2,411 and 1,126 of 9,595 positions over the walls, the city grid and the fields at a support of one, its
+    motionless copies 293, 1,743 and 657: the busiest surfaces pass the most, as at Giza.
+
 These reasons differ in kind and strength. 4 is algebraic and holds whatever the ground does: the depth axis is a
 frequency axis with a repeat and a mirror, and no validated model turns it into a physical depth. 1 and 12 are
 measured, for particular estimators and configurations; 13 is a known-truth test of one of them, on synthetic products. 2, 3 and 8 are models with stated assumptions (a small chamber

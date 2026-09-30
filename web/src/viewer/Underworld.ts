@@ -661,22 +661,21 @@ export class Underworld {
     else this.engine.setPose(pose);
   }
 
-  /** A scale bar measured on the ground plane at the block's centre, in nice metres. */
+  /** A scale bar measured where the camera looks, along the ground's east-west, in nice metres. */
   private updateScaleBar() {
     const el = this.$('[data-uw=scalebar]');
     const b = this.block;
     if (!el || !b) return;
-    const { x, y } = b.scene.extent;
-    const cx = (x[0] + x[1]) / 2;
-    const cy = (y[0] + y[1]) / 2;
-    const z = b.zTop;
     const canvas = this.engine.canvas;
     const px = (p: Vector3) => {
       const v = p.clone().project(this.engine.camera);
       return [((v.x + 1) / 2) * canvas.clientWidth, ((1 - v.y) / 2) * canvas.clientHeight];
     };
-    const span = (x[1] - x[0]) / 4;
-    const a = px(b.world([cx, cy, z]));
+    const at = new Vector3(...this.engine.pose.target);
+    const [cx, cy, z] = b.local(at);
+    const perM = b.world([cx + 1, cy, z]).distanceTo(at);
+    const span = Math.max(1, this.engine.camera.position.distanceTo(at) / perM / 10);     // a tenth of the camera's distance
+    const a = px(at);
     const c = px(b.world([cx + span, cy, z]));
     const ppm = Math.hypot(c[0] - a[0], c[1] - a[1]) / span;
     if (!isFinite(ppm) || ppm <= 0) return;

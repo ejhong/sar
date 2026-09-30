@@ -1,0 +1,74 @@
+{
+ "manifest": {
+  "id": "lab_sacsay_fields",
+  "title": "The gated reconstruction across the fields north of Sacsayhuamán, from the 2025 pass",
+  "date": "2026-09-30",
+  "started_utc": "2026-09-30T04:47:42+00:00",
+  "runtime_s": 2403.4,
+  "commit": "2e70040",
+  "params": {
+   "method": "gated",
+   "site": "sacsayhuaman",
+   "centre_m": [
+    -100.0,
+    525.0
+   ],
+   "half_ew_m": 150.0,
+   "half_ns_m": 141.0,
+   "step_m": 3.0,
+   "supports": [
+    1,
+    4
+   ],
+   "twin_seed": 101,
+   "product": "ICEYE_X35_SLC_SLEDF_5907293_20250822T152433.h5",
+   "lines": "ew",
+   "gated_module_sha256": "3e1154c11274b896b91e262198576ffd750732709ad08ac00c6892c4ea5e1b1d",
+   "gated_profile_sha256": "ae84cade31f7e5ffa9b4daa0eba152649d2afc7f1655415bad38553f4f4d69aa",
+   "geoid_m": 46.2,
+   "area": "Fields north of the site",
+   "shift_px": [
+    -230.0,
+    -28.0
+   ]
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  }
+ },
+ "method": "gated",
+ "results": {
+  "real": {
+   "supported_positions": {
+    "1": 1126,
+    "4": 63
+   }
+  },
+  "twin101": {
+   "supported_positions": {
+    "1": 657,
+    "4": 5
+   }
+  }
+ },
+ "cases": [
+  "real",
+  "twin101"
+ ],
+ "grid": {
+  "x0": -250.0,
+  "y0": 384.0,
+  "z_top": 3669.87,
+  "step_m": 3.0,
+  "shape": [
+   101,
+   95,
+   125
+  ]
+ },
+ "finding": "The gated reconstruction, unchanged, along 95 east-west lines 3 m apart across (-100, 525) on sacsayhuaman: real: 1,126 of 9,595 positions pass at support 1, 63 of 9,595 positions pass at support 4; twin101: 657 of 9,595 positions pass at support 1, 5 of 9,595 positions pass at support 4."
+}

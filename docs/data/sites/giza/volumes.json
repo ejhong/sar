@@ -23,7 +23,7 @@
    0.593835711479187
   ],
   "run": "p2_12_real_pass \u00b7 2026-09-28 \u00b7 02c7253",
-  "caption": "columns where the registration wanders, as over empty plateau"
+  "caption": "columns where the registration wanders, as over open ground"
  },
  {
   "id": "radar-khufu",
@@ -49,7 +49,7 @@
    0.593835711479187
   ],
   "run": "p2_12_real_pass \u00b7 2026-09-28 \u00b7 02c7253",
-  "caption": "columns where the registration wanders, as over empty plateau"
+  "caption": "columns where the registration wanders, as over open ground"
  },
  {
   "id": "radar-menkaure",
@@ -75,7 +75,7 @@
    0.593835711479187
   ],
   "run": "p2_12_real_pass \u00b7 2026-09-28 \u00b7 02c7253",
-  "caption": "columns where the registration wanders, as over empty plateau"
+  "caption": "columns where the registration wanders, as over open ground"
  },
  {
   "id": "radar-plateau_south",
@@ -101,7 +101,7 @@
    0.593835711479187
   ],
   "run": "p2_12_real_pass \u00b7 2026-09-28 \u00b7 02c7253",
-  "caption": "the same kind of picture over empty plateau"
+  "caption": "the same kind of picture over open ground"
  },
  {
   "id": "radar-khufu-gated-real-p1",

@@ -89,7 +89,7 @@
    "id": "sacsayhuaman",
    "name": "Sacsayhuamán",
    "kind": "real",
-   "summary": "The Inca walls above Cusco, the Rodadero outcrop and the city's houses, in one satellite pass: what each method draws over megalithic walls, beside houses and open hillside.",
+   "summary": "The Inca walls above Cusco, the Rodadero outcrop and the city's houses, in one satellite pass: what each method draws over megalithic walls, beside houses and open fields.",
    "extent": {
     "x": [
      -700.0,
@@ -105,10 +105,10 @@
     ]
    },
    "features": {},
-   "volumes": 0,
+   "volumes": 18,
    "instruments": {
     "geophones": 0,
-    "satellite": 0
+    "satellite": 18
    }
   }
  ]

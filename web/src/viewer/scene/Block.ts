@@ -142,6 +142,12 @@ export class Block {
     return new Vector3(p[0], p[1], p[2]).applyMatrix4(this.site.matrixWorld);
   }
 
+  /** Site coordinates of a world point: the inverse of world(). */
+  local(v: Vector3): [number, number, number] {
+    const p = v.clone().applyMatrix4(this.site.matrixWorld.clone().invert());
+    return [p.x, p.y, p.z];
+  }
+
   // ---------- section ----------
 
   setCut(f: number) {
