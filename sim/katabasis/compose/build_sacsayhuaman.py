@@ -66,7 +66,7 @@ def main() -> None:
     site = {
         'id': 'sacsayhuaman', 'name': 'Sacsayhuamán', 'kind': 'real',
         'summary': 'The Inca walls above Cusco, the Rodadero outcrop and the city\'s houses, in one satellite pass: '
-                   'what each method draws over megalithic walls, beside houses and open hillside.',
+                   'what each method draws over megalithic walls, beside houses and open fields.',
         'frame': {'axes': 'x east, y north, z up; metres',
                   'origin': {'latitude': ORIGIN[0], 'longitude': ORIGIN[1], 'label': 'Sacsayhuamán (Wikipedia\'s coordinates)'},
                   'vertical': 'z = metres above EGM2008 (orthometric)',
