@@ -16,8 +16,10 @@ against P2-04's). The unrelated ground is matched: the same scatterers (three sp
 scene) and the same microseism field (Giza's measured level, P2-07's realisation) for every scene; the images come from
 the lab's synthesizer on the real dwell (P2-07's chain).
 
-Levels. The real one (the imprint as it is); and two amplified diagnostics, each cavity's imprint boosted to the same
-largest phase, 0.3 and 2 rad, labelled as such: physically shaped, not physically sized. The information bound (P2-25,
+Levels. The real one (the imprint as it is); and three amplified diagnostics, each cavity's imprint boosted to the same
+largest phase, 0.3, 2 and 20 rad, labelled as such: physically shaped, not physically sized. At microseism frequencies
+only the imprint's gradient survives in the image (P2-25), so 2 rad (millimetres of motion) sits near what any reader
+needs (P2-27); 20 rad is the positive control. The information bound (P2-25,
 P2-30) says the real level holds almost nothing for any reader; the diagnostics ask whether the experiment and each
 reader can see a real signal where one is there.
 
@@ -68,7 +70,8 @@ BOXES = {
 }
 SHAPES = list(BOXES)
 SEEDS = (71, 171, 271)
-LEVELS = {'real': None, 'diagnostic_0.3_rad': 0.3, 'diagnostic_2_rad': 2.0}
+LEVELS = {'real': None, 'diagnostic_0.3_rad': 0.3, 'diagnostic_2_rad': 2.0, 'diagnostic_20_rad': 20.0}
+READINGS = 'readings-v1'      # the version of the scenes and readers; bump it if either changes
 TAPER = (45.0, 54.0)
 TOP_SHARE = 0.05
 EXTRA_M = 5.0
@@ -264,7 +267,7 @@ def main():
             T_none = None
             for key in keys:
                 t1 = time.time()
-                r = memo(RID, f'reading-{seed}-{key}', lambda: reading(seed, key), __file__)
+                r = memo(RID, f'reading-{seed}-{key}', lambda: reading(seed, key), __file__, version=READINGS)
                 records.append(r)
                 if key == 'none':
                     T_none = r['T']
@@ -360,13 +363,14 @@ def main():
                             **{f"{r['seed']}_{r['key'].replace('|', '_')}_blind": r['blind'].astype(np.float32) for r in records},
                             **{f"{r['seed']}_{r['key'].replace('|', '_')}_paired": r['paired'].astype(np.float32) for r in records if 'paired' in r},
                             east=GE, north=GN, **{f'truth_{n}': truth_pub[n] for n in SHAPES})
-        pos = summary['diagnostic_2_rad']
+        pos = summary['diagnostic_20_rad']
+        mid = summary['diagnostic_2_rad']
         real = summary['real']
         ok_ref = (pos['reference']['shape_accuracy'] or 0) >= 2 / 3
         finding = (
             f"Scenes generated through the forward model (the lab's solver for each cavity's imprint, the synthesizer for "
-            f"the image), with the unrelated ground and shaking matched. At the strongest amplified diagnostic (each imprint "
-            f"boosted to 2 rad) the reference detector told the shaking names the layout in "
+            f"the image), with the unrelated ground and shaking matched. At the positive control (each imprint boosted to "
+            f"20 rad) the reference detector told the shaking names the layout in "
             f"{100 * pos['reference']['shape_accuracy']:.0f}% of images (chance {100 / len(SHAPES):.0f}%) and places it "
             f"{pos['reference']['median_location_error_m']:.1f} m from where it lies (median; the controls' peaks lie "
             f"{summary['control_reference_peak_distance_m']:.1f} m away); the published method's plan "
@@ -374,11 +378,13 @@ def main():
             f"{pos['published_blind']['median_location_error_m']:.1f} m away, and its change against the same ground "
             f"without the cavity (a diagnostic it never has) {100 * pos['published_paired']['shape_accuracy']:.0f}% and "
             f"{pos['published_paired']['median_location_error_m']:.1f} m (the controls' top places lie a median "
-            f"{summary['control_location_error_to_layouts_m']:.1f} m from the footprints). At the real level the reference "
+            f"{summary['control_location_error_to_layouts_m']:.1f} m from the footprints). At 2 rad, near what any reader "
+            f"needs at these frequencies, the reference detector names {100 * mid['reference']['shape_accuracy']:.0f}% and "
+            f"the published blind map {100 * mid['published_blind']['shape_accuracy']:.0f}%. At the real level the reference "
             f"detector names {100 * real['reference']['shape_accuracy']:.0f}% and the published blind map "
             f"{100 * real['published_blind']['shape_accuracy']:.0f}%. "
-            + ("The reference detector recovers the imposed layouts at the diagnostic, so the experiment can reveal a real "
-               "signal." if ok_ref else "The reference detector does not recover the imposed layouts even at the diagnostic: "
+            + ("The reference detector recovers the imposed layouts at the positive control, so the experiment can reveal "
+               "a real signal." if ok_ref else "The reference detector does not recover the imposed layouts even at the positive control: "
                "the forward model or the acquisition's sensitivity must be examined before any reader is judged.")
             + " Amplified levels are diagnostics, not physical predictions.")
         run.save({'summary': summary, 'results': results, 'unit_gain_phase_rad': unit, 'kernel_runs': {n: k[1] for n, k in kern.items()},

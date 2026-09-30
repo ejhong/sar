@@ -88,13 +88,16 @@ def load(rid: str) -> dict:
     return json.loads((RESULTS / rid / 'summary.json').read_text())
 
 
-def memo(rid: str, name: str, compute, source: str | Path):
+def memo(rid: str, name: str, compute, source: str | Path, version: str | None = None):
     """A long step of a run kept on disk, so a run cut short resumes where it stopped: the value of compute() under
     sim/results/cache/<rid>/, keyed by `name` and by the experiment's source file, so any change to the code recomputes.
-    Only intermediate values are kept; the summary is always written by the run itself."""
+    With `version`, keyed by it instead: the caller declares that the step is unchanged while the version is, so a run
+    can be extended without recomputing what it already has. Only intermediate values are kept; the summary is always
+    written by the run itself."""
     import hashlib
     import pickle
-    key = hashlib.sha1(Path(source).read_bytes() + name.encode()).hexdigest()[:16]
+    head = version.encode() if version is not None else Path(source).read_bytes()
+    key = hashlib.sha1(head + name.encode()).hexdigest()[:16]
     path = RESULTS / 'cache' / rid / f'{key}.pkl'
     if path.is_file():
         with open(path, 'rb') as fh:
