@@ -115,7 +115,9 @@ def main():
                 S, zm, zrep = section(out, pool_n)
                 m = measure(S, zm)
                 label = f"{'the paper' if bank == 'paper' else '20 pairs'}, {patch} px, pooled {pool_n} x {pool_n}"
-                rows.append({'patch_px': patch, 'bank': bank, 'pool': pool_n, 'label': label, 'repeat_raw_m': float(zrep),
+                # the trajectories are the first investigation's patch runs, cached: say how long each took when computed
+                traj = {'computed_by': 'sim/legacy/experiments/real_common.run_patch', 'runtime_s': round(out['meta']['runtime_s'], 1)}
+                rows.append({'patch_px': patch, 'bank': bank, 'pool': pool_n, 'label': label, 'repeat_raw_m': float(zrep), 'trajectories': traj,
                              'average_share': average_share(out) if pool_n == 1 else None, **m})
                 sections[label] = (S, zm)
                 print(f"  {label}: rungs {m['rungs']:.2f}, room {m['room']:.2f}", flush=True)
