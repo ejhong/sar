@@ -100,6 +100,10 @@ Then (29 September):
   difference, so both come from something the real image holds beyond its brightness pattern (X band reaches about
   30 cm); what, is open. The gated reconstruction passes 463, 2,411 and 1,126 of 9,595 positions over the walls, the
   city grid and the fields at a support of one (its copies 293, 1,743 and 657).
+- **The bands drawn, the two levels explained** (the owner's questions): the paper-style volumes are now exported in
+  2.5 m depth steps, smoothed only across the ground (the old 4 m depth smoothing and 5 m steps kept a fifth of the 13 m
+  bands); P2-34 reads the gated reconstruction's depth scale from each run: 6.17 m a turn and a 308 m repeat on the 2022
+  pass, 3.80 m and 190 m on the 2025 passes, where each fit stands twice, near the surface and at its mirror.
 
 - **Start here:** `CLAUDE.md`, this file, `web/DESIGN.md`. `cd sim && uv sync` then `uv run pytest` (≈35 s here);
   `cd web && npm ci && npm run check && npm test && npm run build`. On this Mac, scikit-fmm builds only with

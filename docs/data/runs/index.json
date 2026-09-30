@@ -1597,6 +1597,46 @@
   },
   "command": "uv run python experiments/p2_33_sacsayhuaman.py"
  },
+ "p2_34_gated_depth_scale": {
+  "id": "p2_34_gated_depth_scale",
+  "title": "The gated reconstruction's depth scale, pass by pass",
+  "date": "2026-09-30",
+  "started_utc": "2026-09-30T05:53:40+00:00",
+  "runtime_s": 0.2,
+  "commit": "714f436",
+  "params": {
+   "runs": [
+    "p2_16_khufu_volume",
+    "p2_17_plateau_control",
+    "lab_khafre",
+    "lab_khafre_ns",
+    "lab_khafre_2025",
+    "lab_sacsay_walls",
+    "lab_sacsay_grid",
+    "lab_sacsay_fields"
+   ],
+   "window_pairs": 50,
+   "modes": 10,
+   "run_commits": {
+    "p2_16_khufu_volume": "d8a0060",
+    "p2_17_plateau_control": "96d5a6a",
+    "lab_khafre": "4af4a3c",
+    "lab_khafre_ns": "c232f06",
+    "lab_khafre_2025": "c232f06",
+    "lab_sacsay_walls": "2e70040",
+    "lab_sacsay_grid": "2e70040",
+    "lab_sacsay_fields": "2e70040"
+   }
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  },
+  "command": "uv run python experiments/p2_34_gated_depth_scale.py"
+ },
  "lab_khafre": {
   "id": "lab_khafre",
   "title": "The gated reconstruction across Khafre, from the 2022 image",

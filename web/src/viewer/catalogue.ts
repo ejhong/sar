@@ -1,4 +1,4 @@
-import type { SiteScene, VolumeInfo } from './data/types';
+import type { DepthScale, SiteScene, VolumeInfo } from './data/types';
 import { GATED_CODE } from '../data/credits';
 
 /**
@@ -102,6 +102,16 @@ function gatedInput(kind: string, boost?: number): [string, boolean, string, num
     default:
       return [cap(kind), false, '', 7];
   }
+}
+
+/** Where the gated reconstruction's depths come from on a pass (P2-34): its turn and repeat, and the two levels they make. */
+function scaleLine(ds?: DepthScale | null): string | undefined {
+  if (!ds) return undefined;
+  const n = (v: number) => v.toLocaleString('en-US');
+  const head = `On this pass one turn of the fit spans ${ds.turn_m.toFixed(1)} m and the depth scale repeats every ${Math.round(ds.repeat_m)} m`;
+  return ds.repeat_m < 300
+    ? `${head}, inside the 300 m the method draws, so each fit is drawn twice: near the surface, and again near ${Math.round(ds.repeat_m)} m down where the scale folds back. ${n(ds.shallow)} of ${n(ds.positions)} positions have their best score in the shallow level, ${n(ds.mirror)} in the deep one: the deeper level is the shallow one again.`
+    : `${head}, just past the 300 m the method draws, so its fits stand near the surface (${n(ds.shallow)} of ${n(ds.positions)} positions).`;
 }
 
 export const supportName = (p: number) => (p === 1 ? 'one position' : `${p} in a row`);
@@ -217,9 +227,15 @@ export function satelliteMethods(s: SiteScene): Method[] {
   if (r?.gated) {
     const g = r.gated;
     const area = r.kind === 'bench' ? undefined : areaOf(g.title);
-    const stats = g.chambers
-      ? `Inside the surveyed chambers and passages the real image scores ${fmt(g.chambers.real[0])} on average, against ${fmt(g.chambers.real[1])} at the same depths elsewhere; the motionless copy ${fmt(g.chambers.twin[0])} and ${fmt(g.chambers.twin[1])}.`
-      : undefined;
+    const stats =
+      [
+        g.chambers
+          ? `Inside the surveyed chambers and passages the real image scores ${fmt(g.chambers.real[0])} on average, against ${fmt(g.chambers.real[1])} at the same depths elsewhere; the motionless copy ${fmt(g.chambers.twin[0])} and ${fmt(g.chambers.twin[1])}.`
+          : '',
+        scaleLine(g.depth_scale) ?? '',
+      ]
+        .filter(Boolean)
+        .join(' ') || undefined;
     for (const v of g.volumes) {
       const plateau = v.case === 'plateau';
       const [input, control, sub, rank] = plateau ? gatedInput('real') : gatedInput(v.case, v.boost);
@@ -268,6 +284,7 @@ export function satelliteMethods(s: SiteScene): Method[] {
         support: v.support,
         sub,
         note: lab.note,
+        stats: scaleLine(lab.depth_scale),
         run: lab.run,
         focus: lab.focus,
         radius_m: lab.radius_m,
@@ -287,7 +304,7 @@ export function satelliteMethods(s: SiteScene): Method[] {
       why:
         r?.kind === 'bench'
           ? 'A column wherever a position passed the gates, banded where the fit’s phase turns whole times across a window. The speckle decides where: the chamber’s imprint, even made a hundred million times stronger, moves the columns no nearer to it than random noise of its size does.'
-          : 'A column hangs wherever a position passed the gates; along it the score peaks where the depth fit’s phase turns a whole number of times across a window, about 6 m per turn, and at the mirror of that depth. The depth is the frequency the gates chose, not a measured depth.',
+          : 'A column hangs wherever a position passed the gates; along it the score peaks where the depth fit’s phase turns a whole number of times across a window, and again at the mirror of that depth, where the scale folds back. How many metres a turn spans, and where the scale folds, is set by the pass’s geometry, not by the ground: the depth is the frequency the gates chose, not a measured depth.',
       choices: ordered(gated),
     });
   return out;

@@ -78,11 +78,23 @@ export interface VolumeInfo {
   shape: [number, number, number];
   origin: [number, number, number];
   spacing: number;
+  /** The depth step, where it is finer than the horizontal one (the paper-style volumes, so their bands show). */
+  spacing_z?: number;
   range: [number, number];
   run?: string;
   caption?: string;
   /** 'gated': the stricter reconstruction's fit scores, drawn in gold rather than the radar's cinnabar. */
   tint?: 'gated';
+}
+
+/** The gated reconstruction's depth scale on the pass it read (P2-34): one turn of its fit, the depth at which the scale
+ * repeats, and how many passing positions stand near the surface and how many at the mirror of their depth. */
+export interface DepthScale {
+  turn_m: number;
+  repeat_m: number;
+  positions: number;
+  shallow: number;
+  mirror: number;
 }
 
 export interface RadarSensors {
@@ -152,6 +164,7 @@ export interface RadarInfo {
     focus: [number, number, number];
     radius_m: number;
     chambers?: { real: [number | null, number | null]; twin: [number | null, number | null] };
+    depth_scale?: DepthScale | null;
     note: string;
   };
   /** Runs made with the lab's processing command (katabasis.lab), each over its own area. */
@@ -168,6 +181,7 @@ export interface RadarInfo {
     radius_m: number;
     note: string;
     run?: string;
+    depth_scale?: DepthScale | null;
   }[];
 }
 

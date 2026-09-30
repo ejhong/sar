@@ -6,23 +6,24 @@
   "shape": [
    43,
    42,
-   90
+   180
   ],
   "origin": [
    -77.5,
    -207.5,
-   3597.5
+   3598.75
   ],
   "spacing": 5.0,
   "label": "Satellite \u00b7 the published method at Zigzag walls",
-  "method": "The real 2025 ICEYE pass through the paper-style pipeline (50 half-band pairs, 32 px patches, grid-median correction, no selection gates, lambda_s 0.48 m): focused power on a log scale, depth relabelled as the claim does (repeat at 648 m), smoothed for display; not the gated reconstruction",
+  "method": "The real 2025 ICEYE pass through the paper-style pipeline (50 half-band pairs, 32 px patches, grid-median correction, no selection gates, lambda_s 0.48 m): focused power on a log scale, depth relabelled as the claim does (repeat at 648 m), smoothed across the ground for display but not in depth; not the gated reconstruction",
   "quantity": "focused power, log scale",
   "units": "relative",
   "range": [
-   -0.5091457962989807,
-   1.348649024963379
+   -0.5742601752281189,
+   1.354358196258545
   ],
   "run": "p2_33_sacsayhuaman \u00b7 2026-09-30 \u00b7 d13b0ca",
+  "spacing_z": 2.5,
   "caption": "columns where the registration wanders, as over open ground"
  },
  {
@@ -32,23 +33,24 @@
   "shape": [
    52,
    40,
-   91
+   182
   ],
   "origin": [
    -127.5,
    7.5,
-   3602.5
+   3603.75
   ],
   "spacing": 5.0,
   "label": "Satellite \u00b7 the published method at Rodadero outcrop",
-  "method": "The real 2025 ICEYE pass through the paper-style pipeline (50 half-band pairs, 32 px patches, grid-median correction, no selection gates, lambda_s 0.48 m): focused power on a log scale, depth relabelled as the claim does (repeat at 648 m), smoothed for display; not the gated reconstruction",
+  "method": "The real 2025 ICEYE pass through the paper-style pipeline (50 half-band pairs, 32 px patches, grid-median correction, no selection gates, lambda_s 0.48 m): focused power on a log scale, depth relabelled as the claim does (repeat at 648 m), smoothed across the ground for display but not in depth; not the gated reconstruction",
   "quantity": "focused power, log scale",
   "units": "relative",
   "range": [
-   -0.5091457962989807,
-   1.348649024963379
+   -0.5742601752281189,
+   1.354358196258545
   ],
   "run": "p2_33_sacsayhuaman \u00b7 2026-09-30 \u00b7 d13b0ca",
+  "spacing_z": 2.5,
   "caption": "columns where the registration wanders, as over open ground"
  },
  {
@@ -58,23 +60,24 @@
   "shape": [
    58,
    39,
-   100
+   200
   ],
   "origin": [
    -252.5,
    417.5,
-   3647.5
+   3648.75
   ],
   "spacing": 5.0,
   "label": "Satellite \u00b7 the published method over Fields north of the site (control)",
-  "method": "The real 2025 ICEYE pass through the paper-style pipeline (50 half-band pairs, 32 px patches, grid-median correction, no selection gates, lambda_s 0.48 m): focused power on a log scale, depth relabelled as the claim does (repeat at 648 m), smoothed for display; not the gated reconstruction",
+  "method": "The real 2025 ICEYE pass through the paper-style pipeline (50 half-band pairs, 32 px patches, grid-median correction, no selection gates, lambda_s 0.48 m): focused power on a log scale, depth relabelled as the claim does (repeat at 648 m), smoothed across the ground for display but not in depth; not the gated reconstruction",
   "quantity": "focused power, log scale",
   "units": "relative",
   "range": [
-   -0.5091457962989807,
-   1.348649024963379
+   -0.5742601752281189,
+   1.354358196258545
   ],
   "run": "p2_33_sacsayhuaman \u00b7 2026-09-30 \u00b7 d13b0ca",
+  "spacing_z": 2.5,
   "caption": "the same kind of picture over open ground"
  },
  {
@@ -84,23 +87,24 @@
   "shape": [
    65,
    37,
-   67
+   134
   ],
   "origin": [
    82.5,
    -747.5,
-   3482.5
+   3483.75
   ],
   "spacing": 5.0,
   "label": "Satellite \u00b7 the published method at San Crist\u00f3bal houses",
-  "method": "The real 2025 ICEYE pass through the paper-style pipeline (50 half-band pairs, 32 px patches, grid-median correction, no selection gates, lambda_s 0.48 m): focused power on a log scale, depth relabelled as the claim does (repeat at 648 m), smoothed for display; not the gated reconstruction",
+  "method": "The real 2025 ICEYE pass through the paper-style pipeline (50 half-band pairs, 32 px patches, grid-median correction, no selection gates, lambda_s 0.48 m): focused power on a log scale, depth relabelled as the claim does (repeat at 648 m), smoothed across the ground for display but not in depth; not the gated reconstruction",
   "quantity": "focused power, log scale",
   "units": "relative",
   "range": [
-   -0.5091457962989807,
-   1.348649024963379
+   -0.5742601752281189,
+   1.354358196258545
   ],
   "run": "p2_33_sacsayhuaman \u00b7 2026-09-30 \u00b7 d13b0ca",
+  "spacing_z": 2.5,
   "caption": "columns where the registration wanders, as over open ground"
  },
  {
@@ -110,23 +114,24 @@
   "shape": [
    63,
    40,
-   61
+   122
   ],
   "origin": [
    682.5,
    -937.5,
-   3452.5
+   3453.75
   ],
   "spacing": 5.0,
   "label": "Satellite \u00b7 the published method at San Blas houses",
-  "method": "The real 2025 ICEYE pass through the paper-style pipeline (50 half-band pairs, 32 px patches, grid-median correction, no selection gates, lambda_s 0.48 m): focused power on a log scale, depth relabelled as the claim does (repeat at 648 m), smoothed for display; not the gated reconstruction",
+  "method": "The real 2025 ICEYE pass through the paper-style pipeline (50 half-band pairs, 32 px patches, grid-median correction, no selection gates, lambda_s 0.48 m): focused power on a log scale, depth relabelled as the claim does (repeat at 648 m), smoothed across the ground for display but not in depth; not the gated reconstruction",
   "quantity": "focused power, log scale",
   "units": "relative",
   "range": [
-   -0.5091457962989807,
-   1.348649024963379
+   -0.5742601752281189,
+   1.354358196258545
   ],
   "run": "p2_33_sacsayhuaman \u00b7 2026-09-30 \u00b7 d13b0ca",
+  "spacing_z": 2.5,
   "caption": "columns where the registration wanders, as over open ground"
  },
  {
@@ -136,23 +141,24 @@
   "shape": [
    43,
    38,
-   63
+   126
   ],
   "origin": [
    -347.5,
    -1107.5,
-   3462.5
+   3463.75
   ],
   "spacing": 5.0,
   "label": "Satellite \u00b7 the published method at City grid houses",
-  "method": "The real 2025 ICEYE pass through the paper-style pipeline (50 half-band pairs, 32 px patches, grid-median correction, no selection gates, lambda_s 0.48 m): focused power on a log scale, depth relabelled as the claim does (repeat at 648 m), smoothed for display; not the gated reconstruction",
+  "method": "The real 2025 ICEYE pass through the paper-style pipeline (50 half-band pairs, 32 px patches, grid-median correction, no selection gates, lambda_s 0.48 m): focused power on a log scale, depth relabelled as the claim does (repeat at 648 m), smoothed across the ground for display but not in depth; not the gated reconstruction",
   "quantity": "focused power, log scale",
   "units": "relative",
   "range": [
-   -0.5091457962989807,
-   1.348649024963379
+   -0.5742601752281189,
+   1.354358196258545
   ],
   "run": "p2_33_sacsayhuaman \u00b7 2026-09-30 \u00b7 d13b0ca",
+  "spacing_z": 2.5,
   "caption": "columns where the registration wanders, as over open ground"
  },
  {

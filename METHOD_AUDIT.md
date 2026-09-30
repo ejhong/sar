@@ -488,6 +488,13 @@ investigation's record, and what it leaves open follow.
     passes 463, 2,411 and 1,126 of 9,595 positions over the walls, the city grid and the fields at a support of one, its
     motionless copies 293, 1,743 and 657: the busiest surfaces pass the most, as at Giza.
 
+18. **The gated reconstruction's depth scale comes from the pass (P2-34).** Read from each run's own steering
+    wavenumbers: on the 2022 pass one turn of its fit spans 6.17 m and the scale repeats every 308 m, just past the 300 m
+    it draws; on the 2025 passes, over Giza and over Sacsayhuamán, 3.80 m and 190 m. There each fit is drawn twice, near
+    the surface and at its mirror near 190 m down (3,002 and 1,647 of 4,650 passing positions): the two levels its
+    pictures stand at on those passes are one choice drawn twice. The same code puts the same fit at different depths on
+    different passes.
+
 These reasons differ in kind and strength. 4 is algebraic and holds whatever the ground does: the depth axis is a
 frequency axis with a repeat and a mirror, and no validated model turns it into a physical depth. 1 and 12 are
 measured, for particular estimators and configurations; 13 is a known-truth test of one of them, on synthetic products. 2, 3 and 8 are models with stated assumptions (a small chamber
