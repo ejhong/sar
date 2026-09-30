@@ -140,7 +140,7 @@ const rq = requirement as unknown as {
 };
 const rqAt = (f: number, L: number) => rq.acquisitions['giza-20250827'].frequencies.find((r) => r.f_hz === f)!.exact.find((e) => e.L_m === L)!.D_necessary_m['0.9'];
 const rqTruck = rq.imprints.filter((i) => i.label.startsWith('bench room, dynamic')).reduce((a, i) => (i.short_by < a.short_by ? i : a));
-const um = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} millimetres` : `${+(m * 1e6).toPrecision(2)} micrometres`);
+const umWords = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} millimetres` : `${+(m * 1e6).toPrecision(2)} micrometres`);
 // P2-29: the oracle, told everything but the answer
 type OrRow = { kind: string; tv_exact: number; growth_to_target: number; open: boolean };
 const orc = oracle as unknown as { chamber: OrRow[]; depth: { residual_fraction: number; signal_factor_depth_over_detection: number } };
@@ -512,8 +512,8 @@ const explore = [
         </p>
         <p>
           Turned around, the bound says what a detection would need. For this pass and ordinary ground, the room itself would
-          have to add at least {um(rqAt(80, 8))} of motion to the ground over it at the lorry’s frequencies, or
-          {' '}{um(rqAt(0.2, 8))} at the microseisms’: {inWords(rqTruck.short_by)} times what the lorry makes it add. That is a
+          have to add at least {umWords(rqAt(80, 8))} of motion to the ground over it at the lorry’s frequencies, or
+          {' '}{umWords(rqAt(0.2, 8))} at the microseisms’: {inWords(rqTruck.short_by)} times what the lorry makes it add. That is a
           requirement under stated conditions, not a proof about every conceivable mechanism: it covers anything that acts
           through the ground’s motion in one image, and says nothing of other routes.
         </p>
@@ -545,7 +545,7 @@ const explore = [
       <div class="qa">
         <details class="q">
           <summary>What if the ground shook harder?</summary>
-          <p>At the most restless places on Earth the ground moves 70 times more than at Giza’s regional level, and in our model no way of reading the image raises its rate of finding the room above its false alarms by more than one in {inWords(1 / noisyEdge)} (step 10). A lorry close by shakes the ground far harder, and faster, which the room scatters more; yet a lorry bouncing over a bump 15 metres away for the whole pass leaves that margin at most <Sci v={hum.truck.ceiling} p={0} />. A detection would need the room itself to add at least {um(rqAt(80, 8))} of motion to the ground over it. The method’s own slices fare worse: one short enough to follow such shaking blurs the ground over 30 metres.</p>
+          <p>At the most restless places on Earth the ground moves 70 times more than at Giza’s regional level, and in our model no way of reading the image raises its rate of finding the room above its false alarms by more than one in {inWords(1 / noisyEdge)} (step 10). A lorry close by shakes the ground far harder, and faster, which the room scatters more; yet a lorry bouncing over a bump 15 metres away for the whole pass leaves that margin at most <Sci v={hum.truck.ceiling} p={0} />. A detection would need the room itself to add at least {umWords(rqAt(80, 8))} of motion to the ground over it. The method’s own slices fare worse: one short enough to follow such shaking blurs the ground over 30 metres.</p>
         </details>
         <details class="q">
           <summary>What about a shinier target?</summary>

@@ -1520,14 +1520,14 @@
  "p2_25_information_bound": {
   "id": "p2_25_information_bound",
   "title": "What one image can hold about the chamber, whatever reads it",
-  "date": "2026-09-29",
-  "started_utc": "2026-09-29T20:57:52+00:00",
-  "runtime_s": 1370.5,
-  "commit": "117f33b",
+  "date": "2026-09-30",
+  "started_utc": "2026-09-30T08:24:17+00:00",
+  "runtime_s": 353.5,
+  "commit": "cfb8852",
   "params": {
    "acquisition": "giza-20250827",
-   "grid_m": 0.5,
    "half_width_m": 45.0,
+   "grid": "the image's own pixels",
    "taper_static_m": [
     30.0,
     39.0
@@ -1540,11 +1540,13 @@
    "reliable_dprime": 3.29,
    "genie_snr_db": 30.0,
    "monte_carlo": {
-    "model": 600,
-    "synthesizer": 80
+    "estimator": 600,
+    "synthesizer": 80,
+    "detection": 4000
    },
    "noise_free": true,
-   "attenuation": "none"
+   "attenuation": "none",
+   "scattering": "fully developed speckle, no reference image"
   },
   "environment": {
    "python": "3.11.15",
@@ -1557,11 +1559,11 @@
  },
  "p2_26_imprint_spectrum": {
   "id": "p2_26_imprint_spectrum",
-  "title": "The chamber's imprint at every frequency",
-  "date": "2026-09-29",
-  "started_utc": "2026-09-29T19:55:18+00:00",
-  "runtime_s": 3686.1,
-  "commit": "43ef093",
+  "title": "The chamber's imprint at every frequency, and how long a room rings",
+  "date": "2026-09-30",
+  "started_utc": "2026-09-30T02:26:07+00:00",
+  "runtime_s": 52.4,
+  "commit": "626337c",
   "params": {
    "site": "bench-void",
    "models": {
@@ -1632,6 +1634,72 @@
      "line_x": -38.0,
      "plane_z": null,
      "record_s": 0.3,
+     "f_top": 240.0
+    },
+    "long": {
+     "extent": [
+      [
+       -70.0,
+       70.0
+      ],
+      [
+       -50.0,
+       50.0
+      ],
+      [
+       -70.0,
+       3.0
+      ]
+     ],
+     "h": 1.0,
+     "pml_m": 20.0,
+     "half": 20.0,
+     "step_m": 2.0,
+     "line_x": -50.0,
+     "plane_z": null,
+     "record_s": 4.0,
+     "f_top": 120.0
+    },
+    "ring": {
+     "extent": [
+      [
+       -60.0,
+       60.0
+      ],
+      [
+       -60.0,
+       60.0
+      ],
+      [
+       -60.0,
+       3.0
+      ]
+     ],
+     "h": 1.0,
+     "pml_m": 20.0,
+     "half": 0.0,
+     "record_s": 4.0,
+     "f_top": 120.0
+    },
+    "ring_fine": {
+     "extent": [
+      [
+       -30.0,
+       30.0
+      ],
+      [
+       -30.0,
+       30.0
+      ],
+      [
+       -32.0,
+       3.0
+      ]
+     ],
+     "h": 0.5,
+     "pml_m": 10.0,
+     "half": 0.0,
+     "record_s": 2.0,
      "f_top": 240.0
     }
    },
@@ -1705,6 +1773,23 @@
      }
     ],
     [
+     "surface_deep",
+     "main",
+     "line",
+     {
+      "centre": [
+       0,
+       0,
+       -30
+      ],
+      "size": [
+       6,
+       6,
+       6
+      ]
+     }
+    ],
+    [
      "surface_small",
      "small",
      "line",
@@ -1773,7 +1858,90 @@
      }
     ]
    ],
+   "long_cases": [
+    [
+     "long_bench",
+     {
+      "centre": [
+       0,
+       0,
+       -15
+      ],
+      "size": [
+       6,
+       6,
+       6
+      ]
+     }
+    ],
+    [
+     "long_favourable",
+     {
+      "centre": [
+       0,
+       0,
+       -10
+      ],
+      "size": [
+       10,
+       10,
+       10
+      ]
+     }
+    ]
+   ],
+   "ring_cases": [
+    [
+     "ring_bench",
+     "ring",
+     {
+      "centre": [
+       0,
+       0,
+       -15
+      ],
+      "size": [
+       6,
+       6,
+       6
+      ]
+     }
+    ],
+    [
+     "ring_favourable",
+     "ring",
+     {
+      "centre": [
+       0,
+       0,
+       -10
+      ],
+      "size": [
+       10,
+       10,
+       10
+      ]
+     }
+    ],
+    [
+     "ring_favourable_fine",
+     "ring_fine",
+     {
+      "centre": [
+       0,
+       0,
+       -10
+      ],
+      "size": [
+       10,
+       10,
+       10
+      ]
+     }
+    ]
+   ],
    "f_low_hz": 6.0,
+   "passed_s": 0.12,
    "rock": "limestone-mokattam, no intrinsic attenuation",
    "line_of_sight": [
     -0.3485081910484424,
@@ -1791,6 +1959,657 @@
    "cpus": 4
   },
   "command": "uv run python experiments/p2_26_imprint_spectrum.py"
+ },
+ "p2_27_requirement": {
+  "id": "p2_27_requirement",
+  "title": "What one image would need: the motion a room must add to the ground",
+  "date": "2026-09-30",
+  "started_utc": "2026-09-30T06:41:44+00:00",
+  "runtime_s": 974.7,
+  "commit": "1214539",
+  "params": {
+   "acquisitions": [
+    "giza-20250827",
+    "giza-20220715"
+   ],
+   "frequencies_hz": [
+    0.2,
+    2.0,
+    5.0,
+    20.0,
+    80.0
+   ],
+   "targets_tv": [
+    0.9,
+    0.5
+   ],
+   "footprint": "D exp(-r^2 / 2 L^2), area within half the peak",
+   "widths_exact_m": [
+    0.05,
+    0.1,
+    0.2,
+    0.5,
+    1.0,
+    2.0,
+    4.0,
+    8.0
+   ],
+   "widths_exact_slow_m": [
+    16.0
+   ],
+   "widths_linearised_m": [
+    0.05,
+    0.075663,
+    0.114497,
+    0.173263,
+    0.262191,
+    0.396762,
+    0.600402,
+    0.90856,
+    1.374883,
+    2.080548,
+    3.148398,
+    4.764328,
+    7.20964,
+    10.91002,
+    16.509636,
+    24.983281,
+    37.806061,
+    57.210191,
+    86.573577,
+    131.007852,
+    198.248217,
+    300.0
+   ],
+   "genie_snr_db": 30.0,
+   "reflector_scr_db": 50.0,
+   "scattering": "fully developed speckle, no reference image",
+   "noise_free": true,
+   "motion": "coherent for the whole pass, worst phase"
+  },
+  "environment": {
+   "python": "3.11.15",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 4,
+   "cpus": 4
+  },
+  "command": "uv run python experiments/p2_27_requirement.py"
+ },
+ "p2_28_two_depths": {
+  "id": "p2_28_two_depths",
+  "title": "Two depths, hollow and solid: does the published picture follow the room?",
+  "date": "2026-09-30",
+  "started_utc": "2026-09-30T02:25:43+00:00",
+  "runtime_s": 5369.3,
+  "commit": "9e98de7",
+  "params": {
+   "rooms": {
+    "hollow_15": {
+     "centre": [
+      0,
+      0,
+      -15
+     ],
+     "size": [
+      6,
+      6,
+      6
+     ],
+     "fill": "air"
+    },
+    "hollow_30": {
+     "centre": [
+      0,
+      0,
+      -30
+     ],
+     "size": [
+      6,
+      6,
+      6
+     ],
+     "fill": "air"
+    },
+    "granite_15": {
+     "centre": [
+      0,
+      0,
+      -15
+     ],
+     "size": [
+      6,
+      6,
+      6
+     ],
+     "fill": "granite"
+    }
+   },
+   "grid_m": 1.0,
+   "domain_half_m": 90.0,
+   "domain_bottom_m": -90.0,
+   "receivers": "120 m square at 2 m",
+   "taper_m": [
+    50.0,
+    59.0
+   ],
+   "lam_s_m": 1.45,
+   "phases_rad": [
+    0.5,
+    2.0
+   ],
+   "geometry": "giza-20250827",
+   "image_px": [
+    2304,
+    256
+   ],
+   "microseisms_m_s": 4.9e-08,
+   "band_hz": [
+    0.1,
+    0.3
+   ],
+   "phase_speed_m_s": 3000
+  },
+  "environment": {
+   "python": "3.11.15",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 4,
+   "cpus": 4
+  },
+  "command": "uv run python experiments/p2_28_two_depths.py"
+ },
+ "p2_29_oracle": {
+  "id": "p2_29_oracle",
+  "title": "The oracle: what an ideal detector could learn, told more than any method knows",
+  "date": "2026-09-30",
+  "started_utc": "2026-09-30T06:09:09+00:00",
+  "runtime_s": 1953.9,
+  "commit": "35f6726",
+  "params": {
+   "acquisition": "giza-20250827",
+   "snr_db": 30.0,
+   "nesz_best_db": -26.7,
+   "nesz_source": "ICEYE product specification, imaging modes, Table 2-11 (Dwell): -26.7 to -15.6 dB",
+   "sigma0_bright_natural_db": 0.0,
+   "sigma0_status": "assumed",
+   "reflector_db": 50.0,
+   "target_delta": 3.29,
+   "allowances": {
+    "local ambient level over the regional": 10.0,
+    "site amplification": 3.0,
+    "SNR 10 dB higher": 3.162278
+   },
+   "allowance_status": "assumed",
+   "check": {
+    "prf_hz": 400.0,
+    "realisations": 12
+   },
+   "depth": {
+    "small_room": {
+     "centre": [
+      0,
+      0,
+      -15
+     ],
+     "size": [
+      2,
+      2,
+      2
+     ],
+     "fill": "air"
+    },
+    "spacing_m": 6.0,
+    "reach_m": 36.0
+   }
+  },
+  "environment": {
+   "python": "3.11.15",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 4,
+   "cpus": 4
+  },
+  "command": "uv run python experiments/p2_29_oracle.py"
+ },
+ "p2_30_finite_certificates": {
+  "id": "p2_30_finite_certificates",
+  "title": "Finite certificates: the bound on every processor, the common background included",
+  "date": "2026-09-30",
+  "started_utc": "2026-09-30T06:41:43+00:00",
+  "runtime_s": 0.2,
+  "commit": "35f6726",
+  "params": {
+   "target": {
+    "tpr": 0.95,
+    "fpr": 0.05
+   },
+   "direction_enlargement": 1.01,
+   "dynamic_stress_phase": 1.11,
+   "inputs": [
+    "p2_25_information_bound",
+    "p2_26_imprint_spectrum",
+    "p2_29_oracle",
+    "giza-20250827"
+   ],
+   "derivation": "independent, 29 September 2026; sarsim.finite"
+  },
+  "environment": {
+   "python": "3.11.15",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 4,
+   "cpus": 4
+  },
+  "command": "uv run python experiments/p2_30_finite_certificates.py"
+ },
+ "p2_31_shape_test": {
+  "id": "p2_31_shape_test",
+  "title": "The shape test: location and shape, with depth allowed to be wrong",
+  "date": "2026-09-30",
+  "started_utc": "2026-09-30T03:55:16+00:00",
+  "runtime_s": 8031.7,
+  "commit": "e931725",
+  "params": {
+   "layouts": {
+    "room": [
+     {
+      "centre": [
+       0.0,
+       0.0,
+       -12.0
+      ],
+      "size": [
+       6.0,
+       6.0,
+       6.0
+      ]
+     }
+    ],
+    "L_tunnel": [
+     {
+      "centre": [
+       -5.0,
+       0.0,
+       -10.0
+      ],
+      "size": [
+       18.0,
+       2.5,
+       2.5
+      ]
+     },
+     {
+      "centre": [
+       2.75,
+       7.375,
+       -10.0
+      ],
+      "size": [
+       2.5,
+       17.25,
+       2.5
+      ]
+     }
+    ],
+    "branching_tunnel": [
+     {
+      "centre": [
+       0.0,
+       0.0,
+       -10.0
+      ],
+      "size": [
+       28.0,
+       2.5,
+       2.5
+      ]
+     },
+     {
+      "centre": [
+       0.0,
+       -8.625,
+       -10.0
+      ],
+      "size": [
+       2.5,
+       14.75,
+       2.5
+      ]
+     }
+    ]
+   },
+   "seeds": [
+    71,
+    171,
+    271
+   ],
+   "levels": {
+    "real": null,
+    "diagnostic_0.3_rad": 0.3,
+    "diagnostic_2_rad": 2.0
+   },
+   "taper_m": [
+    45.0,
+    54.0
+   ],
+   "top_share": 0.05,
+   "extra_structure_margin_m": 5.0,
+   "depth_family": {
+    "lam_s_m": [
+     0.24,
+     0.48
+    ],
+    "branches": "the axis repeat and mirror"
+   },
+   "geometry": "giza-20250827",
+   "image_px": [
+    2304,
+    256
+   ],
+   "microseisms_m_s": 4.9e-08,
+   "imprint": "solver settling under uniform strain (P2-28)",
+   "amplified_levels_are_diagnostic": true
+  },
+  "environment": {
+   "python": "3.11.15",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 4,
+   "cpus": 4
+  },
+  "command": "uv run python experiments/p2_31_shape_test.py"
+ },
+ "p2_32_shape_bounds": {
+  "id": "p2_32_shape_bounds",
+  "title": "Shape discrimination, bounded",
+  "date": "2026-09-30",
+  "started_utc": "2026-09-30T06:58:00+00:00",
+  "runtime_s": 4800.4,
+  "commit": "1f77bd3",
+  "params": {
+   "layouts": {
+    "room": [
+     {
+      "centre": [
+       0.0,
+       0.0,
+       -12.0
+      ],
+      "size": [
+       6.0,
+       6.0,
+       6.0
+      ]
+     }
+    ],
+    "L_tunnel": [
+     {
+      "centre": [
+       -5.0,
+       0.0,
+       -10.0
+      ],
+      "size": [
+       18.0,
+       2.5,
+       2.5
+      ]
+     },
+     {
+      "centre": [
+       2.75,
+       7.375,
+       -10.0
+      ],
+      "size": [
+       2.5,
+       17.25,
+       2.5
+      ]
+     }
+    ],
+    "branching_tunnel": [
+     {
+      "centre": [
+       0.0,
+       0.0,
+       -10.0
+      ],
+      "size": [
+       28.0,
+       2.5,
+       2.5
+      ]
+     },
+     {
+      "centre": [
+       0.0,
+       -8.625,
+       -10.0
+      ],
+      "size": [
+       2.5,
+       14.75,
+       2.5
+      ]
+     }
+    ],
+    "none": [],
+    "straight_tunnel": [
+     {
+      "centre": [
+       0.0,
+       0.0,
+       -10.0
+      ],
+      "size": [
+       28.0,
+       2.5,
+       2.5
+      ]
+     }
+    ],
+    "column": [
+     {
+      "centre": [
+       0.0,
+       0.0,
+       -17.0
+      ],
+      "size": [
+       3.0,
+       3.0,
+       26.0
+      ]
+     }
+    ],
+    "column_spiral": [
+     {
+      "centre": [
+       0.0,
+       0.0,
+       -17.0
+      ],
+      "size": [
+       3.0,
+       3.0,
+       26.0
+      ]
+     },
+     {
+      "centre": [
+       4.5,
+       0.0,
+       -6.0
+      ],
+      "size": [
+       2.0,
+       2.0,
+       2.0
+      ]
+     },
+     {
+      "centre": [
+       3.181981,
+       3.181981,
+       -8.5
+      ],
+      "size": [
+       2.0,
+       2.0,
+       2.0
+      ]
+     },
+     {
+      "centre": [
+       2.755e-16,
+       4.5,
+       -11.0
+      ],
+      "size": [
+       2.0,
+       2.0,
+       2.0
+      ]
+     },
+     {
+      "centre": [
+       -3.181981,
+       3.181981,
+       -13.5
+      ],
+      "size": [
+       2.0,
+       2.0,
+       2.0
+      ]
+     },
+     {
+      "centre": [
+       -4.5,
+       5.511e-16,
+       -16.0
+      ],
+      "size": [
+       2.0,
+       2.0,
+       2.0
+      ]
+     },
+     {
+      "centre": [
+       -3.181981,
+       -3.181981,
+       -18.5
+      ],
+      "size": [
+       2.0,
+       2.0,
+       2.0
+      ]
+     },
+     {
+      "centre": [
+       -8.266e-16,
+       -4.5,
+       -21.0
+      ],
+      "size": [
+       2.0,
+       2.0,
+       2.0
+      ]
+     },
+     {
+      "centre": [
+       3.181981,
+       -3.181981,
+       -23.5
+      ],
+      "size": [
+       2.0,
+       2.0,
+       2.0
+      ]
+     }
+    ]
+   },
+   "pairs": [
+    [
+     "branching_tunnel",
+     "none"
+    ],
+    [
+     "L_tunnel",
+     "straight_tunnel"
+    ],
+    [
+     "column_spiral",
+     "column"
+    ],
+    [
+     "L_tunnel",
+     "branching_tunnel"
+    ],
+    [
+     "room",
+     "none"
+    ]
+   ],
+   "directions_deg": [
+    0.0,
+    14.999999999999998,
+    29.999999999999996,
+    45.0,
+    59.99999999999999,
+    75.0,
+    90.0,
+    105.00000000000001,
+    119.99999999999999,
+    135.0,
+    150.0,
+    165.0
+   ],
+   "half_width_m": 60.0,
+   "taper_m": [
+    50.0,
+    59.0
+   ],
+   "snr_db": 30.0,
+   "target_delta": 3.29,
+   "ambient_bands": [
+    {
+     "case": "Giza microseisms, measured",
+     "strain_amplitude": 1.542e-11,
+     "f_hz": 0.2
+    },
+    {
+     "case": "The world's noisiest stations",
+     "strain_amplitude": 1.109e-09,
+     "f_hz": 0.2
+    },
+    {
+     "case": "Giza 1-3 Hz, measured",
+     "strain_amplitude": 1.619e-11,
+     "f_hz": 2.0
+    },
+    {
+     "case": "Giza 3-8 Hz, measured",
+     "strain_amplitude": 1.396e-11,
+     "f_hz": 5.0
+    }
+   ],
+   "depth_allowance": "the same-depth pair bounds every allowed vertical transformation"
+  },
+  "environment": {
+   "python": "3.11.15",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 4,
+   "cpus": 4
+  },
+  "command": "uv run python experiments/p2_32_shape_bounds.py"
  },
  "lab_khafre": {
   "id": "lab_khafre",

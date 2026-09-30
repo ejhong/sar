@@ -1,0 +1,617 @@
+{
+ "manifest": {
+  "id": "p2_29_oracle",
+  "title": "The oracle: what an ideal detector could learn, told more than any method knows",
+  "date": "2026-09-30",
+  "started_utc": "2026-09-30T06:09:09+00:00",
+  "runtime_s": 1953.9,
+  "commit": "35f6726",
+  "params": {
+   "acquisition": "giza-20250827",
+   "snr_db": 30.0,
+   "nesz_best_db": -26.7,
+   "nesz_source": "ICEYE product specification, imaging modes, Table 2-11 (Dwell): -26.7 to -15.6 dB",
+   "sigma0_bright_natural_db": 0.0,
+   "sigma0_status": "assumed",
+   "reflector_db": 50.0,
+   "target_delta": 3.29,
+   "allowances": {
+    "local ambient level over the regional": 10.0,
+    "site amplification": 3.0,
+    "SNR 10 dB higher": 3.162278
+   },
+   "allowance_status": "assumed",
+   "check": {
+    "prf_hz": 400.0,
+    "realisations": 12
+   },
+   "depth": {
+    "small_room": {
+     "centre": [
+      0,
+      0,
+      -15
+     ],
+     "size": [
+      2,
+      2,
+      2
+     ],
+     "fill": "air"
+    },
+    "spacing_m": 6.0,
+    "reach_m": 36.0
+   }
+  },
+  "environment": {
+   "python": "3.11.15",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 4,
+   "cpus": 4
+  }
+ },
+ "raw_echo_check": {
+  "scatterers": 802,
+  "pulses": 9794,
+  "prf_hz": 400.0,
+  "patch_m": [
+   3.0,
+   1.5
+  ],
+  "room_width_m": 0.5,
+  "room_phase_rad": 0.8,
+  "room_f_hz": 5.0,
+  "background_phase_rad": 0.8,
+  "rows": [
+   {
+    "background_scale": 1.0,
+    "realisation": 0,
+    "exact_over_formula": 1.071672,
+    "no_cross_terms_over_formula": 1.0
+   },
+   {
+    "background_scale": 1.0,
+    "realisation": 1,
+    "exact_over_formula": 1.08519,
+    "no_cross_terms_over_formula": 1.0
+   },
+   {
+    "background_scale": 1.0,
+    "realisation": 2,
+    "exact_over_formula": 0.934014,
+    "no_cross_terms_over_formula": 1.0
+   },
+   {
+    "background_scale": 1.0,
+    "realisation": 3,
+    "exact_over_formula": 0.943571,
+    "no_cross_terms_over_formula": 1.0
+   },
+   {
+    "background_scale": 1.0,
+    "realisation": 4,
+    "exact_over_formula": 1.014061,
+    "no_cross_terms_over_formula": 1.0
+   },
+   {
+    "background_scale": 1.0,
+    "realisation": 5,
+    "exact_over_formula": 1.019825,
+    "no_cross_terms_over_formula": 1.0
+   },
+   {
+    "background_scale": 1.0,
+    "realisation": 6,
+    "exact_over_formula": 0.849288,
+    "no_cross_terms_over_formula": 1.0
+   },
+   {
+    "background_scale": 1.0,
+    "realisation": 7,
+    "exact_over_formula": 1.002333,
+    "no_cross_terms_over_formula": 1.0
+   },
+   {
+    "background_scale": 1.0,
+    "realisation": 8,
+    "exact_over_formula": 1.106685,
+    "no_cross_terms_over_formula": 1.0
+   },
+   {
+    "background_scale": 1.0,
+    "realisation": 9,
+    "exact_over_formula": 0.978482,
+    "no_cross_terms_over_formula": 1.0
+   },
+   {
+    "background_scale": 1.0,
+    "realisation": 10,
+    "exact_over_formula": 1.08706,
+    "no_cross_terms_over_formula": 1.0
+   },
+   {
+    "background_scale": 1.0,
+    "realisation": 11,
+    "exact_over_formula": 0.827888,
+    "no_cross_terms_over_formula": 1.0
+   },
+   {
+    "background_scale": 10.0,
+    "realisation": 0,
+    "exact_over_formula": 1.091373,
+    "no_cross_terms_over_formula": 1.0
+   },
+   {
+    "background_scale": 10.0,
+    "realisation": 1,
+    "exact_over_formula": 1.118982,
+    "no_cross_terms_over_formula": 1.0
+   },
+   {
+    "background_scale": 10.0,
+    "realisation": 2,
+    "exact_over_formula": 0.982315,
+    "no_cross_terms_over_formula": 1.0
+   },
+   {
+    "background_scale": 10.0,
+    "realisation": 3,
+    "exact_over_formula": 0.91714,
+    "no_cross_terms_over_formula": 1.0
+   },
+   {
+    "background_scale": 10.0,
+    "realisation": 4,
+    "exact_over_formula": 1.059714,
+    "no_cross_terms_over_formula": 1.0
+   },
+   {
+    "background_scale": 10.0,
+    "realisation": 5,
+    "exact_over_formula": 1.002674,
+    "no_cross_terms_over_formula": 1.0
+   },
+   {
+    "background_scale": 10.0,
+    "realisation": 6,
+    "exact_over_formula": 0.912486,
+    "no_cross_terms_over_formula": 1.0
+   },
+   {
+    "background_scale": 10.0,
+    "realisation": 7,
+    "exact_over_formula": 1.009709,
+    "no_cross_terms_over_formula": 1.0
+   },
+   {
+    "background_scale": 10.0,
+    "realisation": 8,
+    "exact_over_formula": 1.176566,
+    "no_cross_terms_over_formula": 1.0
+   },
+   {
+    "background_scale": 10.0,
+    "realisation": 9,
+    "exact_over_formula": 0.911076,
+    "no_cross_terms_over_formula": 1.0
+   },
+   {
+    "background_scale": 10.0,
+    "realisation": 10,
+    "exact_over_formula": 1.134898,
+    "no_cross_terms_over_formula": 1.0
+   },
+   {
+    "background_scale": 10.0,
+    "realisation": 11,
+    "exact_over_formula": 0.818027,
+    "no_cross_terms_over_formula": 1.0
+   }
+  ],
+  "summary": {
+   "background_x1": {
+    "mean": 0.993339,
+    "se": 0.025243,
+    "spread": 0.087444
+   },
+   "background_x10": {
+    "mean": 1.011247,
+    "se": 0.030033,
+    "spread": 0.104038
+   }
+  }
+ },
+ "chamber": [
+  {
+   "case": "Giza microseisms, measured (static imprint)",
+   "kind": "ambient",
+   "delta": 4.121e-06,
+   "tv_exact": 1.644e-06,
+   "tv_pinsker": 2.061e-06,
+   "growth_to_target": 798299.251904,
+   "note": "",
+   "growth_after_allowances": 8414.812968,
+   "open": false
+  },
+  {
+   "case": "The world's noisiest stations (static imprint)",
+   "kind": "ambient",
+   "delta": 0.0002965,
+   "tv_exact": 0.0001183,
+   "tv_pinsker": 0.0001482,
+   "growth_to_target": 11096.925771,
+   "note": "",
+   "growth_after_allowances": 116.971868,
+   "open": false
+  },
+  {
+   "case": "Giza 1-3 Hz, measured (static imprint)",
+   "kind": "ambient",
+   "delta": 4.328e-06,
+   "tv_exact": 1.727e-06,
+   "tv_pinsker": 2.164e-06,
+   "growth_to_target": 760209.140609,
+   "note": "",
+   "growth_after_allowances": 8013.307941,
+   "open": false
+  },
+  {
+   "case": "Giza 3-8 Hz, measured (static imprint)",
+   "kind": "ambient",
+   "delta": 3.731e-06,
+   "tv_exact": 1.488e-06,
+   "tv_pinsker": 1.865e-06,
+   "growth_to_target": 881842.603106,
+   "note": "",
+   "growth_after_allowances": 9295.437212,
+   "open": false
+  },
+  {
+   "case": "urban background, all pass (surface)",
+   "kind": "cultural",
+   "delta": 0.074656,
+   "tv_exact": 0.029777,
+   "tv_pinsker": 0.037328,
+   "growth_to_target": 44.068555,
+   "note": "scattered wave unattenuated across the scene",
+   "growth_after_allowances": 0.464523,
+   "open": true
+  },
+  {
+   "case": "urban background, all pass, within 32 m (surface)",
+   "kind": "cultural",
+   "delta": 0.006402,
+   "tv_exact": 0.002554,
+   "tv_pinsker": 0.003201,
+   "growth_to_target": 513.899354,
+   "note": "",
+   "growth_after_allowances": 5.416975,
+   "open": false
+  },
+  {
+   "case": "truck over a bump 15 m away, all pass, at 56 Hz (surface)",
+   "kind": "cultural",
+   "delta": 1.039423,
+   "tv_exact": 0.396735,
+   "tv_pinsker": 0.519712,
+   "growth_to_target": 3.165217,
+   "note": "scattered wave unattenuated across the scene",
+   "growth_after_allowances": 0.033364,
+   "open": true
+  },
+  {
+   "case": "truck over a bump 15 m away, all pass, within 32 m, at 36 Hz (surface)",
+   "kind": "cultural",
+   "delta": 0.104741,
+   "tv_exact": 0.041767,
+   "tv_pinsker": 0.052371,
+   "growth_to_target": 31.410707,
+   "note": "",
+   "growth_after_allowances": 0.331098,
+   "open": true
+  },
+  {
+   "case": "urban background, all pass (surface_favourable)",
+   "kind": "cultural",
+   "delta": 0.373367,
+   "tv_exact": 0.148091,
+   "tv_pinsker": 0.186684,
+   "growth_to_target": 8.811698,
+   "note": "scattered wave unattenuated across the scene",
+   "growth_after_allowances": 0.092883,
+   "open": true
+  },
+  {
+   "case": "urban background, all pass, within 32 m (surface_favourable)",
+   "kind": "cultural",
+   "delta": 0.039282,
+   "tv_exact": 0.01567,
+   "tv_pinsker": 0.019641,
+   "growth_to_target": 83.753649,
+   "note": "",
+   "growth_after_allowances": 0.882841,
+   "open": true
+  },
+  {
+   "case": "truck over a bump 15 m away, all pass, at 72 Hz (surface_favourable)",
+   "kind": "cultural",
+   "delta": 5.156968,
+   "tv_exact": 0.990077,
+   "tv_pinsker": 1.0,
+   "growth_to_target": 0.637972,
+   "note": "scattered wave unattenuated across the scene",
+   "growth_after_allowances": 0.006725,
+   "open": true
+  },
+  {
+   "case": "truck over a bump 15 m away, all pass, within 32 m, at 59 Hz (surface_favourable)",
+   "kind": "cultural",
+   "delta": 0.598721,
+   "tv_exact": 0.235335,
+   "tv_pinsker": 0.29936,
+   "growth_to_target": 5.495049,
+   "note": "",
+   "growth_after_allowances": 0.057923,
+   "open": true
+  },
+  {
+   "case": "urban background, all pass (p_below)",
+   "kind": "cultural",
+   "delta": 0.087191,
+   "tv_exact": 0.034773,
+   "tv_pinsker": 0.043596,
+   "growth_to_target": 37.733224,
+   "note": "scattered wave unattenuated across the scene",
+   "growth_after_allowances": 0.397743,
+   "open": true
+  },
+  {
+   "case": "urban background, all pass, within 32 m (p_below)",
+   "kind": "cultural",
+   "delta": 0.007698,
+   "tv_exact": 0.003071,
+   "tv_pinsker": 0.003849,
+   "growth_to_target": 427.397608,
+   "note": "",
+   "growth_after_allowances": 4.505166,
+   "open": false
+  },
+  {
+   "case": "truck over a bump 15 m away, all pass, at 88 Hz (p_below)",
+   "kind": "cultural",
+   "delta": 1.452001,
+   "tv_exact": 0.532161,
+   "tv_pinsker": 0.726,
+   "growth_to_target": 2.265839,
+   "note": "scattered wave unattenuated across the scene",
+   "growth_after_allowances": 0.023884,
+   "open": true
+  },
+  {
+   "case": "truck over a bump 15 m away, all pass, within 32 m, at 80 Hz (p_below)",
+   "kind": "cultural",
+   "delta": 0.110405,
+   "tv_exact": 0.044023,
+   "tv_pinsker": 0.055203,
+   "growth_to_target": 29.79934,
+   "note": "",
+   "growth_after_allowances": 0.314113,
+   "open": true
+  },
+  {
+   "case": "urban background, all pass (s_below)",
+   "kind": "cultural",
+   "delta": 0.089659,
+   "tv_exact": 0.035757,
+   "tv_pinsker": 0.04483,
+   "growth_to_target": 36.694395,
+   "note": "scattered wave unattenuated across the scene",
+   "growth_after_allowances": 0.386793,
+   "open": true
+  },
+  {
+   "case": "urban background, all pass, within 32 m (s_below)",
+   "kind": "cultural",
+   "delta": 0.006987,
+   "tv_exact": 0.002788,
+   "tv_pinsker": 0.003494,
+   "growth_to_target": 470.855673,
+   "note": "",
+   "growth_after_allowances": 4.963255,
+   "open": false
+  },
+  {
+   "case": "truck over a bump 15 m away, all pass, at 88 Hz (s_below)",
+   "kind": "cultural",
+   "delta": 1.689563,
+   "tv_exact": 0.601767,
+   "tv_pinsker": 0.844782,
+   "growth_to_target": 1.947249,
+   "note": "scattered wave unattenuated across the scene",
+   "growth_after_allowances": 0.020526,
+   "open": true
+  },
+  {
+   "case": "truck over a bump 15 m away, all pass, within 32 m, at 93 Hz (s_below)",
+   "kind": "cultural",
+   "delta": 0.115781,
+   "tv_exact": 0.046164,
+   "tv_pinsker": 0.057891,
+   "growth_to_target": 28.415618,
+   "note": "",
+   "growth_after_allowances": 0.299527,
+   "open": true
+  },
+  {
+   "case": "corner reflector on the peak, microseisms",
+   "kind": "helped",
+   "delta": 1.626e-05,
+   "tv_exact": 6.488e-06,
+   "tv_pinsker": 8.132e-06,
+   "growth_to_target": 202291.436919,
+   "note": "",
+   "growth_after_allowances": 2132.338973,
+   "open": false
+  },
+  {
+   "case": "corner reflector on the peak, truck over a bump, 15 m",
+   "kind": "helped",
+   "delta": 0.245563,
+   "tv_exact": 0.09772,
+   "tv_pinsker": 0.122781,
+   "growth_to_target": 13.397799,
+   "note": "",
+   "growth_after_allowances": 0.141225,
+   "open": true
+  }
+ ],
+ "snr_per_cell_raw": 1150.22901,
+ "allowance_product": 94.86833,
+ "open_cases": [
+  "urban background, all pass (surface)",
+  "truck over a bump 15 m away, all pass, at 56 Hz (surface)",
+  "truck over a bump 15 m away, all pass, within 32 m, at 36 Hz (surface)",
+  "urban background, all pass (surface_favourable)",
+  "urban background, all pass, within 32 m (surface_favourable)",
+  "truck over a bump 15 m away, all pass, at 72 Hz (surface_favourable)",
+  "truck over a bump 15 m away, all pass, within 32 m, at 59 Hz (surface_favourable)",
+  "urban background, all pass (p_below)",
+  "truck over a bump 15 m away, all pass, at 88 Hz (p_below)",
+  "truck over a bump 15 m away, all pass, within 32 m, at 80 Hz (p_below)",
+  "urban background, all pass (s_below)",
+  "truck over a bump 15 m away, all pass, at 88 Hz (s_below)",
+  "truck over a bump 15 m away, all pass, within 32 m, at 93 Hz (s_below)",
+  "corner reflector on the peak, truck over a bump, 15 m"
+ ],
+ "depth": {
+  "residual_fraction": 0.713006,
+  "signal_factor_depth_over_detection": 1.402513,
+  "best_single_bench_room_residual": 0.777772,
+  "rooms_used": 17,
+  "largest_weight_small_rooms": 2.015224,
+  "total_volume_m3": 82.864752,
+  "volume_30m_room_m3": 216.0,
+  "weights": [
+   {
+    "east_m": -36.0,
+    "north_m": -6.0,
+    "small_rooms": 0.100998
+   },
+   {
+    "east_m": -24.0,
+    "north_m": -12.0,
+    "small_rooms": 0.010843
+   },
+   {
+    "east_m": -24.0,
+    "north_m": -6.0,
+    "small_rooms": 0.185328
+   },
+   {
+    "east_m": -24.0,
+    "north_m": 0.0,
+    "small_rooms": 0.279191
+   },
+   {
+    "east_m": -18.0,
+    "north_m": -12.0,
+    "small_rooms": 0.320954
+   },
+   {
+    "east_m": -18.0,
+    "north_m": 6.0,
+    "small_rooms": 0.266286
+   },
+   {
+    "east_m": -12.0,
+    "north_m": -12.0,
+    "small_rooms": 0.150064
+   },
+   {
+    "east_m": -12.0,
+    "north_m": -6.0,
+    "small_rooms": 0.861879
+   },
+   {
+    "east_m": -12.0,
+    "north_m": 0.0,
+    "small_rooms": 0.713494
+   },
+   {
+    "east_m": -12.0,
+    "north_m": 6.0,
+    "small_rooms": 0.636329
+   },
+   {
+    "east_m": -12.0,
+    "north_m": 12.0,
+    "small_rooms": 0.074926
+   },
+   {
+    "east_m": -6.0,
+    "north_m": -12.0,
+    "small_rooms": 0.786309
+   },
+   {
+    "east_m": -6.0,
+    "north_m": 6.0,
+    "small_rooms": 0.977934
+   },
+   {
+    "east_m": 0.0,
+    "north_m": -6.0,
+    "small_rooms": 2.015224
+   },
+   {
+    "east_m": 0.0,
+    "north_m": 0.0,
+    "small_rooms": 0.924572
+   },
+   {
+    "east_m": 0.0,
+    "north_m": 6.0,
+    "small_rooms": 1.391583
+   },
+   {
+    "east_m": 6.0,
+    "north_m": 0.0,
+    "small_rooms": 0.662181
+   }
+  ],
+  "pair_interaction_fraction": 0.037483,
+  "small_room_runs": {
+   "room": {
+    "xx": {
+     "runtime_s": 303.3,
+     "last_step_change": 1.839e-05
+    },
+    "yy": {
+     "runtime_s": 286.4,
+     "last_step_change": 1.839e-05
+    },
+    "xy": {
+     "runtime_s": 299.1,
+     "last_step_change": 1.523e-05
+    }
+   },
+   "without": {
+    "xx": {
+     "runtime_s": 268.6,
+     "last_step_change": 0.00818
+    },
+    "yy": {
+     "runtime_s": 267.4,
+     "last_step_change": 0.00818
+    },
+    "xy": {
+     "runtime_s": 261.3,
+     "last_step_change": 0.0
+    }
+   }
+  },
+  "inner_m": 40.0,
+  "spacing_m": 6.0
+ },
+ "finding": "An oracle told the exact reflectivity, the background motion, the shaking's realisation and both physical models, lacking only which is true and the receiver noise, is bounded exactly: its detection rate exceeds its false-alarm rate by 2 Phi(Delta / 2) - 1, and no method told less does better, whatever the ground's texture. Pulse by pulse on the real dwell the formula for Delta holds (0.993 +- 0.025 of it; 1.011 +- 0.030 with the background ten times larger, which cancels). At 30 dB per resolution cell, under the ambient levels the bench room gives the oracle at most 1.2e-04: its imprint would have to grow 1.1e+04 times, 1.2e+02 after allowing the local level ten times the regional, site amplification three times and 10 dB more SNR. The open regime is strong nearby shaking known exactly: truck over a bump 15 m away, all pass, at 72 Hz (surface_favourable) gives the oracle 0.99, 0.6 times short of 95% found at 5% false alarms, which the allowances erase (14 cases open). Depth is another matter: rooms 15 m down, small and spread, match the mark of a room 30 m down to 71.3% (the bench room itself only to 78%), so telling the two depths apart takes 1 times the signal that detecting either takes, for any method; the superposition of small rooms holds to 3.7%."
+}

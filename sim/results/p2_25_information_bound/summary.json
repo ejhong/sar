@@ -3,9 +3,9 @@
   "id": "p2_25_information_bound",
   "title": "What one image can hold about the chamber, whatever reads it",
   "date": "2026-09-30",
-  "started_utc": "2026-09-30T01:55:04+00:00",
-  "runtime_s": 1835.5,
-  "commit": "f671745",
+  "started_utc": "2026-09-30T08:24:17+00:00",
+  "runtime_s": 353.5,
+  "commit": "cfb8852",
   "params": {
    "acquisition": "giza-20250827",
    "half_width_m": 45.0,
@@ -44,9 +44,9 @@
     32,
     8
    ],
-   "fisher_sum": 133.5879973769831,
+   "fisher_sum": 133.587997,
    "fisher_covariance": 133.587997,
-   "relative_difference": 6.382693802242966e-16,
+   "relative_difference": 6.383e-16,
    "shared_motion_fisher": 0.0
   },
   "grid": [
@@ -56,7 +56,7 @@
     "grid_A": 0.380626,
     "largest_sum": 0.382794,
     "grid_A_plus_B": 0.382794,
-    "relative_difference_mean": 1.4584154973349608e-15
+    "relative_difference_mean": 1.458e-15
    },
    {
     "f_hz": 40.0,
@@ -64,7 +64,7 @@
     "grid_A": 2.379444,
     "largest_sum": 2.39424,
     "grid_A_plus_B": 2.39424,
-    "relative_difference_mean": 4.665891720868589e-15
+    "relative_difference_mean": 4.666e-15
    },
    {
     "f_hz": 400.0,
@@ -72,7 +72,7 @@
     "grid_A": 0.017896,
     "largest_sum": 0.019673,
     "grid_A_plus_B": 0.019673,
-    "relative_difference_mean": 8.452707225547344e-14
+    "relative_difference_mean": 8.453e-14
    }
   ],
   "continuum": [
@@ -80,31 +80,31 @@
     "width_m": 1.5,
     "f_hz": 2.0,
     "paired_echo_m": 2.477212,
-    "fisher_exact": 14.911730366338617,
-    "fisher_continuum": 15.153401237961708,
-    "ratio": 1.0162067624404363,
-    "bound": 64.33991470739792,
-    "slow_limit": 21.925808838573847
+    "fisher_exact": 14.91173,
+    "fisher_continuum": 15.153401,
+    "ratio": 1.016207,
+    "bound": 64.339915,
+    "slow_limit": 21.925809
    },
    {
     "width_m": 1.5,
     "f_hz": 10.0,
     "paired_echo_m": 12.386058,
-    "fisher_exact": 30.23544627781257,
-    "fisher_continuum": 30.725633728633447,
-    "ratio": 1.0162123438270725,
-    "bound": 64.33991470739792,
-    "slow_limit": 548.1452209643462
+    "fisher_exact": 30.235446,
+    "fisher_continuum": 30.725634,
+    "ratio": 1.016212,
+    "bound": 64.339915,
+    "slow_limit": 548.145221
    },
    {
     "width_m": 4.0,
     "f_hz": 0.5,
     "paired_echo_m": 0.619303,
-    "fisher_exact": 1.3254680433752637,
-    "fisher_continuum": 1.3423902629979705,
-    "ratio": 1.012766976697239,
-    "bound": 457.41396793594527,
-    "slow_limit": 1.3705267478086811
+    "fisher_exact": 1.325468,
+    "fisher_continuum": 1.34239,
+    "ratio": 1.012767,
+    "bound": 457.413968,
+    "slow_limit": 1.370527
    }
   ],
   "finite_kl": [
@@ -113,7 +113,7 @@
     "f_hz": 1.0,
     "a": 0.05,
     "peak_phase_rad": 0.02012,
-    "half_a2F": 0.0019374759898860426,
+    "half_a2F": 0.001937,
     "kl_exact": 0.001937,
     "remainder_eps": 0.00211,
     "kl_rigorous_bound": 0.002213,
@@ -124,7 +124,7 @@
     "f_hz": 1.0,
     "a": 0.1,
     "peak_phase_rad": 0.04024,
-    "half_a2F": 0.0077499039595441705,
+    "half_a2F": 0.00775,
     "kl_exact": 0.00775,
     "remainder_eps": 0.008536,
     "kl_rigorous_bound": 0.010207,
@@ -135,7 +135,7 @@
     "f_hz": 1.0,
     "a": 0.2,
     "peak_phase_rad": 0.08048,
-    "half_a2F": 0.030999615838176682,
+    "half_a2F": 0.031,
     "kl_exact": 0.030996,
     "remainder_eps": 0.034951,
     "kl_rigorous_bound": 0.056299,
@@ -146,7 +146,7 @@
     "f_hz": 1.0,
     "a": 0.5,
     "peak_phase_rad": 0.201201,
-    "half_a2F": 0.19374759898860422,
+    "half_a2F": 0.193748,
     "kl_exact": 0.193624,
     "remainder_eps": 0.234742,
     "kl_rigorous_bound": 2.573603,
@@ -157,10 +157,10 @@
     "f_hz": 1.0,
     "a": 1.0,
     "peak_phase_rad": 0.402402,
-    "half_a2F": 0.7749903959544169,
+    "half_a2F": 0.77499,
     "kl_exact": 0.772979,
     "remainder_eps": 1.065849,
-    "kl_rigorous_bound": Infinity,
+    "kl_rigorous_bound": null,
     "bound_holds": true
    },
    {
@@ -168,10 +168,10 @@
     "f_hz": 1.0,
     "a": 2.0,
     "peak_phase_rad": 0.804804,
-    "half_a2F": 3.0999615838176675,
+    "half_a2F": 3.099962,
     "kl_exact": 3.065486,
     "remainder_eps": 5.645843,
-    "kl_rigorous_bound": Infinity,
+    "kl_rigorous_bound": null,
     "bound_holds": true
    },
    {
@@ -179,7 +179,7 @@
     "f_hz": 1.5,
     "a": 0.05,
     "peak_phase_rad": 0.02012,
-    "half_a2F": 0.00696072614227075,
+    "half_a2F": 0.006961,
     "kl_exact": 0.006961,
     "remainder_eps": 0.004157,
     "kl_rigorous_bound": 0.008498,
@@ -190,7 +190,7 @@
     "f_hz": 1.5,
     "a": 0.1,
     "peak_phase_rad": 0.04024,
-    "half_a2F": 0.027842904569083,
+    "half_a2F": 0.027843,
     "kl_exact": 0.027843,
     "remainder_eps": 0.016812,
     "kl_rigorous_bound": 0.042761,
@@ -201,7 +201,7 @@
     "f_hz": 1.5,
     "a": 0.2,
     "peak_phase_rad": 0.08048,
-    "half_a2F": 0.111371618276332,
+    "half_a2F": 0.111372,
     "kl_exact": 0.111378,
     "remainder_eps": 0.068765,
     "kl_rigorous_bound": 0.318304,
@@ -212,10 +212,10 @@
     "f_hz": 1.5,
     "a": 0.5,
     "peak_phase_rad": 0.201201,
-    "half_a2F": 0.6960726142270749,
+    "half_a2F": 0.696073,
     "kl_exact": 0.696336,
     "remainder_eps": 0.460374,
-    "kl_rigorous_bound": Infinity,
+    "kl_rigorous_bound": null,
     "bound_holds": true
    },
    {
@@ -223,10 +223,10 @@
     "f_hz": 1.5,
     "a": 1.0,
     "peak_phase_rad": 0.402402,
-    "half_a2F": 2.7842904569082996,
+    "half_a2F": 2.78429,
     "kl_exact": 2.788494,
     "remainder_eps": 2.077772,
-    "kl_rigorous_bound": Infinity,
+    "kl_rigorous_bound": null,
     "bound_holds": true
    },
    {
@@ -234,10 +234,10 @@
     "f_hz": 1.5,
     "a": 2.0,
     "peak_phase_rad": 0.804804,
-    "half_a2F": 11.137161827633198,
+    "half_a2F": 11.137162,
     "kl_exact": 11.203535,
     "remainder_eps": 10.843344,
-    "kl_rigorous_bound": Infinity,
+    "kl_rigorous_bound": null,
     "bound_holds": true
    }
   ],
@@ -803,7 +803,7 @@
     "f_hz": 2.0,
     "a": 0.25,
     "peak_phase_rad": 0.100601,
-    "fisher_at_a1": 14.950529506668138,
+    "fisher_at_a1": 14.95053,
     "deflection_expected": 0.966648,
     "spread_over_sqrtF": 1.012676,
     "spread_se": 0.028868,
@@ -812,7 +812,7 @@
     "estimator_mean_over_a": 1.020877,
     "estimator_var_times_F": 0.941312,
     "realisations": 600,
-    "slow_limit": 21.925808838573847,
+    "slow_limit": 21.925809,
     "synthesizer": {
      "realisations": 80,
      "spread_over_sqrtF": 0.96432,
@@ -831,7 +831,7 @@
     "f_hz": 2.0,
     "a": 0.19,
     "peak_phase_rad": 0.076456,
-    "fisher_at_a1": 21.547760045941843,
+    "fisher_at_a1": 21.54776,
     "deflection_expected": 0.881972,
     "spread_over_sqrtF": 1.031398,
     "spread_se": 0.028868,
@@ -840,7 +840,7 @@
     "estimator_mean_over_a": 0.921671,
     "estimator_var_times_F": 1.052727,
     "realisations": 600,
-    "slow_limit": 21.907726245838177,
+    "slow_limit": 21.907726,
     "runtime_s": 120.7
    },
    "C_shared": {
@@ -866,84 +866,84 @@
    "rms_velocity_m_s": 4.9e-08,
    "f_hz": 0.2,
    "phase_speed_m_s": 3000,
-   "strain_amplitude": 1.5417031236838507e-11,
-   "imprint_peak_phase_rad": 1.5164435222092157e-09,
-   "stretch_peak": 5.988339443562531e-11,
+   "strain_amplitude": 1.542e-11,
+   "imprint_peak_phase_rad": 1.516e-09,
+   "stretch_peak": 5.988e-11,
    "remainder_eps": 4.06e-15,
    "norm_bound_x": 1.259e-08,
-   "fisher_continuum": 6.695023566507883e-18,
-   "fisher_bound_any_frequency": 2.953289560351228e-14,
-   "fisher_slow_limit": 6.778612115598042e-18,
+   "fisher_continuum": 6.695e-18,
+   "fisher_bound_any_frequency": 2.953e-14,
+   "fisher_slow_limit": 6.779e-18,
    "source": "M1-01 median, 0.1-0.3 Hz; phase speed sites/ambient.json",
    "fisher": 6.714e-18,
    "kl_upper": 3.357e-18,
    "ceiling": 1.296e-09,
    "accuracy_above_half": 6.478e-10,
    "best_test_weak_signal": 1.034e-09,
-   "local_extrapolation_factor": 1269745254.7441473
+   "local_extrapolation_factor": 1269745254.744147
   },
   {
    "case": "The world's noisiest stations",
    "rms_velocity_m_s": 3.525e-06,
    "f_hz": 0.2,
    "phase_speed_m_s": 3000,
-   "strain_amplitude": 1.1090823491807293e-09,
-   "imprint_peak_phase_rad": 1.0909109011811193e-07,
-   "stretch_peak": 4.307938069093471e-09,
+   "strain_amplitude": 1.109e-09,
+   "imprint_peak_phase_rad": 1.091e-07,
+   "stretch_peak": 4.308e-09,
    "remainder_eps": 2.101e-11,
    "norm_bound_x": 9.055e-07,
-   "fisher_continuum": 3.4648001750766146e-14,
-   "fisher_bound_any_frequency": 1.5283826985980512e-10,
-   "fisher_slow_limit": 3.508058815863304e-14,
+   "fisher_continuum": 3.465e-14,
+   "fisher_bound_any_frequency": 1.528e-10,
+   "fisher_slow_limit": 3.508e-14,
    "source": "Peterson (1993) high-noise model, 0.1-0.3 Hz",
    "fisher": 3.474e-14,
    "kl_upper": 1.738e-14,
    "ceiling": 9.321e-08,
    "accuracy_above_half": 4.66e-08,
    "best_test_weak_signal": 7.436e-08,
-   "local_extrapolation_factor": 17650359.56949311
+   "local_extrapolation_factor": 17650359.569493
   },
   {
    "case": "Giza 1-3 Hz, measured",
    "rms_velocity_m_s": 2.9e-08,
    "f_hz": 2.0,
    "phase_speed_m_s": 1690.793375,
-   "strain_amplitude": 1.6189498186111617e-11,
-   "imprint_peak_phase_rad": 1.592424590376665e-09,
-   "stretch_peak": 6.288383870412216e-10,
+   "strain_amplitude": 1.619e-11,
+   "imprint_peak_phase_rad": 1.592e-09,
+   "stretch_peak": 6.288e-10,
    "remainder_eps": 4.478e-15,
    "norm_bound_x": 1.297e-07,
-   "fisher_continuum": 7.238464285357854e-16,
-   "fisher_bound_any_frequency": 3.256651604977417e-14,
-   "fisher_slow_limit": 7.47491147571603e-16,
+   "fisher_continuum": 7.238e-16,
+   "fisher_bound_any_frequency": 3.257e-14,
+   "fisher_slow_limit": 7.475e-16,
    "source": "M1-01 median; the rock's own Rayleigh speed, slower than the real waves, so the strain is generous",
    "fisher": 7.262e-16,
    "kl_upper": 3.631e-16,
    "ceiling": 1.347e-08,
    "accuracy_above_half": 6.737e-09,
    "best_test_weak_signal": 1.075e-08,
-   "local_extrapolation_factor": 122088550.15902196
+   "local_extrapolation_factor": 122088550.159022
   },
   {
    "case": "Giza 3-8 Hz, measured",
    "rms_velocity_m_s": 2.5e-08,
    "f_hz": 5.0,
    "phase_speed_m_s": 1690.793375,
-   "strain_amplitude": 1.3956463953544497e-11,
-   "imprint_peak_phase_rad": 1.3727798192902285e-09,
-   "stretch_peak": 1.355255144485389e-09,
+   "strain_amplitude": 1.396e-11,
+   "imprint_peak_phase_rad": 1.373e-09,
+   "stretch_peak": 1.355e-09,
    "remainder_eps": 3.328e-15,
    "norm_bound_x": 2.663e-07,
-   "fisher_continuum": 3.04548087243696e-15,
-   "fisher_bound_any_frequency": 2.4202226553042632e-14,
-   "fisher_slow_limit": 3.4719230620708365e-15,
+   "fisher_continuum": 3.045e-15,
+   "fisher_bound_any_frequency": 2.42e-14,
+   "fisher_slow_limit": 3.472e-15,
    "source": "M1-01 median; the rock's own Rayleigh speed, as P2-04 takes for 1-3 Hz",
    "fisher": 3.055e-15,
    "kl_upper": 1.528e-15,
    "ceiling": 2.764e-08,
    "accuracy_above_half": 1.382e-08,
    "best_test_weak_signal": 2.205e-08,
-   "local_extrapolation_factor": 59519704.1415874
+   "local_extrapolation_factor": 59519704.141587
   }
  ],
  "dynamic": [
@@ -955,7 +955,7 @@
     "ceiling": 0.001564,
     "accuracy_above_half": 0.0007819,
     "best_test_weak_signal": 0.00121,
-    "local_extrapolation_factor": 1084.4815287699407,
+    "local_extrapolation_factor": 1084.481529,
     "remainder_eps": 3.348e-06,
     "fisher_near_only": 3.482e-08,
     "ceiling_near_only": 9.515e-05,
@@ -972,11 +972,11 @@
     "ceiling": 0.021596,
     "accuracy_above_half": 0.010798,
     "best_test_weak_signal": 0.016861,
-    "local_extrapolation_factor": 77.83799871903861,
+    "local_extrapolation_factor": 77.837999,
     "remainder_eps": 1.791e-06,
-    "fisher_largest_over_phase": 0.0017865240570526875,
+    "fisher_largest_over_phase": 0.001787,
     "ceiling_largest_over_phase": 0.021596,
-    "fisher_near_only": 6.3744937215660765e-06,
+    "fisher_near_only": 6.374e-06,
     "ceiling_near_only": 0.001264,
     "worst_f_hz": 55.629185,
     "rms_velocity_m_s": 0.0001
@@ -1474,7 +1474,7 @@
     "ceiling": 0.008978,
     "accuracy_above_half": 0.004489,
     "best_test_weak_signal": 0.006017,
-    "local_extrapolation_factor": 218.12048421041902,
+    "local_extrapolation_factor": 218.120484,
     "remainder_eps": 0.0001451,
     "fisher_near_only": 1.315e-06,
     "ceiling_near_only": 0.0006529,
@@ -1491,11 +1491,11 @@
     "ceiling": 0.117224,
     "accuracy_above_half": 0.058612,
     "best_test_weak_signal": 0.083025,
-    "local_extrapolation_factor": 15.780189189060083,
+    "local_extrapolation_factor": 15.780189,
     "remainder_eps": 8.183e-05,
-    "fisher_largest_over_phase": 0.04346779952376781,
+    "fisher_largest_over_phase": 0.043468,
     "ceiling_largest_over_phase": 0.117224,
-    "fisher_near_only": 0.00023000212272229254,
+    "fisher_near_only": 0.00023,
     "ceiling_near_only": 0.007641,
     "worst_f_hz": 71.934291,
     "rms_velocity_m_s": 0.0001
@@ -1993,7 +1993,7 @@
     "ceiling": 0.001798,
     "accuracy_above_half": 0.0008991,
     "best_test_weak_signal": 0.001413,
-    "local_extrapolation_factor": 928.5726286745511,
+    "local_extrapolation_factor": 928.572629,
     "remainder_eps": 1.174e-06,
     "fisher_near_only": 5.061e-08,
     "ceiling_near_only": 0.0001132,
@@ -2010,11 +2010,11 @@
     "ceiling": 0.030514,
     "accuracy_above_half": 0.015257,
     "best_test_weak_signal": 0.02361,
-    "local_extrapolation_factor": 55.58269220856308,
+    "local_extrapolation_factor": 55.582692,
     "remainder_eps": 3.458e-06,
-    "fisher_largest_over_phase": 0.003503587175566518,
+    "fisher_largest_over_phase": 0.003504,
     "ceiling_largest_over_phase": 0.030514,
-    "fisher_near_only": 1.0075985226553013e-05,
+    "fisher_near_only": 1.008e-05,
     "ceiling_near_only": 0.00159,
     "worst_f_hz": 88.239397,
     "rms_velocity_m_s": 0.0001
@@ -2512,7 +2512,7 @@
     "ceiling": 0.001856,
     "accuracy_above_half": 0.000928,
     "best_test_weak_signal": 0.001457,
-    "local_extrapolation_factor": 900.8602565688207,
+    "local_extrapolation_factor": 900.860257,
     "remainder_eps": 9.452e-07,
     "fisher_near_only": 4.098e-08,
     "ceiling_near_only": 0.0001018,
@@ -2529,11 +2529,11 @@
     "ceiling": 0.035774,
     "accuracy_above_half": 0.017887,
     "best_test_weak_signal": 0.027533,
-    "local_extrapolation_factor": 47.66072885179274,
+    "local_extrapolation_factor": 47.660729,
     "remainder_eps": 3.789e-06,
-    "fisher_largest_over_phase": 0.004765084593489003,
+    "fisher_largest_over_phase": 0.004765,
     "ceiling_largest_over_phase": 0.035774,
-    "fisher_near_only": 1.0910439216706928e-05,
+    "fisher_near_only": 1.091e-05,
     "ceiling_near_only": 0.001654,
     "worst_f_hz": 88.239397,
     "rms_velocity_m_s": 0.0001
@@ -3031,52 +3031,52 @@
    "scr_db": 12.227432,
    "shaking": "microseisms",
    "f_hz": 0.2,
-   "peak_displacement_m": 3.768476801536021e-12,
+   "peak_displacement_m": 3.768e-12,
    "fisher": 3.793e-17,
    "kl_upper": 1.92e-17,
    "ceiling": 3.099e-09,
    "accuracy_above_half": 1.549e-09,
    "best_test_weak_signal": 2.457e-09,
-   "local_extrapolation_factor": 534188200.7158992
+   "local_extrapolation_factor": 534188200.715899
   },
   {
    "point": "the brightest point on open plateau (P2-23)",
    "scr_db": 12.227432,
    "shaking": "truck over a bump, 15 m",
    "f_hz": 55.629185,
-   "peak_displacement_m": 5.689968676321816e-08,
+   "peak_displacement_m": 5.69e-08,
    "fisher": 8.756e-09,
    "kl_upper": 4.378e-09,
    "ceiling": 4.679e-05,
    "accuracy_above_half": 2.339e-05,
    "best_test_weak_signal": 3.733e-05,
-   "local_extrapolation_factor": 35160.431746983006
+   "local_extrapolation_factor": 35160.431747
   },
   {
    "point": "a corner reflector (P2-23)",
    "scr_db": 50.0,
    "shaking": "microseisms",
    "f_hz": 0.2,
-   "peak_displacement_m": 3.768476801536021e-12,
+   "peak_displacement_m": 3.768e-12,
    "fisher": 2.271e-13,
    "kl_upper": 1.15e-13,
    "ceiling": 2.398e-07,
    "accuracy_above_half": 1.199e-07,
    "best_test_weak_signal": 1.901e-07,
-   "local_extrapolation_factor": 6903445.346916046
+   "local_extrapolation_factor": 6903445.346916
   },
   {
    "point": "a corner reflector (P2-23)",
    "scr_db": 50.0,
    "shaking": "truck over a bump, 15 m",
    "f_hz": 55.629185,
-   "peak_displacement_m": 5.689968676321816e-08,
+   "peak_displacement_m": 5.69e-08,
    "fisher": 5.243e-05,
    "kl_upper": 2.621e-05,
    "ceiling": 0.00362,
    "accuracy_above_half": 0.00181,
    "best_test_weak_signal": 0.002889,
-   "local_extrapolation_factor": 454.38689700366615
+   "local_extrapolation_factor": 454.386897
   }
  ],
  "genie": [
@@ -3087,7 +3087,7 @@
    "ceiling": 1.921e-06,
    "accuracy_above_half": 9.607e-07,
    "best_test_weak_signal": 1.533e-06,
-   "local_extrapolation_factor": 856165.8097807233
+   "local_extrapolation_factor": 856165.809781
   },
   {
    "case": "truck over a bump, 15 m (surface wave)",
@@ -3096,7 +3096,7 @@
    "ceiling": 0.484585,
    "accuracy_above_half": 0.242293,
    "best_test_weak_signal": 0.372029,
-   "local_extrapolation_factor": 3.394656582388289
+   "local_extrapolation_factor": 3.394657
   }
  ],
  "claimed": {
@@ -3108,7 +3108,7 @@
    "ceiling": 4.642e-10,
    "accuracy_above_half": 2.321e-10,
    "best_test_weak_signal": 3.704e-10,
-   "local_extrapolation_factor": 3543541569.6772285
+   "local_extrapolation_factor": 3543541569.677228
   },
   "noisiest": {
    "fisher": 4.461e-15,
@@ -3116,12 +3116,12 @@
    "ceiling": 3.34e-08,
    "accuracy_above_half": 1.67e-08,
    "best_test_weak_signal": 2.665e-08,
-   "local_extrapolation_factor": 49257740.9685629
+   "local_extrapolation_factor": 49257740.968563
   },
   "note": "an estimate by scaling, not computed"
  },
  "penetration_db_x_band": 347.435586,
- "cells_per_m2": 28.10588766411201,
+ "cells_per_m2": 28.105888,
  "stretch_seconds": 79.326388,
  "paired_echo_m_per_hz": 1.238606,
  "finding": "Within its model, one image of ordinary ground holds almost nothing of the chamber, however it is read. The chamber reaches the image only through its echo, at least 347 dB down at X band (P2-11), or through the surface's motion during the pass; every method is a function of the image. For fully developed speckle, motion shared by the whole scene holds exactly none, and a rigorous bound on the finite change (the Fisher information with an explicit remainder) caps any test's detection rate above its false-alarm rate: 1.3e-09 under Giza's regional microseism level, 9.3e-08 at the noisiest stations on Earth, 1.3e-08 and 2.8e-08 at the measured 1-3 and 3-8 Hz levels (accuracy above a coin toss: half of each). With P2-26's dynamic imprint and the scattered wave counted unattenuated across the whole 5 km scene, the FTA's urban background for the whole pass gives 1.6e-03 (9.0e-03 over a room whose roof is 5 m down); a truck over a bump 15 m away for the whole pass, at its worst frequency (56 Hz), 2.2e-02 (1.2e-01). On a small image the exact likelihood-ratio test reaches 0.20 and 0.54 where Pinsker's bound from the exact KL allows 0.25 and 0.75 and weak-signal theory predicts 0.20 and 0.55: the ceiling sits 1.28 and 1.39 times above what the best test achieves, a bound, not an attained value. The model's Doppler-to-time relation (motion multiplied into the spectrum at each bin's stationary time) carries the same information as pulse-by-pulse physics to within 3.6% from 5 to 150 Hz on a 0.5 s aperture at the real chirp rate (at 0.5 Hz, a quarter cycle across it, the model holds 1.47 times more); with five cycles of motion across the aperture the model's excess falls from 6.1% to 0.07% as the time-bandwidth product rises from 1e+03 to 6e+04 (the real dwell's is 3e+06): an edge effect that fades, on the side of more information. The local extrapolation factor under the microseisms, 1e+09, is a scale within the model, not a physical shaking requirement."

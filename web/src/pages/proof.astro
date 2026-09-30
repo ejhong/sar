@@ -1,7 +1,6 @@
 ---
 import Doc from '../layouts/Doc.astro';
 import LineChart from '../components/LineChart.astro';
-import Term from '../components/Term.astro';
 import Routes from '../components/Routes.astro';
 import tight from '../../public/data/runs/p2_25_information_bound.json';
 import requirement from '../../public/data/runs/p2_27_requirement.json';
@@ -9,6 +8,7 @@ import depths from '../../public/data/runs/p2_28_two_depths.json';
 import oracle from '../../public/data/runs/p2_29_oracle.json';
 import finite from '../../public/data/runs/p2_30_finite_certificates.json';
 import shapes from '../../public/data/runs/p2_32_shape_bounds.json';
+import shapeTest from '../../public/data/runs/p2_31_shape_test.json';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 // ---- formatting
@@ -75,6 +75,7 @@ const layers: Layer[] = [
 const micro = fc.background_included.rows[0];
 const thin = dyn('surface_favourable: truck-level harmonic');
 const orAmb = Math.max(...orc.chamber.filter((r) => r.kind === 'ambient').map((r) => r.tv_exact));
+const orReg = orFind(s0[0].case)?.tv_exact ?? orAmb;   // the regional microseisms, as the certificate and tight rows quote
 const orOpen = orc.chamber.filter((r) => r.open);
 const pm = fc.fixed_envelope_phase_modulation;
 const orWorst_tv = (o: typeof orc) => o.chamber.filter((r) => r.kind === 'cultural').reduce((a, r) => Math.max(a, r.tv_exact), 0).toFixed(2);
@@ -95,12 +96,23 @@ const shDyn = (pair: string) => sh.dynamic.find((d) => d.pair === pair);
 const shMaxCert = Math.max(...sh.static.map((p) => p.rows[0].certificate_tpr_at_005));
 const shWorstDyn = sh.dynamic.length ? sh.dynamic.reduce((a, d) => (d.oracle_tv > a.oracle_tv ? d : a)) : null;
 
+// ---- the shape test (P2-31): generated scenes, read blind
+type StR = { presence_auc_vs_controls: number | null; shape_accuracy: number | null; median_location_error_m: number | null; median_centroid_error_m?: number | null; median_presence_z_at_true_place?: number | null };
+type StLv = { reference: StR; published_blind: StR; published_paired: StR };
+const stSum = (shapeTest as unknown as { summary: Record<string, unknown> }).summary;
+const stNum = (k: string) => (typeof stSum[k] === 'number' ? (stSum[k] as number) : null);
+const stLevels = ([['real', 'real level (the microseisms)'], ['diagnostic_0.3_rad', '0.3 rad, amplified'], ['diagnostic_2_rad', '2 rad, amplified'], ['diagnostic_20_rad', '20 rad, the positive control']] as const)
+  .filter(([k]) => stSum[k]).map(([k, label]) => ({ k, label, v: stSum[k] as StLv }));
+const stPos = stLevels.find((l) => l.k === 'diagnostic_20_rad')?.v;
+const stMid = stLevels.find((l) => l.k === 'diagnostic_2_rad')?.v;
+const pc0 = (v: number | null | undefined) => (v == null ? '—' : `${Math.round(100 * v)}%`);
+const m1 = (v: number | null | undefined) => (v == null ? '—' : `${v < 10 ? v.toFixed(1) : Math.round(v)} m`);
+
 // ---- the requirement (P2-27)
 type RqRow = { L_m: number; area_half_m2: number; D_necessary_m: Record<string, number> };
 type RqLin = { L_m: number; area_half_m2: number; D_linearised_m: Record<string, number> };
 const rq = requirement as unknown as { acquisitions: Record<string, { frequencies: { f_hz: number; exact: RqRow[]; linear: RqLin[] }[] }>; constrained: { modelled_ratio: number }; ambient: { label: string; constrained_short_by: number }[] };
 const rqMain = rq.acquisitions['giza-20250827'].frequencies;
-const rqAt = (f: number, L: number) => rqMain.find((r) => r.f_hz === f)!.exact.find((e) => e.L_m === L)!.D_necessary_m['0.9'];
 const rqColours = ['var(--lapis)', 'var(--verdigris)', 'var(--ochre)', 'var(--porphyry)', 'var(--cinnabar)'];
 const rqPhase = Math.min(...rq.ambient.filter((a) => a.label.includes('regional')).map((a) => a.constrained_short_by));
 const certCurve = [1, 10, 100, 1e3, 1e4].map((A) => ({ A, D: fc.requirements.q_exclusion_boundary_095_005 / ((4 * Math.PI) / fc.geometry.wavelength_m * Math.sqrt(fc.geometry.area_density_used * A)) }));
@@ -136,7 +148,7 @@ const conc = (r: DRes) => r.over_room / r.elsewhere;
     <div class="stat-row">
       <div class="stat"><span class="value">{pctp(micro.tpr_upper_at_fpr_005, 3)}</span><span class="what">the most any processor could find the room at 5% false alarms, under the regional microseism envelope, the common background included (a loose certificate)</span><span class="src">P2-30 · Theorem C</span></div>
       <div class="stat"><span class="value">{sci(s0[0].ceiling)}</span><span class="what">detection rate − false-alarm rate, at most, by the tight calculation (the reference covariance taken as the identity)</span><span class="src">P2-25 · Fisher with an explicit remainder</span></div>
-      <div class="stat"><span class="value">{sci(orAmb)}</span><span class="what">the same for an oracle told the ground’s exact texture, the shaking and both physical models, under the ambient levels, whatever the texture</span><span class="src">P2-29 · Theorem D, pulse by pulse</span></div>
+      <div class="stat"><span class="value">{sci(orReg)}</span><span class="what">the same for an oracle told the ground’s exact texture, the shaking and both physical models, under the regional microseisms, whatever the texture ({sci(orAmb)} at the noisiest stations on Earth)</span><span class="src">P2-29 · Theorem D, pulse by pulse</span></div>
       <div class="stat"><span class="value">{pctp(thin.tpr_upper_at_fpr_005, 0)}</span><span class="what">the loose certificate’s ceiling for a room under a 5 m roof with a lorry bouncing beside it all pass: not excluded if its phase is 11% larger. Open</span><span class="src">P2-30 · the open case</span></div>
     </div>
     <p class="sub">
@@ -200,6 +212,28 @@ const conc = (r: DRes) => r.over_room / r.elsewhere;
       that detects the first layout is needed to tell the two apart. Shallow, bench-scale layouts in uniform rock: more
       favourable than anything claimed, and only these.
     </p>
+    <h3 class="subhead">The shape test: a room, an L-shaped and a branching tunnel generated through the forward model and read blind</h3>
+    <p class="sub">
+      Each layout’s imprint is the lab’s solver; the image is the synthesizer’s, with the unrelated ground and the shaking
+      matched across layouts and controls (no cavity, and a motionless copy), three realisations each (P2-31). The
+      reference detector is told the shaking: it names a layout by its statistic at the true place and places it by
+      scanning every placement. The published method’s plan map is read blind; its change against the same ground without
+      the cavity is a diagnostic it never has. Amplified levels are diagnostics, not predictions.
+    </p>
+    <table class="data compact">
+      <thead><tr><th>imprint</th><th>reference: names</th><th>reference: scan peaks from the centre</th><th>published, blind: names</th><th>its top places from the centre</th><th>published change (diagnostic): names</th><th>its top places</th></tr></thead>
+      <tbody>
+        {stLevels.map(({ label, v }) => (
+          <tr><td>{label}</td><td>{pc0(v.reference.shape_accuracy)}</td><td>{m1(v.reference.median_location_error_m)}</td><td>{pc0(v.published_blind.shape_accuracy)}</td><td>{m1(v.published_blind.median_centroid_error_m)}</td><td>{pc0(v.published_paired.shape_accuracy)}</td><td>{m1(v.published_paired.median_centroid_error_m)}</td></tr>
+        ))}
+        <tr><td>chance (the controls)</td><td>33%</td><td>{m1(stNum('control_reference_peak_distance_m'))}</td><td>33%</td><td>{m1(stNum('control_centroid_error_blind_m'))}</td><td>33%</td><td>{m1(stNum('control_centroid_error_paired_m'))}</td></tr>
+      </tbody>
+    </table>
+    <p class="note">
+      Medians over nine images per row (three layouts, three realisations). {stPos && stMid && stMid.reference.median_presence_z_at_true_place != null
+        ? `At 2 rad the reference detector’s response at the true place stands a median ${stMid.reference.median_presence_z_at_true_place.toFixed(1)} spreads above the scatter over placements: enough to name a layout when told where to look, not enough to find it by scanning the image.`
+        : ''}
+    </p>
   </section>
 
   <section id="boundary">
@@ -207,7 +241,7 @@ const conc = (r: DRes) => r.over_room / r.elsewhere;
     <table class="data compact">
       <thead><tr><th>conditions</th><th>presence</th><th>location and shape</th><th>absolute depth</th></tr></thead>
       <tbody>
-        <tr><td>Giza’s regional trembling, any reader, one image</td><td>excluded: ≤ {pctp(micro.tpr_upper_at_fpr_005, 3)} found at 5% (certificate), {sci(orAmb)} for the oracle</td><td>excluded: each pair ≤ {pctp(shMaxCert, 3)} at 5%</td><td>excluded with presence; aliased in the published method</td></tr>
+        <tr><td>Giza’s regional trembling, any reader, one image</td><td>excluded: ≤ {pctp(micro.tpr_upper_at_fpr_005, 3)} found at 5% (certificate), {sci(orReg)} for the oracle</td><td>excluded: each pair ≤ {pctp(shMaxCert, 3)} at 5%</td><td>excluded with presence; aliased in the published method</td></tr>
         <tr><td>The noisiest ground on Earth</td><td>excluded (tight {sci(s0[1].ceiling)})</td><td>excluded with presence</td><td>excluded with presence</td></tr>
         <tr><td>A lorry beside a room all pass, known exactly</td><td>open: the oracle reaches {orWorst_tv(orc)} and the certificate {pctp(thin.tpr_upper_at_fpr_005, 0)} at 5% for a thin roof</td><td>{shWorstDyn ? `open: the oracle reaches ${shWorstDyn.oracle_tv.toFixed(2)} for the hardest pair` : 'to compute'}</td><td>about as hard as detection in this model ({orc.depth.signal_factor_depth_over_detection.toFixed(1)}× its signal, P2-29)</td></tr>
         <tr><td>Any mechanism with gain, not yet specified</td><td colspan="3">not covered: it must state the motion it adds over the room (source, footprint, amplitude and phase, losses, duration); the requirement curve above says how much is needed</td></tr>
@@ -267,7 +301,7 @@ const conc = (r: DRes) => r.over_room / r.elsewhere;
         <h3>The whole image given the room’s largest phase</h3>
         <p>If ‖C₀<sup>−½</sup>ΔA‖<sub>F</sub> ≤ q, ρ = 2q + q² bounds ‖E‖ exactly (E = DB* + BD* + DD*), so TV ≤ ρ/(2(1 − ρ)). A phase-only change
         obeys |e<sup>−iΦ</sup> − 1|² ≤ Φ², so q² ≤ Σ|T₀|²Φ² / λ<sub>min</sub>(C₀) ≤ m P²/λ<sub>min</sub>: the peak phase P at every one of the image’s
-        {(fc.geometry.pixel_count / 1e9).toFixed(2)} billion pixels, over its {(fc.geometry.in_band_bins / 1e6).toFixed(0)} million retained bins. A background
+        {' '}{(fc.geometry.pixel_count / 1e9).toFixed(2)} billion pixels, over its {(fc.geometry.in_band_bins / 1e6).toFixed(0)} million retained bins. A background
         motion bounded the same way proves λ<sub>min</sub>(C₀) ≥ (1 − √Q<sub>bg</sub>)² = {fc.background_included.covariance_floor_proved_within_model.toFixed(4)}.</p>
       </div>
       <div class="note-card">
@@ -357,7 +391,7 @@ const conc = (r: DRes) => r.over_room / r.elsewhere;
         15 m down alone leaves {Math.round(100 * orc.depth.best_single_bench_room_residual)}%. In uniform rock the mark changes shape with depth, not only size, so telling these
         depths apart takes only {orc.depth.signal_factor_depth_over_detection.toFixed(1)} times the signal detection takes.
         {fc.depth_oracle && ` Theorem E's floor on any method's mean depth error, where detection just reaches 95% at 5%, is then only ${fc.depth_oracle.rows[0].mean_depth_error_lower_m.toFixed(1)} m of their ${fc.depth_oracle.separation_m} m separation.`}
-        Richer classes (layered rock, fractures, voids of other shapes) could still mimic one another; that is not tested.</p>
+        {' '}Richer classes (layered rock, fractures, voids of other shapes) could still mimic one another; that is not tested.</p>
       </div>
       <div class="note-card">
         <span class="tag simulated">the published method · P2-28</span>
@@ -426,6 +460,9 @@ const conc = (r: DRes) => r.over_room / r.elsewhere;
 </script>
 
 <style>
+  .subhead {
+    margin: 22px 0 4px;
+  }
   .dim {
     color: var(--muted);
     font-size: 0.72rem;

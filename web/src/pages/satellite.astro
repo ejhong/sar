@@ -330,7 +330,7 @@ type BStatic = BS & { case: string; rms_velocity_m_s: number; f_hz: number; stre
 type BDyn = { case: string; urban: BS & { fisher_near_only: number; ceiling_near_only: number; rms_velocity_m_s: number; band_hz: number[]; remainder_eps: number }; truck: BS & { fisher_near_only: number; ceiling_near_only: number; ceiling_largest_over_phase: number; worst_f_hz: number; rms_velocity_m_s: number } };
 type BEst = { spread_over_sqrtF: number; spread_se: number; shift_over_aF: number; shift_se: number; estimator_var_times_F: number; peak_phase_rad: number; width_m: number; f_hz: number; realisations: number; synthesizer?: { spread_over_sqrtF: number; spread_se: number; paired_shift_over_aF: number; paired_shift_se: number; realisations: number } };
 type BDet = { deflection: number; peak_phase_rad: number; kl_exact: number; pinsker_from_exact_kl: number; rigorous_ceiling: number; weak_signal_best_test: number; realisations: number; se: number; likelihood_ratio: { largest_pd_minus_pfa: number; roc_pfa: number[]; roc_pd: number[] }; score: { largest_pd_minus_pfa: number; roc_pfa: number[]; roc_pd: number[] } };
-type BKl = { width_m: number; f_hz: number; a: number; peak_phase_rad: number; half_a2F: number; kl_exact: number; kl_rigorous_bound: number; bound_holds: boolean };
+type BKl = { width_m: number; f_hz: number; a: number; peak_phase_rad: number; half_a2F: number; kl_exact: number; kl_rigorous_bound: number | null; bound_holds: boolean };
 type BPulse = { f_hz: number; ratio_exact_over_model: number; time_bandwidth?: number; aperture_s?: number };
 const bd = bound as unknown as {
   checks: {
@@ -359,14 +359,13 @@ const bFav = bd.dynamic.find((d) => d.case === 'surface_favourable')!;
 const bA = bd.checks.estimator.A_compact;
 const bB = bd.checks.estimator.B_smooth;
 const chainSweepRatio = Math.max(...(chain.sweep as { over_chamber: number; elsewhere: number }[]).map((r) => r.over_chamber / r.elsewhere));
-const cont = bd.checks.continuum;
-const contSpread = [Math.min(...cont.map((c) => c.ratio)), Math.max(...cont.map((c) => c.ratio))];
 const det = bd.checks.detection;
 const detOver = det.map((d) => d.pinsker_from_exact_kl / d.likelihood_ratio.largest_pd_minus_pfa);
 const klRows = bd.checks.finite_kl;
 const klHolds = klRows.every((r) => r.bound_holds);
 const klExcess = Math.max(...klRows.map((r) => r.kl_exact / r.half_a2F));
 const klPhase = Math.max(...klRows.map((r) => r.peak_phase_rad));
+const klVacuous = klRows.filter((r) => r.kl_rigorous_bound === null).length;   // remainder past one: the bound says nothing
 const pdShort = bd.checks.pulse_domain.real_rate_short_aperture;
 const pdCycles = bd.checks.pulse_domain.five_cycles;
 const pdDev = Math.max(...pdShort.filter((r) => r.f_hz >= 5).map((r) => Math.abs(r.ratio_exact_over_model - 1)));
@@ -438,7 +437,6 @@ const orc = oracle as unknown as {
   manifest: { params: { snr_db: number; nesz_best_db: number } };
 };
 const orAmb = orc.chamber.filter((r) => r.kind === 'ambient');
-const orWorst = orc.chamber.filter((r) => r.kind === 'cultural').reduce((a, r) => (r.tv_exact > a.tv_exact ? r : a));
 const orChk = orc.raw_echo_check.summary;
 const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m >= 1e-6 ? `${+(m * 1e6).toPrecision(2)} µm` : `${+(m * 1e9).toPrecision(2)} nm`);
 ---
@@ -554,7 +552,7 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
         <tr><td>The double sum against tr(C⁺C′C⁺C′) built scatterer by scatterer (a 32 × 8 image)</td><td>agree to <Sci v={Math.max(bd.checks.covariance.relative_difference, 1e-16)} p={0} /></td></tr>
         <tr><td>Motion shared by the whole scene</td><td><i>F</i> = {bd.checks.covariance.shared_motion_fisher}; the score’s value {sci(bd.checks.estimator.C_shared.largest_score)} (zero to rounding)</td></tr>
         <tr><td>The exact form on the image’s own pixels (every case below) against the double sum</td><td>agree to <Sci v={Math.max(...bd.checks.grid.map((r) => r.relative_difference_mean), 1e-16)} p={0} /></td></tr>
-        <tr><td>The finite change: exact KL (the covariance’s eigenvalues, a 128 × 16 image, peak phase to {klPhase.toFixed(1)} rad) against <i>F</i>/2 and the rigorous bound</td><td>exact KL up to {klExcess.toFixed(3)} × <i>F</i>/2; the bound {klHolds ? 'holds in every case' : 'fails in a case (see the run)'}</td></tr>
+        <tr><td>The finite change: exact KL (the covariance’s eigenvalues, a 128 × 16 image, peak phase to {klPhase.toFixed(1)} rad) against <i>F</i>/2 and the rigorous bound</td><td>exact KL up to {klExcess.toFixed(3)} × <i>F</i>/2; the bound {klHolds ? 'holds in every case' : 'fails in a case (see the run)'}{klVacuous ? `, vacuous in ${klVacuous} of ${klRows.length} (phase large enough that the remainder passes one)` : ''}</td></tr>
         {det.map((d, i) => (
           <tr><td>Detection, {d.realisations.toLocaleString('en-US')} images each way, deflection {d.deflection.toFixed(1)}: the exact likelihood-ratio test’s largest detection − false alarm, and the score test’s</td><td>{d.likelihood_ratio.largest_pd_minus_pfa.toFixed(3)} and {d.score.largest_pd_minus_pfa.toFixed(3)} (± {d.se.toFixed(3)}); weak-signal theory {d.weak_signal_best_test.toFixed(3)}; Pinsker from the exact KL {d.pinsker_from_exact_kl.toFixed(3)}, {detOver[i].toFixed(2)} times the likelihood-ratio test</td></tr>
         ))}
