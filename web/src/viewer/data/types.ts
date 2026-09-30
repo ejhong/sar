@@ -78,11 +78,23 @@ export interface VolumeInfo {
   shape: [number, number, number];
   origin: [number, number, number];
   spacing: number;
+  /** The depth step, where it is finer than the horizontal one (the paper-style volumes, so their bands show). */
+  spacing_z?: number;
   range: [number, number];
   run?: string;
   caption?: string;
   /** 'gated': the stricter reconstruction's fit scores, drawn in gold rather than the radar's cinnabar. */
   tint?: 'gated';
+}
+
+/** The gated reconstruction's depth scale on the pass it read (P2-34): one turn of its fit, the depth at which the scale
+ * repeats, and how many passing positions stand near the surface and how many at the mirror of their depth. */
+export interface DepthScale {
+  turn_m: number;
+  repeat_m: number;
+  positions: number;
+  shallow: number;
+  mirror: number;
 }
 
 export interface RadarSensors {
@@ -122,7 +134,14 @@ export interface RadarInfo {
   reach_m?: number;
   /** Start with the draped image hidden (a deep site, where it would cover what hangs beneath it). */
   image_hidden?: boolean;
-  stats?: { monument_vs_control_profile_corr: number; patch_profile_corr_range: [number, number]; pillar_power_vs_energy_min: number };
+  /** The numbers quoted beside a real pass's volumes, and the sentence the exporter quotes them in. */
+  stats?: {
+    monument_vs_control_profile_corr?: number;
+    patch_profile_corr_range?: [number, number];
+    profile_corr_range?: [number, number];
+    pillar_power_vs_energy_min: number;
+    text?: string;
+  };
   run?: string;
   /** The gated reconstruction over one monument: its volumes (real image and motionless copy, by support), where to look,
    * and how its scores sit inside the surveyed chambers against the same depths elsewhere. */
@@ -145,12 +164,15 @@ export interface RadarInfo {
     focus: [number, number, number];
     radius_m: number;
     chambers?: { real: [number | null, number | null]; twin: [number | null, number | null] };
+    depth_scale?: DepthScale | null;
     note: string;
   };
   /** Runs made with the lab's processing command (katabasis.lab), each over its own area. */
   lab?: {
     name: string;
     title: string;
+    /** The place the run is named by, as the other methods name it. */
+    area?: string;
     /** The pass's year ('both' where two passes are compared), and how its lines were laid ('ew', 'ns', or 'both'). */
     pass?: string;
     lines?: 'ew' | 'ns' | 'both';
@@ -159,6 +181,7 @@ export interface RadarInfo {
     radius_m: number;
     note: string;
     run?: string;
+    depth_scale?: DepthScale | null;
   }[];
 }
 

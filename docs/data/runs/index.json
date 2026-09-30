@@ -2612,6 +2612,163 @@
   },
   "command": "uv run python experiments/p2_32_shape_bounds.py"
  },
+ "p2_33_sacsayhuaman": {
+  "id": "p2_33_sacsayhuaman",
+  "title": "Sacsayhuam\u00e1n: the real pass over megalithic walls, houses and open fields",
+  "date": "2026-09-30",
+  "started_utc": "2026-09-30T04:56:46+00:00",
+  "runtime_s": 7.1,
+  "commit": "d13b0ca",
+  "params": {
+   "acquisition": "sacsayhuaman-20250822",
+   "site": "sacsayhuaman",
+   "geoid_m": 46.2,
+   "ortho_m": 1.0,
+   "registration_m": 2.0,
+   "areas": [
+    {
+     "key": "walls",
+     "label": "Zigzag walls",
+     "x": 14.6,
+     "y": -92.7,
+     "kind": "monument",
+     "placed": "the midpoint of the walls' OpenStreetMap outline (ways 431479258 and 431479257); Muyuqmarka behind them"
+    },
+    {
+     "key": "rodadero",
+     "label": "Rodadero outcrop",
+     "x": 40.0,
+     "y": 110.0,
+     "kind": "monument",
+     "placed": "the carved outcrop across the esplanade (OpenStreetMap node 5857164644 and its bare-rock outline), clear of the walls' area"
+    },
+    {
+     "key": "fields",
+     "label": "Fields north of the site",
+     "x": -100.0,
+     "y": 525.0,
+     "kind": "control",
+     "placed": "dark, flat fields on the laid image, clear of buildings"
+    },
+    {
+     "key": "san_cristobal",
+     "label": "San Crist\u00f3bal houses",
+     "x": 300.0,
+     "y": -650.0,
+     "kind": "houses",
+     "placed": "houses on the slope below the walls, on the laid image"
+    },
+    {
+     "key": "san_blas",
+     "label": "San Blas houses",
+     "x": 820.0,
+     "y": -830.0,
+     "kind": "houses",
+     "placed": "houses round the San Blas quarter (OpenStreetMap way 23799145), on the laid image"
+    },
+    {
+     "key": "grid",
+     "label": "City grid houses",
+     "x": -250.0,
+     "y": -1000.0,
+     "kind": "houses",
+     "placed": "the flat street grid west of the Plaza de Armas, on the laid image"
+    }
+   ],
+   "patch_px": [
+    4096,
+    768
+   ],
+   "bank": "paper (K 50, half band, 88 Hz, 32 px, lambda_s 0.48 m)",
+   "claim_repeat_m": 648.0,
+   "voxel_m": 5.0
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  },
+  "command": "uv run python experiments/p2_33_sacsayhuaman.py"
+ },
+ "p2_34_gated_depth_scale": {
+  "id": "p2_34_gated_depth_scale",
+  "title": "The gated reconstruction's depth scale, pass by pass",
+  "date": "2026-09-30",
+  "started_utc": "2026-09-30T05:53:40+00:00",
+  "runtime_s": 0.2,
+  "commit": "714f436",
+  "params": {
+   "runs": [
+    "p2_16_khufu_volume",
+    "p2_17_plateau_control",
+    "lab_khafre",
+    "lab_khafre_ns",
+    "lab_khafre_2025",
+    "lab_sacsay_walls",
+    "lab_sacsay_grid",
+    "lab_sacsay_fields"
+   ],
+   "window_pairs": 50,
+   "modes": 10,
+   "run_commits": {
+    "p2_16_khufu_volume": "d8a0060",
+    "p2_17_plateau_control": "96d5a6a",
+    "lab_khafre": "4af4a3c",
+    "lab_khafre_ns": "c232f06",
+    "lab_khafre_2025": "c232f06",
+    "lab_sacsay_walls": "2e70040",
+    "lab_sacsay_grid": "2e70040",
+    "lab_sacsay_fields": "2e70040"
+   }
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  },
+  "command": "uv run python experiments/p2_34_gated_depth_scale.py"
+ },
+ "p2_35_rungs_and_rooms": {
+  "id": "p2_35_rungs_and_rooms",
+  "title": "What would give the published pictures their rungs and rooms",
+  "date": "2026-09-30",
+  "started_utc": "2026-09-30T12:59:04+00:00",
+  "runtime_s": 1.9,
+  "commit": "e5d8c52",
+  "params": {
+   "crop": "the first investigation's Khafre patch (legacy real_common, giza/khafre, the 2025 pass)",
+   "patches_px": [
+    32,
+    64
+   ],
+   "pools": [
+    1,
+    3,
+    7
+   ],
+   "banks": [
+    "paper",
+    "v17"
+   ],
+   "slab_lines": 31,
+   "rungs_threshold": 0.5,
+   "room_threshold": 2.0,
+   "trend_m": 60.0,
+   "column_positions": 7
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  },
+  "command": "uv run python experiments/p2_35_rungs_and_rooms.py"
+ },
  "lab_khafre": {
   "id": "lab_khafre",
   "title": "The gated reconstruction across Khafre, from the 2022 image",
@@ -2721,5 +2878,131 @@
    "cpus": 16
   },
   "command": "uv run --with scikit-image python -m katabasis.lab gated --name khafre_ns --site giza --centre 0,0 --half-ew 141 --half-ns 150 --step 3 --supports 1,4 --twin 101 --lines ns"
+ },
+ "lab_sacsay_fields": {
+  "id": "lab_sacsay_fields",
+  "title": "The gated reconstruction across the fields north of Sacsayhuam\u00e1n, from the 2025 pass",
+  "date": "2026-09-30",
+  "started_utc": "2026-09-30T04:47:42+00:00",
+  "runtime_s": 2403.4,
+  "commit": "2e70040",
+  "params": {
+   "method": "gated",
+   "site": "sacsayhuaman",
+   "centre_m": [
+    -100.0,
+    525.0
+   ],
+   "half_ew_m": 150.0,
+   "half_ns_m": 141.0,
+   "step_m": 3.0,
+   "supports": [
+    1,
+    4
+   ],
+   "twin_seed": 101,
+   "product": "ICEYE_X35_SLC_SLEDF_5907293_20250822T152433.h5",
+   "lines": "ew",
+   "gated_module_sha256": "3e1154c11274b896b91e262198576ffd750732709ad08ac00c6892c4ea5e1b1d",
+   "gated_profile_sha256": "ae84cade31f7e5ffa9b4daa0eba152649d2afc7f1655415bad38553f4f4d69aa",
+   "geoid_m": 46.2,
+   "area": "Fields north of the site",
+   "shift_px": [
+    -230.0,
+    -28.0
+   ]
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  },
+  "command": "uv run --with scikit-image python -m katabasis.lab gated --name sacsay_fields --site sacsayhuaman --centre -100,525 --half-ew 150 --half-ns 141 --step 3 --supports 1,4 --twin 101 --product <path to ICEYE_X35_SLC_SLEDF_5907293_20250822T152433.h5>"
+ },
+ "lab_sacsay_grid": {
+  "id": "lab_sacsay_grid",
+  "title": "The gated reconstruction across the city grid houses of Cusco, from the 2025 pass",
+  "date": "2026-09-30",
+  "started_utc": "2026-09-30T04:47:40+00:00",
+  "runtime_s": 2502.8,
+  "commit": "2e70040",
+  "params": {
+   "method": "gated",
+   "site": "sacsayhuaman",
+   "centre_m": [
+    -250.0,
+    -1000.0
+   ],
+   "half_ew_m": 150.0,
+   "half_ns_m": 141.0,
+   "step_m": 3.0,
+   "supports": [
+    1,
+    4
+   ],
+   "twin_seed": 101,
+   "product": "ICEYE_X35_SLC_SLEDF_5907293_20250822T152433.h5",
+   "lines": "ew",
+   "gated_module_sha256": "3e1154c11274b896b91e262198576ffd750732709ad08ac00c6892c4ea5e1b1d",
+   "gated_profile_sha256": "ae84cade31f7e5ffa9b4daa0eba152649d2afc7f1655415bad38553f4f4d69aa",
+   "geoid_m": 46.2,
+   "area": "City grid houses",
+   "shift_px": [
+    -230.0,
+    -28.0
+   ]
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  },
+  "command": "uv run --with scikit-image python -m katabasis.lab gated --name sacsay_grid --site sacsayhuaman --centre -250,-1000 --half-ew 150 --half-ns 141 --step 3 --supports 1,4 --twin 101 --product <path to ICEYE_X35_SLC_SLEDF_5907293_20250822T152433.h5>"
+ },
+ "lab_sacsay_walls": {
+  "id": "lab_sacsay_walls",
+  "title": "The gated reconstruction across the zigzag walls of Sacsayhuam\u00e1n, from the 2025 pass",
+  "date": "2026-09-30",
+  "started_utc": "2026-09-30T04:47:38+00:00",
+  "runtime_s": 2253.4,
+  "commit": "2e70040",
+  "params": {
+   "method": "gated",
+   "site": "sacsayhuaman",
+   "centre_m": [
+    14.6,
+    -92.7
+   ],
+   "half_ew_m": 150.0,
+   "half_ns_m": 141.0,
+   "step_m": 3.0,
+   "supports": [
+    1,
+    4
+   ],
+   "twin_seed": 101,
+   "product": "ICEYE_X35_SLC_SLEDF_5907293_20250822T152433.h5",
+   "lines": "ew",
+   "gated_module_sha256": "3e1154c11274b896b91e262198576ffd750732709ad08ac00c6892c4ea5e1b1d",
+   "gated_profile_sha256": "ae84cade31f7e5ffa9b4daa0eba152649d2afc7f1655415bad38553f4f4d69aa",
+   "geoid_m": 46.2,
+   "area": "Zigzag walls",
+   "shift_px": [
+    -230.0,
+    -28.0
+   ]
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  },
+  "command": "uv run --with scikit-image python -m katabasis.lab gated --name sacsay_walls --site sacsayhuaman --centre 14.6,-92.7 --half-ew 150 --half-ns 141 --step 3 --supports 1,4 --twin 101 --product <path to ICEYE_X35_SLC_SLEDF_5907293_20250822T152433.h5>"
  }
 }

@@ -15,11 +15,22 @@ describe('the lab’s catalogue', () => {
   });
 
   it('puts every volume of every site under exactly one instrument', () => {
-    for (const id of ['bench-void', 'bench-khafre-claim', 'giza']) {
+    for (const id of ['bench-void', 'bench-khafre-claim', 'giza', 'sacsayhuaman']) {
       const s = scene(id);
       const ids = [...geophoneMethods(s), ...satelliteMethods(s)].flatMap((m) => m.choices.filter((c) => c.kind === 'volume').map((c) => c.id));
       expect(ids.sort()).toEqual(s.volumes.map((v) => v.id).sort());
     }
+  });
+
+  it('sets Sacsayhuamán’s walls beside its houses and fields, the fields as the control, every method under the same names', () => {
+    const s = scene('sacsayhuaman');
+    const sat = satelliteMethods(s);
+    const paper = sat.find((m) => m.key === 'paper')!;
+    expect(paper.choices.map((c) => c.area)).toEqual(['Zigzag walls', 'Rodadero outcrop', 'Fields north of the site', 'San Cristóbal houses', 'San Blas houses', 'City grid houses']);
+    expect(paper.choices.filter((c) => c.control).map((c) => c.area)).toEqual(['Fields north of the site']);
+    expect(paper.choices[0].stats).toMatch(/walls, the houses and the fields/);
+    const gated = sat.find((m) => m.key === 'gated');
+    for (const c of gated?.choices ?? []) expect(paper.choices.map((p) => p.area)).toContain(c.area);
   });
 
   it('gives the one-chamber bench its waves, five geophone methods and the satellite’s picture with its control', () => {

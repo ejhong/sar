@@ -1,4 +1,4 @@
-import type { SiteScene, VolumeInfo } from './data/types';
+import type { DepthScale, SiteScene, VolumeInfo } from './data/types';
 import { GATED_CODE } from '../data/credits';
 
 /**
@@ -104,6 +104,16 @@ function gatedInput(kind: string, boost?: number): [string, boolean, string, num
   }
 }
 
+/** Where the gated reconstruction's depths come from on a pass (P2-34): its turn and repeat, and the two levels they make. */
+function scaleLine(ds?: DepthScale | null): string | undefined {
+  if (!ds) return undefined;
+  const n = (v: number) => v.toLocaleString('en-US');
+  const head = `On this pass one turn of the fit spans ${ds.turn_m.toFixed(1)} m and the depth scale repeats every ${Math.round(ds.repeat_m)} m`;
+  return ds.repeat_m < 300
+    ? `${head}, inside the 300 m the method draws, so each fit is drawn twice: near the surface, and again near ${Math.round(ds.repeat_m)} m down where the scale folds back. ${n(ds.shallow)} of ${n(ds.positions)} positions have their best score in the shallow level, ${n(ds.mirror)} in the deep one: the deeper level is the shallow one again.`
+    : `${head}, just past the 300 m the method draws, so its fits stand near the surface (${n(ds.shallow)} of ${n(ds.positions)} positions).`;
+}
+
 export const supportName = (p: number) => (p === 1 ? 'one position' : `${p} in a row`);
 
 export function geophoneMethods(s: SiteScene): Method[] {
@@ -197,16 +207,16 @@ export function satelliteMethods(s: SiteScene): Method[] {
       quantity: 'focused power',
       line: 'as the 2022 paper describes it: sub-aperture pairs registered and focused, no selection gates',
       why: !r
-        ? 'Here the method’s depth axis is drawn whole, relabelled so that it repeats where the claim puts the bottoms of its shafts. Its pillars run the full depth, where the surface reading is noisiest, and bright blocks sit at each repeat, where every steering phase coincides: that is how the published pictures get their shafts and their deep structure. Over the Giza plateau the same kind of volume is cut at the block’s floor, well above the first repeat, and shares one brightness scale with open ground, so neither the repeat blocks nor one patch’s own stretch appear there.'
+        ? 'Here the method’s depth axis is drawn whole, relabelled so that it repeats where the claim puts the bottoms of its shafts. Its pillars run the full depth, where the surface reading is noisiest, and a block sits at each repeat, where every steering phase coincides: faint as the paper states the method, bright with pairs taken close together in the band (P2-35). That is where the published pictures’ shafts and deep structure can come from. Over the Giza plateau the same kind of volume is cut at the block’s floor, well above the first repeat, and shares one brightness scale with open ground, so neither the repeat blocks nor one patch’s own stretch appear there.'
         : real
-        ? 'Pillars: a pixel whose registration wanders is bright at every depth. Bands: along a pillar the power rises and falls once per step of the axis’s resolution. Blocks: at the surface and at each repeat depth every steering phase coincides. Open plateau draws the same shapes.'
+        ? 'Pillars: a pixel whose registration wanders is bright at every depth. Bands: along a pillar the power rises and falls once per step of the axis’s resolution. Blocks: at the surface and at each repeat depth every steering phase coincides. Open ground draws the same shapes.'
         : 'Pillars where a pixel’s registration wanders, bands at each step of the axis’s resolution, blocks where every steering phase coincides; none of it depends on what is below.',
       choices: paper.map((c) =>
         real && r?.stats
           ? {
               ...c,
-              note: 'The 2025 image through the pipeline as the 2022 paper describes it: 50 half-band pairs, no selection gates, focused power on a log scale, depth relabelled so it repeats at 648 m as the claim does, and smoothed for display.',
-              stats: `Over the pyramids and over empty plateau its depth profiles correlate at ${r.stats.monument_vs_control_profile_corr.toFixed(3)}; at every pixel its power follows how much the registration wandered (${r.stats.pillar_power_vs_energy_min.toFixed(3)}).`,
+              note: `The ${r.acquisition.date?.slice(0, 4) ?? ''} image through the pipeline as the 2022 paper describes it: 50 half-band pairs, no selection gates, focused power on a log scale, depth relabelled so it repeats at 648 m as the claim does, and smoothed for display.`,
+              stats: r.stats.text,
             }
           : c,
       ),
@@ -217,9 +227,15 @@ export function satelliteMethods(s: SiteScene): Method[] {
   if (r?.gated) {
     const g = r.gated;
     const area = r.kind === 'bench' ? undefined : areaOf(g.title);
-    const stats = g.chambers
-      ? `Inside the surveyed chambers and passages the real image scores ${fmt(g.chambers.real[0])} on average, against ${fmt(g.chambers.real[1])} at the same depths elsewhere; the motionless copy ${fmt(g.chambers.twin[0])} and ${fmt(g.chambers.twin[1])}.`
-      : undefined;
+    const stats =
+      [
+        g.chambers
+          ? `Inside the surveyed chambers and passages the real image scores ${fmt(g.chambers.real[0])} on average, against ${fmt(g.chambers.real[1])} at the same depths elsewhere; the motionless copy ${fmt(g.chambers.twin[0])} and ${fmt(g.chambers.twin[1])}.`
+          : '',
+        scaleLine(g.depth_scale) ?? '',
+      ]
+        .filter(Boolean)
+        .join(' ') || undefined;
     for (const v of g.volumes) {
       const plateau = v.case === 'plateau';
       const [input, control, sub, rank] = plateau ? gatedInput('real') : gatedInput(v.case, v.boost);
@@ -260,7 +276,7 @@ export function satelliteMethods(s: SiteScene): Method[] {
         rank,
         id: v.id,
         kind: 'volume',
-        area: areaOf(lab.title) ?? cap(lab.name),
+        area: lab.area ?? areaOf(lab.title) ?? cap(lab.name),
         pass: lab.pass === 'both' ? 'Both passes agree' : `${lab.pass ?? '2022'} pass`,
         lines: lab.lines === 'both' ? 'Both layouts agree' : lab.lines === 'ns' ? 'North–south lines' : 'East–west lines',
         input,
@@ -268,6 +284,7 @@ export function satelliteMethods(s: SiteScene): Method[] {
         support: v.support,
         sub,
         note: lab.note,
+        stats: scaleLine(lab.depth_scale),
         run: lab.run,
         focus: lab.focus,
         radius_m: lab.radius_m,
@@ -287,7 +304,7 @@ export function satelliteMethods(s: SiteScene): Method[] {
       why:
         r?.kind === 'bench'
           ? 'A column wherever a position passed the gates, banded where the fit’s phase turns whole times across a window. The speckle decides where: the chamber’s imprint, even made a hundred million times stronger, moves the columns no nearer to it than random noise of its size does.'
-          : 'A column hangs wherever a position passed the gates; along it the score peaks where the depth fit’s phase turns a whole number of times across a window, about 6 m per turn, and at the mirror of that depth. The depth is the frequency the gates chose, not a measured depth.',
+          : 'A column hangs wherever a position passed the gates; along it the score peaks where the depth fit’s phase turns a whole number of times across a window, and again at the mirror of that depth, where the scale folds back. How many metres a turn spans, and where the scale folds, is set by the pass’s geometry, not by the ground: the depth is the frequency the gates chose, not a measured depth.',
       choices: ordered(gated),
     });
   return out;

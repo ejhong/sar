@@ -40,9 +40,10 @@ export class Volume {
     tex.unpackAlignment = 1;
     tex.needsUpdate = true;
     const h = info.spacing;
+    const hz = info.spacing_z ?? h; // a finer depth step where the volume has one
     const [x0, y0, ztop] = info.origin; // centre of the first cell; z of the top layer
-    const lo = new Vector3(x0 - h / 2, y0 - h / 2, ztop - (nz - 0.5) * h);
-    const hi = new Vector3(x0 + (nx - 0.5) * h, y0 + (ny - 0.5) * h, ztop + h / 2);
+    const lo = new Vector3(x0 - h / 2, y0 - h / 2, ztop - (nz - 0.5) * hz);
+    const hi = new Vector3(x0 + (nx - 0.5) * h, y0 + (ny - 0.5) * h, ztop + hz / 2);
     const size = hi.clone().sub(lo);
     const geo = new BoxGeometry(size.x, size.y, size.z);
     geo.translate((lo.x + hi.x) / 2, (lo.y + hi.y) / 2, (lo.z + hi.z) / 2);
@@ -55,7 +56,8 @@ export class Volume {
         uThreshold: { value: 0.18 },
         uDensity: { value: info.tint === 'gated' ? 6.0 : 1.6 }, // sparse fit-score columns need more opacity to read
         uCutY: { value: -1e9 },
-        uSteps: { value: 160 },
+        // enough steps along a ray to see every layer of a tall, finely layered volume (the shader stops at 512)
+        uSteps: { value: Math.min(512, Math.max(160, Math.ceil(1.5 * Math.max(nx, ny, nz)))) },
         uCamLocal: { value: new Vector3() },
         uDay: { value: theme.name === 'day' ? 1 : 0 },
       },

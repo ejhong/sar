@@ -168,12 +168,15 @@ def export_claim(out: Path = DATA) -> dict | None:
     return {'site': 'bench-khafre-claim', 'volumes': [vol['id']]}
 
 
-def export_real(out: Path = DATA, site: str = 'giza') -> dict | None:
-    """The real Giza pass (P2-12): the image on the ground, and the published method's volume at each patch inside the
-    site, on one brightness scale so that monuments and open plateau compare fairly. Depth is measured from the rock
+DEPTH_STEP_M = 2.5          # the paper-style volumes' depth step: the axis's own (648 m / 256), so the bands survive
+
+
+def export_real(out: Path = DATA, site: str = 'giza', rid: str = 'p2_12_real_pass') -> dict | None:
+    """A real pass laid on its site (P2-12 at Giza, P2-33 at Sacsayhuamán): the image on the ground, and the published
+    method's volume at each patch inside the site, on one brightness scale so that monuments, houses and open ground
+    compare fairly. Depth is measured from the rock
     surface and relabelled as the claim relabels it (the axis repeats at 648 m), down to the site's floor: Giza stops at
     its block's floor; Giza's depths runs the axis past its repeats, as the published pictures do."""
-    rid = 'p2_12_real_pass'
     vpath = RESULTS / rid / 'volumes.npz'
     if not vpath.exists():
         return None
@@ -190,12 +193,12 @@ def export_real(out: Path = DATA, site: str = 'giza') -> dict | None:
     nz_axis = len(v['z_raw'])
     per_index = float(s['manifest']['params']['claim_repeat_m']) / nz_axis
     shown = [p for p in s['patches'] if p['cells_on_site'] > 0]
-    # smoothed as the claim's volume is (export_claim): a pixel or so across, a step and a half in depth, the depth axis
-    # wrapping round, since it covers one whole period
+    # smoothed a pixel or so across the ground and not in depth, so the bands along each column (the axis's resolution,
+    # about 13 m) are drawn as the method makes them
     def smoothed(key):
         T = v[f'{key}_T'].astype(np.float32)
         nr, nc = (int(n) for n in v[f'{key}_grid'])
-        return gaussian_filter(T.reshape(nr, nc, -1), (1.0, 1.0, 1.5), mode=('nearest', 'nearest', 'wrap')).reshape(nr * nc, -1)
+        return gaussian_filter(T.reshape(nr, nc, -1), (1.0, 1.0, 0.0), mode=('nearest', 'nearest', 'wrap')).reshape(nr * nc, -1)
     Ts = {p['key']: smoothed(p['key']) for p in shown}
     allT = np.concatenate([Ts[p['key']].ravel() for p in shown])
     med = float(np.median(allT))
@@ -216,9 +219,10 @@ def export_real(out: Path = DATA, site: str = 'giza') -> dict | None:
         ys = gy0 + h / 2 + h * np.arange(iy.min(), iy.max() + 1)
         X, Y = np.meshgrid(xs, ys)
         ground = grid_height(sc['terrain'], X, Y) if sc['terrain']['kind'] == 'grid' else np.full(X.shape, sc['terrain']['z'])
+        dz = DEPTH_STEP_M
         ztop = float(np.ceil(ground.max() / h) * h)
-        nz = int((ztop - zbot) / h)
-        zc = ztop - h / 2 - h * np.arange(nz)
+        nz = int((ztop - zbot) / dz)
+        zc = ztop - dz / 2 - dz * np.arange(nz)
         depth = ground[..., None] - zc[None, None, :]
         k = np.round(depth / per_index).astype(int) % nz_axis
         ok = (depth >= 0) & (sub[..., None] >= 0)
@@ -231,10 +235,11 @@ def export_real(out: Path = DATA, site: str = 'giza') -> dict | None:
             'label': f"Satellite · the published method {'over' if control else 'at'} {p['label']}{' (control)' if control else ''}",
             'method': 'The real 2025 ICEYE pass through the paper-style pipeline (50 half-band pairs, 32 px patches, grid-median '
                       'correction, no selection gates, lambda_s 0.48 m): focused power on a log scale, depth relabelled as the '
-                      'claim does (repeat at 648 m), smoothed for display; not the gated reconstruction',
-            'quantity': 'focused power, log scale', 'units': 'relative', 'range': [lo, hi], 'run': run,
-            'caption': ('the same kind of picture over empty plateau' if control else
-                        'columns where the registration wanders, as over empty plateau')}, ztop=ztop - h / 2))
+                      'claim does (repeat at 648 m), smoothed across the ground for display but not in depth; not the gated '
+                      'reconstruction',
+            'quantity': 'focused power, log scale', 'units': 'relative', 'range': [lo, hi], 'run': run, 'spacing_z': dz,
+            'caption': ('the same kind of picture over open ground' if control else
+                        'columns where the registration wanders, as over open ground')}, ztop=ztop - dz / 2))
     _merge_volumes(d, vols)
     src = RESULTS / rid / 'figs' / 'ground.jpg'
     shutil.copyfile(src, d / 'radar-ground.jpg')
@@ -246,13 +251,35 @@ def export_real(out: Path = DATA, site: str = 'giza') -> dict | None:
         'volumes': [x['id'] for x in vols],
         # deep enough to see the whole depth axis: the image, draped on the ground, would hide what hangs beneath it
         **({'image_hidden': True} if sc['extent']['z'][1] - sc['extent']['z'][0] > 1000 else {}),
-        'stats': {'monument_vs_control_profile_corr': s['monument_vs_control_profile_corr'],
-                  'patch_profile_corr_range': s['patch_profile_corr_range'],
-                  'pillar_power_vs_energy_min': min(x['pillar_power_vs_energy'] for x in s['patches'])},
+        'stats': real_stats(s),
         'run': run,
     }
     (d / 'radar.json').write_text(json.dumps(radar, separators=(',', ':')))
     return {'site': site, 'volumes': [x['id'] for x in vols]}
+
+
+def gated_scale(rid: str) -> dict | None:
+    """One turn of the gated fit and its repeat on the pass a run read, and where its passing positions stand (P2-34)."""
+    path = RESULTS / 'p2_34_gated_depth_scale' / 'summary.json'
+    if not path.exists():
+        return None
+    r = json.loads(path.read_text())['runs'].get(rid)
+    return {k: r[k] for k in ('turn_m', 'repeat_m', 'positions', 'shallow', 'mirror')} if r else None
+
+
+def real_stats(s: dict) -> dict:
+    """The numbers the lab quotes beside a real pass's volumes, with the sentence it quotes them in."""
+    pmin = min(x['pillar_power_vs_energy'] for x in s['patches'])
+    if 'monument_vs_control_profile_corr' in s:                    # Giza (P2-12): pyramids against open plateau
+        c = s['monument_vs_control_profile_corr']
+        return {'monument_vs_control_profile_corr': c, 'patch_profile_corr_range': s['patch_profile_corr_range'],
+                'pillar_power_vs_energy_min': pmin,
+                'text': f'Over the pyramids and over empty plateau its depth profiles correlate at {c:.3f}; at every pixel '
+                        f'its power follows how much the registration wandered ({pmin:.3f}).'}
+    lo, hi = s['profile_corr']['all_pairs_range']                  # Sacsayhuamán (P2-33): walls, houses and fields
+    return {'profile_corr_range': [lo, hi], 'pillar_power_vs_energy_min': pmin,
+            'text': f'Over the walls, the houses and the fields its depth profiles correlate at {lo:.2f} to {hi:.2f}; at '
+                    f'every pixel its power follows how much the registration wandered ({pmin:.3f}).'}
 
 
 def export_khufu_gated(out: Path = DATA) -> dict | None:
@@ -319,6 +346,7 @@ def export_khufu_gated(out: Path = DATA) -> dict | None:
         'volumes': entries,
         'focus': [kh['centre'][0], kh['centre'][1], kh['centre'][2] + 0.2 * kh['height']],
         'radius_m': 620.0,
+        'depth_scale': gated_scale(rid),
         'chambers': {'real': [st['real_p1']['mean_score_in_chambers'], st['real_p1']['mean_score_same_depths_elsewhere']],
                      'twin': [st['twin101_p1']['mean_score_in_chambers'], st['twin101_p1']['mean_score_same_depths_elsewhere']]},
         'note': ("The stricter reconstruction's own code, unchanged, run on the 2022 pass along 95 lines across the pyramid, "
@@ -445,7 +473,8 @@ def export_lab(out: Path = DATA) -> list[dict]:
         by_site.setdefault(site, []).append({
             'name': name, 'title': s['manifest']['title'], 'volumes': entries,
             'pass': stamp.group(1) if stamp else 'synthetic', 'lines': prm.get('lines', 'ew'),
-            'focus': [cx, cy, float(np.median(v['z_surface']))], 'radius_m': 620.0, 'note': s['finding'], 'run': run})
+            'focus': [cx, cy, float(np.median(v['z_surface']))], 'radius_m': 620.0, 'note': s['finding'], 'run': run,
+            'depth_scale': gated_scale(d.name), **({'area': prm['area']} if prm.get('area') else {})})
     for site, labs in by_site.items():
         rj = out / 'sites' / site / 'radar.json'
         radar = json.loads(rj.read_text())
@@ -499,5 +528,6 @@ def export_survives(out: Path = DATA) -> dict | None:
 
 
 def export_radar(out: Path = DATA) -> list[dict]:
-    return [r for r in (export_bench(out), export_bench_gated(out), export_claim(out), export_real(out), export_khufu_gated(out))
+    return [r for r in (export_bench(out), export_bench_gated(out), export_claim(out), export_real(out), export_khufu_gated(out),
+                        export_real(out, 'sacsayhuaman', 'p2_33_sacsayhuaman'))
             if r] + export_lab(out) + [r for r in (export_survives(out), export_real(out, 'giza-deep')) if r]

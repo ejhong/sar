@@ -613,6 +613,35 @@ investigation's record, and what it leaves open follow.
     added after the first run and is the one reported. Amplified levels are diagnostics, not physical predictions; nine
     images per level is small, and a physically strong positive control (a lorry or vibrator beside the layouts) is next.
 
+25. **At Sacsayhuamán the houses draw alike and the walls apart, from what the image holds of the surface (P2-33).** A
+    second pass (ICEYE X35, 22 August 2025) laid on its terrain within 10 m and 12 m, six areas chosen on it before the
+    method ran. The paper-style pipeline's mean depth profiles: houses 0.98-1.00 with one another, the walls 0.84-0.89
+    with houses and fields, the Rodadero 0.93-0.97; by the test stated before the run the monuments stand apart, the walls
+    by a wide margin and the Rodadero only just. The houses take the strongest columns. Motionless copies of each area,
+    added after the first run, keep neither the shared profile nor the walls' difference (correlating with the real
+    profiles at -0.05 to 0.41), so the difference lies in something the real image holds beyond its brightness pattern;
+    it is not below the surface, which X band reaches no further into than about 30 cm, and this run does not say what
+    it is (the scatterers' own heights and layout on steep ground are candidates). The gated reconstruction, unchanged,
+    passes 463, 2,411 and 1,126 of 9,595 positions over the walls, the city grid and the fields at a support of one, its
+    motionless copies 293, 1,743 and 657: the busiest surfaces pass the most, as at Giza.
+
+26. **The gated reconstruction's depth scale comes from the pass (P2-34).** Read from each run's own steering
+    wavenumbers: on the 2022 pass one turn of its fit spans 6.17 m and the scale repeats every 308 m, just past the 300 m
+    it draws; on the 2025 passes, over Giza and over Sacsayhuamán, 3.80 m and 190 m. There each fit is drawn twice, near
+    the surface and at its mirror near 190 m down (3,002 and 1,647 of 4,650 passing positions): the two levels its
+    pictures stand at on those passes are one choice drawn twice. The same code puts the same fit at different depths on
+    different passes.
+
+27. **The published pictures' rungs and rooms come from settings the paper does not state (P2-35).** As the paper states
+    the method, on the real Khafre crop the strongest column's bands correlate at 0.48 from one range position to the
+    next (beads, not rungs) and its repeat layer stands 1.2 times the column's mean (a faint block, not a room). Rungs
+    appear whenever neighbouring pixels share their shifts (averaged before focusing, 0.75 and 0.92 over 3 x 3 and 7 x 7
+    targets; 64 px patches, 0.62). A room appears only with 20 pairs taken close together, within 6% of the band (the
+    derivative protocol v1.7's spacing): 4.4 times the mean, where the paper's pairs reach at most 1.7, because a pixel's
+    shifts then change slowly from pair to pair and the method draws slow change at the surface and at each repeat.
+    Earlier wording that P2-08 "draws the same shapes" as the published pictures is corrected: it finds the same
+    ingredients, and these settings finish the look.
+
 These reasons differ in kind and strength. 4 is algebraic and holds whatever the ground does: the depth axis is a
 frequency axis with a repeat and a mirror, and no validated model turns it into a physical depth; that makes depth
 uncalibrated and non-unique, and does not by itself decide horizontal location or shape; P2-31 tests those directly, and the published picture recovers neither where a reference detector recovers both (24). 1 and 12 are

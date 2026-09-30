@@ -172,6 +172,7 @@ const explore = [
   { site: 'bench-void', name: 'One chamber', text: 'The test ground: a 6 m room, 15 m down in limestone. Every instrument here is scored against it: geophones, the satellite, and the one shaking both read.' },
   { site: 'giza', name: 'Giza plateau', text: 'The real ground: Copernicus terrain, the three pyramids, the chambers surveyed inside and beneath them, and every picture the satellite methods drew there.' },
   { site: 'giza-deep', name: 'Giza depths', text: 'The same plateau to 1,500 m: the published-style pictures over their whole depth axis, under every pyramid and open plateau alike, beside the structures claimed beneath Khafre.' },
+  { site: 'sacsayhuaman', name: 'Sacsayhuamán', text: 'A second real site: one pass over the Inca walls above Cusco, the Rodadero outcrop, open fields and the city’s houses, and what each satellite method draws over each.' },
 ];
 ---
 <Base current="home">
@@ -579,7 +580,7 @@ const explore = [
         </details>
         <details class="q">
           <summary>Then why do the published pictures look so convincing?</summary>
-          <p>Because the method draws such pictures from any image: over our flat simulated ground, with and without a room; over open desert on the real image; over hundreds of surveyed tombs at Giza, where it found none. Its tall columns are pixels whose reading wanders, drawn bright at every depth; the blocks at their feet sit where its depth scale repeats itself. <a href={`${base}/underworld/#giza-deep/satellite`}>See them under every pyramid and open plateau alike</a>, or <a href={`${base}/satellite/#pillars`}>how the pillars and boxes are made</a>.</p>
+          <p>Because the method draws such pictures from any image: over our flat simulated ground, with and without a room; over open desert on the real image; over hundreds of surveyed tombs at Giza, where it found none. Its tall columns are pixels whose reading wanders, drawn bright at every depth. Settings the paper does not state finish the look: neighbouring pixels sharing their shifts line its bands up into rungs, and pairs taken close together in the band draw a bright block where its depth scale repeats. <a href={`${base}/underworld/#giza-deep/satellite`}>See them under every pyramid and open plateau alike</a>, or <a href={`${base}/satellite/#pillars`}>how the pillars, rungs and blocks are made</a>.</p>
         </details>
         <details class="q">
           <summary>What about stricter versions that filter out the noise?</summary>
@@ -1024,7 +1025,7 @@ const explore = [
   }
   .gallery {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 16px;
   }
   .tile {

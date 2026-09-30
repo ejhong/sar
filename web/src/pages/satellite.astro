@@ -12,6 +12,7 @@ import bud from '../../public/data/runs/p2_05_budget.json';
 import dep from '../../public/data/runs/p2_06_depth_is_frequency.json';
 import chain from '../../public/data/runs/p2_07_whole_chain.json';
 import pill from '../../public/data/runs/p2_08_pillars_and_boxes.json';
+import rungs from '../../public/data/runs/p2_35_rungs_and_rooms.json';
 import vsens from '../../public/data/runs/p2_09_virtual_sensors.json';
 import every from '../../public/data/runs/p2_11_every_way_in.json';
 import realpass from '../../public/data/runs/p2_12_real_pass.json';
@@ -37,6 +38,21 @@ import spectrum from '../../public/data/runs/p2_26_imprint_spectrum.json';
 import requirement from '../../public/data/runs/p2_27_requirement.json';
 import oracle from '../../public/data/runs/p2_29_oracle.json';
 import shapeTest from '../../public/data/runs/p2_31_shape_test.json';
+// P2-33 and the lab's gated runs at Sacsayhuamán, once exported
+type SacsPatch = { key: string; kind: string; share_in_top5: number };
+type Sacs = {
+  manifest: typeof realpass.manifest;
+  registration: { shift_m: [number, number] };
+  patches: SacsPatch[];
+  profile_corr: { within_houses: number[]; walls_vs: Record<string, number>; rodadero_vs: Record<string, number> };
+  monuments_apart: boolean;
+  twins: { all_pairs_range: [number, number]; real_vs_twin: Record<string, number>; follow_real: boolean };
+};
+const sacs = Object.values(import.meta.glob('../../public/data/runs/p2_33_sacsayhuaman.json', { eager: true, import: 'default' }))[0] as Sacs | undefined;
+type LabRun = { manifest: { params: { area?: string } }; results: Record<string, { supported_positions: Record<string, number> }>; grid: { shape: number[] } };
+const sacsLabs = Object.entries(import.meta.glob('../../public/data/runs/lab_sacsay_*.json', { eager: true, import: 'default' }) as Record<string, LabRun>)
+  .map(([, r]) => r)
+  .filter((r) => r.results?.real);
 import Figure from '../components/Figure.astro';
 import Ceiling from '../components/Ceiling.astro';
 import Routes from '../components/Routes.astro';
@@ -1210,8 +1226,10 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
     <details class="fold">
       <summary><h2>The published pictures’ pillars and boxes are the method’s own arithmetic</h2></summary>
     <p class="sub">
-      The published Khafre renderings show tall columns, banded like spirals, with blocks at their feet. P2-08 draws the same
-      shapes from the real Khafre image with the published focusing, and each has a plain cause. <b>Pillars:</b> averaged over
+      The published Khafre renderings show tall columns crossed by rungs, with blocks at their feet. P2-08 finds the same three
+      ingredients in the real Khafre image with the published focusing, each with a plain cause, though as the paper states the
+      method its bands stay beads and its blocks are faint; <a href="#rungs">P2-35, below</a>, finds what turns them into rungs
+      and rooms. <b>Pillars:</b> averaged over
       a period of its depth axis, the power the method draws at a pixel is that pixel’s trajectory energy (correlation{' '}
       {pk.pillar_corr_mean_power_vs_energy.toFixed(3)}), so a pixel whose registration wanders is bright at every depth and a
       thick-slab rendering stands it up as a column. Such pixels lie where the surface is darker or changes brightness; open
@@ -1238,6 +1256,33 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
       upsampling whole patches, so that patch took minutes, where every pixel of the whole image would take about two months.
     </p>
     <RunDetails manifest={pill.manifest} />
+    {(() => {
+      type RR = { patch_px: number; bank: string; pool: number; rungs: number; room: number; average_share: number | null };
+      const rr = rungs.rows as unknown as RR[];
+      const at = (patch: number, bank: string, pool: number) => rr.find((r) => r.patch_px === patch && r.bank === bank && r.pool === pool)!;
+      const stated = at(32, 'paper', 1);
+      const v17 = at(32, 'v17', 1);
+      const paperRoom = Math.max(...rr.filter((r) => r.bank === 'paper').map((r) => r.room));
+      return (
+        <div id="rungs" class="rungs">
+          <h3>Rungs and rooms come from settings the paper does not state</h3>
+          <p class="sub">
+            As the paper states the method (50 pairs swept across the band, 32 px patches, each pixel’s shifts its own), the
+            strongest column’s bands correlate at {stated.rungs.toFixed(2)} from one range position to the next, just short of lining
+            up, and its repeat depth stands {stated.room.toFixed(1)} times the column’s mean. The bands line up into rungs whenever
+            neighbouring pixels share their shifts: averaged with their neighbours’ before focusing ({at(32, 'paper', 3).rungs.toFixed(2)}{' '}
+            over 3 × 3, {at(32, 'paper', 7).rungs.toFixed(2)} over 7 × 7), or registered on 64 px patches ({at(64, 'paper', 1).rungs.toFixed(2)}).
+            A room appears only with 20 pairs taken close together, within 6% of the band (the derivative protocol v1.7’s spacing):
+            the repeat depth stands {v17.room.toFixed(1)} times the mean, where the paper’s pairs never reach {paperRoom.toFixed(1)}. Pairs so
+            close together hardly differ, so each pixel’s shifts change slowly from pair to pair (their average carries
+            {' '}{Math.round((v17.average_share ?? 0) * 100)}% of their energy, against {Math.round((stated.average_share ?? 0) * 100)}% with the paper’s
+            pairs), and the method draws slow change at the surface and again at every repeat. None of it depends on what lies below.
+          </p>
+          <Figure src={`${base}/data/runs/p2_35_rungs_and_rooms/sections.jpg`} alt="The real Khafre section drawn nine ways: rungs appear when neighbouring pixels share their shifts; bright layers at the surface and the repeat appear with closely spaced pairs" label="The real Khafre section, nine ways" caption="the published style (a slab 31 lines thick, log scale, rainbow palette); the dotted line marks the repeat at 648 m. Left to right: the paper’s pairs with 32 px and then 64 px patches, each pixel’s shifts its own or averaged over 3 × 3 and 7 × 7 neighbours; last, 20 closely spaced pairs" aspect="2079 / 506" />
+          <RunDetails manifest={rungs.manifest} />
+        </div>
+      );
+    })()}
     </details>
   </section>
 
@@ -1578,6 +1623,48 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
       </div>
     </div>
     <RunDetails manifest={realpass.manifest} />
+    {sacs && (() => {
+      const lo = (a: number[]) => Math.min(...a).toFixed(2);
+      const hi = (a: number[]) => Math.max(...a).toFixed(2);
+      const wallsRest = Object.entries(sacs.profile_corr.walls_vs).filter(([k]) => k !== 'rodadero').map(([, v]) => v);
+      const rod = Object.values(sacs.profile_corr.rodadero_vs);
+      const share = (kind: string) => sacs.patches.filter((x) => x.kind === kind).map((x) => x.share_in_top5 * 100);
+      const copies = Object.values(sacs.twins.real_vs_twin);
+      const labLine = sacsLabs.length
+        ? sacsLabs.map((r) => {
+            const n = r.grid.shape[0] * r.grid.shape[1];
+            const cp = Object.entries(r.results).find(([k]) => k.startsWith('twin'))?.[1];
+            return `${r.results.real.supported_positions['1'].toLocaleString('en-US')} of ${n.toLocaleString('en-US')} positions over the ${(r.manifest.params.area ?? '').toLowerCase()}${cp ? ` (its motionless copy ${cp.supported_positions['1'].toLocaleString('en-US')})` : ''}`;
+          })
+        : [];
+      return (
+        <div class="grid-2 second-site">
+          <Figure src={`${base}/data/sites/sacsayhuaman/radar-ground.jpg`} alt="The real radar image over Sacsayhuamán and Cusco, resampled onto the ground" label="The 2025 pass over Sacsayhuamán" caption="north up; Cusco’s streets below, the zigzag walls and the Rodadero above them" aspect="1700 / 1950" widthM={1700} bar={200} />
+          <div class="note-card">
+            <span class="tag measured">real image · P2-33</span>
+            <h3>{sacs.monuments_apart && !sacs.twins.follow_real ? 'At Sacsayhuamán the houses draw alike and the walls apart, from what the image holds of the surface' : 'At Sacsayhuamán the walls draw as houses and fields do'}</h3>
+            <p>
+              A second pass (ICEYE X35, 22 August 2025), laid on its terrain within {Math.abs(sacs.registration.shift_m[0]).toFixed(0)} m along
+              the track and {Math.abs(sacs.registration.shift_m[1]).toFixed(0)} m across, and six areas chosen on it before the method ran:
+              the zigzag walls, the Rodadero outcrop, open fields and three stretches of houses. The houses draw alike (depth profiles
+              correlating at {lo(sacs.profile_corr.within_houses)}–{hi(sacs.profile_corr.within_houses)}) and take the strongest columns
+              ({Math.round(Math.min(...share('houses')))}–{Math.round(Math.max(...share('houses')))}% of their pixels among the noisiest 5%, against
+              {' '}{Math.max(...share('monument')).toFixed(0)}% of the monuments’); the walls draw apart ({lo(wallsRest)}–{hi(wallsRest)} with houses
+              and fields), the Rodadero close to the houses ({lo(rod)}–{hi(rod)}).
+            </p>
+            <p>
+              Motionless copies of the six areas, each area’s brightness pattern with nothing moving, keep neither the shared profile
+              nor the walls’ difference (they correlate with the real ones at {lo(copies)}–{hi(copies)}): both come from something the real
+              image holds beyond its brightness pattern, and not from below the surface, which X band reaches no further into than about
+              30 cm.{labLine.length ? ` The gated reconstruction, run unchanged, passes ${labLine.join('; ')} at a support of one.` : ''}
+            </p>
+            <p><a href={`${base}/underworld/#sacsayhuaman/satellite`}>Sacsayhuamán in the lab</a>: the pass, the image on the terrain and
+            each method’s pictures, area by area.</p>
+          </div>
+        </div>
+      );
+    })()}
+    {sacs && <RunDetails manifest={sacs.manifest} />}
     </details>
   </section>
 
@@ -1590,7 +1677,7 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
       <div class="note-card"><h3>Other structures</h3><p>The imprint scales as volume over depth squared (checked against the solver, P2-04); the claimed deep structure scales to {(imp.claimed[0].relative_to_bench as number).toFixed(2)} of the bench chamber. Independently of any structure, Giza’s whole microseism motion is {wholeMotion.toLocaleString('en-US')} times below the plateau’s detection threshold.</p></div>
       <div class="note-card"><h3>A better estimator</h3><p>Bounded for all of them at once (<a href="#bound">above</a>, P2-25). Under the textbook model of ordinary ground, fully developed speckle, a phase history shared by a patch leaves the image’s distribution unchanged; what survives is the texture’s stretch along track, and within that model no estimator, test or learned model can raise its detection rate above its false-alarm rate by more than {sci(bd.static[0].ceiling)} on the bench chamber under Giza’s regional microseism level. On small test images the best test gets within {Math.max(...detOver).toFixed(1)} times of the bound. Bright points are bounded separately ({sci(bd.points.find((p) => p.scr_db > 40 && p.shaking === 'microseisms')!.ceiling)} for a corner reflector over the chamber), and a method told the ground’s reflectivity, which no single image has, does no better than {sci(bd.genie[0].ceiling)}.</p></div>
       <div class="note-card"><h3>Stricter selection</h3><p>Gates can only discard readings, never add what the image does not hold. Run unchanged on the real image, a gated version passes motionless copies of it too, passes nothing at its own settings on its own lines, and cannot pass a vibration’s own trace at any strength (<a href="#gates">above</a>).</p></div>
-      <div class="note-card"><h3>The published images</h3><p>The pipeline draws structured sections from any input: identical with and without the chamber (P2-07), the same over monuments and open desert (R1, R6), no signal over hundreds of surveyed shafts (R13), and the published appearance everywhere (R8).</p></div>
+      <div class="note-card"><h3>The published images</h3><p>The pipeline draws structured sections from any input: identical with and without the chamber (P2-07), the same over monuments and open desert (R1, R6), no signal over hundreds of surveyed shafts (R13), and, with settings the paper does not state, the published rungs and blocks (P2-35).</p></div>
       <div class="note-card"><h3>Vibration measured from orbit, 2026</h3><p>The method’s authors first applied this kind of tracking to bridges in Italy and to the Mosul Dam in 2020, without instruments on the structures at the same time. Two 2026 papers (Vattulainen et al., IEEE Access; Lotti et al., Structural Control and Health Monitoring) measure vibration from single spaceborne images against ground truth: corner reflectors on shakers in open fields, and a steel footbridge chosen because it is bright. They track isolated bright targets moving at 0.7 mm/s and up, with errors near 1 mm/s: what P2-03 says works. Their smallest motion is {Math.round(eB.measured_over_trembling).toLocaleString('en-US')} times Giza’s whole microseism motion and <Sci v={eB.measured_over_imprint} p={0} /> times the chamber’s imprint.</p></div>
       <div class="note-card"><h3>Only simulation?</h3><p>The coherence identity holds on the real crop to 10<sup>−9</sup>; the blindness is measured on real texture (1 ± 1%); the geometry is read from the product and reproduces its declared numbers; and the first investigation’s real-data controls found nothing at Giza or Sacsayhuamán.</p></div>
     </div>
@@ -1748,6 +1835,15 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
   }
   details.fold > :not(summary) {
     margin-bottom: 18px;
+  }
+  .second-site {
+    margin-top: 28px;
+  }
+  .rungs {
+    margin-top: 28px;
+  }
+  .rungs h3 {
+    margin: 0 0 6px;
   }
 </style>
 

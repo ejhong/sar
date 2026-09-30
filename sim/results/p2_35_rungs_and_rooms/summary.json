@@ -1,0 +1,194 @@
+{
+ "manifest": {
+  "id": "p2_35_rungs_and_rooms",
+  "title": "What would give the published pictures their rungs and rooms",
+  "date": "2026-09-30",
+  "started_utc": "2026-09-30T12:59:04+00:00",
+  "runtime_s": 1.9,
+  "commit": "e5d8c52",
+  "params": {
+   "crop": "the first investigation's Khafre patch (legacy real_common, giza/khafre, the 2025 pass)",
+   "patches_px": [
+    32,
+    64
+   ],
+   "pools": [
+    1,
+    3,
+    7
+   ],
+   "banks": [
+    "paper",
+    "v17"
+   ],
+   "slab_lines": 31,
+   "rungs_threshold": 0.5,
+   "room_threshold": 2.0,
+   "trend_m": 60.0,
+   "column_positions": 7
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  }
+ },
+ "rows": [
+  {
+   "patch_px": 32,
+   "bank": "paper",
+   "pool": 1,
+   "label": "the paper, 32 px, pooled 1 x 1",
+   "repeat_raw_m": 27.353671,
+   "trajectories": {
+    "computed_by": "sim/legacy/experiments/real_common.run_patch",
+    "runtime_s": 208.4
+   },
+   "average_share": 0.013936,
+   "column_m": 112.0,
+   "rungs": 0.479424,
+   "room": 1.195478,
+   "makes_rungs": false,
+   "makes_room": false
+  },
+  {
+   "patch_px": 32,
+   "bank": "paper",
+   "pool": 3,
+   "label": "the paper, 32 px, pooled 3 x 3",
+   "repeat_raw_m": 27.353671,
+   "trajectories": {
+    "computed_by": "sim/legacy/experiments/real_common.run_patch",
+    "runtime_s": 208.4
+   },
+   "average_share": null,
+   "column_m": 113.0,
+   "rungs": 0.750926,
+   "room": 1.121182,
+   "makes_rungs": true,
+   "makes_room": false
+  },
+  {
+   "patch_px": 32,
+   "bank": "paper",
+   "pool": 7,
+   "label": "the paper, 32 px, pooled 7 x 7",
+   "repeat_raw_m": 27.353671,
+   "trajectories": {
+    "computed_by": "sim/legacy/experiments/real_common.run_patch",
+    "runtime_s": 208.4
+   },
+   "average_share": null,
+   "column_m": 109.0,
+   "rungs": 0.92463,
+   "room": 1.099135,
+   "makes_rungs": true,
+   "makes_room": false
+  },
+  {
+   "patch_px": 64,
+   "bank": "paper",
+   "pool": 1,
+   "label": "the paper, 64 px, pooled 1 x 1",
+   "repeat_raw_m": 27.353671,
+   "trajectories": {
+    "computed_by": "sim/legacy/experiments/real_common.run_patch",
+    "runtime_s": 711.6
+   },
+   "average_share": 0.015301,
+   "column_m": 113.0,
+   "rungs": 0.624393,
+   "room": 1.341802,
+   "makes_rungs": true,
+   "makes_room": false
+  },
+  {
+   "patch_px": 64,
+   "bank": "paper",
+   "pool": 3,
+   "label": "the paper, 64 px, pooled 3 x 3",
+   "repeat_raw_m": 27.353671,
+   "trajectories": {
+    "computed_by": "sim/legacy/experiments/real_common.run_patch",
+    "runtime_s": 711.6
+   },
+   "average_share": null,
+   "column_m": 112.0,
+   "rungs": 0.857345,
+   "room": 1.318601,
+   "makes_rungs": true,
+   "makes_room": false
+  },
+  {
+   "patch_px": 64,
+   "bank": "paper",
+   "pool": 7,
+   "label": "the paper, 64 px, pooled 7 x 7",
+   "repeat_raw_m": 27.353671,
+   "trajectories": {
+    "computed_by": "sim/legacy/experiments/real_common.run_patch",
+    "runtime_s": 711.6
+   },
+   "average_share": null,
+   "column_m": 110.0,
+   "rungs": 0.95829,
+   "room": 1.730012,
+   "makes_rungs": true,
+   "makes_room": false
+  },
+  {
+   "patch_px": 32,
+   "bank": "v17",
+   "pool": 1,
+   "label": "20 pairs, 32 px, pooled 1 x 1",
+   "repeat_raw_m": 196.951668,
+   "trajectories": {
+    "computed_by": "sim/legacy/experiments/real_common.run_patch",
+    "runtime_s": 90.0
+   },
+   "average_share": 0.065821,
+   "column_m": 42.0,
+   "rungs": 0.829336,
+   "room": 4.4253,
+   "makes_rungs": true,
+   "makes_room": true
+  },
+  {
+   "patch_px": 32,
+   "bank": "v17",
+   "pool": 3,
+   "label": "20 pairs, 32 px, pooled 3 x 3",
+   "repeat_raw_m": 196.951668,
+   "trajectories": {
+    "computed_by": "sim/legacy/experiments/real_common.run_patch",
+    "runtime_s": 90.0
+   },
+   "average_share": null,
+   "column_m": 43.0,
+   "rungs": 0.896523,
+   "room": 3.887979,
+   "makes_rungs": true,
+   "makes_room": true
+  },
+  {
+   "patch_px": 32,
+   "bank": "v17",
+   "pool": 7,
+   "label": "20 pairs, 32 px, pooled 7 x 7",
+   "repeat_raw_m": 196.951668,
+   "trajectories": {
+    "computed_by": "sim/legacy/experiments/real_common.run_patch",
+    "runtime_s": 90.0
+   },
+   "average_share": null,
+   "column_m": 45.0,
+   "rungs": 0.956159,
+   "room": 2.346297,
+   "makes_rungs": true,
+   "makes_room": true
+  }
+ ],
+ "finding": "As the paper states it (50 pairs 88 Hz apart swept across the band, 32 px patches, each pixel's shifts its own), the strongest column's banding correlates at 0.48 between neighbouring range positions, just short of lining up, and its repeat layer stands 1.2 times the column's mean. The bands line up into rungs whenever neighbouring pixels share their shifts: pooled over 3 x 3 or 7 x 7 targets (0.75, 0.92), registered on 64 px patches (0.62), or read through 20 pairs 404 Hz apart over 6% of the band (0.83). A room at the repeat comes with those 20 pairs alone (4.4 times the mean; the paper's pairs reach at most 1.7): pairs so close together hardly differ, so a pixel's average shift carries 7% of its shift energy (against 1% with the paper's pairs), and the method draws that average at the surface and again at every repeat. None of these settings is stated in the paper."
+}

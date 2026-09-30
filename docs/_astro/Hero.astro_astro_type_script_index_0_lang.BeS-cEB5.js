@@ -1,0 +1,1 @@
+import{t as e}from"./Underworld.BM7Bc_fs.js";var t=document.querySelector(`.hero-stage`);if(t){let n=JSON.parse(t.dataset.tour),r=document.querySelector(`.hero-caption`),i=t.parentElement;new e({root:i,tour:n}).start().catch(e=>{console.error(e),r.textContent=``})}

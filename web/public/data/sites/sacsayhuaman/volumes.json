@@ -1,0 +1,488 @@
+[
+ {
+  "id": "radar-walls",
+  "status": "radar",
+  "file": "vol-radar-walls.u8",
+  "shape": [
+   43,
+   42,
+   180
+  ],
+  "origin": [
+   -77.5,
+   -207.5,
+   3598.75
+  ],
+  "spacing": 5.0,
+  "label": "Satellite \u00b7 the published method at Zigzag walls",
+  "method": "The real 2025 ICEYE pass through the paper-style pipeline (50 half-band pairs, 32 px patches, grid-median correction, no selection gates, lambda_s 0.48 m): focused power on a log scale, depth relabelled as the claim does (repeat at 648 m), smoothed across the ground for display but not in depth; not the gated reconstruction",
+  "quantity": "focused power, log scale",
+  "units": "relative",
+  "range": [
+   -0.5742601752281189,
+   1.354358196258545
+  ],
+  "run": "p2_33_sacsayhuaman \u00b7 2026-09-30 \u00b7 d13b0ca",
+  "spacing_z": 2.5,
+  "caption": "columns where the registration wanders, as over open ground"
+ },
+ {
+  "id": "radar-rodadero",
+  "status": "radar",
+  "file": "vol-radar-rodadero.u8",
+  "shape": [
+   52,
+   40,
+   182
+  ],
+  "origin": [
+   -127.5,
+   7.5,
+   3603.75
+  ],
+  "spacing": 5.0,
+  "label": "Satellite \u00b7 the published method at Rodadero outcrop",
+  "method": "The real 2025 ICEYE pass through the paper-style pipeline (50 half-band pairs, 32 px patches, grid-median correction, no selection gates, lambda_s 0.48 m): focused power on a log scale, depth relabelled as the claim does (repeat at 648 m), smoothed across the ground for display but not in depth; not the gated reconstruction",
+  "quantity": "focused power, log scale",
+  "units": "relative",
+  "range": [
+   -0.5742601752281189,
+   1.354358196258545
+  ],
+  "run": "p2_33_sacsayhuaman \u00b7 2026-09-30 \u00b7 d13b0ca",
+  "spacing_z": 2.5,
+  "caption": "columns where the registration wanders, as over open ground"
+ },
+ {
+  "id": "radar-fields",
+  "status": "radar",
+  "file": "vol-radar-fields.u8",
+  "shape": [
+   58,
+   39,
+   200
+  ],
+  "origin": [
+   -252.5,
+   417.5,
+   3648.75
+  ],
+  "spacing": 5.0,
+  "label": "Satellite \u00b7 the published method over Fields north of the site (control)",
+  "method": "The real 2025 ICEYE pass through the paper-style pipeline (50 half-band pairs, 32 px patches, grid-median correction, no selection gates, lambda_s 0.48 m): focused power on a log scale, depth relabelled as the claim does (repeat at 648 m), smoothed across the ground for display but not in depth; not the gated reconstruction",
+  "quantity": "focused power, log scale",
+  "units": "relative",
+  "range": [
+   -0.5742601752281189,
+   1.354358196258545
+  ],
+  "run": "p2_33_sacsayhuaman \u00b7 2026-09-30 \u00b7 d13b0ca",
+  "spacing_z": 2.5,
+  "caption": "the same kind of picture over open ground"
+ },
+ {
+  "id": "radar-san_cristobal",
+  "status": "radar",
+  "file": "vol-radar-san_cristobal.u8",
+  "shape": [
+   65,
+   37,
+   134
+  ],
+  "origin": [
+   82.5,
+   -747.5,
+   3483.75
+  ],
+  "spacing": 5.0,
+  "label": "Satellite \u00b7 the published method at San Crist\u00f3bal houses",
+  "method": "The real 2025 ICEYE pass through the paper-style pipeline (50 half-band pairs, 32 px patches, grid-median correction, no selection gates, lambda_s 0.48 m): focused power on a log scale, depth relabelled as the claim does (repeat at 648 m), smoothed across the ground for display but not in depth; not the gated reconstruction",
+  "quantity": "focused power, log scale",
+  "units": "relative",
+  "range": [
+   -0.5742601752281189,
+   1.354358196258545
+  ],
+  "run": "p2_33_sacsayhuaman \u00b7 2026-09-30 \u00b7 d13b0ca",
+  "spacing_z": 2.5,
+  "caption": "columns where the registration wanders, as over open ground"
+ },
+ {
+  "id": "radar-san_blas",
+  "status": "radar",
+  "file": "vol-radar-san_blas.u8",
+  "shape": [
+   63,
+   40,
+   122
+  ],
+  "origin": [
+   682.5,
+   -937.5,
+   3453.75
+  ],
+  "spacing": 5.0,
+  "label": "Satellite \u00b7 the published method at San Blas houses",
+  "method": "The real 2025 ICEYE pass through the paper-style pipeline (50 half-band pairs, 32 px patches, grid-median correction, no selection gates, lambda_s 0.48 m): focused power on a log scale, depth relabelled as the claim does (repeat at 648 m), smoothed across the ground for display but not in depth; not the gated reconstruction",
+  "quantity": "focused power, log scale",
+  "units": "relative",
+  "range": [
+   -0.5742601752281189,
+   1.354358196258545
+  ],
+  "run": "p2_33_sacsayhuaman \u00b7 2026-09-30 \u00b7 d13b0ca",
+  "spacing_z": 2.5,
+  "caption": "columns where the registration wanders, as over open ground"
+ },
+ {
+  "id": "radar-grid",
+  "status": "radar",
+  "file": "vol-radar-grid.u8",
+  "shape": [
+   43,
+   38,
+   126
+  ],
+  "origin": [
+   -347.5,
+   -1107.5,
+   3463.75
+  ],
+  "spacing": 5.0,
+  "label": "Satellite \u00b7 the published method at City grid houses",
+  "method": "The real 2025 ICEYE pass through the paper-style pipeline (50 half-band pairs, 32 px patches, grid-median correction, no selection gates, lambda_s 0.48 m): focused power on a log scale, depth relabelled as the claim does (repeat at 648 m), smoothed across the ground for display but not in depth; not the gated reconstruction",
+  "quantity": "focused power, log scale",
+  "units": "relative",
+  "range": [
+   -0.5742601752281189,
+   1.354358196258545
+  ],
+  "run": "p2_33_sacsayhuaman \u00b7 2026-09-30 \u00b7 d13b0ca",
+  "spacing_z": 2.5,
+  "caption": "columns where the registration wanders, as over open ground"
+ },
+ {
+  "id": "radar-lab-sacsay_fields-real-p1",
+  "status": "radar",
+  "file": "vol-radar-lab-sacsay_fields-real-p1.u8",
+  "shape": [
+   101,
+   95,
+   125
+  ],
+  "origin": [
+   -250.0,
+   384.0,
+   3669.87
+  ],
+  "spacing": 3.0,
+  "label": "Satellite \u00b7 lab run sacsay_fields, the real image, support 1",
+  "method": "The gated reconstruction, unchanged, along 95 east-west lines 3 m apart across (-100, 525) on sacsayhuaman: real: 1,126 of 9,595 positions pass at support 1, 63 of 9,595 positions pass at support 4; twin101: 657 of 9,595 positions pass at support 1, 5 of 9,595 positions pass at support 4.",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "lab_sacsay_fields \u00b7 2026-09-30 \u00b7 2e70040",
+  "tint": "gated",
+  "caption": "fit scores, unsmoothed; empty where nothing passed"
+ },
+ {
+  "id": "radar-lab-sacsay_fields-real-p4",
+  "status": "radar",
+  "file": "vol-radar-lab-sacsay_fields-real-p4.u8",
+  "shape": [
+   101,
+   95,
+   125
+  ],
+  "origin": [
+   -250.0,
+   384.0,
+   3669.87
+  ],
+  "spacing": 3.0,
+  "label": "Satellite \u00b7 lab run sacsay_fields, the real image, support 4",
+  "method": "The gated reconstruction, unchanged, along 95 east-west lines 3 m apart across (-100, 525) on sacsayhuaman: real: 1,126 of 9,595 positions pass at support 1, 63 of 9,595 positions pass at support 4; twin101: 657 of 9,595 positions pass at support 1, 5 of 9,595 positions pass at support 4.",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "lab_sacsay_fields \u00b7 2026-09-30 \u00b7 2e70040",
+  "tint": "gated",
+  "caption": "fit scores, unsmoothed; empty where nothing passed"
+ },
+ {
+  "id": "radar-lab-sacsay_fields-twin-p1",
+  "status": "radar",
+  "file": "vol-radar-lab-sacsay_fields-twin-p1.u8",
+  "shape": [
+   101,
+   95,
+   125
+  ],
+  "origin": [
+   -250.0,
+   384.0,
+   3669.87
+  ],
+  "spacing": 3.0,
+  "label": "Satellite \u00b7 lab run sacsay_fields, a motionless copy, support 1",
+  "method": "The gated reconstruction, unchanged, along 95 east-west lines 3 m apart across (-100, 525) on sacsayhuaman: real: 1,126 of 9,595 positions pass at support 1, 63 of 9,595 positions pass at support 4; twin101: 657 of 9,595 positions pass at support 1, 5 of 9,595 positions pass at support 4.",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "lab_sacsay_fields \u00b7 2026-09-30 \u00b7 2e70040",
+  "tint": "gated",
+  "caption": "fit scores, unsmoothed; empty where nothing passed"
+ },
+ {
+  "id": "radar-lab-sacsay_fields-twin-p4",
+  "status": "radar",
+  "file": "vol-radar-lab-sacsay_fields-twin-p4.u8",
+  "shape": [
+   101,
+   95,
+   125
+  ],
+  "origin": [
+   -250.0,
+   384.0,
+   3669.87
+  ],
+  "spacing": 3.0,
+  "label": "Satellite \u00b7 lab run sacsay_fields, a motionless copy, support 4",
+  "method": "The gated reconstruction, unchanged, along 95 east-west lines 3 m apart across (-100, 525) on sacsayhuaman: real: 1,126 of 9,595 positions pass at support 1, 63 of 9,595 positions pass at support 4; twin101: 657 of 9,595 positions pass at support 1, 5 of 9,595 positions pass at support 4.",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "lab_sacsay_fields \u00b7 2026-09-30 \u00b7 2e70040",
+  "tint": "gated",
+  "caption": "fit scores, unsmoothed; empty where nothing passed"
+ },
+ {
+  "id": "radar-lab-sacsay_grid-real-p1",
+  "status": "radar",
+  "file": "vol-radar-lab-sacsay_grid-real-p1.u8",
+  "shape": [
+   101,
+   95,
+   108
+  ],
+  "origin": [
+   -400.0,
+   -1141.0,
+   3474.7539999999995
+  ],
+  "spacing": 3.0,
+  "label": "Satellite \u00b7 lab run sacsay_grid, the real image, support 1",
+  "method": "The gated reconstruction, unchanged, along 95 east-west lines 3 m apart across (-250, -1000) on sacsayhuaman: real: 2,411 of 9,595 positions pass at support 1, 125 of 9,595 positions pass at support 4; twin101: 1,743 of 9,595 positions pass at support 1, 33 of 9,595 positions pass at support 4.",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "lab_sacsay_grid \u00b7 2026-09-30 \u00b7 2e70040",
+  "tint": "gated",
+  "caption": "fit scores, unsmoothed; empty where nothing passed"
+ },
+ {
+  "id": "radar-lab-sacsay_grid-real-p4",
+  "status": "radar",
+  "file": "vol-radar-lab-sacsay_grid-real-p4.u8",
+  "shape": [
+   101,
+   95,
+   108
+  ],
+  "origin": [
+   -400.0,
+   -1141.0,
+   3474.7539999999995
+  ],
+  "spacing": 3.0,
+  "label": "Satellite \u00b7 lab run sacsay_grid, the real image, support 4",
+  "method": "The gated reconstruction, unchanged, along 95 east-west lines 3 m apart across (-250, -1000) on sacsayhuaman: real: 2,411 of 9,595 positions pass at support 1, 125 of 9,595 positions pass at support 4; twin101: 1,743 of 9,595 positions pass at support 1, 33 of 9,595 positions pass at support 4.",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "lab_sacsay_grid \u00b7 2026-09-30 \u00b7 2e70040",
+  "tint": "gated",
+  "caption": "fit scores, unsmoothed; empty where nothing passed"
+ },
+ {
+  "id": "radar-lab-sacsay_grid-twin-p1",
+  "status": "radar",
+  "file": "vol-radar-lab-sacsay_grid-twin-p1.u8",
+  "shape": [
+   101,
+   95,
+   108
+  ],
+  "origin": [
+   -400.0,
+   -1141.0,
+   3474.7539999999995
+  ],
+  "spacing": 3.0,
+  "label": "Satellite \u00b7 lab run sacsay_grid, a motionless copy, support 1",
+  "method": "The gated reconstruction, unchanged, along 95 east-west lines 3 m apart across (-250, -1000) on sacsayhuaman: real: 2,411 of 9,595 positions pass at support 1, 125 of 9,595 positions pass at support 4; twin101: 1,743 of 9,595 positions pass at support 1, 33 of 9,595 positions pass at support 4.",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "lab_sacsay_grid \u00b7 2026-09-30 \u00b7 2e70040",
+  "tint": "gated",
+  "caption": "fit scores, unsmoothed; empty where nothing passed"
+ },
+ {
+  "id": "radar-lab-sacsay_grid-twin-p4",
+  "status": "radar",
+  "file": "vol-radar-lab-sacsay_grid-twin-p4.u8",
+  "shape": [
+   101,
+   95,
+   108
+  ],
+  "origin": [
+   -400.0,
+   -1141.0,
+   3474.7539999999995
+  ],
+  "spacing": 3.0,
+  "label": "Satellite \u00b7 lab run sacsay_grid, a motionless copy, support 4",
+  "method": "The gated reconstruction, unchanged, along 95 east-west lines 3 m apart across (-250, -1000) on sacsayhuaman: real: 2,411 of 9,595 positions pass at support 1, 125 of 9,595 positions pass at support 4; twin101: 1,743 of 9,595 positions pass at support 1, 33 of 9,595 positions pass at support 4.",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "lab_sacsay_grid \u00b7 2026-09-30 \u00b7 2e70040",
+  "tint": "gated",
+  "caption": "fit scores, unsmoothed; empty where nothing passed"
+ },
+ {
+  "id": "radar-lab-sacsay_walls-real-p1",
+  "status": "radar",
+  "file": "vol-radar-lab-sacsay_walls-real-p1.u8",
+  "shape": [
+   101,
+   95,
+   119
+  ],
+  "origin": [
+   -135.4,
+   -233.7,
+   3598.5328999999997
+  ],
+  "spacing": 3.0,
+  "label": "Satellite \u00b7 lab run sacsay_walls, the real image, support 1",
+  "method": "The gated reconstruction, unchanged, along 95 east-west lines 3 m apart across (14.6, -92.7) on sacsayhuaman: real: 463 of 9,595 positions pass at support 1, 4 of 9,595 positions pass at support 4; twin101: 293 of 9,595 positions pass at support 1, 0 of 9,595 positions pass at support 4.",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "lab_sacsay_walls \u00b7 2026-09-30 \u00b7 2e70040",
+  "tint": "gated",
+  "caption": "fit scores, unsmoothed; empty where nothing passed"
+ },
+ {
+  "id": "radar-lab-sacsay_walls-real-p4",
+  "status": "radar",
+  "file": "vol-radar-lab-sacsay_walls-real-p4.u8",
+  "shape": [
+   101,
+   95,
+   119
+  ],
+  "origin": [
+   -135.4,
+   -233.7,
+   3598.5328999999997
+  ],
+  "spacing": 3.0,
+  "label": "Satellite \u00b7 lab run sacsay_walls, the real image, support 4",
+  "method": "The gated reconstruction, unchanged, along 95 east-west lines 3 m apart across (14.6, -92.7) on sacsayhuaman: real: 463 of 9,595 positions pass at support 1, 4 of 9,595 positions pass at support 4; twin101: 293 of 9,595 positions pass at support 1, 0 of 9,595 positions pass at support 4.",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "lab_sacsay_walls \u00b7 2026-09-30 \u00b7 2e70040",
+  "tint": "gated",
+  "caption": "fit scores, unsmoothed; empty where nothing passed"
+ },
+ {
+  "id": "radar-lab-sacsay_walls-twin-p1",
+  "status": "radar",
+  "file": "vol-radar-lab-sacsay_walls-twin-p1.u8",
+  "shape": [
+   101,
+   95,
+   119
+  ],
+  "origin": [
+   -135.4,
+   -233.7,
+   3598.5328999999997
+  ],
+  "spacing": 3.0,
+  "label": "Satellite \u00b7 lab run sacsay_walls, a motionless copy, support 1",
+  "method": "The gated reconstruction, unchanged, along 95 east-west lines 3 m apart across (14.6, -92.7) on sacsayhuaman: real: 463 of 9,595 positions pass at support 1, 4 of 9,595 positions pass at support 4; twin101: 293 of 9,595 positions pass at support 1, 0 of 9,595 positions pass at support 4.",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "lab_sacsay_walls \u00b7 2026-09-30 \u00b7 2e70040",
+  "tint": "gated",
+  "caption": "fit scores, unsmoothed; empty where nothing passed"
+ },
+ {
+  "id": "radar-lab-sacsay_walls-twin-p4",
+  "status": "radar",
+  "file": "vol-radar-lab-sacsay_walls-twin-p4.u8",
+  "shape": [
+   101,
+   95,
+   119
+  ],
+  "origin": [
+   -135.4,
+   -233.7,
+   3598.5328999999997
+  ],
+  "spacing": 3.0,
+  "label": "Satellite \u00b7 lab run sacsay_walls, a motionless copy, support 4",
+  "method": "The gated reconstruction, unchanged, along 95 east-west lines 3 m apart across (14.6, -92.7) on sacsayhuaman: real: 463 of 9,595 positions pass at support 1, 4 of 9,595 positions pass at support 4; twin101: 293 of 9,595 positions pass at support 1, 0 of 9,595 positions pass at support 4.",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "lab_sacsay_walls \u00b7 2026-09-30 \u00b7 2e70040",
+  "tint": "gated",
+  "caption": "fit scores, unsmoothed; empty where nothing passed"
+ }
+]
