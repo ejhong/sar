@@ -150,7 +150,7 @@ const umWords = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} millim
 // P2-29: the oracle, told everything but the answer
 type OrRow = { kind: string; tv_upper: number; growth_to_target: number; open: boolean };
 const orc = oracle as unknown as { chamber: OrRow[]; depth: { residual_fraction: number; signal_factor_depth_over_detection: number } };
-const orAmb = Math.max(...orc.chamber.filter((r) => r.kind === 'ambient').map((r) => r.tv_upper));
+const orAmb = orc.chamber.filter((r) => r.kind === 'ambient')[0].tv_upper;   // Giza's regional microseisms
 const orWorst = orc.chamber.filter((r) => r.kind === 'cultural').reduce((a, r) => (r.tv_upper > a.tv_upper ? r : a));
 // P2-26: how long the modelled rooms ring
 type RRec = { largest_resolved_q: number | null };
@@ -533,8 +533,8 @@ const explore = [
         </p>
         <p>
           Hand a detector more than any method has, the exact texture of the ground, the shaking and both physical models,
-          with the room and without, and its best is known exactly, whatever the texture: under the ground’s own trembling at
-          most <Sci v={orAmb} p={0} />. The regime this leaves open is strong shaking close by, known exactly: a lorry
+          with the room and without, and its best is bounded exactly, whatever the texture: under Giza’s own trembling at
+          most <Sci v={orAmb} p={1} />. What this leaves unresolved is strong shaking close by, known exactly: a lorry
           bouncing beside a room under a 5-metre roof for the whole pass lets such an oracle’s upper bound reach {orWorst.tv_upper.toFixed(2)}
           {orWorst.growth_to_target < 1 ? ', so this argument does not rule out a reliable detection there (which is not the same as showing one is possible)' : `, still ruling out a reliable detection until the motion grows ${orWorst.growth_to_target.toFixed(0)} times`},
           if the wave the room scatters carries undiminished across the whole scene (within 32 metres of the room alone, far less).

@@ -580,13 +580,15 @@ investigation's record, and what it leaves open follow.
 
 23. **Telling one layout from another is bounded as detection is (P2-32).** For any two layouts A and B,
     TV(A, B) <= TV(A, none) + TV(none, B), and the closest admissible pair of depth variants is no easier than the pair at
-    the same depth, so the same-depth bound covers every allowed vertical transformation. Computed on the difference of the
-    two layouts' imprints (the lab's solver, statically for the ambient levels, dynamically for a lorry): under Giza's
-    regional microseisms the oracle tells an L-shaped from a straight tunnel at most 1.5e-06 and a column with a spiral from
-    a plain column at most 2.0e-06 (tight 1.0e-09 and 1.3e-09; the certificate with the background 5.024% at 5% for every
-    pair); discrimination needs 1.2 to 4.1 times detection's signal. With a lorry bouncing beside the layouts all pass,
-    known exactly, the oracle reaches 0.81 for an L-shaped against a branching tunnel: open, as detection is. Only these
-    shallow bench-scale layouts in uniform rock are covered.
+    the same depth, so the same-depth bound covers every allowed vertical transformation. Each layout's imprint is the
+    lab's solver (statically for the ambient levels, dynamically for a lorry). The tight bound and the certificate take each
+    pair through empty ground (subtracting two layouts' motions does not remove the reference covariance); the oracle uses
+    the difference itself, exact there. Under Giza's regional microseisms the oracle tells an L-shaped from a straight
+    tunnel at most 1.5e-06 and a column with a spiral from a plain column at most 2.0e-06 (tight 2.6e-09 and 9.1e-09; the
+    certificate with the background at most 5.110% at 5% for every pair); discrimination needs 1.2 to 4.1 times detection's
+    signal. With a lorry bouncing beside the layouts all pass, known exactly, the oracle's upper bound reaches 0.82 for an
+    L-shaped against a branching tunnel, still excluding 95% at 5% until the signal grows 1.2 times: unresolved, as
+    detection is. Only these shallow bench-scale layouts in uniform rock are covered.
 
 24. **Where the data hold a layout, a reference detector names and places it; the published picture does neither (P2-31).**
     A room, an L-shaped and a branching tunnel, each imprint from the lab's solver, the image from the synthesizer, the
