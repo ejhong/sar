@@ -79,6 +79,13 @@ def section(out, pool):
     return T.mean(axis=0), z * 648.0 / zrep, zrep
 
 
+def average_share(out):
+    """The median, over pixels, of the share of a pixel's shift energy that its average over the pairs carries."""
+    q = out['q'].astype(np.float64)
+    qc = q[..., 0] + 1j * q[..., 1]
+    return float(np.median(np.abs(qc.mean(axis=1)) ** 2 / np.maximum((np.abs(qc) ** 2).mean(axis=1), 1e-30)))
+
+
 def measure(S, zm):
     """Rungs and room for the strongest column of a section S [range position, depth]."""
     dz = zm[1] - zm[0]
@@ -108,7 +115,8 @@ def main():
                 S, zm, zrep = section(out, pool_n)
                 m = measure(S, zm)
                 label = f"{'the paper' if bank == 'paper' else '20 pairs'}, {patch} px, pooled {pool_n} x {pool_n}"
-                rows.append({'patch_px': patch, 'bank': bank, 'pool': pool_n, 'label': label, 'repeat_raw_m': float(zrep), **m})
+                rows.append({'patch_px': patch, 'bank': bank, 'pool': pool_n, 'label': label, 'repeat_raw_m': float(zrep),
+                             'average_share': average_share(out) if pool_n == 1 else None, **m})
                 sections[label] = (S, zm)
                 print(f"  {label}: rungs {m['rungs']:.2f}, room {m['room']:.2f}", flush=True)
         # the sections, drawn as the published pictures are: log scale, smoothed, rainbow palette
@@ -129,24 +137,24 @@ def main():
             ax.tick_params(labelsize=6)
         plt.tight_layout()
         plt.savefig(figs / 'sections.png', dpi=110)
-        base = next(r for r in rows if r['patch_px'] == 32 and r['bank'] == 'paper' and r['pool'] == 1)
-        rungs = [r for r in rows if r['makes_rungs']]
-        rooms = [r for r in rows if r['makes_room']]
-        best_r = max(rows, key=lambda r: r['rungs'])
-        best_m = max(rows, key=lambda r: r['room'])
+        pick = lambda patch, bank, pool_n: next(r for r in rows if r['patch_px'] == patch and r['bank'] == bank and r['pool'] == pool_n)
+        base, p3, p7, big, v17 = pick(32, 'paper', 1), pick(32, 'paper', 3), pick(32, 'paper', 7), pick(64, 'paper', 1), pick(32, 'v17', 1)
+        paper_rooms = [r['room'] for r in rows if r['bank'] == 'paper']
         finding = (
-            f"As the paper states it (50 pairs, 32 px patches, no pooling), the strongest column's banding correlates at "
-            f"{base['rungs']:.2f} between neighbouring range positions and its repeat layer stands {base['room']:.1f} times its "
-            f"mean. " + (f"Rungs (0.5 or more) come with {', '.join(r['label'] for r in rungs)}; "
-                         if rungs else f"No setting tried lines the bands up into rungs (the best, {best_r['label']}, reaches "
-                                       f"{best_r['rungs']:.2f}); ")
-            + (f"a room (twice the mean or more) with {', '.join(r['label'] for r in rooms)}."
-               if rooms else f"none makes a room at the repeat (the brightest, {best_m['label']}, {best_m['room']:.1f} times "
-                             f"the mean).")
-            + (" So the published look can come from choices the paper does not state." if rungs and rooms else
-               " So part of the published look can come from choices the paper does not state; the rest needs others, or "
-               "rendering beyond these." if rungs or rooms else
-               " The published look needs choices the paper does not state beyond these, or rendering."))
+            f"As the paper states it (50 pairs 88 Hz apart swept across the band, 32 px patches, each pixel's shifts its own), "
+            f"the strongest column's banding correlates at {base['rungs']:.2f} between neighbouring range positions, just short "
+            f"of lining up, and its repeat layer stands {base['room']:.1f} times the column's mean. The bands line up into rungs "
+            f"whenever neighbouring pixels share their shifts: pooled over 3 x 3 or 7 x 7 targets ({p3['rungs']:.2f}, "
+            f"{p7['rungs']:.2f}), registered on 64 px patches ({big['rungs']:.2f}), or read through 20 pairs 404 Hz apart over "
+            f"6% of the band ({v17['rungs']:.2f}). "
+            + (f"A room at the repeat comes with those 20 pairs alone ({v17['room']:.1f} times the mean; the paper's pairs reach "
+               f"at most {max(paper_rooms):.1f}): pairs so close together hardly differ, so a pixel's average shift carries "
+               f"{v17['average_share'] * 100:.0f}% of its shift energy (against {base['average_share'] * 100:.0f}% with the paper's "
+               f"pairs), and the method draws that average at the surface and again at every repeat. "
+               if v17['makes_room'] and max(paper_rooms) < ROOM_AT else
+               f"A room at the repeat comes with {', '.join(r['label'] for r in rows if r['makes_room'])}. "
+               if any(r['makes_room'] for r in rows) else 'No setting makes a room at the repeat. ')
+            + "None of these settings is stated in the paper.")
         run.save({'rows': rows, 'finding': finding})
         print(finding)
 
