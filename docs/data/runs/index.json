@@ -2207,9 +2207,9 @@
   "id": "p2_31_shape_test",
   "title": "The shape test: location and shape, with depth allowed to be wrong",
   "date": "2026-09-30",
-  "started_utc": "2026-09-30T14:34:54+00:00",
-  "runtime_s": 35.5,
-  "commit": "439c48b+",
+  "started_utc": "2026-09-30T18:06:20+00:00",
+  "runtime_s": 9826.1,
+  "commit": "1bf937d+",
   "params": {
    "layouts": {
     "room": [

@@ -594,24 +594,28 @@ investigation's record, and what it leaves open follow.
     the grid check's allowance, the oracle's upper bound reaches 0.86 for an L-shaped against a branching tunnel, still
     excluding 95% at 5% until the signal grows 1.1 times: unresolved, as detection is. Only these shallow bench-scale layouts in uniform rock are covered.
 
-24. **Where the data hold a layout, a reference detector names and places it; the published picture does neither (P2-31).**
-    A room, an L-shaped and a branching tunnel, each imprint from the lab's solver, the image from the synthesizer, the
-    unrelated ground and shaking matched across layouts and controls (no cavity, a motionless copy), three realisations,
+24. **Where the data hold a layout, a reference detector names and places it; the published picture was not shown to
+    do either (P2-31).** A room, an L-shaped and a branching tunnel, each imprint from the lab's solver, the image from
+    the synthesizer in double precision, the unrelated ground and shaking matched across layouts and controls (no cavity,
+    a motionless copy) on each of three independent grounds (each its own speckle and its own microseism realisation),
     read at the real level and at labelled amplified diagnostics (0.3, 2 and 20 rad). At 20 rad (the positive control) a
-    reference detector told the shaking names 100% of layouts and, scanning every placement, puts its peak a median 0.4 m
-    from the layout's centre (controls 36 m). At 2 rad it names 78% when told where to look (permutation p = 0.03), but its response
-    there stands only 1.9 spreads above the scatter over placements and a scan peaks 34 m away. The published method's plan
-    map, read blind, names 56% at 20 rad (p = 0.17, the true layouts permuted within each of the three grounds, which are
-    the independent units; a null test, not a confidence interval) and centres its top places 5.6 m from the
-    layout's centre against the controls' 6.2 m; its largest value separates cavities from controls with AUC 0.59. Its
-    change against the same ground without the cavity, a diagnostic it never has, names 67% at 0.3 and 2 rad (permutation p = 0.04,
-    uncorrected for a dozen comparisons) and centres 5.2 m away against the motionless copy's 12.1 m (the picture changes
-    near where the image changes, as in P2-28), and 33% at 20 rad. After the predeclared depth family its change peaks
-    1.5 m from the true depth at 20 rad and the motionless copy's 1.2 m: with 12 candidates, closeness says little. At
-    the real level every reader is at chance. Location was first scored as the distance to the nearest footprint point;
-    because the tunnels reach within a few metres of almost any central place (chance 3.4 m), the centroid distance was
-    added after the first run and is the one reported. Amplified levels are diagnostics, not physical predictions; nine
-    images per level is small, and a physically strong positive control (a lorry or vibrator beside the layouts) is next.
+    reference detector told the shaking names 100% of layouts (permutation p = 0.005, the floor for three grounds is
+    1/216) and, scanning every placement, puts its peak a median 0.6 m from the layout's centre (controls 38 m). At 2 rad
+    it names 89% when told where to look (p = 0.009), but its response there stands only 1.7 spreads above the scatter
+    over placements and a scan peaks 38 m away. The published method's plan map, read blind, names 44% at 20 rad
+    (p = 0.37, the true layouts permuted within each ground, the grounds being the independent units; a null test, not a
+    confidence interval) and centres its top places 7.1 m from the layout's centre against the controls' 6.2 m; its
+    largest value separates cavities from controls with AUC 0.56. Its change against the same ground without the cavity,
+    a diagnostic it never has, names 67% at 0.3 and 2 rad (p = 0.04, uncorrected for a dozen comparisons) and centres 6.1
+    m away against the motionless copy's 12.5 m (the picture changes near where the image changes, as in P2-28), and 44%
+    at 20 rad. After the predeclared depth family its change peaks 1.1 m from the true depth at 20 rad and the motionless
+    copy's 1.3 m: with 12 candidates, closeness says little. At the real level every reader is at chance; a first version
+    synthesised in single precision, whose rounding lies 20 to 40 times above the real-level imprints, had measured
+    rounding there, and is replaced. Location was first scored as the distance to the nearest footprint point; because
+    the tunnels reach within a few metres of almost any central place (chance 3.4 m), the centroid distance was added
+    after the first run and is the one reported. Amplified levels are diagnostics, not physical predictions; nine images
+    per level on three grounds is small, so the published map's failure is "not shown better than chance", not a
+    demonstrated inability; a physically strong positive control (a lorry or vibrator beside the layouts) is next.
 
 25. **At Sacsayhuamán the houses draw alike and the walls apart, from what the image holds of the surface (P2-33).** A
     second pass (ICEYE X35, 22 August 2025) laid on its terrain within 10 m and 12 m, six areas chosen on it before the
@@ -725,7 +729,7 @@ model, and location and shape through TV(A, B) <= TV(A, none) + TV(none, B), com
 two layouts apart is not in general harder than detecting either); a bound
 that excludes 95% at 5% is not by itself a proof of no prospecting value, which is excluded only where the bound on
 detection minus false alarm is itself small. The shape test (P2-31, item 24) found that where the data hold a layout
-a reference detector names and places it and the published picture does neither.
+a reference detector names and places it and the published picture was not shown to do either.
 
 ### What the proof can and cannot claim (29 September 2026)
 

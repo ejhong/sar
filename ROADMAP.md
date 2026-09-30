@@ -162,8 +162,9 @@ Then (29 September, evening; the cloud session, on branch `claude/upbeat-pascal-
   now reads the alias tests as a calibration ambiguity. P2-31 (the shape test) ran: an isolated room, an L-shaped and a
   branching tunnel and no cavity, generated through the forward model, read by the published method and a reference
   detector at the real level and at labelled amplified diagnostics. At 20 rad the reference detector names every layout
-  and places it within 0.4 m; the published blind map names 5 of 9 (p = 0.14) and centres no closer than the controls;
-  at the real level every reader is at chance (audit item 24). P2-32 bounds shape discrimination as detection is.
+  and places it within 0.6 m; the published blind map names 4 of 9 (p = 0.37, rerun in double precision on three
+  independent grounds) and centres no closer than the controls; at the real level every reader is at chance (audit item
+  24). P2-32 bounds shape discrimination as detection is.
 - **Third review** (30 September): P2-27's smooth-pattern curve is not a universal requirement (a pattern with more
   structure in the same envelope holds far more); the requirement for every pattern is on energy (Theorem C), and
   under a truck close by it rests on how far the scattered wave carries. Large upper bounds are not working regimes;

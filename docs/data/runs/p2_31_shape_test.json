@@ -3,9 +3,9 @@
   "id": "p2_31_shape_test",
   "title": "The shape test: location and shape, with depth allowed to be wrong",
   "date": "2026-09-30",
-  "started_utc": "2026-09-30T14:34:54+00:00",
-  "runtime_s": 35.5,
-  "commit": "439c48b+",
+  "started_utc": "2026-09-30T18:06:20+00:00",
+  "runtime_s": 9826.1,
+  "commit": "1bf937d+",
   "params": {
    "layouts": {
     "room": [
@@ -119,14 +119,14 @@
  "summary": {
   "real": {
    "reference": {
-    "presence_auc_vs_controls": 0.537037,
+    "presence_auc_vs_controls": 0.611111,
     "shape_accuracy": 0.333333,
     "shape_chance": 0.333333,
-    "median_location_error_m": 36.486533,
+    "median_location_error_m": 38.106537,
     "shape_p_permutation": 1.0,
     "images": 9,
     "scenes": 3,
-    "median_presence_z_at_true_place": 0.15583
+    "median_presence_z_at_true_place": -0.349704
    },
    "published_blind": {
     "presence_auc_vs_controls": 0.5,
@@ -141,127 +141,127 @@
    },
    "published_paired": {
     "presence_auc_vs_controls": 0.5,
-    "shape_accuracy": 0.444444,
+    "shape_accuracy": 0.333333,
     "shape_chance": 0.333333,
-    "median_location_error_m": 1.977882,
-    "shape_p_permutation": 0.333333,
+    "median_location_error_m": 4.205442,
+    "shape_p_permutation": 1.0,
     "images": 9,
     "scenes": 3,
-    "mean_extra_structures": 27.777778,
-    "median_centroid_error_m": 6.056545
+    "mean_extra_structures": 16.666667,
+    "median_centroid_error_m": 13.143348
    },
-   "published_depth_error_after_allowance_m": 0.860958
+   "published_depth_error_after_allowance_m": 0.890615
   },
   "diagnostic_0.3_rad": {
    "reference": {
-    "presence_auc_vs_controls": 0.666667,
-    "shape_accuracy": 0.444444,
+    "presence_auc_vs_controls": 0.777778,
+    "shape_accuracy": 0.666667,
     "shape_chance": 0.333333,
-    "median_location_error_m": 36.486533,
-    "shape_p_permutation": 0.333333,
+    "median_location_error_m": 41.3581,
+    "shape_p_permutation": 0.055556,
     "images": 9,
     "scenes": 3,
-    "median_presence_z_at_true_place": 0.388364
+    "median_presence_z_at_true_place": -0.072011
    },
    "published_blind": {
     "presence_auc_vs_controls": 0.62963,
     "shape_accuracy": 0.333333,
     "shape_chance": 0.333333,
-    "median_location_error_m": 3.522516,
+    "median_location_error_m": 3.443479,
     "shape_p_permutation": 1.0,
     "images": 9,
     "scenes": 3,
-    "mean_extra_structures": 27.333333,
-    "median_centroid_error_m": 6.610972
+    "mean_extra_structures": 27.444444,
+    "median_centroid_error_m": 6.371627
    },
    "published_paired": {
     "presence_auc_vs_controls": 0.5,
     "shape_accuracy": 0.666667,
     "shape_chance": 0.333333,
-    "median_location_error_m": 2.709623,
+    "median_location_error_m": 4.545642,
     "shape_p_permutation": 0.037037,
     "images": 9,
     "scenes": 3,
-    "mean_extra_structures": 1.777778,
-    "median_centroid_error_m": 5.266661
+    "mean_extra_structures": 1.444444,
+    "median_centroid_error_m": 6.078901
    },
-   "published_depth_error_after_allowance_m": 1.163574
+   "published_depth_error_after_allowance_m": 0.744352
   },
   "diagnostic_2_rad": {
    "reference": {
     "presence_auc_vs_controls": 1.0,
-    "shape_accuracy": 0.777778,
+    "shape_accuracy": 0.888889,
     "shape_chance": 0.333333,
-    "median_location_error_m": 33.863645,
-    "shape_p_permutation": 0.027778,
+    "median_location_error_m": 38.073957,
+    "shape_p_permutation": 0.009259,
     "images": 9,
     "scenes": 3,
-    "median_presence_z_at_true_place": 1.946367
+    "median_presence_z_at_true_place": 1.742002
    },
    "published_blind": {
-    "presence_auc_vs_controls": 0.62963,
+    "presence_auc_vs_controls": 0.740741,
     "shape_accuracy": 0.333333,
     "shape_chance": 0.333333,
-    "median_location_error_m": 3.128577,
+    "median_location_error_m": 4.951197,
     "shape_p_permutation": 1.0,
     "images": 9,
     "scenes": 3,
-    "mean_extra_structures": 28.444444,
-    "median_centroid_error_m": 6.022969
+    "mean_extra_structures": 26.777778,
+    "median_centroid_error_m": 7.507294
    },
    "published_paired": {
     "presence_auc_vs_controls": 0.5,
     "shape_accuracy": 0.666667,
     "shape_chance": 0.333333,
-    "median_location_error_m": 2.539236,
+    "median_location_error_m": 4.635558,
     "shape_p_permutation": 0.037037,
     "images": 9,
     "scenes": 3,
-    "mean_extra_structures": 2.111111,
-    "median_centroid_error_m": 5.169719
+    "mean_extra_structures": 1.666667,
+    "median_centroid_error_m": 6.108138
    },
-   "published_depth_error_after_allowance_m": 1.163574
+   "published_depth_error_after_allowance_m": 1.331263
   },
   "diagnostic_20_rad": {
    "reference": {
     "presence_auc_vs_controls": 1.0,
     "shape_accuracy": 1.0,
     "shape_chance": 0.333333,
-    "median_location_error_m": 0.395806,
+    "median_location_error_m": 0.55749,
     "shape_p_permutation": 0.00463,
     "images": 9,
     "scenes": 3,
-    "median_presence_z_at_true_place": 18.272515
+    "median_presence_z_at_true_place": 19.270052
    },
    "published_blind": {
-    "presence_auc_vs_controls": 0.592593,
-    "shape_accuracy": 0.555556,
+    "presence_auc_vs_controls": 0.555556,
+    "shape_accuracy": 0.444444,
     "shape_chance": 0.333333,
-    "median_location_error_m": 2.046407,
-    "shape_p_permutation": 0.166667,
+    "median_location_error_m": 2.830782,
+    "shape_p_permutation": 0.37037,
     "images": 9,
     "scenes": 3,
-    "mean_extra_structures": 27.444444,
-    "median_centroid_error_m": 5.600897
+    "mean_extra_structures": 25.222222,
+    "median_centroid_error_m": 7.09334
    },
    "published_paired": {
     "presence_auc_vs_controls": 0.5,
-    "shape_accuracy": 0.333333,
+    "shape_accuracy": 0.444444,
     "shape_chance": 0.333333,
-    "median_location_error_m": 4.372988,
-    "shape_p_permutation": 0.666667,
+    "median_location_error_m": 4.57449,
+    "shape_p_permutation": 0.333333,
     "images": 9,
     "scenes": 3,
-    "mean_extra_structures": 11.0,
-    "median_centroid_error_m": 9.035655
+    "mean_extra_structures": 10.444444,
+    "median_centroid_error_m": 11.643808
    },
-   "published_depth_error_after_allowance_m": 1.486685
+   "published_depth_error_after_allowance_m": 1.058303
   },
   "control_location_error_to_layouts_m": 3.406832,
-  "control_depth_error_after_allowance_m": 1.19323,
+  "control_depth_error_after_allowance_m": 1.28934,
   "control_centroid_error_blind_m": 6.228822,
-  "control_centroid_error_paired_m": 12.107009,
-  "control_reference_peak_distance_m": 36.486533
+  "control_centroid_error_paired_m": 12.519052,
+  "control_reference_peak_distance_m": 38.106537
  },
  "results": {
   "real": [
@@ -269,23 +269,23 @@
     "seed": 71,
     "scene": "room",
     "reference": {
-     "presence": -0.270806,
+     "presence": -0.349704,
      "z_by_layout": {
-      "room": -0.270806,
-      "L_tunnel": -0.378775,
-      "branching_tunnel": -0.35095
+      "room": -0.349704,
+      "L_tunnel": -0.354048,
+      "branching_tunnel": -1.000248
      },
      "shape": "room",
      "shape_correct": true,
-     "location_error_m": 43.436918,
-     "room_template_peak_over_null": 4.098373
+     "location_error_m": 38.106537,
+     "room_template_peak_over_null": 6.398892
     },
     "published_blind": {
-     "presence": 4.352444,
+     "presence": 4.352412,
      "correlation_by_layout": {
-      "room": 0.028523,
+      "room": 0.028522,
       "L_tunnel": 0.047198,
-      "branching_tunnel": 0.009019
+      "branching_tunnel": 0.009018
      },
      "shape": "L_tunnel",
      "shape_correct": false,
@@ -294,451 +294,17 @@
      "extra_structures": 29
     },
     "published_paired": {
-     "presence": 4.037287,
+     "presence": 3.146069,
      "correlation_by_layout": {
-      "room": -0.004848,
-      "L_tunnel": 0.019284,
-      "branching_tunnel": -0.029865
+      "room": 0.115317,
+      "L_tunnel": 0.132786,
+      "branching_tunnel": 0.122275
      },
      "shape": "L_tunnel",
      "shape_correct": false,
-     "location_error_m": 3.190981,
-     "centroid_error_m": 6.408961,
-     "extra_structures": 24
-    },
-    "published_depth": {
-     "peak_axis_m": 6.288331,
-     "true_m": 12.0,
-     "best_error_after_allowance_m": 1.729059,
-     "family_size": 12
-    }
-   },
-   {
-    "seed": 71,
-    "scene": "L_tunnel",
-    "reference": {
-     "presence": -0.2708,
-     "z_by_layout": {
-      "room": -0.2708,
-      "L_tunnel": -0.378771,
-      "branching_tunnel": -0.350948
-     },
-     "shape": "room",
-     "shape_correct": false,
-     "location_error_m": 43.436918,
-     "room_template_peak_over_null": 4.098376
-    },
-    "published_blind": {
-     "presence": 4.352445,
-     "correlation_by_layout": {
-      "room": 0.028523,
-      "L_tunnel": 0.047198,
-      "branching_tunnel": 0.009019
-     },
-     "shape": "L_tunnel",
-     "shape_correct": true,
-     "location_error_m": 5.503657,
-     "centroid_error_m": 8.888342,
-     "extra_structures": 25
-    },
-    "published_paired": {
-     "presence": 4.201583,
-     "correlation_by_layout": {
-      "room": 0.00159,
-      "L_tunnel": 0.036632,
-      "branching_tunnel": -0.023658
-     },
-     "shape": "L_tunnel",
-     "shape_correct": true,
-     "location_error_m": 5.585816,
-     "centroid_error_m": 6.787822,
-     "extra_structures": 21
-    },
-    "published_depth": {
-     "peak_axis_m": 8.552131,
-     "true_m": 10.0,
-     "best_error_after_allowance_m": 0.860958,
-     "family_size": 12
-    }
-   },
-   {
-    "seed": 71,
-    "scene": "branching_tunnel",
-    "reference": {
-     "presence": -0.270805,
-     "z_by_layout": {
-      "room": -0.270805,
-      "L_tunnel": -0.378777,
-      "branching_tunnel": -0.350948
-     },
-     "shape": "room",
-     "shape_correct": false,
-     "location_error_m": 43.436918,
-     "room_template_peak_over_null": 4.098374
-    },
-    "published_blind": {
-     "presence": 4.352444,
-     "correlation_by_layout": {
-      "room": 0.028524,
-      "L_tunnel": 0.047198,
-      "branching_tunnel": 0.009019
-     },
-     "shape": "L_tunnel",
-     "shape_correct": false,
-     "location_error_m": 2.963116,
-     "centroid_error_m": 3.201075,
-     "extra_structures": 27
-    },
-    "published_paired": {
-     "presence": 3.562041,
-     "correlation_by_layout": {
-      "room": 0.006973,
-      "L_tunnel": 0.042144,
-      "branching_tunnel": -0.050341
-     },
-     "shape": "L_tunnel",
-     "shape_correct": false,
-     "location_error_m": 1.672795,
-     "centroid_error_m": 9.048814,
-     "extra_structures": 25
-    },
-    "published_depth": {
-     "peak_axis_m": 5.869109,
-     "true_m": 10.0,
-     "best_error_after_allowance_m": 0.480552,
-     "family_size": 12
-    }
-   },
-   {
-    "seed": 171,
-    "scene": "room",
-    "reference": {
-     "presence": 0.921416,
-     "z_by_layout": {
-      "room": 0.503352,
-      "L_tunnel": 0.219608,
-      "branching_tunnel": 0.921416
-     },
-     "shape": "branching_tunnel",
-     "shape_correct": false,
-     "location_error_m": 33.863645,
-     "room_template_peak_over_null": 4.042456
-    },
-    "published_blind": {
-     "presence": 3.698283,
-     "correlation_by_layout": {
-      "room": 0.030616,
-      "L_tunnel": 0.0426,
-      "branching_tunnel": 0.102853
-     },
-     "shape": "branching_tunnel",
-     "shape_correct": false,
-     "location_error_m": 12.277094,
-     "centroid_error_m": 13.871313,
-     "extra_structures": 23
-    },
-    "published_paired": {
-     "presence": 4.639519,
-     "correlation_by_layout": {
-      "room": 0.029944,
-      "L_tunnel": 0.018747,
-      "branching_tunnel": 0.083669
-     },
-     "shape": "branching_tunnel",
-     "shape_correct": false,
-     "location_error_m": 1.977882,
-     "centroid_error_m": 3.748762,
-     "extra_structures": 29
-    },
-    "published_depth": {
-     "peak_axis_m": 3.102243,
-     "true_m": 12.0,
-     "best_error_after_allowance_m": 0.136015,
-     "family_size": 12
-    }
-   },
-   {
-    "seed": 171,
-    "scene": "L_tunnel",
-    "reference": {
-     "presence": 0.92142,
-     "z_by_layout": {
-      "room": 0.503356,
-      "L_tunnel": 0.219609,
-      "branching_tunnel": 0.92142
-     },
-     "shape": "branching_tunnel",
-     "shape_correct": false,
-     "location_error_m": 33.863645,
-     "room_template_peak_over_null": 4.042458
-    },
-    "published_blind": {
-     "presence": 3.698283,
-     "correlation_by_layout": {
-      "room": 0.030616,
-      "L_tunnel": 0.0426,
-      "branching_tunnel": 0.102853
-     },
-     "shape": "branching_tunnel",
-     "shape_correct": false,
-     "location_error_m": 10.365284,
-     "centroid_error_m": 16.295659,
-     "extra_structures": 22
-    },
-    "published_paired": {
-     "presence": 4.179746,
-     "correlation_by_layout": {
-      "room": 0.030203,
-      "L_tunnel": -0.051405,
-      "branching_tunnel": 0.074599
-     },
-     "shape": "branching_tunnel",
-     "shape_correct": false,
-     "location_error_m": 6.166306,
-     "centroid_error_m": 11.871489,
-     "extra_structures": 28
-    },
-    "published_depth": {
-     "peak_axis_m": 10.480552,
-     "true_m": 10.0,
-     "best_error_after_allowance_m": 0.480552,
-     "family_size": 12
-    }
-   },
-   {
-    "seed": 171,
-    "scene": "branching_tunnel",
-    "reference": {
-     "presence": 0.921418,
-     "z_by_layout": {
-      "room": 0.503351,
-      "L_tunnel": 0.219607,
-      "branching_tunnel": 0.921418
-     },
-     "shape": "branching_tunnel",
-     "shape_correct": true,
-     "location_error_m": 33.863645,
-     "room_template_peak_over_null": 4.042456
-    },
-    "published_blind": {
-     "presence": 3.698284,
-     "correlation_by_layout": {
-      "room": 0.030616,
-      "L_tunnel": 0.0426,
-      "branching_tunnel": 0.102853
-     },
-     "shape": "branching_tunnel",
-     "shape_correct": true,
-     "location_error_m": 6.007288,
-     "centroid_error_m": 12.627261,
-     "extra_structures": 22
-    },
-    "published_paired": {
-     "presence": 4.210539,
-     "correlation_by_layout": {
-      "room": 0.08919,
-      "L_tunnel": 0.103937,
-      "branching_tunnel": 0.153188
-     },
-     "shape": "branching_tunnel",
-     "shape_correct": true,
-     "location_error_m": 1.657195,
-     "centroid_error_m": 6.056545,
-     "extra_structures": 33
-    },
-    "published_depth": {
-     "peak_axis_m": 8.552131,
-     "true_m": 10.0,
-     "best_error_after_allowance_m": 0.860958,
-     "family_size": 12
-    }
-   },
-   {
-    "seed": 271,
-    "scene": "room",
-    "reference": {
-     "presence": 0.15583,
-     "z_by_layout": {
-      "room": -0.188839,
-      "L_tunnel": 0.15583,
-      "branching_tunnel": -0.696882
-     },
-     "shape": "L_tunnel",
-     "shape_correct": false,
-     "location_error_m": 36.486533,
-     "room_template_peak_over_null": 4.606882
-    },
-    "published_blind": {
-     "presence": 3.429972,
-     "correlation_by_layout": {
-      "room": -0.049907,
-      "L_tunnel": -0.050431,
-      "branching_tunnel": -0.032735
-     },
-     "shape": "branching_tunnel",
-     "shape_correct": false,
-     "location_error_m": 0.981134,
-     "centroid_error_m": 0.981134,
-     "extra_structures": 34
-    },
-    "published_paired": {
-     "presence": 3.66843,
-     "correlation_by_layout": {
-      "room": -0.038701,
-      "L_tunnel": -0.066296,
-      "branching_tunnel": -0.047452
-     },
-     "shape": "room",
-     "shape_correct": true,
-     "location_error_m": 5.216835,
-     "centroid_error_m": 6.051181,
-     "extra_structures": 27
-    },
-    "published_depth": {
-     "peak_axis_m": 11.486685,
-     "true_m": 12.0,
-     "best_error_after_allowance_m": 0.513315,
-     "family_size": 12
-    }
-   },
-   {
-    "seed": 271,
-    "scene": "L_tunnel",
-    "reference": {
-     "presence": 0.155829,
-     "z_by_layout": {
-      "room": -0.188846,
-      "L_tunnel": 0.155829,
-      "branching_tunnel": -0.696888
-     },
-     "shape": "L_tunnel",
-     "shape_correct": true,
-     "location_error_m": 36.486533,
-     "room_template_peak_over_null": 4.606885
-    },
-    "published_blind": {
-     "presence": 3.429973,
-     "correlation_by_layout": {
-      "room": -0.049907,
-      "L_tunnel": -0.050431,
-      "branching_tunnel": -0.032735
-     },
-     "shape": "branching_tunnel",
-     "shape_correct": false,
-     "location_error_m": 0.981134,
-     "centroid_error_m": 3.61882,
-     "extra_structures": 34
-    },
-    "published_paired": {
-     "presence": 3.638526,
-     "correlation_by_layout": {
-      "room": 0.059568,
-      "L_tunnel": 0.07939,
-      "branching_tunnel": 0.064587
-     },
-     "shape": "L_tunnel",
-     "shape_correct": true,
-     "location_error_m": 1.313958,
-     "centroid_error_m": 3.57186,
-     "extra_structures": 33
-    },
-    "published_depth": {
-     "peak_axis_m": 11.905907,
-     "true_m": 10.0,
-     "best_error_after_allowance_m": 1.905907,
-     "family_size": 12
-    }
-   },
-   {
-    "seed": 271,
-    "scene": "branching_tunnel",
-    "reference": {
-     "presence": 0.155836,
-     "z_by_layout": {
-      "room": -0.188836,
-      "L_tunnel": 0.155836,
-      "branching_tunnel": -0.696879
-     },
-     "shape": "L_tunnel",
-     "shape_correct": false,
-     "location_error_m": 36.486533,
-     "room_template_peak_over_null": 4.606884
-    },
-    "published_blind": {
-     "presence": 3.429973,
-     "correlation_by_layout": {
-      "room": -0.049907,
-      "L_tunnel": -0.050431,
-      "branching_tunnel": -0.032735
-     },
-     "shape": "branching_tunnel",
-     "shape_correct": true,
-     "location_error_m": 0.981134,
-     "centroid_error_m": 3.378909,
-     "extra_structures": 33
-    },
-    "published_paired": {
-     "presence": 4.843117,
-     "correlation_by_layout": {
-      "room": -0.004905,
-      "L_tunnel": -0.011889,
-      "branching_tunnel": -0.02618
-     },
-     "shape": "room",
-     "shape_correct": false,
-     "location_error_m": 0.536599,
-     "centroid_error_m": 5.765223,
-     "extra_structures": 30
-    },
-    "published_depth": {
-     "peak_axis_m": 0.083844,
-     "true_m": 10.0,
-     "best_error_after_allowance_m": 3.373185,
-     "family_size": 12
-    }
-   }
-  ],
-  "diagnostic_0.3_rad": [
-   {
-    "seed": 71,
-    "scene": "room",
-    "reference": {
-     "presence": -0.064523,
-     "z_by_layout": {
-      "room": -0.064523,
-      "L_tunnel": -0.245626,
-      "branching_tunnel": -0.189434
-     },
-     "shape": "room",
-     "shape_correct": true,
-     "location_error_m": 43.436918,
-     "room_template_peak_over_null": 4.132961
-    },
-    "published_blind": {
-     "presence": 4.358017,
-     "correlation_by_layout": {
-      "room": 0.030774,
-      "L_tunnel": 0.054516,
-      "branching_tunnel": 0.010458
-     },
-     "shape": "L_tunnel",
-     "shape_correct": false,
-     "location_error_m": 3.522516,
-     "centroid_error_m": 6.610972,
-     "extra_structures": 29
-    },
-    "published_paired": {
-     "presence": 5.51881,
-     "correlation_by_layout": {
-      "room": 0.450082,
-      "L_tunnel": 0.467259,
-      "branching_tunnel": 0.483931
-     },
-     "shape": "branching_tunnel",
-     "shape_correct": false,
-     "location_error_m": 3.360494,
-     "centroid_error_m": 4.704903,
-     "extra_structures": 2
+     "location_error_m": 9.406022,
+     "centroid_error_m": 13.178441,
+     "extra_structures": 19
     },
     "published_depth": {
      "peak_axis_m": 4.611443,
@@ -751,47 +317,47 @@
     "seed": 71,
     "scene": "L_tunnel",
     "reference": {
-     "presence": -0.064008,
+     "presence": -0.349704,
      "z_by_layout": {
-      "room": -0.064008,
-      "L_tunnel": -0.108937,
-      "branching_tunnel": -0.144261
+      "room": -0.349704,
+      "L_tunnel": -0.354048,
+      "branching_tunnel": -1.000248
      },
      "shape": "room",
      "shape_correct": false,
-     "location_error_m": 43.436918,
-     "room_template_peak_over_null": 4.118169
+     "location_error_m": 38.106537,
+     "room_template_peak_over_null": 6.398892
     },
     "published_blind": {
-     "presence": 4.362523,
+     "presence": 4.352412,
      "correlation_by_layout": {
-      "room": 0.030912,
-      "L_tunnel": 0.055098,
-      "branching_tunnel": 0.011091
+      "room": 0.028522,
+      "L_tunnel": 0.047198,
+      "branching_tunnel": 0.009018
      },
      "shape": "L_tunnel",
      "shape_correct": true,
-     "location_error_m": 5.012552,
-     "centroid_error_m": 8.440391,
-     "extra_structures": 24
+     "location_error_m": 5.503657,
+     "centroid_error_m": 8.888342,
+     "extra_structures": 25
     },
     "published_paired": {
-     "presence": 5.022776,
+     "presence": 4.543751,
      "correlation_by_layout": {
-      "room": 0.347483,
-      "L_tunnel": 0.443636,
-      "branching_tunnel": 0.377479
+      "room": 0.091393,
+      "L_tunnel": 0.115229,
+      "branching_tunnel": 0.082196
      },
      "shape": "L_tunnel",
      "shape_correct": true,
-     "location_error_m": 2.795951,
-     "centroid_error_m": 6.121548,
-     "extra_structures": 0
+     "location_error_m": 1.313523,
+     "centroid_error_m": 10.855225,
+     "extra_structures": 17
     },
     "published_depth": {
-     "peak_axis_m": 4.527599,
+     "peak_axis_m": 7.21062,
      "true_m": 10.0,
-     "best_error_after_allowance_m": 1.151308,
+     "best_error_after_allowance_m": 0.190203,
      "family_size": 12
     }
    },
@@ -799,47 +365,47 @@
     "seed": 71,
     "scene": "branching_tunnel",
     "reference": {
-     "presence": 0.009859,
+     "presence": -0.349704,
      "z_by_layout": {
-      "room": -0.002777,
-      "L_tunnel": -0.164032,
-      "branching_tunnel": 0.009859
+      "room": -0.349704,
+      "L_tunnel": -0.354048,
+      "branching_tunnel": -1.000248
      },
-     "shape": "branching_tunnel",
-     "shape_correct": true,
-     "location_error_m": 41.533147,
-     "room_template_peak_over_null": 4.133947
+     "shape": "room",
+     "shape_correct": false,
+     "location_error_m": 38.106537,
+     "room_template_peak_over_null": 6.398892
     },
     "published_blind": {
-     "presence": 4.33932,
+     "presence": 4.352412,
      "correlation_by_layout": {
-      "room": 0.031492,
-      "L_tunnel": 0.056021,
-      "branching_tunnel": 0.01355
+      "room": 0.028522,
+      "L_tunnel": 0.047198,
+      "branching_tunnel": 0.009018
      },
      "shape": "L_tunnel",
      "shape_correct": false,
-     "location_error_m": 2.813671,
-     "centroid_error_m": 3.225968,
+     "location_error_m": 2.963116,
+     "centroid_error_m": 3.201075,
      "extra_structures": 27
     },
     "published_paired": {
-     "presence": 5.410019,
+     "presence": 3.400937,
      "correlation_by_layout": {
-      "room": 0.392827,
-      "L_tunnel": 0.441916,
-      "branching_tunnel": 0.494329
+      "room": 0.073429,
+      "L_tunnel": 0.11274,
+      "branching_tunnel": 0.091838
      },
-     "shape": "branching_tunnel",
-     "shape_correct": true,
-     "location_error_m": 1.571407,
-     "centroid_error_m": 5.865841,
-     "extra_structures": 1
+     "shape": "L_tunnel",
+     "shape_correct": false,
+     "location_error_m": 1.507627,
+     "centroid_error_m": 12.989924,
+     "extra_structures": 16
     },
     "published_depth": {
-     "peak_axis_m": 4.443754,
+     "peak_axis_m": 6.372176,
      "true_m": 10.0,
-     "best_error_after_allowance_m": 1.19323,
+     "best_error_after_allowance_m": 0.229019,
      "family_size": 12
     }
    },
@@ -847,42 +413,476 @@
     "seed": 171,
     "scene": "room",
     "reference": {
-     "presence": 1.128511,
+     "presence": 0.786974,
      "z_by_layout": {
-      "room": 0.761776,
-      "L_tunnel": 0.406742,
-      "branching_tunnel": 1.128511
+      "room": -0.033067,
+      "L_tunnel": 0.786974,
+      "branching_tunnel": 0.361387
      },
-     "shape": "branching_tunnel",
+     "shape": "L_tunnel",
      "shape_correct": false,
-     "location_error_m": 33.863645,
-     "room_template_peak_over_null": 4.092479
+     "location_error_m": 49.732982,
+     "room_template_peak_over_null": 4.369842
     },
     "published_blind": {
-     "presence": 3.703693,
+     "presence": 3.698284,
      "correlation_by_layout": {
-      "room": 0.034659,
-      "L_tunnel": 0.04614,
-      "branching_tunnel": 0.102432
+      "room": 0.030615,
+      "L_tunnel": 0.042599,
+      "branching_tunnel": 0.102852
      },
      "shape": "branching_tunnel",
      "shape_correct": false,
-     "location_error_m": 12.042786,
-     "centroid_error_m": 13.611003,
+     "location_error_m": 12.277094,
+     "centroid_error_m": 13.871313,
      "extra_structures": 23
     },
     "published_paired": {
-     "presence": 6.473076,
+     "presence": 2.986706,
      "correlation_by_layout": {
-      "room": 0.424862,
-      "L_tunnel": 0.468922,
-      "branching_tunnel": 0.496781
+      "room": 0.149406,
+      "L_tunnel": 0.128271,
+      "branching_tunnel": 0.209938
      },
      "shape": "branching_tunnel",
      "shape_correct": false,
-     "location_error_m": 0.528653,
-     "centroid_error_m": 4.106336,
-     "extra_structures": 1
+     "location_error_m": 3.025206,
+     "centroid_error_m": 5.796757,
+     "extra_structures": 15
+    },
+    "published_depth": {
+     "peak_axis_m": 3.940688,
+     "true_m": 12.0,
+     "best_error_after_allowance_m": 0.555237,
+     "family_size": 12
+    }
+   },
+   {
+    "seed": 171,
+    "scene": "L_tunnel",
+    "reference": {
+     "presence": 0.786974,
+     "z_by_layout": {
+      "room": -0.033067,
+      "L_tunnel": 0.786974,
+      "branching_tunnel": 0.361387
+     },
+     "shape": "L_tunnel",
+     "shape_correct": true,
+     "location_error_m": 49.732982,
+     "room_template_peak_over_null": 4.369842
+    },
+    "published_blind": {
+     "presence": 3.698284,
+     "correlation_by_layout": {
+      "room": 0.030615,
+      "L_tunnel": 0.042599,
+      "branching_tunnel": 0.102852
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": false,
+     "location_error_m": 10.365284,
+     "centroid_error_m": 16.295659,
+     "extra_structures": 22
+    },
+    "published_paired": {
+     "presence": 3.104147,
+     "correlation_by_layout": {
+      "room": 0.139989,
+      "L_tunnel": 0.147081,
+      "branching_tunnel": 0.197529
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": false,
+     "location_error_m": 7.015414,
+     "centroid_error_m": 7.373839,
+     "extra_structures": 15
+    },
+    "published_depth": {
+     "peak_axis_m": 0.083844,
+     "true_m": 10.0,
+     "best_error_after_allowance_m": 3.373185,
+     "family_size": 12
+    }
+   },
+   {
+    "seed": 171,
+    "scene": "branching_tunnel",
+    "reference": {
+     "presence": 0.786974,
+     "z_by_layout": {
+      "room": -0.033067,
+      "L_tunnel": 0.786974,
+      "branching_tunnel": 0.361387
+     },
+     "shape": "L_tunnel",
+     "shape_correct": false,
+     "location_error_m": 49.732982,
+     "room_template_peak_over_null": 4.369842
+    },
+    "published_blind": {
+     "presence": 3.698284,
+     "correlation_by_layout": {
+      "room": 0.030615,
+      "L_tunnel": 0.042599,
+      "branching_tunnel": 0.102852
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": true,
+     "location_error_m": 6.007288,
+     "centroid_error_m": 12.627261,
+     "extra_structures": 22
+    },
+    "published_paired": {
+     "presence": 2.859577,
+     "correlation_by_layout": {
+      "room": 0.126836,
+      "L_tunnel": 0.118786,
+      "branching_tunnel": 0.184595
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": true,
+     "location_error_m": 3.848748,
+     "centroid_error_m": 14.691955,
+     "extra_structures": 15
+    },
+    "published_depth": {
+     "peak_axis_m": 11.57053,
+     "true_m": 10.0,
+     "best_error_after_allowance_m": 1.57053,
+     "family_size": 12
+    }
+   },
+   {
+    "seed": 271,
+    "scene": "room",
+    "reference": {
+     "presence": -0.361234,
+     "z_by_layout": {
+      "room": -0.416329,
+      "L_tunnel": -0.361234,
+      "branching_tunnel": -0.404638
+     },
+     "shape": "L_tunnel",
+     "shape_correct": false,
+     "location_error_m": 26.672581,
+     "room_template_peak_over_null": 4.827164
+    },
+    "published_blind": {
+     "presence": 3.430086,
+     "correlation_by_layout": {
+      "room": -0.049909,
+      "L_tunnel": -0.050452,
+      "branching_tunnel": -0.03276
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": false,
+     "location_error_m": 0.981134,
+     "centroid_error_m": 0.981134,
+     "extra_structures": 34
+    },
+    "published_paired": {
+     "presence": 3.001064,
+     "correlation_by_layout": {
+      "room": 0.083371,
+      "L_tunnel": 0.087549,
+      "branching_tunnel": 0.144923
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": false,
+     "location_error_m": 9.104913,
+     "centroid_error_m": 13.143348,
+     "extra_structures": 19
+    },
+    "published_depth": {
+     "peak_axis_m": 2.683021,
+     "true_m": 12.0,
+     "best_error_after_allowance_m": 0.073596,
+     "family_size": 12
+    }
+   },
+   {
+    "seed": 271,
+    "scene": "L_tunnel",
+    "reference": {
+     "presence": -0.361234,
+     "z_by_layout": {
+      "room": -0.416329,
+      "L_tunnel": -0.361234,
+      "branching_tunnel": -0.404638
+     },
+     "shape": "L_tunnel",
+     "shape_correct": true,
+     "location_error_m": 26.672581,
+     "room_template_peak_over_null": 4.827164
+    },
+    "published_blind": {
+     "presence": 3.430086,
+     "correlation_by_layout": {
+      "room": -0.049909,
+      "L_tunnel": -0.050452,
+      "branching_tunnel": -0.03276
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": false,
+     "location_error_m": 0.981134,
+     "centroid_error_m": 3.61882,
+     "extra_structures": 34
+    },
+    "published_paired": {
+     "presence": 3.172574,
+     "correlation_by_layout": {
+      "room": 0.053612,
+      "L_tunnel": 0.054828,
+      "branching_tunnel": 0.077472
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": false,
+     "location_error_m": 4.205442,
+     "centroid_error_m": 14.390092,
+     "extra_structures": 16
+    },
+    "published_depth": {
+     "peak_axis_m": 3.60531,
+     "true_m": 10.0,
+     "best_error_after_allowance_m": 1.612452,
+     "family_size": 12
+    }
+   },
+   {
+    "seed": 271,
+    "scene": "branching_tunnel",
+    "reference": {
+     "presence": -0.361234,
+     "z_by_layout": {
+      "room": -0.416329,
+      "L_tunnel": -0.361234,
+      "branching_tunnel": -0.404638
+     },
+     "shape": "L_tunnel",
+     "shape_correct": false,
+     "location_error_m": 26.672581,
+     "room_template_peak_over_null": 4.827164
+    },
+    "published_blind": {
+     "presence": 3.430086,
+     "correlation_by_layout": {
+      "room": -0.049909,
+      "L_tunnel": -0.050452,
+      "branching_tunnel": -0.03276
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": true,
+     "location_error_m": 0.981134,
+     "centroid_error_m": 3.378909,
+     "extra_structures": 33
+    },
+    "published_paired": {
+     "presence": 3.31148,
+     "correlation_by_layout": {
+      "room": 0.024001,
+      "L_tunnel": 0.018199,
+      "branching_tunnel": 0.054665
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": true,
+     "location_error_m": 5.538448,
+     "centroid_error_m": 19.458208,
+     "extra_structures": 18
+    },
+    "published_depth": {
+     "peak_axis_m": 3.60531,
+     "true_m": 10.0,
+     "best_error_after_allowance_m": 1.612452,
+     "family_size": 12
+    }
+   }
+  ],
+  "diagnostic_0.3_rad": [
+   {
+    "seed": 71,
+    "scene": "room",
+    "reference": {
+     "presence": -0.111229,
+     "z_by_layout": {
+      "room": -0.111229,
+      "L_tunnel": -0.210532,
+      "branching_tunnel": -0.818747
+     },
+     "shape": "room",
+     "shape_correct": true,
+     "location_error_m": 38.106537,
+     "room_template_peak_over_null": 6.399735
+    },
+    "published_blind": {
+     "presence": 4.362818,
+     "correlation_by_layout": {
+      "room": 0.033307,
+      "L_tunnel": 0.047951,
+      "branching_tunnel": 0.013555
+     },
+     "shape": "L_tunnel",
+     "shape_correct": false,
+     "location_error_m": 3.443479,
+     "centroid_error_m": 6.371627,
+     "extra_structures": 30
+    },
+    "published_paired": {
+     "presence": 5.79765,
+     "correlation_by_layout": {
+      "room": 0.451243,
+      "L_tunnel": 0.474545,
+      "branching_tunnel": 0.478515
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": false,
+     "location_error_m": 3.547955,
+     "centroid_error_m": 4.716773,
+     "extra_structures": 3
+    },
+    "published_depth": {
+     "peak_axis_m": 1.341511,
+     "true_m": 12.0,
+     "best_error_after_allowance_m": 0.744352,
+     "family_size": 12
+    }
+   },
+   {
+    "seed": 71,
+    "scene": "L_tunnel",
+    "reference": {
+     "presence": -0.002568,
+     "z_by_layout": {
+      "room": -0.077922,
+      "L_tunnel": -0.002568,
+      "branching_tunnel": -0.729856
+     },
+     "shape": "L_tunnel",
+     "shape_correct": true,
+     "location_error_m": 41.3581,
+     "room_template_peak_over_null": 6.405264
+    },
+    "published_blind": {
+     "presence": 4.362669,
+     "correlation_by_layout": {
+      "room": 0.032841,
+      "L_tunnel": 0.050491,
+      "branching_tunnel": 0.013821
+     },
+     "shape": "L_tunnel",
+     "shape_correct": true,
+     "location_error_m": 5.299636,
+     "centroid_error_m": 8.905685,
+     "extra_structures": 26
+    },
+    "published_paired": {
+     "presence": 4.553704,
+     "correlation_by_layout": {
+      "room": 0.324614,
+      "L_tunnel": 0.416489,
+      "branching_tunnel": 0.333471
+     },
+     "shape": "L_tunnel",
+     "shape_correct": true,
+     "location_error_m": 6.377434,
+     "centroid_error_m": 7.317433,
+     "extra_structures": 0
+    },
+    "published_depth": {
+     "peak_axis_m": 7.21062,
+     "true_m": 10.0,
+     "best_error_after_allowance_m": 0.190203,
+     "family_size": 12
+    }
+   },
+   {
+    "seed": 71,
+    "scene": "branching_tunnel",
+    "reference": {
+     "presence": -0.083421,
+     "z_by_layout": {
+      "room": -0.083421,
+      "L_tunnel": -0.140044,
+      "branching_tunnel": -0.626433
+     },
+     "shape": "room",
+     "shape_correct": false,
+     "location_error_m": 38.106537,
+     "room_template_peak_over_null": 6.399077
+    },
+    "published_blind": {
+     "presence": 4.389321,
+     "correlation_by_layout": {
+      "room": 0.02669,
+      "L_tunnel": 0.040837,
+      "branching_tunnel": 0.010391
+     },
+     "shape": "L_tunnel",
+     "shape_correct": false,
+     "location_error_m": 3.151532,
+     "centroid_error_m": 3.325692,
+     "extra_structures": 26
+    },
+    "published_paired": {
+     "presence": 4.937594,
+     "correlation_by_layout": {
+      "room": 0.362623,
+      "L_tunnel": 0.398863,
+      "branching_tunnel": 0.447216
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": true,
+     "location_error_m": 3.424226,
+     "centroid_error_m": 6.078901,
+     "extra_structures": 2
+    },
+    "published_depth": {
+     "peak_axis_m": 7.21062,
+     "true_m": 10.0,
+     "best_error_after_allowance_m": 0.190203,
+     "family_size": 12
+    }
+   },
+   {
+    "seed": 171,
+    "scene": "room",
+    "reference": {
+     "presence": 0.92852,
+     "z_by_layout": {
+      "room": 0.194261,
+      "L_tunnel": 0.92852,
+      "branching_tunnel": 0.528845
+     },
+     "shape": "L_tunnel",
+     "shape_correct": false,
+     "location_error_m": 49.732982,
+     "room_template_peak_over_null": 4.378051
+    },
+    "published_blind": {
+     "presence": 3.709191,
+     "correlation_by_layout": {
+      "room": 0.039619,
+      "L_tunnel": 0.050203,
+      "branching_tunnel": 0.107334
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": false,
+     "location_error_m": 12.346659,
+     "centroid_error_m": 13.946614,
+     "extra_structures": 23
+    },
+    "published_paired": {
+     "presence": 5.452073,
+     "correlation_by_layout": {
+      "room": 0.441137,
+      "L_tunnel": 0.436249,
+      "branching_tunnel": 0.496414
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": false,
+     "location_error_m": 0.909274,
+     "centroid_error_m": 3.72216,
+     "extra_structures": 3
     },
     "published_depth": {
      "peak_axis_m": 0.251533,
@@ -895,47 +895,47 @@
     "seed": 171,
     "scene": "L_tunnel",
     "reference": {
-     "presence": 1.152242,
+     "presence": 1.121314,
      "z_by_layout": {
-      "room": 0.743545,
-      "L_tunnel": 0.531299,
-      "branching_tunnel": 1.152242
-     },
-     "shape": "branching_tunnel",
-     "shape_correct": false,
-     "location_error_m": 33.863645,
-     "room_template_peak_over_null": 4.172719
-    },
-    "published_blind": {
-     "presence": 3.711332,
-     "correlation_by_layout": {
-      "room": 0.035743,
-      "L_tunnel": 0.046892,
-      "branching_tunnel": 0.103894
-     },
-     "shape": "branching_tunnel",
-     "shape_correct": false,
-     "location_error_m": 10.093473,
-     "centroid_error_m": 16.021934,
-     "extra_structures": 22
-    },
-    "published_paired": {
-     "presence": 4.908738,
-     "correlation_by_layout": {
-      "room": 0.315621,
-      "L_tunnel": 0.431457,
-      "branching_tunnel": 0.39151
+      "room": 0.198393,
+      "L_tunnel": 1.121314,
+      "branching_tunnel": 0.596452
      },
      "shape": "L_tunnel",
      "shape_correct": true,
-     "location_error_m": 1.311437,
-     "centroid_error_m": 5.266661,
+     "location_error_m": 49.732982,
+     "room_template_peak_over_null": 4.364747
+    },
+    "published_blind": {
+     "presence": 3.731179,
+     "correlation_by_layout": {
+      "room": 0.03871,
+      "L_tunnel": 0.043323,
+      "branching_tunnel": 0.102907
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": false,
+     "location_error_m": 10.442918,
+     "centroid_error_m": 16.373615,
+     "extra_structures": 22
+    },
+    "published_paired": {
+     "presence": 3.925578,
+     "correlation_by_layout": {
+      "room": 0.313116,
+      "L_tunnel": 0.420641,
+      "branching_tunnel": 0.348303
+     },
+     "shape": "L_tunnel",
+     "shape_correct": true,
+     "location_error_m": 5.273836,
+     "centroid_error_m": 4.656528,
      "extra_structures": 1
     },
     "published_depth": {
-     "peak_axis_m": 0.083844,
+     "peak_axis_m": 0.251533,
      "true_m": 10.0,
-     "best_error_after_allowance_m": 3.373185,
+     "best_error_after_allowance_m": 3.28934,
      "family_size": 12
     }
    },
@@ -943,47 +943,47 @@
     "seed": 171,
     "scene": "branching_tunnel",
     "reference": {
-     "presence": 1.343823,
+     "presence": 1.007428,
      "z_by_layout": {
-      "room": 0.824021,
-      "L_tunnel": 0.497436,
-      "branching_tunnel": 1.343823
+      "room": 0.224583,
+      "L_tunnel": 1.007428,
+      "branching_tunnel": 0.761161
      },
-     "shape": "branching_tunnel",
-     "shape_correct": true,
-     "location_error_m": 33.863645,
-     "room_template_peak_over_null": 4.162303
+     "shape": "L_tunnel",
+     "shape_correct": false,
+     "location_error_m": 49.732982,
+     "room_template_peak_over_null": 4.384746
     },
     "published_blind": {
-     "presence": 3.701033,
+     "presence": 3.707132,
      "correlation_by_layout": {
-      "room": 0.028632,
-      "L_tunnel": 0.042196,
-      "branching_tunnel": 0.096036
+      "room": 0.036248,
+      "L_tunnel": 0.046846,
+      "branching_tunnel": 0.10285
      },
      "shape": "branching_tunnel",
      "shape_correct": true,
-     "location_error_m": 5.52755,
-     "centroid_error_m": 12.10553,
-     "extra_structures": 22
+     "location_error_m": 5.580718,
+     "centroid_error_m": 12.390303,
+     "extra_structures": 21
     },
     "published_paired": {
-     "presence": 6.011839,
+     "presence": 4.033999,
      "correlation_by_layout": {
-      "room": 0.384989,
-      "L_tunnel": 0.445883,
-      "branching_tunnel": 0.520137
+      "room": 0.307303,
+      "L_tunnel": 0.311538,
+      "branching_tunnel": 0.424973
      },
      "shape": "branching_tunnel",
      "shape_correct": true,
-     "location_error_m": 2.709623,
-     "centroid_error_m": 3.875306,
+     "location_error_m": 6.258432,
+     "centroid_error_m": 7.224701,
      "extra_structures": 1
     },
     "published_depth": {
-     "peak_axis_m": 2.515333,
+     "peak_axis_m": 10.564397,
      "true_m": 10.0,
-     "best_error_after_allowance_m": 2.157441,
+     "best_error_after_allowance_m": 0.564397,
      "family_size": 12
     }
    },
@@ -991,47 +991,47 @@
     "seed": 271,
     "scene": "room",
     "reference": {
-     "presence": 0.296099,
+     "presence": -0.187643,
      "z_by_layout": {
-      "room": 0.02907,
-      "L_tunnel": 0.296099,
-      "branching_tunnel": -0.503816
+      "room": -0.187643,
+      "L_tunnel": -0.227867,
+      "branching_tunnel": -0.243859
      },
-     "shape": "L_tunnel",
-     "shape_correct": false,
-     "location_error_m": 36.486533,
-     "room_template_peak_over_null": 4.618935
+     "shape": "room",
+     "shape_correct": true,
+     "location_error_m": 37.831368,
+     "room_template_peak_over_null": 4.827144
     },
     "published_blind": {
-     "presence": 3.435748,
+     "presence": 3.442011,
      "correlation_by_layout": {
-      "room": -0.046834,
-      "L_tunnel": -0.048417,
-      "branching_tunnel": -0.031262
+      "room": -0.040585,
+      "L_tunnel": -0.046018,
+      "branching_tunnel": -0.026042
      },
      "shape": "branching_tunnel",
      "shape_correct": false,
-     "location_error_m": 0.926364,
-     "centroid_error_m": 0.926364,
-     "extra_structures": 34
+     "location_error_m": 0.393464,
+     "centroid_error_m": 0.393464,
+     "extra_structures": 33
     },
     "published_paired": {
-     "presence": 5.262764,
+     "presence": 4.769143,
      "correlation_by_layout": {
-      "room": 0.41783,
-      "L_tunnel": 0.438981,
-      "branching_tunnel": 0.471651
+      "room": 0.40089,
+      "L_tunnel": 0.435785,
+      "branching_tunnel": 0.447087
      },
      "shape": "branching_tunnel",
      "shape_correct": false,
-     "location_error_m": 3.799054,
-     "centroid_error_m": 4.79408,
-     "extra_structures": 4
+     "location_error_m": 4.307296,
+     "centroid_error_m": 5.987049,
+     "extra_structures": 2
     },
     "published_depth": {
-     "peak_axis_m": 0.503067,
+     "peak_axis_m": 0.7546,
      "true_m": 12.0,
-     "best_error_after_allowance_m": 1.163574,
+     "best_error_after_allowance_m": 1.037807,
      "family_size": 12
     }
    },
@@ -1039,47 +1039,47 @@
     "seed": 271,
     "scene": "L_tunnel",
     "reference": {
-     "presence": 0.428053,
+     "presence": -0.095421,
      "z_by_layout": {
-      "room": 0.02648,
-      "L_tunnel": 0.428053,
-      "branching_tunnel": -0.472767
+      "room": -0.215436,
+      "L_tunnel": -0.095421,
+      "branching_tunnel": -0.21162
      },
      "shape": "L_tunnel",
      "shape_correct": true,
-     "location_error_m": 36.486533,
-     "room_template_peak_over_null": 4.628046
+     "location_error_m": 26.739107,
+     "room_template_peak_over_null": 4.826101
     },
     "published_blind": {
-     "presence": 3.467553,
+     "presence": 3.475735,
      "correlation_by_layout": {
-      "room": -0.047989,
-      "L_tunnel": -0.054019,
-      "branching_tunnel": -0.033132
+      "room": -0.04307,
+      "L_tunnel": -0.044818,
+      "branching_tunnel": -0.028698
      },
      "shape": "branching_tunnel",
      "shape_correct": false,
-     "location_error_m": 0.869133,
-     "centroid_error_m": 3.087939,
-     "extra_structures": 32
+     "location_error_m": 0.788215,
+     "centroid_error_m": 2.856763,
+     "extra_structures": 33
     },
     "published_paired": {
-     "presence": 4.660148,
+     "presence": 3.276,
      "correlation_by_layout": {
-      "room": 0.307122,
-      "L_tunnel": 0.417843,
-      "branching_tunnel": 0.368331
+      "room": 0.26103,
+      "L_tunnel": 0.3541,
+      "branching_tunnel": 0.288346
      },
      "shape": "L_tunnel",
      "shape_correct": true,
-     "location_error_m": 4.556805,
-     "centroid_error_m": 7.402592,
-     "extra_structures": 4
+     "location_error_m": 5.060731,
+     "centroid_error_m": 6.485862,
+     "extra_structures": 1
     },
     "published_depth": {
-     "peak_axis_m": 8.803664,
+     "peak_axis_m": 8.132909,
      "true_m": 10.0,
-     "best_error_after_allowance_m": 0.986725,
+     "best_error_after_allowance_m": 0.651347,
      "family_size": 12
     }
    },
@@ -1087,47 +1087,47 @@
     "seed": 271,
     "scene": "branching_tunnel",
     "reference": {
-     "presence": 0.388364,
+     "presence": -0.072011,
      "z_by_layout": {
-      "room": 0.100514,
-      "L_tunnel": 0.388364,
-      "branching_tunnel": -0.295233
-     },
-     "shape": "L_tunnel",
-     "shape_correct": false,
-     "location_error_m": 36.486533,
-     "room_template_peak_over_null": 4.634159
-    },
-    "published_blind": {
-     "presence": 3.466637,
-     "correlation_by_layout": {
-      "room": -0.04645,
-      "L_tunnel": -0.0459,
-      "branching_tunnel": -0.033116
+      "room": -0.18665,
+      "L_tunnel": -0.183889,
+      "branching_tunnel": -0.072011
      },
      "shape": "branching_tunnel",
      "shape_correct": true,
-     "location_error_m": 1.213102,
-     "centroid_error_m": 2.958248,
+     "location_error_m": 41.398669,
+     "room_template_peak_over_null": 4.825764
+    },
+    "published_blind": {
+     "presence": 3.390842,
+     "correlation_by_layout": {
+      "room": -0.039177,
+      "L_tunnel": -0.044042,
+      "branching_tunnel": -0.019149
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": true,
+     "location_error_m": 0.510421,
+     "centroid_error_m": 3.37338,
      "extra_structures": 33
     },
     "published_paired": {
-     "presence": 4.340712,
+     "presence": 3.742179,
      "correlation_by_layout": {
-      "room": 0.354109,
-      "L_tunnel": 0.403929,
-      "branching_tunnel": 0.46816
+      "room": 0.298685,
+      "L_tunnel": 0.320189,
+      "branching_tunnel": 0.387208
      },
      "shape": "branching_tunnel",
      "shape_correct": true,
-     "location_error_m": 1.804146,
-     "centroid_error_m": 5.692237,
-     "extra_structures": 2
+     "location_error_m": 4.545642,
+     "centroid_error_m": 8.574546,
+     "extra_structures": 0
     },
     "published_depth": {
-     "peak_axis_m": 8.71982,
+     "peak_axis_m": 0.838444,
      "true_m": 10.0,
-     "best_error_after_allowance_m": 0.944803,
+     "best_error_after_allowance_m": 2.995885,
      "family_size": 12
     }
    }
@@ -1137,47 +1137,47 @@
     "seed": 71,
     "scene": "room",
     "reference": {
-     "presence": 1.122656,
+     "presence": 1.270298,
      "z_by_layout": {
-      "room": 1.122656,
-      "L_tunnel": 0.537291,
-      "branching_tunnel": 0.767015
+      "room": 1.270298,
+      "L_tunnel": 0.62589,
+      "branching_tunnel": 0.24298
      },
      "shape": "room",
      "shape_correct": true,
-     "location_error_m": 36.011939,
-     "room_template_peak_over_null": 4.391774
+     "location_error_m": 38.106537,
+     "room_template_peak_over_null": 6.398996
     },
     "published_blind": {
-     "presence": 4.359471,
+     "presence": 4.391489,
      "correlation_by_layout": {
-      "room": 0.043339,
-      "L_tunnel": 0.091361,
-      "branching_tunnel": 0.012807
+      "room": 0.034533,
+      "L_tunnel": 0.046994,
+      "branching_tunnel": 0.011851
      },
      "shape": "L_tunnel",
      "shape_correct": false,
-     "location_error_m": 2.674394,
-     "centroid_error_m": 6.022969,
-     "extra_structures": 25
+     "location_error_m": 4.964592,
+     "centroid_error_m": 7.507294,
+     "extra_structures": 28
     },
     "published_paired": {
-     "presence": 4.78636,
+     "presence": 5.173493,
      "correlation_by_layout": {
-      "room": 0.406073,
-      "L_tunnel": 0.42845,
-      "branching_tunnel": 0.451889
+      "room": 0.420052,
+      "L_tunnel": 0.445753,
+      "branching_tunnel": 0.453861
      },
      "shape": "branching_tunnel",
      "shape_correct": false,
-     "location_error_m": 4.102149,
-     "centroid_error_m": 4.920953,
+     "location_error_m": 3.325799,
+     "centroid_error_m": 4.790332,
      "extra_structures": 2
     },
     "published_depth": {
-     "peak_axis_m": 4.611443,
+     "peak_axis_m": 2.431488,
      "true_m": 12.0,
-     "best_error_after_allowance_m": 0.890615,
+     "best_error_after_allowance_m": 0.199363,
      "family_size": 12
     }
    },
@@ -1185,668 +1185,42 @@
     "seed": 71,
     "scene": "L_tunnel",
     "reference": {
-     "presence": 1.444018,
+     "presence": 1.991313,
      "z_by_layout": {
-      "room": 1.128987,
-      "L_tunnel": 1.444018,
-      "branching_tunnel": 1.072251
+      "room": 1.480286,
+      "L_tunnel": 1.991313,
+      "branching_tunnel": 0.817312
      },
      "shape": "L_tunnel",
      "shape_correct": true,
-     "location_error_m": 43.014274,
-     "room_template_peak_over_null": 4.685066
+     "location_error_m": 41.3581,
+     "room_template_peak_over_null": 6.434382
     },
     "published_blind": {
-     "presence": 4.479589,
+     "presence": 4.451054,
      "correlation_by_layout": {
-      "room": 0.045525,
-      "L_tunnel": 0.086818,
-      "branching_tunnel": 0.015028
+      "room": 0.054937,
+      "L_tunnel": 0.079912,
+      "branching_tunnel": 0.023294
      },
      "shape": "L_tunnel",
      "shape_correct": true,
-     "location_error_m": 3.223744,
-     "centroid_error_m": 6.311297,
-     "extra_structures": 25
-    },
-    "published_paired": {
-     "presence": 4.152488,
-     "correlation_by_layout": {
-      "room": 0.308865,
-      "L_tunnel": 0.398006,
-      "branching_tunnel": 0.344655
-     },
-     "shape": "L_tunnel",
-     "shape_correct": true,
-     "location_error_m": 2.539236,
-     "centroid_error_m": 6.071087,
-     "extra_structures": 1
-    },
-    "published_depth": {
-     "peak_axis_m": 2.683021,
-     "true_m": 10.0,
-     "best_error_after_allowance_m": 2.073596,
-     "family_size": 12
-    }
-   },
-   {
-    "seed": 71,
-    "scene": "branching_tunnel",
-    "reference": {
-     "presence": 2.109735,
-     "z_by_layout": {
-      "room": 1.538624,
-      "L_tunnel": 1.074997,
-      "branching_tunnel": 2.109735
-     },
-     "shape": "branching_tunnel",
-     "shape_correct": true,
-     "location_error_m": 32.246672,
-     "room_template_peak_over_null": 5.426587
-    },
-    "published_blind": {
-     "presence": 4.28048,
-     "correlation_by_layout": {
-      "room": 0.060196,
-      "L_tunnel": 0.100378,
-      "branching_tunnel": 0.035514
-     },
-     "shape": "L_tunnel",
-     "shape_correct": false,
-     "location_error_m": 3.128577,
-     "centroid_error_m": 2.78461,
-     "extra_structures": 25
-    },
-    "published_paired": {
-     "presence": 4.723876,
-     "correlation_by_layout": {
-      "room": 0.366713,
-      "L_tunnel": 0.412044,
-      "branching_tunnel": 0.459739
-     },
-     "shape": "branching_tunnel",
-     "shape_correct": true,
-     "location_error_m": 1.081363,
-     "centroid_error_m": 6.357036,
-     "extra_structures": 1
-    },
-    "published_depth": {
-     "peak_axis_m": 4.611443,
-     "true_m": 10.0,
-     "best_error_after_allowance_m": 1.109385,
-     "family_size": 12
-    }
-   },
-   {
-    "seed": 171,
-    "scene": "room",
-    "reference": {
-     "presence": 2.253809,
-     "z_by_layout": {
-      "room": 2.184752,
-      "L_tunnel": 1.429971,
-      "branching_tunnel": 2.253809
-     },
-     "shape": "branching_tunnel",
-     "shape_correct": false,
-     "location_error_m": 33.863645,
-     "room_template_peak_over_null": 5.884923
-    },
-    "published_blind": {
-     "presence": 3.69655,
-     "correlation_by_layout": {
-      "room": 0.055731,
-      "L_tunnel": 0.062443,
-      "branching_tunnel": 0.095135
-     },
-     "shape": "branching_tunnel",
-     "shape_correct": false,
-     "location_error_m": 10.064554,
-     "centroid_error_m": 11.365104,
-     "extra_structures": 30
-    },
-    "published_paired": {
-     "presence": 6.312387,
-     "correlation_by_layout": {
-      "room": 0.402466,
-      "L_tunnel": 0.453546,
-      "branching_tunnel": 0.483448
-     },
-     "shape": "branching_tunnel",
-     "shape_correct": false,
-     "location_error_m": 0.805755,
-     "centroid_error_m": 4.252555,
-     "extra_structures": 2
-    },
-    "published_depth": {
-     "peak_axis_m": 0.083844,
-     "true_m": 12.0,
-     "best_error_after_allowance_m": 1.373185,
-     "family_size": 12
-    }
-   },
-   {
-    "seed": 171,
-    "scene": "L_tunnel",
-    "reference": {
-     "presence": 2.418001,
-     "z_by_layout": {
-      "room": 2.066998,
-      "L_tunnel": 2.271148,
-      "branching_tunnel": 2.418001
-     },
-     "shape": "branching_tunnel",
-     "shape_correct": false,
-     "location_error_m": 33.95464,
-     "room_template_peak_over_null": 4.620361
-    },
-    "published_blind": {
-     "presence": 3.778957,
-     "correlation_by_layout": {
-      "room": 0.062255,
-      "L_tunnel": 0.063316,
-      "branching_tunnel": 0.110534
-     },
-     "shape": "branching_tunnel",
-     "shape_correct": false,
-     "location_error_m": 7.166163,
-     "centroid_error_m": 13.096242,
+     "location_error_m": 5.759472,
+     "centroid_error_m": 9.116772,
      "extra_structures": 26
     },
     "published_paired": {
-     "presence": 5.160998,
+     "presence": 4.113966,
      "correlation_by_layout": {
-      "room": 0.3128,
-      "L_tunnel": 0.425132,
-      "branching_tunnel": 0.390822
+      "room": 0.299934,
+      "L_tunnel": 0.394316,
+      "branching_tunnel": 0.316429
      },
      "shape": "L_tunnel",
      "shape_correct": true,
-     "location_error_m": 1.382333,
-     "centroid_error_m": 5.169719,
-     "extra_structures": 3
-    },
-    "published_depth": {
-     "peak_axis_m": 0.083844,
-     "true_m": 10.0,
-     "best_error_after_allowance_m": 3.373185,
-     "family_size": 12
-    }
-   },
-   {
-    "seed": 171,
-    "scene": "branching_tunnel",
-    "reference": {
-     "presence": 3.671648,
-     "z_by_layout": {
-      "room": 2.586635,
-      "L_tunnel": 2.027554,
-      "branching_tunnel": 3.671648
-     },
-     "shape": "branching_tunnel",
-     "shape_correct": true,
-     "location_error_m": 2.608067,
-     "room_template_peak_over_null": 4.902887
-    },
-    "published_blind": {
-     "presence": 3.718597,
-     "correlation_by_layout": {
-      "room": 0.031846,
-      "L_tunnel": 0.055703,
-      "branching_tunnel": 0.072023
-     },
-     "shape": "branching_tunnel",
-     "shape_correct": true,
-     "location_error_m": 2.727041,
-     "centroid_error_m": 10.095001,
-     "extra_structures": 25
-    },
-    "published_paired": {
-     "presence": 5.58863,
-     "correlation_by_layout": {
-      "room": 0.347391,
-      "L_tunnel": 0.411136,
-      "branching_tunnel": 0.476944
-     },
-     "shape": "branching_tunnel",
-     "shape_correct": true,
-     "location_error_m": 2.874249,
-     "centroid_error_m": 3.93231,
+     "location_error_m": 6.230835,
+     "centroid_error_m": 7.317253,
      "extra_structures": 1
-    },
-    "published_depth": {
-     "peak_axis_m": 2.599177,
-     "true_m": 10.0,
-     "best_error_after_allowance_m": 2.115519,
-     "family_size": 12
-    }
-   },
-   {
-    "seed": 271,
-    "scene": "room",
-    "reference": {
-     "presence": 1.268643,
-     "z_by_layout": {
-      "room": 1.268643,
-      "L_tunnel": 1.080248,
-      "branching_tunnel": 0.572857
-     },
-     "shape": "room",
-     "shape_correct": true,
-     "location_error_m": 22.753368,
-     "room_template_peak_over_null": 4.684156
-    },
-    "published_blind": {
-     "presence": 3.575937,
-     "correlation_by_layout": {
-      "room": -0.01346,
-      "L_tunnel": -0.032607,
-      "branching_tunnel": -0.028155
-     },
-     "shape": "room",
-     "shape_correct": true,
-     "location_error_m": 1.994061,
-     "centroid_error_m": 2.034044,
-     "extra_structures": 33
-    },
-    "published_paired": {
-     "presence": 5.188003,
-     "correlation_by_layout": {
-      "room": 0.38568,
-      "L_tunnel": 0.407177,
-      "branching_tunnel": 0.44141
-     },
-     "shape": "branching_tunnel",
-     "shape_correct": false,
-     "location_error_m": 3.696639,
-     "centroid_error_m": 5.119486,
-     "extra_structures": 4
-    },
-    "published_depth": {
-     "peak_axis_m": 0.503067,
-     "true_m": 12.0,
-     "best_error_after_allowance_m": 1.163574,
-     "family_size": 12
-    }
-   },
-   {
-    "seed": 271,
-    "scene": "L_tunnel",
-    "reference": {
-     "presence": 1.946367,
-     "z_by_layout": {
-      "room": 1.248872,
-      "L_tunnel": 1.946367,
-      "branching_tunnel": 0.773163
-     },
-     "shape": "L_tunnel",
-     "shape_correct": true,
-     "location_error_m": 36.486533,
-     "room_template_peak_over_null": 5.382602
-    },
-    "published_blind": {
-     "presence": 3.552504,
-     "correlation_by_layout": {
-      "room": -0.007128,
-      "L_tunnel": -0.041009,
-      "branching_tunnel": -0.026361
-     },
-     "shape": "room",
-     "shape_correct": false,
-     "location_error_m": 0.928156,
-     "centroid_error_m": 4.634368,
-     "extra_structures": 34
-    },
-    "published_paired": {
-     "presence": 4.635533,
-     "correlation_by_layout": {
-      "room": 0.282622,
-      "L_tunnel": 0.396897,
-      "branching_tunnel": 0.341938
-     },
-     "shape": "L_tunnel",
-     "shape_correct": true,
-     "location_error_m": 4.742172,
-     "centroid_error_m": 7.073104,
-     "extra_structures": 4
-    },
-    "published_depth": {
-     "peak_axis_m": 8.803664,
-     "true_m": 10.0,
-     "best_error_after_allowance_m": 0.986725,
-     "family_size": 12
-    }
-   },
-   {
-    "seed": 271,
-    "scene": "branching_tunnel",
-    "reference": {
-     "presence": 1.937516,
-     "z_by_layout": {
-      "room": 1.746262,
-      "L_tunnel": 1.680417,
-      "branching_tunnel": 1.937516
-     },
-     "shape": "branching_tunnel",
-     "shape_correct": true,
-     "location_error_m": 29.136717,
-     "room_template_peak_over_null": 5.855583
-    },
-    "published_blind": {
-     "presence": 3.73862,
-     "correlation_by_layout": {
-      "room": -0.0014,
-      "L_tunnel": -0.008787,
-      "branching_tunnel": -0.014349
-     },
-     "shape": "room",
-     "shape_correct": false,
-     "location_error_m": 4.430902,
-     "centroid_error_m": 5.735323,
-     "extra_structures": 33
-    },
-    "published_paired": {
-     "presence": 4.345563,
-     "correlation_by_layout": {
-      "room": 0.341869,
-      "L_tunnel": 0.383852,
-      "branching_tunnel": 0.449381
-     },
-     "shape": "branching_tunnel",
-     "shape_correct": true,
-     "location_error_m": 2.131099,
-     "centroid_error_m": 5.476483,
-     "extra_structures": 1
-    },
-    "published_depth": {
-     "peak_axis_m": 8.71982,
-     "true_m": 10.0,
-     "best_error_after_allowance_m": 0.944803,
-     "family_size": 12
-    }
-   }
-  ],
-  "diagnostic_20_rad": [
-   {
-    "seed": 71,
-    "scene": "room",
-    "reference": {
-     "presence": 14.623548,
-     "z_by_layout": {
-      "room": 14.623548,
-      "L_tunnel": 9.424256,
-      "branching_tunnel": 12.115193
-     },
-     "shape": "room",
-     "shape_correct": true,
-     "location_error_m": 0.043978,
-     "room_template_peak_over_null": 13.99719
-    },
-    "published_blind": {
-     "presence": 3.651586,
-     "correlation_by_layout": {
-      "room": 0.002207,
-      "L_tunnel": 0.015384,
-      "branching_tunnel": -0.047684
-     },
-     "shape": "L_tunnel",
-     "shape_correct": false,
-     "location_error_m": 5.331516,
-     "centroid_error_m": 7.529557,
-     "extra_structures": 29
-    },
-    "published_paired": {
-     "presence": 2.151665,
-     "correlation_by_layout": {
-      "room": 0.126108,
-      "L_tunnel": 0.175308,
-      "branching_tunnel": 0.175966
-     },
-     "shape": "branching_tunnel",
-     "shape_correct": false,
-     "location_error_m": 8.170037,
-     "centroid_error_m": 11.424108,
-     "extra_structures": 11
-    },
-    "published_depth": {
-     "peak_axis_m": 7.629842,
-     "true_m": 12.0,
-     "best_error_after_allowance_m": 2.399814,
-     "family_size": 12
-    }
-   },
-   {
-    "seed": 71,
-    "scene": "L_tunnel",
-    "reference": {
-     "presence": 17.169764,
-     "z_by_layout": {
-      "room": 14.066867,
-      "L_tunnel": 17.169764,
-      "branching_tunnel": 13.939043
-     },
-     "shape": "L_tunnel",
-     "shape_correct": true,
-     "location_error_m": 0.864895,
-     "room_template_peak_over_null": 15.622769
-    },
-    "published_blind": {
-     "presence": 3.677237,
-     "correlation_by_layout": {
-      "room": -0.056604,
-      "L_tunnel": 0.013158,
-      "branching_tunnel": -0.068719
-     },
-     "shape": "L_tunnel",
-     "shape_correct": true,
-     "location_error_m": 5.046933,
-     "centroid_error_m": 11.775316,
-     "extra_structures": 27
-    },
-    "published_paired": {
-     "presence": 2.266343,
-     "correlation_by_layout": {
-      "room": 0.109855,
-      "L_tunnel": 0.177467,
-      "branching_tunnel": 0.161855
-     },
-     "shape": "L_tunnel",
-     "shape_correct": true,
-     "location_error_m": 9.033794,
-     "centroid_error_m": 15.469377,
-     "extra_structures": 11
-    },
-    "published_depth": {
-     "peak_axis_m": 6.372176,
-     "true_m": 10.0,
-     "best_error_after_allowance_m": 0.229019,
-     "family_size": 12
-    }
-   },
-   {
-    "seed": 71,
-    "scene": "branching_tunnel",
-    "reference": {
-     "presence": 24.356197,
-     "z_by_layout": {
-      "room": 18.317561,
-      "L_tunnel": 14.447722,
-      "branching_tunnel": 24.356197
-     },
-     "shape": "branching_tunnel",
-     "shape_correct": true,
-     "location_error_m": 0.219892,
-     "room_template_peak_over_null": 15.440137
-    },
-    "published_blind": {
-     "presence": 3.415631,
-     "correlation_by_layout": {
-      "room": 0.112142,
-      "L_tunnel": 0.131117,
-      "branching_tunnel": 0.099054
-     },
-     "shape": "L_tunnel",
-     "shape_correct": false,
-     "location_error_m": 3.123744,
-     "centroid_error_m": 7.894706,
-     "extra_structures": 23
-    },
-    "published_paired": {
-     "presence": 2.271511,
-     "correlation_by_layout": {
-      "room": 0.15617,
-      "L_tunnel": 0.21435,
-      "branching_tunnel": 0.205517
-     },
-     "shape": "L_tunnel",
-     "shape_correct": false,
-     "location_error_m": 1.693524,
-     "centroid_error_m": 11.615809,
-     "extra_structures": 11
-    },
-    "published_depth": {
-     "peak_axis_m": 6.204487,
-     "true_m": 10.0,
-     "best_error_after_allowance_m": 0.312864,
-     "family_size": 12
-    }
-   },
-   {
-    "seed": 171,
-    "scene": "room",
-    "reference": {
-     "presence": 16.259269,
-     "z_by_layout": {
-      "room": 16.259269,
-      "L_tunnel": 10.779221,
-      "branching_tunnel": 13.479921
-     },
-     "shape": "room",
-     "shape_correct": true,
-     "location_error_m": 0.395806,
-     "room_template_peak_over_null": 13.473835
-    },
-    "published_blind": {
-     "presence": 4.482871,
-     "correlation_by_layout": {
-      "room": -0.007319,
-      "L_tunnel": -0.042502,
-      "branching_tunnel": 0.010161
-     },
-     "shape": "branching_tunnel",
-     "shape_correct": false,
-     "location_error_m": 0.916997,
-     "centroid_error_m": 1.155859,
-     "extra_structures": 30
-    },
-    "published_paired": {
-     "presence": 2.521614,
-     "correlation_by_layout": {
-      "room": 0.13554,
-      "L_tunnel": 0.183165,
-      "branching_tunnel": 0.235042
-     },
-     "shape": "branching_tunnel",
-     "shape_correct": false,
-     "location_error_m": 4.84662,
-     "centroid_error_m": 8.892063,
-     "extra_structures": 10
-    },
-    "published_depth": {
-     "peak_axis_m": 5.11451,
-     "true_m": 12.0,
-     "best_error_after_allowance_m": 1.142148,
-     "family_size": 12
-    }
-   },
-   {
-    "seed": 171,
-    "scene": "L_tunnel",
-    "reference": {
-     "presence": 19.107965,
-     "z_by_layout": {
-      "room": 15.36488,
-      "L_tunnel": 19.107965,
-      "branching_tunnel": 15.522402
-     },
-     "shape": "L_tunnel",
-     "shape_correct": true,
-     "location_error_m": 1.036779,
-     "room_template_peak_over_null": 15.526717
-    },
-    "published_blind": {
-     "presence": 4.37055,
-     "correlation_by_layout": {
-      "room": -0.036065,
-      "L_tunnel": -0.02889,
-      "branching_tunnel": -0.01282
-     },
-     "shape": "branching_tunnel",
-     "shape_correct": false,
-     "location_error_m": 0.11582,
-     "centroid_error_m": 3.41236,
-     "extra_structures": 26
-    },
-    "published_paired": {
-     "presence": 2.383349,
-     "correlation_by_layout": {
-      "room": 0.119532,
-      "L_tunnel": 0.170818,
-      "branching_tunnel": 0.206616
-     },
-     "shape": "branching_tunnel",
-     "shape_correct": false,
-     "location_error_m": 2.501938,
-     "centroid_error_m": 9.035655,
-     "extra_structures": 8
-    },
-    "published_depth": {
-     "peak_axis_m": 0.083844,
-     "true_m": 10.0,
-     "best_error_after_allowance_m": 3.373185,
-     "family_size": 12
-    }
-   },
-   {
-    "seed": 171,
-    "scene": "branching_tunnel",
-    "reference": {
-     "presence": 26.327778,
-     "z_by_layout": {
-      "room": 19.724281,
-      "L_tunnel": 16.306485,
-      "branching_tunnel": 26.327778
-     },
-     "shape": "branching_tunnel",
-     "shape_correct": true,
-     "location_error_m": 0.452126,
-     "room_template_peak_over_null": 15.388652
-    },
-    "published_blind": {
-     "presence": 3.965139,
-     "correlation_by_layout": {
-      "room": 0.097241,
-      "L_tunnel": 0.080627,
-      "branching_tunnel": 0.113611
-     },
-     "shape": "branching_tunnel",
-     "shape_correct": true,
-     "location_error_m": 3.192283,
-     "centroid_error_m": 5.600897,
-     "extra_structures": 25
-    },
-    "published_paired": {
-     "presence": 2.681879,
-     "correlation_by_layout": {
-      "room": 0.159265,
-      "L_tunnel": 0.193977,
-      "branching_tunnel": 0.256866
-     },
-     "shape": "branching_tunnel",
-     "shape_correct": true,
-     "location_error_m": 3.119029,
-     "centroid_error_m": 2.552641,
-     "extra_structures": 7
     },
     "published_depth": {
      "peak_axis_m": 1.341511,
@@ -1856,50 +1230,242 @@
     }
    },
    {
-    "seed": 271,
-    "scene": "room",
+    "seed": 71,
+    "scene": "branching_tunnel",
     "reference": {
-     "presence": 14.680235,
+     "presence": 1.554018,
      "z_by_layout": {
-      "room": 14.680235,
-      "L_tunnel": 10.081116,
-      "branching_tunnel": 11.632296
+      "room": 1.463371,
+      "L_tunnel": 1.107682,
+      "branching_tunnel": 1.554018
      },
-     "shape": "room",
+     "shape": "branching_tunnel",
      "shape_correct": true,
-     "location_error_m": 0.131935,
-     "room_template_peak_over_null": 13.098768
+     "location_error_m": 38.073957,
+     "room_template_peak_over_null": 6.39646
     },
     "published_blind": {
-     "presence": 4.006213,
+     "presence": 4.526645,
      "correlation_by_layout": {
-      "room": 0.108293,
-      "L_tunnel": 0.073136,
-      "branching_tunnel": 0.084382
+      "room": 0.011292,
+      "L_tunnel": 0.023456,
+      "branching_tunnel": 0.002795
      },
-     "shape": "room",
-     "shape_correct": true,
-     "location_error_m": 2.028551,
-     "centroid_error_m": 2.254199,
-     "extra_structures": 32
+     "shape": "L_tunnel",
+     "shape_correct": false,
+     "location_error_m": 1.746584,
+     "centroid_error_m": 3.473261,
+     "extra_structures": 26
     },
     "published_paired": {
-     "presence": 1.916207,
+     "presence": 4.290624,
      "correlation_by_layout": {
-      "room": 0.139676,
-      "L_tunnel": 0.178885,
-      "branching_tunnel": 0.199992
+      "room": 0.337202,
+      "L_tunnel": 0.379095,
+      "branching_tunnel": 0.423084
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": true,
+     "location_error_m": 2.337364,
+     "centroid_error_m": 5.860652,
+     "extra_structures": 3
+    },
+    "published_depth": {
+     "peak_axis_m": 7.294464,
+     "true_m": 10.0,
+     "best_error_after_allowance_m": 0.232125,
+     "family_size": 12
+    }
+   },
+   {
+    "seed": 171,
+    "scene": "room",
+    "reference": {
+     "presence": 1.742002,
+     "z_by_layout": {
+      "room": 1.473599,
+      "L_tunnel": 1.742002,
+      "branching_tunnel": 1.449583
+     },
+     "shape": "L_tunnel",
+     "shape_correct": false,
+     "location_error_m": 49.732982,
+     "room_template_peak_over_null": 4.386981
+    },
+    "published_blind": {
+     "presence": 3.727663,
+     "correlation_by_layout": {
+      "room": 0.060073,
+      "L_tunnel": 0.060745,
+      "branching_tunnel": 0.109863
      },
      "shape": "branching_tunnel",
      "shape_correct": false,
-     "location_error_m": 5.697086,
-     "centroid_error_m": 8.817309,
-     "extra_structures": 16
+     "location_error_m": 11.962363,
+     "centroid_error_m": 13.612838,
+     "extra_structures": 24
+    },
+    "published_paired": {
+     "presence": 5.238791,
+     "correlation_by_layout": {
+      "room": 0.419007,
+      "L_tunnel": 0.436209,
+      "branching_tunnel": 0.479892
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": false,
+     "location_error_m": 1.051738,
+     "centroid_error_m": 3.866324,
+     "extra_structures": 3
     },
     "published_depth": {
-     "peak_axis_m": 1.257666,
+     "peak_axis_m": 0.167689,
      "true_m": 12.0,
-     "best_error_after_allowance_m": 0.786274,
+     "best_error_after_allowance_m": 1.331263,
+     "family_size": 12
+    }
+   },
+   {
+    "seed": 171,
+    "scene": "L_tunnel",
+    "reference": {
+     "presence": 3.01566,
+     "z_by_layout": {
+      "room": 1.483662,
+      "L_tunnel": 3.01566,
+      "branching_tunnel": 1.881644
+     },
+     "shape": "L_tunnel",
+     "shape_correct": true,
+     "location_error_m": 3.062713,
+     "room_template_peak_over_null": 4.454537
+    },
+    "published_blind": {
+     "presence": 3.832653,
+     "correlation_by_layout": {
+      "room": 0.047332,
+      "L_tunnel": 0.00989,
+      "branching_tunnel": 0.078015
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": false,
+     "location_error_m": 9.065015,
+     "centroid_error_m": 15.000468,
+     "extra_structures": 24
+    },
+    "published_paired": {
+     "presence": 4.047622,
+     "correlation_by_layout": {
+      "room": 0.300401,
+      "L_tunnel": 0.401354,
+      "branching_tunnel": 0.346676
+     },
+     "shape": "L_tunnel",
+     "shape_correct": true,
+     "location_error_m": 5.353879,
+     "centroid_error_m": 4.745461,
+     "extra_structures": 2
+    },
+    "published_depth": {
+     "peak_axis_m": 0.083844,
+     "true_m": 10.0,
+     "best_error_after_allowance_m": 3.373185,
+     "family_size": 12
+    }
+   },
+   {
+    "seed": 171,
+    "scene": "branching_tunnel",
+    "reference": {
+     "presence": 2.980214,
+     "z_by_layout": {
+      "room": 1.65284,
+      "L_tunnel": 2.239505,
+      "branching_tunnel": 2.980214
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": true,
+     "location_error_m": 1.851308,
+     "room_template_peak_over_null": 4.415052
+    },
+    "published_blind": {
+     "presence": 3.901956,
+     "correlation_by_layout": {
+      "room": 0.038232,
+      "L_tunnel": 0.038159,
+      "branching_tunnel": 0.071058
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": true,
+     "location_error_m": 4.951197,
+     "centroid_error_m": 11.933804,
+     "extra_structures": 23
+    },
+    "published_paired": {
+     "presence": 3.70062,
+     "correlation_by_layout": {
+      "room": 0.286561,
+      "L_tunnel": 0.298431,
+      "branching_tunnel": 0.398529
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": true,
+     "location_error_m": 6.561044,
+     "centroid_error_m": 7.154559,
+     "extra_structures": 1
+    },
+    "published_depth": {
+     "peak_axis_m": 12.157441,
+     "true_m": 10.0,
+     "best_error_after_allowance_m": 2.157441,
+     "family_size": 12
+    }
+   },
+   {
+    "seed": 271,
+    "scene": "room",
+    "reference": {
+     "presence": 1.088877,
+     "z_by_layout": {
+      "room": 1.088877,
+      "L_tunnel": 0.515003,
+      "branching_tunnel": 0.661719
+     },
+     "shape": "room",
+     "shape_correct": true,
+     "location_error_m": 37.831368,
+     "room_template_peak_over_null": 4.830264
+    },
+    "published_blind": {
+     "presence": 3.572592,
+     "correlation_by_layout": {
+      "room": 0.016282,
+      "L_tunnel": -0.010091,
+      "branching_tunnel": 0.026385
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": false,
+     "location_error_m": 0.597239,
+     "centroid_error_m": 1.406875,
+     "extra_structures": 32
+    },
+    "published_paired": {
+     "presence": 4.489917,
+     "correlation_by_layout": {
+      "room": 0.366046,
+      "L_tunnel": 0.401782,
+      "branching_tunnel": 0.427844
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": false,
+     "location_error_m": 4.376321,
+     "centroid_error_m": 6.108138,
+     "extra_structures": 0
+    },
+    "published_depth": {
+     "peak_axis_m": 12.576663,
+     "true_m": 12.0,
+     "best_error_after_allowance_m": 0.576663,
      "family_size": 12
     }
    },
@@ -1907,47 +1473,47 @@
     "seed": 271,
     "scene": "L_tunnel",
     "reference": {
-     "presence": 18.272515,
+     "presence": 1.385608,
      "z_by_layout": {
-      "room": 14.34839,
-      "L_tunnel": 18.272515,
-      "branching_tunnel": 13.798861
+      "room": 0.899323,
+      "L_tunnel": 1.385608,
+      "branching_tunnel": 0.863822
      },
      "shape": "L_tunnel",
      "shape_correct": true,
-     "location_error_m": 0.866012,
-     "room_template_peak_over_null": 14.469838
+     "location_error_m": 26.782508,
+     "room_template_peak_over_null": 4.825046
     },
     "published_blind": {
-     "presence": 4.019592,
+     "presence": 3.759523,
      "correlation_by_layout": {
-      "room": 0.00224,
-      "L_tunnel": 0.013999,
-      "branching_tunnel": 0.002596
-     },
-     "shape": "L_tunnel",
-     "shape_correct": true,
-     "location_error_m": 2.046407,
-     "centroid_error_m": 6.257237,
-     "extra_structures": 29
-    },
-    "published_paired": {
-     "presence": 2.464138,
-     "correlation_by_layout": {
-      "room": 0.099733,
-      "L_tunnel": 0.147042,
-      "branching_tunnel": 0.174629
+      "room": -0.002564,
+      "L_tunnel": -0.012284,
+      "branching_tunnel": 0.006575
      },
      "shape": "branching_tunnel",
      "shape_correct": false,
-     "location_error_m": 2.576337,
-     "centroid_error_m": 9.147866,
-     "extra_structures": 12
+     "location_error_m": 2.908817,
+     "centroid_error_m": 6.618432,
+     "extra_structures": 27
+    },
+    "published_paired": {
+     "presence": 3.098961,
+     "correlation_by_layout": {
+      "room": 0.246102,
+      "L_tunnel": 0.337477,
+      "branching_tunnel": 0.288399
+     },
+     "shape": "L_tunnel",
+     "shape_correct": true,
+     "location_error_m": 5.287366,
+     "centroid_error_m": 7.235273,
+     "extra_structures": 3
     },
     "published_depth": {
-     "peak_axis_m": 3.856843,
+     "peak_axis_m": 4.108377,
      "true_m": 10.0,
-     "best_error_after_allowance_m": 1.486685,
+     "best_error_after_allowance_m": 1.360919,
      "family_size": 12
     }
    },
@@ -1955,47 +1521,481 @@
     "seed": 271,
     "scene": "branching_tunnel",
     "reference": {
-     "presence": 24.597776,
+     "presence": 1.815588,
      "z_by_layout": {
-      "room": 18.608453,
-      "L_tunnel": 15.364131,
-      "branching_tunnel": 24.597776
+      "room": 1.100812,
+      "L_tunnel": 0.810721,
+      "branching_tunnel": 1.815588
      },
      "shape": "branching_tunnel",
      "shape_correct": true,
-     "location_error_m": 0.043978,
-     "room_template_peak_over_null": 15.329536
+     "location_error_m": 41.398669,
+     "room_template_peak_over_null": 4.821109
     },
     "published_blind": {
-     "presence": 4.078085,
+     "presence": 3.969759,
      "correlation_by_layout": {
-      "room": 0.104664,
-      "L_tunnel": 0.053851,
-      "branching_tunnel": 0.133927
+      "room": 0.022638,
+      "L_tunnel": -0.011042,
+      "branching_tunnel": 0.062162
      },
      "shape": "branching_tunnel",
      "shape_correct": true,
-     "location_error_m": 1.025451,
-     "centroid_error_m": 5.106299,
-     "extra_structures": 26
+     "location_error_m": 0.368497,
+     "centroid_error_m": 1.641283,
+     "extra_structures": 31
     },
     "published_paired": {
-     "presence": 2.517748,
+     "presence": 3.513168,
      "correlation_by_layout": {
-      "room": 0.13465,
-      "L_tunnel": 0.151304,
-      "branching_tunnel": 0.215894
+      "room": 0.271076,
+      "L_tunnel": 0.298613,
+      "branching_tunnel": 0.373607
      },
      "shape": "branching_tunnel",
      "shape_correct": true,
-     "location_error_m": 4.372988,
-     "centroid_error_m": 8.451302,
+     "location_error_m": 4.635558,
+     "centroid_error_m": 8.741243,
+     "extra_structures": 0
+    },
+    "published_depth": {
+     "peak_axis_m": 4.192221,
+     "true_m": 10.0,
+     "best_error_after_allowance_m": 1.318997,
+     "family_size": 12
+    }
+   }
+  ],
+  "diagnostic_20_rad": [
+   {
+    "seed": 71,
+    "scene": "room",
+    "reference": {
+     "presence": 13.988704,
+     "z_by_layout": {
+      "room": 13.988704,
+      "L_tunnel": 8.593887,
+      "branching_tunnel": 9.971138
+     },
+     "shape": "room",
+     "shape_correct": true,
+     "location_error_m": 1.114979,
+     "room_template_peak_over_null": 13.02722
+    },
+    "published_blind": {
+     "presence": 3.853199,
+     "correlation_by_layout": {
+      "room": 0.099977,
+      "L_tunnel": 0.125095,
+      "branching_tunnel": 0.066943
+     },
+     "shape": "L_tunnel",
+     "shape_correct": false,
+     "location_error_m": 2.721446,
+     "centroid_error_m": 5.536028,
+     "extra_structures": 24
+    },
+    "published_paired": {
+     "presence": 2.144018,
+     "correlation_by_layout": {
+      "room": 0.131848,
+      "L_tunnel": 0.191786,
+      "branching_tunnel": 0.190179
+     },
+     "shape": "L_tunnel",
+     "shape_correct": false,
+     "location_error_m": 6.27808,
+     "centroid_error_m": 9.561995,
      "extra_structures": 13
     },
     "published_depth": {
-     "peak_axis_m": 12.660507,
+     "peak_axis_m": 2.09611,
+     "true_m": 12.0,
+     "best_error_after_allowance_m": 0.367052,
+     "family_size": 12
+    }
+   },
+   {
+    "seed": 71,
+    "scene": "L_tunnel",
+    "reference": {
+     "presence": 20.470206,
+     "z_by_layout": {
+      "room": 16.193097,
+      "L_tunnel": 20.470206,
+      "branching_tunnel": 14.953059
+     },
+     "shape": "L_tunnel",
+     "shape_correct": true,
+     "location_error_m": 0.351828,
+     "room_template_peak_over_null": 17.497297
+    },
+    "published_blind": {
+     "presence": 3.650469,
+     "correlation_by_layout": {
+      "room": 0.030791,
+      "L_tunnel": 0.045972,
+      "branching_tunnel": 0.03527
+     },
+     "shape": "L_tunnel",
+     "shape_correct": true,
+     "location_error_m": 14.463932,
+     "centroid_error_m": 18.477938,
+     "extra_structures": 16
+    },
+    "published_paired": {
+     "presence": 2.051716,
+     "correlation_by_layout": {
+      "room": 0.110052,
+      "L_tunnel": 0.164547,
+      "branching_tunnel": 0.161486
+     },
+     "shape": "L_tunnel",
+     "shape_correct": true,
+     "location_error_m": 4.57449,
+     "centroid_error_m": 12.364554,
+     "extra_structures": 12
+    },
+    "published_depth": {
+     "peak_axis_m": 2.179955,
      "true_m": 10.0,
-     "best_error_after_allowance_m": 2.660507,
+     "best_error_after_allowance_m": 2.32513,
+     "family_size": 12
+    }
+   },
+   {
+    "seed": 71,
+    "scene": "branching_tunnel",
+    "reference": {
+     "presence": 22.354802,
+     "z_by_layout": {
+      "room": 17.004733,
+      "L_tunnel": 13.436755,
+      "branching_tunnel": 22.354802
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": true,
+     "location_error_m": 0.557488,
+     "room_template_peak_over_null": 15.314613
+    },
+    "published_blind": {
+     "presence": 5.085763,
+     "correlation_by_layout": {
+      "room": 0.113285,
+      "L_tunnel": 0.104397,
+      "branching_tunnel": 0.140197
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": true,
+     "location_error_m": 2.131699,
+     "centroid_error_m": 2.951527,
+     "extra_structures": 22
+    },
+    "published_paired": {
+     "presence": 2.095394,
+     "correlation_by_layout": {
+      "room": 0.151096,
+      "L_tunnel": 0.185101,
+      "branching_tunnel": 0.216696
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": true,
+     "location_error_m": 2.838698,
+     "centroid_error_m": 11.643808,
+     "extra_structures": 9
+    },
+    "published_depth": {
+     "peak_axis_m": 11.402841,
+     "true_m": 10.0,
+     "best_error_after_allowance_m": 1.402841,
+     "family_size": 12
+    }
+   },
+   {
+    "seed": 171,
+    "scene": "room",
+    "reference": {
+     "presence": 13.912346,
+     "z_by_layout": {
+      "room": 13.912346,
+      "L_tunnel": 9.47288,
+      "branching_tunnel": 9.899534
+     },
+     "shape": "room",
+     "shape_correct": true,
+     "location_error_m": 1.388417,
+     "room_template_peak_over_null": 13.137359
+    },
+    "published_blind": {
+     "presence": 3.922639,
+     "correlation_by_layout": {
+      "room": 0.018344,
+      "L_tunnel": 8.86e-05,
+      "branching_tunnel": -0.011591
+     },
+     "shape": "room",
+     "shape_correct": true,
+     "location_error_m": 5.582908,
+     "centroid_error_m": 7.904562,
+     "extra_structures": 28
+    },
+    "published_paired": {
+     "presence": 1.829702,
+     "correlation_by_layout": {
+      "room": 0.147657,
+      "L_tunnel": 0.185452,
+      "branching_tunnel": 0.213728
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": false,
+     "location_error_m": 4.15887,
+     "centroid_error_m": 7.41236,
+     "extra_structures": 8
+    },
+    "published_depth": {
+     "peak_axis_m": 4.946821,
+     "true_m": 12.0,
+     "best_error_after_allowance_m": 1.058303,
+     "family_size": 12
+    }
+   },
+   {
+    "seed": 171,
+    "scene": "L_tunnel",
+    "reference": {
+     "presence": 20.983572,
+     "z_by_layout": {
+      "room": 13.661395,
+      "L_tunnel": 20.983572,
+      "branching_tunnel": 14.222559
+     },
+     "shape": "L_tunnel",
+     "shape_correct": true,
+     "location_error_m": 0.043978,
+     "room_template_peak_over_null": 14.886906
+    },
+    "published_blind": {
+     "presence": 4.168867,
+     "correlation_by_layout": {
+      "room": -0.013305,
+      "L_tunnel": -0.023005,
+      "branching_tunnel": 0.00858
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": false,
+     "location_error_m": 2.830782,
+     "centroid_error_m": 8.750863,
+     "extra_structures": 32
+    },
+    "published_paired": {
+     "presence": 2.182371,
+     "correlation_by_layout": {
+      "room": 0.128369,
+      "L_tunnel": 0.176973,
+      "branching_tunnel": 0.199809
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": false,
+     "location_error_m": 3.457666,
+     "centroid_error_m": 6.372439,
+     "extra_structures": 9
+    },
+    "published_depth": {
+     "peak_axis_m": 6.707554,
+     "true_m": 10.0,
+     "best_error_after_allowance_m": 0.06133,
+     "family_size": 12
+    }
+   },
+   {
+    "seed": 171,
+    "scene": "branching_tunnel",
+    "reference": {
+     "presence": 23.886961,
+     "z_by_layout": {
+      "room": 16.35444,
+      "L_tunnel": 14.514195,
+      "branching_tunnel": 23.886961
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": true,
+     "location_error_m": 0.659677,
+     "room_template_peak_over_null": 14.190069
+    },
+    "published_blind": {
+     "presence": 4.09587,
+     "correlation_by_layout": {
+      "room": 0.009868,
+      "L_tunnel": 0.010006,
+      "branching_tunnel": 0.043047
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": true,
+     "location_error_m": 2.293034,
+     "centroid_error_m": 3.460106,
+     "extra_structures": 34
+    },
+    "published_paired": {
+     "presence": 2.119429,
+     "correlation_by_layout": {
+      "room": 0.129231,
+      "L_tunnel": 0.162782,
+      "branching_tunnel": 0.223539
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": true,
+     "location_error_m": 5.493294,
+     "centroid_error_m": 8.105931,
+     "extra_structures": 8
+    },
+    "published_depth": {
+     "peak_axis_m": 13.415107,
+     "true_m": 10.0,
+     "best_error_after_allowance_m": 3.292446,
+     "family_size": 12
+    }
+   },
+   {
+    "seed": 271,
+    "scene": "room",
+    "reference": {
+     "presence": 12.971508,
+     "z_by_layout": {
+      "room": 12.971508,
+      "L_tunnel": 7.740695,
+      "branching_tunnel": 8.91786
+     },
+     "shape": "room",
+     "shape_correct": true,
+     "location_error_m": 0.55749,
+     "room_template_peak_over_null": 13.48807
+    },
+    "published_blind": {
+     "presence": 4.988341,
+     "correlation_by_layout": {
+      "room": 0.102367,
+      "L_tunnel": 0.05913,
+      "branching_tunnel": 0.106425
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": false,
+     "location_error_m": 5.363714,
+     "centroid_error_m": 7.09334,
+     "extra_structures": 23
+    },
+    "published_paired": {
+     "presence": 2.443449,
+     "correlation_by_layout": {
+      "room": 0.136907,
+      "L_tunnel": 0.170728,
+      "branching_tunnel": 0.196405
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": false,
+     "location_error_m": 12.054989,
+     "centroid_error_m": 13.70373,
+     "extra_structures": 12
+    },
+    "published_depth": {
+     "peak_axis_m": 0.7546,
+     "true_m": 12.0,
+     "best_error_after_allowance_m": 1.037807,
+     "family_size": 12
+    }
+   },
+   {
+    "seed": 271,
+    "scene": "L_tunnel",
+    "reference": {
+     "presence": 16.248546,
+     "z_by_layout": {
+      "room": 11.602225,
+      "L_tunnel": 16.248546,
+      "branching_tunnel": 10.624864
+     },
+     "shape": "L_tunnel",
+     "shape_correct": true,
+     "location_error_m": 0.0,
+     "room_template_peak_over_null": 14.049112
+    },
+    "published_blind": {
+     "presence": 3.308171,
+     "correlation_by_layout": {
+      "room": 0.064573,
+      "L_tunnel": 0.03933,
+      "branching_tunnel": 0.003144
+     },
+     "shape": "room",
+     "shape_correct": false,
+     "location_error_m": 3.53011,
+     "centroid_error_m": 9.452845,
+     "extra_structures": 29
+    },
+    "published_paired": {
+     "presence": 2.49364,
+     "correlation_by_layout": {
+      "room": 0.135878,
+      "L_tunnel": 0.174872,
+      "branching_tunnel": 0.175881
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": false,
+     "location_error_m": 5.834972,
+     "centroid_error_m": 15.142152,
+     "extra_structures": 11
+    },
+    "published_depth": {
+     "peak_axis_m": 3.940688,
+     "true_m": 10.0,
+     "best_error_after_allowance_m": 1.444763,
+     "family_size": 12
+    }
+   },
+   {
+    "seed": 271,
+    "scene": "branching_tunnel",
+    "reference": {
+     "presence": 19.270052,
+     "z_by_layout": {
+      "room": 13.230075,
+      "L_tunnel": 10.425123,
+      "branching_tunnel": 19.270052
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": true,
+     "location_error_m": 0.970287,
+     "room_template_peak_over_null": 14.146093
+    },
+    "published_blind": {
+     "presence": 3.378455,
+     "correlation_by_layout": {
+      "room": 0.106489,
+      "L_tunnel": 0.097556,
+      "branching_tunnel": 0.09292
+     },
+     "shape": "room",
+     "shape_correct": false,
+     "location_error_m": 0.211115,
+     "centroid_error_m": 4.700312,
+     "extra_structures": 19
+    },
+    "published_paired": {
+     "presence": 2.773711,
+     "correlation_by_layout": {
+      "room": 0.12699,
+      "L_tunnel": 0.148473,
+      "branching_tunnel": 0.180923
+     },
+     "shape": "branching_tunnel",
+     "shape_correct": true,
+     "location_error_m": 3.455946,
+     "centroid_error_m": 13.883181,
+     "extra_structures": 12
+    },
+    "published_depth": {
+     "peak_axis_m": 5.70142,
+     "true_m": 10.0,
+     "best_error_after_allowance_m": 0.564397,
      "family_size": 12
     }
    }
@@ -2005,23 +2005,23 @@
     "seed": 71,
     "scene": "none",
     "reference": {
-     "presence": -0.270801,
+     "presence": -0.349704,
      "z_by_layout": {
-      "room": -0.270801,
-      "L_tunnel": -0.378775,
-      "branching_tunnel": -0.35095
+      "room": -0.349704,
+      "L_tunnel": -0.354048,
+      "branching_tunnel": -1.000248
      },
      "shape": "room",
      "shape_correct": null,
-     "location_error_m": 43.436918,
-     "room_template_peak_over_null": 4.098375
+     "location_error_m": 38.106537,
+     "room_template_peak_over_null": 6.398892
     },
     "published_blind": {
-     "presence": 4.352444,
+     "presence": 4.352412,
      "correlation_by_layout": {
-      "room": 0.028523,
+      "room": 0.028522,
       "L_tunnel": 0.047198,
-      "branching_tunnel": 0.009019
+      "branching_tunnel": 0.009018
      },
      "shape": "L_tunnel",
      "shape_correct": null,
@@ -2047,19 +2047,19 @@
     "seed": 71,
     "scene": "motionless",
     "reference": {
-     "presence": -0.270812,
+     "presence": -0.349703,
      "z_by_layout": {
-      "room": -0.270812,
-      "L_tunnel": -0.378788,
-      "branching_tunnel": -0.350956
+      "room": -0.349703,
+      "L_tunnel": -0.354047,
+      "branching_tunnel": -1.000246
      },
      "shape": "room",
      "shape_correct": null,
-     "location_error_m": 43.436918,
-     "room_template_peak_over_null": 4.098274
+     "location_error_m": 38.106537,
+     "room_template_peak_over_null": 6.398825
     },
     "published_blind": {
-     "presence": 4.352433,
+     "presence": 4.352432,
      "correlation_by_layout": {
       "room": 0.028522,
       "L_tunnel": 0.047197,
@@ -2072,45 +2072,45 @@
      "extra_structures": 31
     },
     "published_paired": {
-     "presence": 29.305763,
+     "presence": 31.341878,
      "correlation_by_layout": {
-      "room": -0.004675,
-      "L_tunnel": -0.009107,
-      "branching_tunnel": 0.001522
+      "room": -0.008596,
+      "L_tunnel": -0.011233,
+      "branching_tunnel": -0.016373
      },
-     "shape": "branching_tunnel",
+     "shape": "room",
      "shape_correct": null,
      "location_error_m": null,
      "centroid_error_m": null,
-     "extra_structures": 28
+     "extra_structures": 18
     },
     "published_depth_control": [
      0.80677,
-     1.19323,
-     1.19323
+     0.274047,
+     1.277074
     ]
    },
    {
     "seed": 171,
     "scene": "none",
     "reference": {
-     "presence": 0.921417,
+     "presence": 0.786974,
      "z_by_layout": {
-      "room": 0.503354,
-      "L_tunnel": 0.219609,
-      "branching_tunnel": 0.921417
+      "room": -0.033067,
+      "L_tunnel": 0.786974,
+      "branching_tunnel": 0.361387
      },
-     "shape": "branching_tunnel",
+     "shape": "L_tunnel",
      "shape_correct": null,
-     "location_error_m": 33.863645,
-     "room_template_peak_over_null": 4.042455
+     "location_error_m": 49.732982,
+     "room_template_peak_over_null": 4.369842
     },
     "published_blind": {
-     "presence": 3.698283,
+     "presence": 3.698284,
      "correlation_by_layout": {
-      "room": 0.030616,
-      "L_tunnel": 0.0426,
-      "branching_tunnel": 0.102853
+      "room": 0.030615,
+      "L_tunnel": 0.042599,
+      "branching_tunnel": 0.102852
      },
      "shape": "branching_tunnel",
      "shape_correct": null,
@@ -2136,23 +2136,23 @@
     "seed": 171,
     "scene": "motionless",
     "reference": {
-     "presence": 0.921406,
+     "presence": 0.786972,
      "z_by_layout": {
-      "room": 0.503351,
-      "L_tunnel": 0.219604,
-      "branching_tunnel": 0.921406
+      "room": -0.033064,
+      "L_tunnel": 0.786972,
+      "branching_tunnel": 0.361382
      },
-     "shape": "branching_tunnel",
+     "shape": "L_tunnel",
      "shape_correct": null,
-     "location_error_m": 33.863645,
-     "room_template_peak_over_null": 4.042441
+     "location_error_m": 49.732982,
+     "room_template_peak_over_null": 4.369908
     },
     "published_blind": {
-     "presence": 3.6983,
+     "presence": 3.698285,
      "correlation_by_layout": {
       "room": 0.030614,
-      "L_tunnel": 0.042597,
-      "branching_tunnel": 0.102851
+      "L_tunnel": 0.042598,
+      "branching_tunnel": 0.102852
      },
      "shape": "branching_tunnel",
      "shape_correct": null,
@@ -2161,11 +2161,11 @@
      "extra_structures": 26
     },
     "published_paired": {
-     "presence": 25.782904,
+     "presence": 23.718515,
      "correlation_by_layout": {
-      "room": -0.011235,
-      "L_tunnel": -0.015743,
-      "branching_tunnel": -0.016893
+      "room": -0.013338,
+      "L_tunnel": -0.019585,
+      "branching_tunnel": -0.020089
      },
      "shape": "room",
      "shape_correct": null,
@@ -2174,32 +2174,32 @@
      "extra_structures": 8
     },
     "published_depth_control": [
-     1.267914,
-     0.06133,
-     0.06133
+     1.28934,
+     0.944803,
+     2.115519
     ]
    },
    {
     "seed": 271,
     "scene": "none",
     "reference": {
-     "presence": 0.155832,
+     "presence": -0.361234,
      "z_by_layout": {
-      "room": -0.188841,
-      "L_tunnel": 0.155832,
-      "branching_tunnel": -0.696882
+      "room": -0.416329,
+      "L_tunnel": -0.361234,
+      "branching_tunnel": -0.404638
      },
      "shape": "L_tunnel",
      "shape_correct": null,
-     "location_error_m": 36.486533,
-     "room_template_peak_over_null": 4.606881
+     "location_error_m": 26.672581,
+     "room_template_peak_over_null": 4.827164
     },
     "published_blind": {
-     "presence": 3.429974,
+     "presence": 3.430086,
      "correlation_by_layout": {
-      "room": -0.049907,
-      "L_tunnel": -0.050431,
-      "branching_tunnel": -0.032735
+      "room": -0.049909,
+      "L_tunnel": -0.050452,
+      "branching_tunnel": -0.03276
      },
      "shape": "branching_tunnel",
      "shape_correct": null,
@@ -2225,19 +2225,19 @@
     "seed": 271,
     "scene": "motionless",
     "reference": {
-     "presence": 0.155832,
+     "presence": -0.361234,
      "z_by_layout": {
-      "room": -0.188833,
-      "L_tunnel": 0.155832,
-      "branching_tunnel": -0.69688
+      "room": -0.416329,
+      "L_tunnel": -0.361234,
+      "branching_tunnel": -0.404637
      },
      "shape": "L_tunnel",
      "shape_correct": null,
-     "location_error_m": 36.486533,
-     "room_template_peak_over_null": 4.606867
+     "location_error_m": 26.672581,
+     "room_template_peak_over_null": 4.827138
     },
     "published_blind": {
-     "presence": 3.430085,
+     "presence": 3.430078,
      "correlation_by_layout": {
       "room": -0.049906,
       "L_tunnel": -0.050427,
@@ -2250,30 +2250,36 @@
      "extra_structures": 37
     },
     "published_paired": {
-     "presence": 25.814489,
+     "presence": 25.554418,
      "correlation_by_layout": {
-      "room": -0.025014,
-      "L_tunnel": -0.036648,
-      "branching_tunnel": -0.0276
+      "room": 0.035071,
+      "L_tunnel": 0.357466,
+      "branching_tunnel": 0.305544
      },
-     "shape": "room",
+     "shape": "L_tunnel",
      "shape_correct": null,
      "location_error_m": null,
      "centroid_error_m": null,
-     "extra_structures": 26
+     "extra_structures": 22
     },
     "published_depth_control": [
-     1.28934,
-     3.079729,
-     2.073596
+     1.331263,
+     1.360919,
+     1.318997
     ]
    }
   ]
  },
  "unit_gain_phase_rad": {
-  "room": 3.112e-09,
-  "L_tunnel": 1.518e-09,
-  "branching_tunnel": 1.531e-09
+  "71|room": 3.494e-09,
+  "171|room": 4.392e-09,
+  "271|room": 3.602e-09,
+  "71|L_tunnel": 1.362e-09,
+  "171|L_tunnel": 1.952e-09,
+  "271|L_tunnel": 1.648e-09,
+  "71|branching_tunnel": 1.727e-09,
+  "171|branching_tunnel": 2.058e-09,
+  "271|branching_tunnel": 1.765e-09
  },
  "kernel_runs": {
   "room": {
@@ -2320,12 +2326,12 @@
   }
  },
  "normalisation": {
-  "location_sd": 5.993e-09,
+  "location_sd": 7.133e-09,
   "layout_sd": {
-   "room": 4.34e-09,
-   "L_tunnel": 2.992e-09,
-   "branching_tunnel": 3.328e-09
+   "room": 5.719e-09,
+   "L_tunnel": 3.998e-09,
+   "branching_tunnel": 4.342e-09
   }
  },
- "finding": "Scenes generated through the forward model (the lab's solver for each cavity's imprint, the synthesizer for the image), with the unrelated ground and shaking matched. At the positive control (each imprint boosted to 20 rad) the reference detector told the shaking and read where the cavity lies names the layout in 100% of images (chance 33%); scanning every placement, its strongest response lies a median 0.4 m from the layout's centre (the controls' 36 m). At 2 rad, near what any reader needs at these frequencies (P2-27), it still names 78% when told where to look, but its response there stands a median 1.9 spreads above the placements' scatter and a scan of the whole image peaks 34 m away: not knowing where costs more than knowing what. The published method's plan map, read blind, names the layout in 56% at 20 rad (p = 0.17, labels permuted within the three scenes, which are the independent units; a null test, not a confidence interval) and centres its top places 5.6 m from the layout's centre (the controls' 6.2 m); its change against the same ground without the cavity, a diagnostic it never has, 33% and 9.0 m (the motionless copy's change, 12.1 m); at 2 rad that change names 67% (permutation p = 0.04, before allowing for the dozen comparisons) and centres 5.2 m away: the picture changes near where the image changes (P2-28). The blind map's largest value separates cavities from controls with AUC 0.59 (0.5 is chance) at 20 rad. At the real level the reference detector names 33% and the published blind map 33%, chance. After the predeclared depth family the published change's peak lies 1.5 m from the true depth at 20 rad and the motionless copy's 1.2 m: with 12 candidate depths, closeness alone says little. The reference detector recovers the imposed layouts at the positive control, so the experiment can reveal a real signal. Amplified levels are diagnostics, not physical predictions."
+ "finding": "Scenes generated through the forward model (the lab's solver for each cavity's imprint, the synthesizer for the image), with the unrelated ground and shaking matched. At the positive control (each imprint boosted to 20 rad) the reference detector told the shaking and read where the cavity lies names the layout in 100% of images (chance 33%); scanning every placement, its strongest response lies a median 0.6 m from the layout's centre (the controls' 38 m). At 2 rad, near what any reader needs at these frequencies (P2-27), it still names 89% when told where to look, but its response there stands a median 1.7 spreads above the placements' scatter and a scan of the whole image peaks 38 m away: not knowing where costs more than knowing what. The published method's plan map, read blind, names the layout in 44% at 20 rad (p = 0.37, labels permuted within the three scenes, which are the independent units; a null test, not a confidence interval) and centres its top places 7.1 m from the layout's centre (the controls' 6.2 m); its change against the same ground without the cavity, a diagnostic it never has, 44% and 11.6 m (the motionless copy's change, 12.5 m); at 2 rad that change names 67% (permutation p = 0.04, before allowing for the dozen comparisons) and centres 6.1 m away: the picture changes near where the image changes (P2-28). The blind map's largest value separates cavities from controls with AUC 0.56 (0.5 is chance) at 20 rad. At the real level the reference detector names 33% and the published blind map 33%, chance. After the predeclared depth family the published change's peak lies 1.1 m from the true depth at 20 rad and the motionless copy's 1.3 m: with 12 candidate depths, closeness alone says little. The reference detector recovers the imposed layouts at the positive control, so the experiment can reveal a real signal. Amplified levels are diagnostics, not physical predictions."
 }
