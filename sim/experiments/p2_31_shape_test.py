@@ -57,7 +57,6 @@ import numpy as np
 from scipy.interpolate import RegularGridInterpolator
 from scipy.ndimage import binary_dilation, gaussian_filter, label
 from scipy.signal import fftconvolve
-from scipy.stats import binom
 
 from katabasis.ambient.field import microseisms, rayleigh_hv
 from katabasis.runs import Run, memo
@@ -340,6 +339,24 @@ def main():
                 out.append(row)
             results[lv] = out
 
+        def scene_permutation_p(rows_lv, reader):
+            """P(at least the observed number named correctly) when the true layouts are permuted within each scene, over
+            every arrangement: the scenes (seeds) are the independent units."""
+            import itertools
+            by_scene = {}
+            for x in rows_lv:
+                if reader in x and x[reader].get('shape') is not None:
+                    by_scene.setdefault(x['seed'], []).append((x['scene'], x[reader]['shape']))
+            if not by_scene:
+                return None
+            observed = sum(t == n for v in by_scene.values() for t, n in v)
+            counts = []
+            for v in by_scene.values():
+                truths, named = [t for t, _ in v], [n for _, n in v]
+                counts.append([sum(t == n for t, n in zip(perm, named)) for perm in itertools.permutations(truths)])
+            totals = [sum(c) for c in itertools.product(*counts)]
+            return float(np.mean([t >= observed for t in totals]))
+
         def summarise(rows_lv, reader, field_):
             v = [x[reader][field_] for x in rows_lv if reader in x and x[reader].get(field_) is not None]
             return v
@@ -356,9 +373,11 @@ def main():
                 le = summarise(cav, reader, 'location_error_m')
                 s[reader] = {'presence_auc_vs_controls': auc, 'shape_accuracy': float(np.mean(sc)) if sc else None,
                              'shape_chance': 1 / len(SHAPES), 'median_location_error_m': float(np.median(le)) if le else None,
-                             # one-sided binomial: the chance of naming at least this many by guessing
-                             'shape_p_vs_chance': float(binom.sf(int(np.sum(sc)) - 1, len(sc), 1 / len(SHAPES))) if sc else None,
-                             'images': len(sc)}
+                             # a null significance test with the scenes as units (the layouts in a scene share its
+                             # ground): the true labels permuted within each scene, every arrangement; not a confidence
+                             # interval for predictive performance
+                             'shape_p_permutation': scene_permutation_p(cav, reader),
+                             'images': len(sc), 'scenes': len({x['seed'] for x in cav})}
                 if reader == 'reference':
                     # presence and shape are read at the true placement (told where to look); location by scanning
                     s[reader]['median_presence_z_at_true_place'] = float(np.median(pres_c)) if pres_c else None
@@ -410,13 +429,14 @@ def main():
             f"response there stands a median {rm['median_presence_z_at_true_place']:.1f} spreads above the placements' "
             f"scatter and a scan of the whole image peaks {rm['median_location_error_m']:.0f} m away: not knowing where "
             f"costs more than knowing what. The published method's plan map, read blind, names the layout in "
-            f"{100 * bp['shape_accuracy']:.0f}% at 20 rad (p = {bp['shape_p_vs_chance']:.2f} against guessing, nine images) "
+            f"{100 * bp['shape_accuracy']:.0f}% at 20 rad (p = {bp['shape_p_permutation']:.2f}, labels permuted within the three "
+            f"scenes, which are the independent units; a null test, not a confidence interval) "
             f"and centres its top places {bp['median_centroid_error_m']:.1f} m "
             f"from the layout's centre (the controls' {summary['control_centroid_error_blind_m']:.1f} m); its change "
             f"against the same ground without the cavity, a diagnostic it never has, {100 * pp['shape_accuracy']:.0f}% and "
             f"{pp['median_centroid_error_m']:.1f} m (the motionless copy's change, "
             f"{summary['control_centroid_error_paired_m']:.1f} m); at 2 rad that change names {100 * mp['shape_accuracy']:.0f}% "
-            f"(p = {mp['shape_p_vs_chance']:.2f}, before allowing for the dozen comparisons) and centres "
+            f"(permutation p = {mp['shape_p_permutation']:.2f}, before allowing for the dozen comparisons) and centres "
             f"{mp['median_centroid_error_m']:.1f} m away: the picture changes near where the image changes (P2-28). The blind "
             f"map's largest value separates cavities from controls with AUC {bp['presence_auc_vs_controls']:.2f} (0.5 is chance) "
             f"at 20 rad. At the real level the reference detector names "

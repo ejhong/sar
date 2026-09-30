@@ -60,6 +60,7 @@ PAIRS = [('branching_tunnel', 'none'), ('L_tunnel', 'straight_tunnel'), ('column
          ('L_tunnel', 'branching_tunnel'), ('room', 'none')]
 DIRECTIONS = np.deg2rad(np.arange(0, 180, 15.0))
 GUARD = 1 / np.cos(DIRECTIONS[1] - DIRECTIONS[0])   # sec(15 deg): the peak between sampled directions
+GRID_ALLOWANCE = 0.11                              # P2-26's grid check: at most 10.5% in amplitude on halving the grid
 HALF = 60.0
 TAPER = (50.0, 59.0)
 SNR_DB = 30.0
@@ -195,9 +196,11 @@ def dynamic_layer(g, m26, layouts, pairs, amb, snr):
         tot = (np.sqrt(nb) + np.sqrt(fb)) ** 2
         tot_sel = np.where(sel[None, :], tot, 0)
         j, k = np.unravel_index(np.argmax(tot_sel), tot.shape)
-        d = 0.5 * snr * 2 * v * v * float(tot[j, k])
-        dn = 0.5 * snr * 2 * v * v * float(np.where(sel[None, :], nb, 0).max())
-        rows.append({'pair': f'{a} vs {b}', 'worst_f_hz': float(f[k]), 'oracle_d': d,
+        allow2 = (1 + GRID_ALLOWANCE) ** 2                      # P2-26's grid check, the thin roof's (the larger)
+        d = 0.5 * snr * 2 * v * v * float(tot[j, k]) * allow2
+        dn = 0.5 * snr * 2 * v * v * float(np.where(sel[None, :], nb, 0).max()) * allow2
+        rows.append({'pair': f'{a} vs {b}', 'worst_f_hz': float(f[k]), 'side_deg': 90 * int(j), 'sides_sampled': int(tot.shape[0]),
+                     'oracle_d': d,
                      'oracle_tv': fin.oracle_tv_from_mean_energy(d),
                      'oracle_growth_to_target': float(D_TARGET / np.sqrt(2 * d)) if d > 0 else None,
                      'oracle_tv_within_32m': fin.oracle_tv_from_mean_energy(dn),
@@ -286,8 +289,8 @@ def main():
             f"{min(p['discrimination_signal_factor'] for p in static if not p['pair'].endswith('none')):.1f} to "
             f"{max(p['discrimination_signal_factor'] for p in static if not p['pair'].endswith('none')):.1f} "
             f"times the signal that detecting the first layout needs."
-            + (f" With a lorry bouncing beside the layouts all pass, known exactly, the oracle's bound for the "
-               f"hardest-to-exclude pair ({worst_dyn['pair']}) reaches {worst_dyn['oracle_tv']:.2f} at "
+            + (f" With a lorry bouncing beside the layouts all pass, known exactly, at the worst of four sampled sides, "
+               f"the oracle's bound for the hardest-to-exclude pair ({worst_dyn['pair']}) reaches {worst_dyn['oracle_tv']:.2f} at "
                f"{worst_dyn['worst_f_hz']:.0f} Hz"
                + (f", so this argument does not exclude telling them apart at 95% / 5%" if worst_dyn['oracle_growth_to_target'] < 1
                   else f", still excluding 95% / 5% until the signal grows {worst_dyn['oracle_growth_to_target']:.1f} times")

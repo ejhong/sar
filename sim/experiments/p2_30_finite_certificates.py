@@ -165,13 +165,11 @@ def certificates():
                     covering_scene_radius_m=covering_radius,
                     oracle_energy_upper_30db=1000 * Q,
                     oracle_tv_upper_30db=oracle_tv_from_mean_energy(1000 * Q))
-            if background_floor is not None:
-                # the same energy with Giza's common background motion in the reference covariance (the static rows' way)
-                bg = certificate_from_energy(Q, background_floor)
-                r.update({'reference_covariance': 'identity (the background in the next fields)',
-                          'background_tv_upper': bg['tv_upper'],
-                          'background_tpr_upper_at_fpr_005': min(1, .05 + bg['tv_upper']),
-                          'background_excludes_095_at_005': bg['tv_upper'] < .9})
+            # A surrogate: the no-cavity world moves with this excitation, so its covariance is not the identity, and the
+            # regional background's floor does not cover it; no floor is proved for it here. The valid bound for these
+            # cases is P2-29's oracle with receiver noise, where motion common to both worlds cancels.
+            r.update({'reference_covariance': "identity: a restricted surrogate (the excitation's own motion is not in it)",
+                      'valid_bound': 'P2-29 oracle with receiver noise'})
             stress=certificate_from_energy(Q*1.11**2)
             r.update({"stress_11pct_phase_multiplier":1.11,
                 "stress_11pct_tv_upper":stress['tv_upper'],
@@ -180,6 +178,20 @@ def certificates():
                 "stress_is_certified_error_bound":False,
                 "phase_multiplier_to_target_boundary":required_q_for_tv(.9)/r['q']})
             dynamic.append(r)
+
+    # Under strong shaking the reference world moves with the source. A floor for it by the same singular-value argument:
+    # the lorry's surface wave spreading cylindrically from 15 m (|u|^2 r constant, no attenuation) over the scene, its
+    # phase energy density k0^2 (1 + hv^2) |u|^2, added (in square root) to the regional background's.
+    lorry = []
+    for source in p['dynamic']:
+        tr = source['truck']
+        f_t, v_t = tr['worst_f_hz'], tr['rms_velocity_m_s']
+        u15 = math.sqrt(2) * v_t / (2 * math.pi * f_t)
+        Q_lorry = density * k0 ** 2 * (1 + hv * hv) * u15 ** 2 * 2 * math.pi * 15.0 * covering_radius
+        root = math.sqrt(background_Q) + math.sqrt(Q_lorry)
+        lorry.append({'case': source['case'], 'f_hz': f_t, 'lorry_phase_energy': Q_lorry,
+                      'sqrt_background_plus_lorry': root,
+                      'covariance_floor': (1 - root) ** 2 if root < 1 else None})
 
     # The stored genie values are proportional to a PHASE-ENERGY integral.
     # The new finite inequality is |expm1(i Phi)|^2 <= Phi^2. These are average
@@ -233,7 +245,7 @@ def certificates():
             "dynamic_covering_radius_m":covering_radius,
             "upstream_inscribed_scene_radius_m":p['scene_radius_m'],
             "aperture_seconds":g['derived']['aperture_time_s']},
-        "static":static,"dynamic":dynamic,"inherited_average_oracle":inherited_oracle,
+        "static":static,"dynamic":dynamic,"lorry_reference_floor":lorry,"inherited_average_oracle":inherited_oracle,
         "fixed_envelope_phase_modulation":phase_modulation,
         "background_included":{"wave_class":"three stated representative Rayleigh harmonics; no additional background modes assumed",
             "hv_bound_assumed":hv,"vertical_peak_envelope_m":peak_up,
@@ -303,13 +315,15 @@ def main():
             f"detection rate at {100 * micro['tpr_upper_at_fpr_005']:.4f}% at 5% false alarms under the regional microseism "
             f"envelope (detection minus false alarm at most {micro['tv_upper']:.2e}; P2-25's tighter bound, reference "
             f"covariance I: {micro['tight_ceiling_p2_25']:.1e}). Every static row excludes 95% at 5%. Of P2-26's dynamic "
-            f"rows (the reference covariance taken as the identity, each wave direction's far field its own) the largest is "
-            f"the thin-roof room under a truck-level harmonic: at most {100 * thin['tpr_upper_at_fpr_005']:.1f}% at 5%, "
-            + ("no longer excluded" if not thin['stress_11pct_excludes_095_at_005'] else "still excluded")
-            + f" if its phase is 11% larger; with Giza's background motion in the reference "
-            + (f"at most {100 * thin['background_tpr_upper_at_fpr_005']:.1f}%" if thin.get('background_excludes_095_at_005')
-               else "the certificate no longer excludes it")
-            + f". An arbitrary phase modulation within the background envelope on "
+            f"rows, computed with the reference covariance taken as the identity, the largest is the thin-roof room under a "
+            f"truck-level harmonic, at most {100 * thin['tpr_upper_at_fpr_005']:.1f}% at 5%; but those are a restricted "
+            f"surrogate, not certificates: the no-cavity world already moves with the truck, its covariance is not the "
+            f"identity, and the regional background's floor does not cover it; adding the lorry's own phase energy over the "
+            f"scene, the singular-value argument gives no floor at all (the square roots sum to "
+            f"{min(r['sqrt_background_plus_lorry'] for r in out['lorry_reference_floor']):.2f} to "
+            f"{max(r['sqrt_background_plus_lorry'] for r in out['lorry_reference_floor']):.2f}, above 1). Under strong shaking "
+            f"the valid bound here is "
+            f"P2-29's oracle with receiver noise. An arbitrary phase modulation within the background envelope on "
             f"{pm[0]['affected_scatterer_pixels_assumed']:,} pixels is capped at {100 * pm[0]['tpr_upper_at_fpr_005']:.2f}%; "
             f"on the whole image the certificate is uninformative."
             + (f" Depth: P2-29's spread rooms 15 m down leave {100 * dep['residual_fraction']:.0f}% of a room 30 m down's mark "

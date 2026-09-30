@@ -6,6 +6,7 @@
  * a trillionth to certainty, with the line a reliable detection needs (95% found, 5% false alarms: 0.9).
  */
 import bound from '../../public/data/runs/p2_25_information_bound.json';
+import oracle from '../../public/data/runs/p2_29_oracle.json';
 
 interface Props {
   compact?: boolean;
@@ -31,14 +32,19 @@ const st = b.static;
 const surf = b.dynamic.find((d) => d.case === 'surface')!;
 const refl = b.points.find((p) => p.scr_db > 40 && p.shaking === 'microseisms')!;
 const genie = b.genie[0];
+// under strong shaking the no-cavity world moves with the excitation, so the speckle bound's identity reference is only a
+// surrogate there; the oracle with receiver noise (P2-29), where motion common to both worlds cancels, is the valid bound
+const orc = (oracle as unknown as { chamber: { case: string; tv_upper: number }[] }).chamber;
+const orUrban = orc.find((r) => r.case === 'urban background, all pass (surface)')?.tv_upper ?? surf.urban.ceiling;
+const orTruck = orc.find((r) => r.case.startsWith('truck over a bump 15 m away, all pass, at') && r.case.endsWith('(surface)'));
 
 type Row = { name: string; sub: string; edge: number; kind: 'natural' | 'cultural' | 'helped' | 'claim' };
 const rows: Row[] = [
   { name: 'Giza’s trembling', sub: 'the regional microseisms, 67 km east', edge: st[0].ceiling, kind: 'natural' },
   { name: 'The most restless ground on Earth', sub: `the noisiest stations, ${Math.round(st[1].rms_velocity_m_s / st[0].rms_velocity_m_s)}× that level`, edge: st[1].ceiling, kind: 'natural' },
   { name: 'Faster trembling', sub: '1–3 and 3–8 Hz, the regional levels', edge: Math.max(st[2].ceiling, st[3].ceiling), kind: 'natural' },
-  { name: 'A city’s traffic hum', sub: `urban background, ${surf.urban.band_hz[0]}–${surf.urban.band_hz[1]} Hz, all pass`, edge: surf.urban.ceiling, kind: 'cultural' },
-  { name: 'A lorry over a bump, 15 m away', sub: `all 25 s, at its worst (${Math.round(surf.truck.worst_f_hz)} Hz)`, edge: surf.truck.ceiling, kind: 'cultural' },
+  { name: 'A city’s traffic hum', sub: `urban background, all pass; the oracle`, edge: orUrban, kind: 'cultural' },
+  { name: 'A lorry over a bump, 15 m away', sub: `all 25 s, worst sampled side; the oracle`, edge: orTruck?.tv_upper ?? surf.truck.ceiling, kind: 'cultural' },
   { name: 'A corner reflector over the room', sub: `${Math.round(refl.scr_db)} dB, Giza’s trembling`, edge: refl.ceiling, kind: 'helped' },
   { name: 'Told the ground’s texture', sub: 'a genie; Giza’s trembling', edge: genie.ceiling, kind: 'helped' },
   { name: 'The claimed deep structure', sub: '80 m at 1,220 m, by scaling', edge: b.claimed.microseisms.ceiling, kind: 'claim' },
@@ -99,8 +105,11 @@ const reliable = 0.9;
       finding the chamber above its rate of false alarms, within the model: ordinary ground as fully developed speckle,
       the chamber’s imprint as the lab’s solver finds it, the method told the shaking exactly and the image without
       receiver noise (both only raise the ceiling). With the two cases equally likely, the best accuracy exceeds a coin
-      toss by half this. A reliable detection, 95% found with 5% false alarms, needs 0.9. A bound, not what a detector
-      reaches: on small test images the best detector gets within {over.toFixed(1)} times of it.
+      toss by half this. A reliable detection, 95% found with 5% false alarms, needs 0.9; at every operating point found
+      ≤ false alarms + this. A bound, not what a detector reaches: on small test images the best detector gets within
+      {over.toFixed(1)} times of it. The traffic and lorry rows are the oracle’s (P2-29: told the texture and the shaking,
+      receiver noise at 30 dB), because under strong shaking the ground without a chamber already moves with the lorry
+      and the speckle bound’s reference would leave that out; the scattered wave is carried undiminished across the scene.
     </slot>
   </figcaption>
 </figure>

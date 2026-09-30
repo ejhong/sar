@@ -62,6 +62,7 @@ SNR_DB = 30.0
 NESZ_BEST_DB = -26.7                  # ICEYE product specification, Dwell (Table 2-11), best of its range
 REFLECTOR_DB = 50.0                   # over the ground, as P2-23
 D_TARGET = 3.29                       # Delta for 95% found at 5% false alarms (2 Phi(D / 2) - 1 = 0.9)
+STATIC_GRID = 1.10                    # P2-04's grid check: the static imprint within 10% in amplitude
 ALLOWANCES = {'local ambient level over the regional': 10.0, 'site amplification': 3.0,
               'SNR 10 dB higher': float(np.sqrt(10.0))}
 CHECK_PRF = 400.0
@@ -194,27 +195,37 @@ def near_bounds(maps, name, g):
     return fs, 2 * inf.cells_per_m2(g) * k0 ** 2 * K2.T            # [f, direction]
 
 
-def chamber(g, p225, maps, amb):
+def chamber(g, p225, maps, amb, p226):
+    """Delta^2 per case, with the grid checks' amplitude allowances (P2-04: 10% for the static imprint; P2-26: its own
+    largest change on halving the grid, the larger for cases it did not check); the dynamic cases at the worst of the four
+    sampled incidence sides (other sides not computed), the scattered wave beyond 32 m by energy-flux conservation for a
+    surface wave without attenuation, to the scene's farthest corner."""
     snr = 10 ** (SNR_DB / 10) / g.band_frac
     k0 = 4 * np.pi / g.lam
+    gc = p226.get('grid_check', {})
+    grid = {'surface': gc.get('surface_small', {}).get('max_amplitude_change', 0.11),
+            'surface_favourable': gc.get('surface_favourable_small', {}).get('max_amplitude_change', 0.11)}
+    worst_grid = max(grid.values())
     rows = []
     add = lambda label, d2, kind, note='': rows.append({'case': label, 'kind': kind, 'delta': float(np.sqrt(d2)),
                                                         'tv_upper': tv_of_delta(np.sqrt(d2)),
                                                         'tv_pinsker': float(min(np.sqrt(d2) / 2, 1.0)),
                                                         'growth_to_target': float(D_TARGET / np.sqrt(d2)), 'note': note})
     for r in p225['static']:
-        add(f"{r['case']} (static imprint)", 0.5 * snr * r['fisher_bound_any_frequency'], 'ambient')
+        add(f"{r['case']} (static imprint)", 0.5 * snr * r['fisher_bound_any_frequency'] * STATIC_GRID ** 2, 'ambient')
     cul = amb['cultural']
     v_urban, band = cul['urban_background']['value'], cul['band_hz']['value']
     v_truck = cul['bus_or_truck_over_bump']['value']
     for d in p225['dynamic']:
         fs, near = near_bounds(maps, d['case'], g)
+        allow2 = (1 + grid.get(d['case'], worst_grid)) ** 2
         far = np.asarray(d['far_bound_per_v2'])                         # [f, direction], each direction its own
         nd = near.shape[1]
         sel = (fs >= band[0]) & (fs <= band[1])
         df = float(np.mean(np.diff(fs)))
         amp2 = 2 * v_urban ** 2 / (band[1] - band[0]) * df / nd
-        tot = (np.sqrt(near) + np.sqrt(far)) ** 2
+        tot = (np.sqrt(near) + np.sqrt(far)) ** 2 * allow2
+        near = near * allow2
         add(f"urban background, all pass ({d['case']})", 0.5 * snr * amp2 * tot[sel].sum(), 'cultural',
             'scattered wave unattenuated across the scene')
         add(f"urban background, all pass, within 32 m ({d['case']})", 0.5 * snr * amp2 * near[sel].sum(), 'cultural')
@@ -352,7 +363,7 @@ def main():
         t0 = time.time()
         raw = memo(RID, 'raw_check', lambda: check_raw(g), __file__, version='raw-v1')
         print(f"  raw-echo check: {time.time() - t0:.0f} s", flush=True)
-        rows, snr, allowance = chamber(g, p225, maps, amb)
+        rows, snr, allowance = chamber(g, p225, maps, amb, load('p2_26_imprint_spectrum'))
         for r in rows:
             print(f"  {r['case']}: Delta {r['delta']:.3g}, TV {r['tv_upper']:.3g}, grow x{r['growth_to_target']:.3g}"
                   f"{' (open)' if r['open'] else ''}", flush=True)
@@ -377,8 +388,8 @@ def main():
             f"{reg['growth_to_target']:.1e} times, {reg['growth_after_allowances']:.1e} after allowing the local level ten "
             f"times the regional, site amplification three times and 10 dB more SNR; at the noisiest stations on Earth "
             f"{loud['tv_upper']:.1e} ({loud['growth_to_target']:.1e} and {loud['growth_after_allowances']:.1e} times). "
-            f"What this argument does not exclude is strong nearby shaking known exactly, the scattered wave carried unattenuated across the "
-            f"scene: for {worst['case']} the oracle's bound reaches {worst['tv_upper']:.2f}"
+            f"What this argument does not exclude is strong nearby shaking known exactly, at the worst of four sampled sides, "
+            f"the scattered wave carried unattenuated across the scene: for {worst['case']} the oracle's bound reaches {worst['tv_upper']:.2f}"
             + (f", so this argument no longer excludes 95% found at 5% false alarms (it would below "
                f"{worst['growth_to_target']:.2f} of that motion)" if worst['growth_to_target'] < 1 else
                f", which still excludes 95% found at 5% false alarms: that motion would have to grow "

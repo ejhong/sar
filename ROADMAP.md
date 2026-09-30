@@ -156,6 +156,13 @@ Then (29 September, evening; the cloud session, on branch `claude/upbeat-pascal-
   physically strong positive control (a vibrator or a lorry beside the layouts, not a boosted imprint), multi-level
   layouts for relative vertical geometry, the gated reconstruction on the same products (desktop), and real withheld
   ground (`BLIND_TEST.md`).
+- **Fourth review** (30 September): under strong shaking the ground without a room already moves with the source, so
+  the speckle certificate and tight bound have no valid reference there (now labelled surrogates); the oracle with
+  receiver noise, where common motion cancels, is the valid bound. Tails bounded by the analytic point source, the 39 m
+  disk untapered, sampled sides stated, grid allowances applied, outcomes classed (near chance, 95/5 excluded,
+  unresolved), the blind test's statistics corrected. **Next milestone:** one fully specified, auditable comparison:
+  the same source in both worlds, a valid reference covariance or calibrated noise floor, bounded tails and numerical
+  error, a stated scattering and noise model, and bounds for presence, location and shape; parameter ranges after it.
 
 ## The goal
 

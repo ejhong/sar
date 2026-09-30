@@ -3,9 +3,9 @@
   "id": "p2_27_requirement",
   "title": "What one image would need: the motion a room must add to the ground",
   "date": "2026-09-30",
-  "started_utc": "2026-09-30T13:01:09+00:00",
-  "runtime_s": 10.9,
-  "commit": "afc7174+",
+  "started_utc": "2026-09-30T14:32:51+00:00",
+  "runtime_s": 10.3,
+  "commit": "439c48b+",
   "params": {
    "acquisitions": [
     "giza-20250827",
@@ -1315,7 +1315,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.234206
+       "share_of_envelope_bound": 0.234206
       },
       {
        "L_m": 0.075663,
@@ -1340,7 +1340,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.219256
+       "share_of_envelope_bound": 0.219256
       },
       {
        "L_m": 0.114497,
@@ -1365,7 +1365,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.164576
+       "share_of_envelope_bound": 0.164576
       },
       {
        "L_m": 0.173263,
@@ -1390,7 +1390,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.105534
+       "share_of_envelope_bound": 0.105534
       },
       {
        "L_m": 0.262191,
@@ -1415,7 +1415,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.065761
+       "share_of_envelope_bound": 0.065761
       },
       {
        "L_m": 0.396762,
@@ -1440,7 +1440,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.037727
+       "share_of_envelope_bound": 0.037727
       },
       {
        "L_m": 0.600402,
@@ -1465,7 +1465,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.018217
+       "share_of_envelope_bound": 0.018217
       },
       {
        "L_m": 0.90856,
@@ -1490,7 +1490,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.008411
+       "share_of_envelope_bound": 0.008411
       },
       {
        "L_m": 1.374883,
@@ -1515,7 +1515,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.00389
+       "share_of_envelope_bound": 0.00389
       },
       {
        "L_m": 2.080548,
@@ -1540,7 +1540,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.001733
+       "share_of_envelope_bound": 0.001733
       },
       {
        "L_m": 3.148398,
@@ -1565,7 +1565,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.0007756
+       "share_of_envelope_bound": 0.0007756
       },
       {
        "L_m": 4.764328,
@@ -1590,7 +1590,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.0003398
+       "share_of_envelope_bound": 0.0003398
       },
       {
        "L_m": 7.20964,
@@ -1615,7 +1615,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.0001491
+       "share_of_envelope_bound": 0.0001491
       },
       {
        "L_m": 10.91002,
@@ -1640,7 +1640,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 6.531e-05
+       "share_of_envelope_bound": 6.531e-05
       },
       {
        "L_m": 16.509636,
@@ -1665,7 +1665,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 2.858e-05
+       "share_of_envelope_bound": 2.858e-05
       },
       {
        "L_m": 24.983281,
@@ -1690,7 +1690,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 1.25e-05
+       "share_of_envelope_bound": 1.25e-05
       },
       {
        "L_m": 37.806061,
@@ -1715,7 +1715,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 5.463e-06
+       "share_of_envelope_bound": 5.463e-06
       },
       {
        "L_m": 57.210191,
@@ -1740,7 +1740,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 2.387e-06
+       "share_of_envelope_bound": 2.387e-06
       },
       {
        "L_m": 86.573577,
@@ -1765,7 +1765,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 1.043e-06
+       "share_of_envelope_bound": 1.043e-06
       },
       {
        "L_m": 131.007852,
@@ -1790,7 +1790,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 4.56e-07
+       "share_of_envelope_bound": 4.56e-07
       },
       {
        "L_m": 198.248217,
@@ -1815,7 +1815,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 1.994e-07
+       "share_of_envelope_bound": 1.994e-07
       },
       {
        "L_m": 300.0,
@@ -1840,10 +1840,10 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 8.738e-08
+       "share_of_envelope_bound": 8.738e-08
       }
      ],
-     "runtime_s": 0.1
+     "runtime_s": 0.2
     },
     {
      "f_hz": 2.0,
@@ -2575,7 +2575,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.237379
+       "share_of_envelope_bound": 0.237379
       },
       {
        "L_m": 0.075663,
@@ -2600,7 +2600,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.242974
+       "share_of_envelope_bound": 0.242974
       },
       {
        "L_m": 0.114497,
@@ -2625,7 +2625,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.247329
+       "share_of_envelope_bound": 0.247329
       },
       {
        "L_m": 0.173263,
@@ -2650,7 +2650,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.264328
+       "share_of_envelope_bound": 0.264328
       },
       {
        "L_m": 0.262191,
@@ -2675,7 +2675,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.324979
+       "share_of_envelope_bound": 0.324979
       },
       {
        "L_m": 0.396762,
@@ -2700,7 +2700,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.398788
+       "share_of_envelope_bound": 0.398788
       },
       {
        "L_m": 0.600402,
@@ -2725,7 +2725,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.420974
+       "share_of_envelope_bound": 0.420974
       },
       {
        "L_m": 0.90856,
@@ -2750,7 +2750,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.376603
+       "share_of_envelope_bound": 0.376603
       },
       {
        "L_m": 1.374883,
@@ -2775,7 +2775,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.262256
+       "share_of_envelope_bound": 0.262256
       },
       {
        "L_m": 2.080548,
@@ -2800,7 +2800,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.143441
+       "share_of_envelope_bound": 0.143441
       },
       {
        "L_m": 3.148398,
@@ -2825,7 +2825,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.070581
+       "share_of_envelope_bound": 0.070581
       },
       {
        "L_m": 4.764328,
@@ -2850,7 +2850,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.03226
+       "share_of_envelope_bound": 0.03226
       },
       {
        "L_m": 7.20964,
@@ -2875,7 +2875,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.014427
+       "share_of_envelope_bound": 0.014427
       },
       {
        "L_m": 10.91002,
@@ -2900,7 +2900,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.006375
+       "share_of_envelope_bound": 0.006375
       },
       {
        "L_m": 16.509636,
@@ -2925,7 +2925,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.002802
+       "share_of_envelope_bound": 0.002802
       },
       {
        "L_m": 24.983281,
@@ -2950,7 +2950,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.00123
+       "share_of_envelope_bound": 0.00123
       },
       {
        "L_m": 37.806061,
@@ -2975,7 +2975,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.0005407
+       "share_of_envelope_bound": 0.0005407
       },
       {
        "L_m": 57.210191,
@@ -3000,7 +3000,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.0002391
+       "share_of_envelope_bound": 0.0002391
       },
       {
        "L_m": 86.573577,
@@ -3025,7 +3025,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.0001072
+       "share_of_envelope_bound": 0.0001072
       },
       {
        "L_m": 131.007852,
@@ -3050,7 +3050,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 4.962e-05
+       "share_of_envelope_bound": 4.962e-05
       },
       {
        "L_m": 198.248217,
@@ -3075,7 +3075,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 2.445e-05
+       "share_of_envelope_bound": 2.445e-05
       },
       {
        "L_m": 300.0,
@@ -3100,10 +3100,10 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 1.345e-05
+       "share_of_envelope_bound": 1.345e-05
       }
      ],
-     "runtime_s": 0.1
+     "runtime_s": 0.2
     },
     {
      "f_hz": 5.0,
@@ -3835,7 +3835,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.236792
+       "share_of_envelope_bound": 0.236792
       },
       {
        "L_m": 0.075663,
@@ -3860,7 +3860,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.242457
+       "share_of_envelope_bound": 0.242457
       },
       {
        "L_m": 0.114497,
@@ -3885,7 +3885,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.247609
+       "share_of_envelope_bound": 0.247609
       },
       {
        "L_m": 0.173263,
@@ -3910,7 +3910,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.264667
+       "share_of_envelope_bound": 0.264667
       },
       {
        "L_m": 0.262191,
@@ -3935,7 +3935,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.325478
+       "share_of_envelope_bound": 0.325478
       },
       {
        "L_m": 0.396762,
@@ -3960,7 +3960,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.399594
+       "share_of_envelope_bound": 0.399594
       },
       {
        "L_m": 0.600402,
@@ -3985,7 +3985,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.428063
+       "share_of_envelope_bound": 0.428063
       },
       {
        "L_m": 0.90856,
@@ -4010,7 +4010,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.447263
+       "share_of_envelope_bound": 0.447263
       },
       {
        "L_m": 1.374883,
@@ -4035,7 +4035,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.468816
+       "share_of_envelope_bound": 0.468816
       },
       {
        "L_m": 2.080548,
@@ -4060,7 +4060,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.427437
+       "share_of_envelope_bound": 0.427437
       },
       {
        "L_m": 3.148398,
@@ -4085,7 +4085,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.304712
+       "share_of_envelope_bound": 0.304712
       },
       {
        "L_m": 4.764328,
@@ -4110,7 +4110,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.170007
+       "share_of_envelope_bound": 0.170007
       },
       {
        "L_m": 7.20964,
@@ -4135,7 +4135,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.083648
+       "share_of_envelope_bound": 0.083648
       },
       {
        "L_m": 10.91002,
@@ -4160,7 +4160,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.038663
+       "share_of_envelope_bound": 0.038663
       },
       {
        "L_m": 16.509636,
@@ -4185,7 +4185,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.01741
+       "share_of_envelope_bound": 0.01741
       },
       {
        "L_m": 24.983281,
@@ -4210,7 +4210,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.007796
+       "share_of_envelope_bound": 0.007796
       },
       {
        "L_m": 37.806061,
@@ -4235,7 +4235,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.00353
+       "share_of_envelope_bound": 0.00353
       },
       {
        "L_m": 57.210191,
@@ -4260,7 +4260,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.001654
+       "share_of_envelope_bound": 0.001654
       },
       {
        "L_m": 86.573577,
@@ -4285,7 +4285,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.0008312
+       "share_of_envelope_bound": 0.0008312
       },
       {
        "L_m": 131.007852,
@@ -4310,7 +4310,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.0004716
+       "share_of_envelope_bound": 0.0004716
       },
       {
        "L_m": 198.248217,
@@ -4335,7 +4335,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.0003144
+       "share_of_envelope_bound": 0.0003144
       },
       {
        "L_m": 300.0,
@@ -4360,7 +4360,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.0002457
+       "share_of_envelope_bound": 0.0002457
       }
      ],
      "runtime_s": 0.2
@@ -5017,7 +5017,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.236547
+       "share_of_envelope_bound": 0.236547
       },
       {
        "L_m": 0.075663,
@@ -5042,7 +5042,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.242242
+       "share_of_envelope_bound": 0.242242
       },
       {
        "L_m": 0.114497,
@@ -5067,7 +5067,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.247403
+       "share_of_envelope_bound": 0.247403
       },
       {
        "L_m": 0.173263,
@@ -5092,7 +5092,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.264451
+       "share_of_envelope_bound": 0.264451
       },
       {
        "L_m": 0.262191,
@@ -5117,7 +5117,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.325215
+       "share_of_envelope_bound": 0.325215
       },
       {
        "L_m": 0.396762,
@@ -5142,7 +5142,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.399275
+       "share_of_envelope_bound": 0.399275
       },
       {
        "L_m": 0.600402,
@@ -5167,7 +5167,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.427727
+       "share_of_envelope_bound": 0.427727
       },
       {
        "L_m": 0.90856,
@@ -5192,7 +5192,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.446929
+       "share_of_envelope_bound": 0.446929
       },
       {
        "L_m": 1.374883,
@@ -5217,7 +5217,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.471481
+       "share_of_envelope_bound": 0.471481
       },
       {
        "L_m": 2.080548,
@@ -5242,7 +5242,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.479981
+       "share_of_envelope_bound": 0.479981
       },
       {
        "L_m": 3.148398,
@@ -5267,7 +5267,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.491454
+       "share_of_envelope_bound": 0.491454
       },
       {
        "L_m": 4.764328,
@@ -5292,7 +5292,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.492482
+       "share_of_envelope_bound": 0.492482
       },
       {
        "L_m": 7.20964,
@@ -5317,7 +5317,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.471952
+       "share_of_envelope_bound": 0.471952
       },
       {
        "L_m": 10.91002,
@@ -5342,7 +5342,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.373215
+       "share_of_envelope_bound": 0.373215
       },
       {
        "L_m": 16.509636,
@@ -5367,7 +5367,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.241788
+       "share_of_envelope_bound": 0.241788
       },
       {
        "L_m": 24.983281,
@@ -5392,7 +5392,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.146438
+       "share_of_envelope_bound": 0.146438
       },
       {
        "L_m": 37.806061,
@@ -5417,7 +5417,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.094231
+       "share_of_envelope_bound": 0.094231
       },
       {
        "L_m": 57.210191,
@@ -5442,7 +5442,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.069044
+       "share_of_envelope_bound": 0.069044
       },
       {
        "L_m": 86.573577,
@@ -5467,7 +5467,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.057555
+       "share_of_envelope_bound": 0.057555
       },
       {
        "L_m": 131.007852,
@@ -5492,7 +5492,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.052443
+       "share_of_envelope_bound": 0.052443
       },
       {
        "L_m": 198.248217,
@@ -5517,7 +5517,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.050194
+       "share_of_envelope_bound": 0.050194
       },
       {
        "L_m": 300.0,
@@ -5542,7 +5542,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.04921
+       "share_of_envelope_bound": 0.04921
       }
      ],
      "runtime_s": 0.5
@@ -6199,7 +6199,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.236518
+       "share_of_envelope_bound": 0.236518
       },
       {
        "L_m": 0.075663,
@@ -6224,7 +6224,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.242216
+       "share_of_envelope_bound": 0.242216
       },
       {
        "L_m": 0.114497,
@@ -6249,7 +6249,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.247378
+       "share_of_envelope_bound": 0.247378
       },
       {
        "L_m": 0.173263,
@@ -6274,7 +6274,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.264425
+       "share_of_envelope_bound": 0.264425
       },
       {
        "L_m": 0.262191,
@@ -6299,7 +6299,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.325182
+       "share_of_envelope_bound": 0.325182
       },
       {
        "L_m": 0.396762,
@@ -6324,7 +6324,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.399234
+       "share_of_envelope_bound": 0.399234
       },
       {
        "L_m": 0.600402,
@@ -6349,7 +6349,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.427682
+       "share_of_envelope_bound": 0.427682
       },
       {
        "L_m": 0.90856,
@@ -6374,7 +6374,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.446881
+       "share_of_envelope_bound": 0.446881
       },
       {
        "L_m": 1.374883,
@@ -6399,7 +6399,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.471428
+       "share_of_envelope_bound": 0.471428
       },
       {
        "L_m": 2.080548,
@@ -6424,7 +6424,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.479924
+       "share_of_envelope_bound": 0.479924
       },
       {
        "L_m": 3.148398,
@@ -6449,7 +6449,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.491391
+       "share_of_envelope_bound": 0.491391
       },
       {
        "L_m": 4.764328,
@@ -6474,7 +6474,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.492914
+       "share_of_envelope_bound": 0.492914
       },
       {
        "L_m": 7.20964,
@@ -6499,7 +6499,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.495279
+       "share_of_envelope_bound": 0.495279
       },
       {
        "L_m": 10.91002,
@@ -6524,7 +6524,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.496826
+       "share_of_envelope_bound": 0.496826
       },
       {
        "L_m": 16.509636,
@@ -6549,7 +6549,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.497788
+       "share_of_envelope_bound": 0.497788
       },
       {
        "L_m": 24.983281,
@@ -6574,7 +6574,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.491803
+       "share_of_envelope_bound": 0.491803
       },
       {
        "L_m": 37.806061,
@@ -6599,7 +6599,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.437671
+       "share_of_envelope_bound": 0.437671
       },
       {
        "L_m": 57.210191,
@@ -6624,7 +6624,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.338006
+       "share_of_envelope_bound": 0.338006
       },
       {
        "L_m": 86.573577,
@@ -6649,7 +6649,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.253385
+       "share_of_envelope_bound": 0.253385
       },
       {
        "L_m": 131.007852,
@@ -6674,7 +6674,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.203611
+       "share_of_envelope_bound": 0.203611
       },
       {
        "L_m": 198.248217,
@@ -6699,7 +6699,7 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.178822
+       "share_of_envelope_bound": 0.178822
       },
       {
        "L_m": 300.0,
@@ -6724,10 +6724,10 @@
         "0.9": 1.432e-05,
         "0.5": 7.858e-06
        },
-       "share_of_envelope_ceiling": 0.167357
+       "share_of_envelope_bound": 0.167357
       }
      ],
-     "runtime_s": 2.4
+     "runtime_s": 2.8
     }
    ]
   },
@@ -10953,7 +10953,7 @@
        }
       }
      ],
-     "runtime_s": 0.2
+     "runtime_s": 0.1
     },
     {
      "f_hz": 20.0,
@@ -12113,7 +12113,7 @@
        }
       }
      ],
-     "runtime_s": 0.4
+     "runtime_s": 0.3
     },
     {
      "f_hz": 80.0,
@@ -13273,7 +13273,7 @@
        }
       }
      ],
-     "runtime_s": 2.7
+     "runtime_s": 1.7
     }
    ]
   }
@@ -13288,8 +13288,8 @@
    "least_necessary_m": 0.002779,
    "least_necessary_area_m2": 0.043552,
    "constrained_short_by": 21361.746457,
-   "phase_only_area_m2": 55464.315064,
-   "phase_only_area_identity_m2": 991939.820505
+   "phase_only_area_oracle_m2": 58790.824353,
+   "phase_only_area_certificate_m2": 55464.315064
   },
   {
    "label": "the noisiest stations on Earth",
@@ -13300,8 +13300,8 @@
    "least_necessary_m": 0.002779,
    "least_necessary_area_m2": 0.043552,
    "constrained_short_by": 296.943426,
-   "phase_only_area_m2": 10.717354,
-   "phase_only_area_identity_m2": 191.672251
+   "phase_only_area_oracle_m2": 11.360134,
+   "phase_only_area_certificate_m2": 10.717354
   },
   {
    "label": "Giza 1-3 Hz, regional",
@@ -13312,8 +13312,8 @@
    "least_necessary_m": 0.0003052,
    "least_necessary_area_m2": 1114.924078,
    "constrained_short_by": 39645.03151,
-   "phase_only_area_m2": 15834699.223256,
-   "phase_only_area_identity_m2": 283192331.63295
+   "phase_only_area_oracle_m2": 16784395.870715,
+   "phase_only_area_certificate_m2": 15834699.223256
   },
   {
    "label": "Giza 3-8 Hz, regional",
@@ -13324,8 +13324,8 @@
    "least_necessary_m": 0.0001226,
    "least_necessary_area_m2": 1114.924078,
    "constrained_short_by": 46159.361937,
-   "phase_only_area_m2": 133169820.467587,
-   "phase_only_area_identity_m2": 2381647509.033114
+   "phase_only_area_oracle_m2": 141156769.27271,
+   "phase_only_area_certificate_m2": 133169820.467587
   },
   {
    "label": "urban background, all of 8-100 Hz at one frequency",
@@ -13336,8 +13336,7 @@
    "least_necessary_m": 4.933e-05,
    "least_necessary_area_m2": 278.73102,
    "constrained_short_by": 206.425156,
-   "phase_only_area_m2": 16440.718576,
-   "phase_only_area_identity_m2": 294030.556671
+   "phase_only_area_oracle_m2": 17426.761639
   },
   {
    "label": "a truck over a bump, 15 m away",
@@ -13348,8 +13347,7 @@
    "least_necessary_m": 4.933e-05,
    "least_necessary_area_m2": 278.73102,
    "constrained_short_by": 18.578264,
-   "phase_only_area_m2": 133.16982,
-   "phase_only_area_identity_m2": 2381.647509
+   "phase_only_area_oracle_m2": 141.156769
   },
   {
    "label": "a truck over a bump, 15 m away",
@@ -13360,8 +13358,7 @@
    "least_necessary_m": 4.725e-05,
    "least_necessary_area_m2": 278.73102,
    "constrained_short_by": 71.194234,
-   "phase_only_area_m2": 2130.717127,
-   "phase_only_area_identity_m2": 38106.360145
+   "phase_only_area_oracle_m2": 2258.508308
   }
  ],
  "constrained": {
@@ -13380,10 +13377,16 @@
    "peak_m": 3.653e-12,
    "necessary_m": 0.003023,
    "short_by": 827438592.105934,
-   "energy_m4": 4.668e-21,
-   "energy_note": "worst wave direction, P2-04's whole grid and a 1/r^2 tail",
-   "short_by_any_pattern": 457075.339537,
-   "short_by_any_pattern_identity": 1932963.377932
+   "displacement_integral_m4": 7.044e-20,
+   "allowances": {
+    "numerical_amplitude": 1.1,
+    "random_peak_amplitude": 2.12132
+   },
+   "kind": "ambient",
+   "oracle_tv_upper": 1.083e-05,
+   "outcome": "near chance",
+   "short_by_oracle": 121139.388457,
+   "short_by_certificate": 117662.325899
   },
   {
    "label": "bench room, static, The world's noisiest stations",
@@ -13392,10 +13395,16 @@
    "peak_m": 2.629e-10,
    "necessary_m": 0.003023,
    "short_by": 11499529.075551,
-   "energy_m4": 2.414e-17,
-   "energy_note": "worst wave direction, P2-04's whole grid and a 1/r^2 tail",
-   "short_by_any_pattern": 6355.366759,
-   "short_by_any_pattern_identity": 26876.731549
+   "displacement_integral_m4": 3.643e-16,
+   "allowances": {
+    "numerical_amplitude": 1.1,
+    "random_peak_amplitude": 2.12132
+   },
+   "kind": "ambient",
+   "oracle_tv_upper": 0.0007792,
+   "outcome": "near chance",
+   "short_by_oracle": 1684.372741,
+   "short_by_certificate": 1636.026209
   },
   {
    "label": "bench room, static, Giza 1-3 Hz, measured",
@@ -13404,10 +13413,16 @@
    "peak_m": 3.837e-12,
    "necessary_m": 0.00031,
    "short_by": 80771620.351688,
-   "energy_m4": 5.146e-21,
-   "energy_note": "worst wave direction, P2-04's whole grid and a 1/r^2 tail",
-   "short_by_any_pattern": 435336.734754,
-   "short_by_any_pattern_identity": 1841031.209865
+   "displacement_integral_m4": 7.765e-20,
+   "allowances": {
+    "numerical_amplitude": 1.1,
+    "random_peak_amplitude": 2.12132
+   },
+   "kind": "ambient",
+   "oracle_tv_upper": 1.137e-05,
+   "outcome": "near chance",
+   "short_by_oracle": 115377.972205,
+   "short_by_certificate": 112066.279516
   },
   {
    "label": "bench room, dynamic, truck over a bump 15 m away",
@@ -13416,12 +13431,18 @@
    "peak_m": 4.677e-08,
    "necessary_m": 4.933e-05,
    "short_by": 1054.626025,
-   "energy_m4": 6.988e-11,
-   "energy_note": "within 39 m exactly, the scattered wave unattenuated to the scene corner",
-   "energy_near_m4": 7.773e-13,
-   "short_by_any_pattern_near_only": 35.420652,
-   "short_by_any_pattern": 3.735749,
-   "short_by_any_pattern_identity": 15.798417
+   "displacement_integral_m4": 6.402e-11,
+   "allowances": {
+    "numerical_amplitude": 1.063201
+   },
+   "kind": "cultural",
+   "oracle_tv_upper": 0.317718,
+   "outcome": "95% at 5% excluded",
+   "short_by_oracle": 4.018198,
+   "near_m4": 9.416e-13,
+   "side_deg": 0,
+   "oracle_tv_upper_near_only": 0.039594,
+   "short_by_oracle_near_only": 33.133113
   },
   {
    "label": "bench room, dynamic, truck over a bump 15 m away",
@@ -13430,12 +13451,18 @@
    "peak_m": 4.612e-08,
    "necessary_m": 4.725e-05,
    "short_by": 1024.703301,
-   "energy_m4": 1.573e-10,
-   "energy_note": "within 39 m exactly, the scattered wave unattenuated to the scene corner",
-   "energy_near_m4": 8.806e-13,
-   "short_by_any_pattern_near_only": 33.276886,
-   "short_by_any_pattern": 2.489793,
-   "short_by_any_pattern_identity": 10.52929
+   "displacement_integral_m4": 1.518e-10,
+   "allowances": {
+    "numerical_amplitude": 1.063201
+   },
+   "kind": "cultural",
+   "oracle_tv_upper": 0.47147,
+   "outcome": "95% at 5% excluded",
+   "short_by_oracle": 2.609836,
+   "near_m4": 1.198e-12,
+   "side_deg": 0,
+   "oracle_tv_upper_near_only": 0.044652,
+   "short_by_oracle_near_only": 29.376748
   },
   {
    "label": "room under a 5 m roof, dynamic, truck over a bump 15 m away",
@@ -13444,12 +13471,18 @@
    "peak_m": 2.747e-07,
    "necessary_m": 5.875e-05,
    "short_by": 213.84269,
-   "energy_m4": 1.044e-09,
-   "energy_note": "within 39 m exactly, the scattered wave unattenuated to the scene corner",
-   "energy_near_m4": 1.506e-11,
-   "short_by_any_pattern_near_only": 8.047108,
-   "short_by_any_pattern": 0.96631,
-   "short_by_any_pattern_identity": 4.086506
+   "displacement_integral_m4": 1.005e-09,
+   "allowances": {
+    "numerical_amplitude": 1.105301
+   },
+   "kind": "cultural",
+   "oracle_tv_upper": 0.895231,
+   "outcome": "95% at 5% excluded",
+   "short_by_oracle": 1.01399,
+   "near_m4": 1.945e-11,
+   "side_deg": 0,
+   "oracle_tv_upper_near_only": 0.178499,
+   "short_by_oracle_near_only": 7.29054
   },
   {
    "label": "room under a 5 m roof, dynamic, truck over a bump 15 m away",
@@ -13458,31 +13491,45 @@
    "peak_m": 4.643e-07,
    "necessary_m": 6.337e-05,
    "short_by": 136.499814,
-   "energy_m4": 4.9e-09,
-   "energy_note": "within 39 m exactly, the scattered wave unattenuated to the scene corner",
-   "energy_near_m4": 3.65e-11,
-   "short_by_any_pattern_near_only": 5.168878,
-   "short_by_any_pattern": 0.446117,
-   "short_by_any_pattern_identity": 1.886619
+   "displacement_integral_m4": 5.038e-09,
+   "allowances": {
+    "numerical_amplitude": 1.105301
+   },
+   "kind": "cultural",
+   "oracle_tv_upper": 0.999718,
+   "outcome": "unresolved",
+   "short_by_oracle": 0.45294,
+   "near_m4": 5.101e-11,
+   "side_deg": 0,
+   "oracle_tv_upper_near_only": 0.285194,
+   "short_by_oracle_near_only": 4.501401
   }
  ],
  "any_pattern": {
   "density_per_m2": 28.107228,
   "covariance_floor": 0.055915,
+  "oracle_snr_db": 30.0,
+  "E_min_oracle_m4": {
+   "0.05": 1.502e-12,
+   "0.5": 1.738e-10,
+   "0.9": 1.034e-09
+  },
   "E_min_m4": {
-   "0.9": 9.752e-10,
-   "0.5": 6.205e-10
+   "0.05": 2.429e-11,
+   "0.5": 6.205e-10,
+   "0.9": 9.752e-10
   },
   "E_min_identity_m4": {
-   "0.9": 1.744e-08,
-   "0.5": 1.11e-08
+   "0.05": 4.344e-10,
+   "0.5": 1.11e-08,
+   "0.9": 1.744e-08
   }
  },
  "pattern_check": [
   {
    "f_hz": 0.2,
    "L_m": 4.0,
-   "gaussian_share_of_envelope_ceiling": 0.000473,
+   "gaussian_share_of_envelope_bound": 0.000473,
    "ratio_to_gaussian": {
     "cos along track, 4 m period": 39.041843,
     "cos along track, 1 m period": 489.338245,
@@ -13492,7 +13539,7 @@
   {
    "f_hz": 2.0,
    "L_m": 4.0,
-   "gaussian_share_of_envelope_ceiling": 0.04511,
+   "gaussian_share_of_envelope_bound": 0.04511,
    "ratio_to_gaussian": {
     "cos along track, 4 m period": 9.01168,
     "cos along track, 1 m period": 9.881786,
@@ -13502,7 +13549,7 @@
   {
    "f_hz": 5.0,
    "L_m": 4.0,
-   "gaussian_share_of_envelope_ceiling": 0.222532,
+   "gaussian_share_of_envelope_bound": 0.222532,
    "ratio_to_gaussian": {
     "cos along track, 4 m period": 1.671887,
     "cos along track, 1 m period": 0.850978,
@@ -13512,7 +13559,7 @@
   {
    "f_hz": 20.0,
    "L_m": 4.0,
-   "gaussian_share_of_envelope_ceiling": 0.493665,
+   "gaussian_share_of_envelope_bound": 0.493665,
    "ratio_to_gaussian": {
     "cos along track, 4 m period": 0.494296,
     "cos along track, 1 m period": 0.47531,
@@ -13522,7 +13569,7 @@
   {
    "f_hz": 80.0,
    "L_m": 4.0,
-   "gaussian_share_of_envelope_ceiling": 0.493722,
+   "gaussian_share_of_envelope_bound": 0.493722,
    "ratio_to_gaussian": {
     "cos along track, 4 m period": 0.494286,
     "cos along track, 1 m period": 0.475294,
@@ -13530,6 +13577,18 @@
    }
   }
  ],
+ "static_integral": {
+  "in_grid_lambda_max_m2": 25.158695,
+  "tail_bound_m2": 29.247044,
+  "grid_radius_m": 39.5,
+  "solver_over_analytic_largest": [
+   1.62121,
+   1.482173,
+   1.4605
+  ],
+  "envelope_margin": 1.25,
+  "unit_bound_m2": 54.405739
+ },
  "checks": {
   "lines_over_image": {
    "giza-20250827": [
@@ -13756,5 +13815,5 @@
   "0.9": 3.289707,
   "0.5": 1.34898
  },
- "finding": "Under the stated conditions (the Giza dwell, fully developed speckle, no reference image, no receiver noise, motion coherent for the whole pass at its worst phase), a detection at 95% with 5% false alarms needs, for a smooth Gaussian pattern of room-specific line-of-sight motion, at least 3.02 mm at 0.2 Hz over 279 m^2 (3.03 mm over 4.4 m^2) and 47.3 um at 80 Hz over 279 m^2 (379 um over 4.4 m^2), exactly within the model. Those amplitudes hold for that family only: what the image holds depends on the pattern, and a Gaussian 4 m wide at 0.2 Hz multiplied by a cosine of 4 m period along track holds 39 times the Gaussian's information (489 times for a 1 m period) though nowhere larger; at 0.2 Hz the Gaussian holds only 4.7e-4 of what the most informative pattern inside its envelope could. For every pattern the requirement is on energy (Theorem C): any room-specific motion whose integral of max_t |u_los|^2 over the ground stays below 9.8e-10 m^4 (with Giza's background motion in the reference; 1.7e-8 m^4 without) is excluded, whatever its shape, frequency or time history: an rms of 1.0 um over 1,000 m^2. The bench room's modelled static imprint under the regional microseisms falls short of that energy by 4.6e5 in amplitude (against a Gaussian of its peak and footprint, 8.3e8); its dynamic imprints under a truck over a bump 15 m away for the whole pass, the scattered wave carried unattenuated to the scene's corner, by 0.45 to 3.7 (below 1, not excluded: the room under a 5 m roof), and with the scattered wave counted only within 39 m, by 5.2 to 35: under strong shaking close by the conclusion rests on how far the scattered wave carries, an assumption to measure. A mechanism that only changes the ambient motion's phase (moving the ground by at most twice its amplitude, linear or not) is excluded only while the area it changes stays below 5.5e4 m^2 under the regional microseisms, 11 m^2 at the noisiest stations and 2,131 m^2 under a truck at 80 Hz; the bench room's footprint is 128 m^2, so such a mechanism must show its phase changes spread over that much ground. A corner reflector on the footprint's peak needs 14 um whatever the footprint. These are requirements conditional on the model: they say nothing of routes outside it."
+ "finding": "Under the stated conditions (the Giza dwell, fully developed speckle, no reference image, motion coherent for the whole pass at its worst phase), a detection at 95% with 5% false alarms needs, for one smooth (Gaussian) pattern of room-specific line-of-sight motion, at least 3.02 mm at 0.2 Hz and 47.3 um at 80 Hz over 279 m^2, exactly within the model. That binds only that family: a Gaussian 4 m wide at 0.2 Hz times a cosine of 4 m period along track holds 39 times its information (489 times for 1 m) though nowhere larger, and the Gaussian's is 4.7e-4 of the general upper bound for its envelope. For every pattern and time history the requirement is on the displacement integral E, the integral of max_t |du_los|^2 over the ground (m^4, an integrated squared displacement envelope, not a mechanical energy): an oracle told the reflectivity, the excitation and both models, with receiver noise at 30 dB per cell, cannot reach 95% at 5% below 1.0e-9 m^4 (a spatial rms of temporal peak displacement of 1.0 um over 1,000 m^2), whatever the motion common to both worlds, since that cancels from its mean echoes; under quiet ground the certificate, with Giza's background in the reference, gives 9.8e-10 m^4 without receiver noise. At every operating point found <= false alarms + TV: below 1.5e-12 m^4 the oracle stays within 5 points of chance. The bench room's static imprint under the regional microseisms, bounded over every strain direction and beyond the solver's grid (the tail by the analytic point-source field scaled 2.0 times) with numerical and peak allowances, falls short of the oracle's requirement by 1.2e5 in amplitude and of the certificate's by 1.2e5: near chance (oracle TV at most 1.1e-05). Under a truck over a bump 15 m away all pass, at the worst of four sampled sides, with the scattered wave carried unattenuated to the scene's corner, the dynamic imprints fall short by 0.45 to 4 (room under a 5 m roof at 80 Hz unresolved), and counted within 39 m only by 4.5 to 33: under strong shaking the answer rests on how far the scattered wave carries. Crossing a threshold demonstrates neither detectability nor usefulness. A mechanism that only changes the ambient motion's phase moves the ground by at most twice its amplitude; to escape this exclusion under its stated amplitude and noise it must change the phase over more than 5.9e4 m^2 under the regional microseisms (a disk of radius 137 m) or 2,259 m^2 under the truck at 80 Hz. These are requirements conditional on the model; they say nothing of routes outside it."
 }

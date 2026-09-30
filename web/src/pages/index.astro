@@ -137,13 +137,13 @@ const detOver = Math.max(...bd.checks.detection.map((d) => d.pinsker_from_exact_
 type RqRow = { L_m: number; D_necessary_m: Record<string, number> };
 const rq = requirement as unknown as {
   acquisitions: Record<string, { frequencies: { f_hz: number; exact: RqRow[] }[] }>;
-  imprints: { label: string; f_hz: number; peak_m: number; necessary_m: number; short_by: number; short_by_any_pattern?: number }[];
-  ambient: { label: string; constrained_short_by: number; phase_only_area_m2?: number }[];
+  imprints: { label: string; f_hz: number; peak_m: number; necessary_m: number; short_by: number; short_by_oracle?: number }[];
+  ambient: { label: string; constrained_short_by: number; phase_only_area_oracle_m2?: number }[];
 };
-const rqAnyStatic = rq.imprints.find((i) => i.label.includes('static') && i.label.includes('Giza microseisms'))?.short_by_any_pattern ?? null;
-const rqAnyBench = rq.imprints.filter((i) => i.label.startsWith('bench room, dynamic')).map((i) => i.short_by_any_pattern ?? NaN).filter(Number.isFinite);
-const rqAnyThin = rq.imprints.filter((i) => i.label.startsWith('room under')).map((i) => i.short_by_any_pattern ?? NaN).filter(Number.isFinite);
-const phaseArea = rq.ambient.find((a) => a.label.includes('microseisms, regional'))?.phase_only_area_m2 ?? null;
+const rqAnyStatic = rq.imprints.find((i) => i.label.includes('static') && i.label.includes('Giza microseisms'))?.short_by_oracle ?? null;
+const rqAnyBench = rq.imprints.filter((i) => i.label.startsWith('bench room, dynamic')).map((i) => i.short_by_oracle ?? NaN).filter(Number.isFinite);
+const rqAnyThin = rq.imprints.filter((i) => i.label.startsWith('room under')).map((i) => i.short_by_oracle ?? NaN).filter(Number.isFinite);
+const phaseArea = rq.ambient.find((a) => a.label.includes('microseisms, regional'))?.phase_only_area_oracle_m2 ?? null;
 const rqAt = (f: number, L: number) => rq.acquisitions['giza-20250827'].frequencies.find((r) => r.f_hz === f)!.exact.find((e) => e.L_m === L)!.D_necessary_m['0.9'];
 const st20 = (shapeTest as unknown as { summary: Record<string, { reference: { shape_accuracy: number; median_location_error_m: number }; published_blind: { shape_accuracy: number } }> }).summary['diagnostic_20_rad'];
 const umWords = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} millimetres` : `${+(m * 1e6).toPrecision(2)} micrometres`);
@@ -155,8 +155,8 @@ const orWorst = orc.chamber.filter((r) => r.kind === 'cultural').reduce((a, r) =
 // P2-26: how long the modelled rooms ring
 type RRec = { largest_resolved_q: number | null };
 const ringQ = Math.max(...Object.values((spectrum as unknown as { rings: Record<string, { records: Record<string, RRec> }> }).rings).flatMap((r) => Object.values(r.records).map((x) => x.largest_resolved_q ?? 0)));
-const hum = bd.dynamic.find((d) => d.case === 'surface')!;
-const thin = bd.dynamic.find((d) => d.case === 'surface_favourable')!;
+const orUrbTv = orc.chamber.find((r) => (r as unknown as { case: string }).case === 'urban background, all pass (surface)')?.tv_upper ?? null;
+const orTrkTv = orc.chamber.find((r) => { const c = (r as unknown as { case: string }).case; return c.startsWith('truck over a bump 15 m away, all pass, at') && c.endsWith('(surface)'); })?.tv_upper ?? null;
 const inWords = (n: number) =>
   n >= 1e9 ? `${+(n / 1e9).toPrecision(2)} billion` : n >= 1e6 ? `${+(n / 1e6).toPrecision(2)} million` : n >= 1e3 ? `${+(n / 1e3).toPrecision(2)} thousand` : `${Math.round(n)}`;
 
@@ -515,17 +515,21 @@ const explore = [
           The cap is a bound, not what a detector achieves: on small test images the best possible detector comes within
           {' '}{detOver.toFixed(1)} times of it. Faster shaking reaches the room better, and the room scatters it more; a room
           under a roof only 5 metres thick even moves the ground over it twice as much as the passing wave. Struck directly
-          and listened to for four seconds, {ringQ > 20 ? `one of the rooms we modelled held a tone with a quality factor of ${Math.round(ringQ)}, which the bound counts as the solver finds it` : `the rooms we modelled rang only briefly (the longest-lived tone we could resolve had a quality factor of ${Math.round(ringQ)})`}. Yet a city’s traffic hum for the whole pass leaves the cap at{' '}
-          <Sci v={hum.urban.ceiling} p={0} />. Only a lorry bouncing over a bump 15 metres from the room for all 25 seconds
-          lifts it to <Sci v={hum.truck.ceiling} p={0} /> (<Sci v={thin.truck.ceiling} p={0} /> under the thin roof).
+          and listened to for four seconds, {ringQ > 20 ? `one of the rooms we modelled held a tone with a quality factor of ${Math.round(ringQ)}, which the bound counts as the solver finds it` : `the rooms we modelled rang only briefly (the longest-lived tone we could resolve had a quality factor of ${Math.round(ringQ)})`}. Strong shaking needs a different
+          bound, because the ground without a room already moves with the lorry: a detector told the texture and the shaking,
+          with the radar’s own noise, can raise its rate of finding the room above its false alarms by at most
+          {' '}{orUrbTv != null ? <Sci v={orUrbTv} p={0} /> : '—'} under a city’s traffic hum for the whole pass, and
+          {' '}{orTrkTv != null ? orTrkTv.toFixed(2) : '—'} with a lorry bouncing over a bump 15 metres from the room for all 25
+          seconds, if the wave the room scatters carries undiminished across the whole scene.
         </p>
         <p>
           Turned around, the bound says what a detection would need. For this pass and ordinary ground, whatever pattern the
-          room’s added motion takes, it must carry enough energy over the ground. A smooth mound of motion would need at least
+          room’s added motion takes, enough of it must be summed over the ground (its squared peak height times area). A smooth
+          mound of motion would need at least
           {' '}{umWords(rqAt(80, 8))} at the lorry’s frequencies or {umWords(rqAt(0.2, 8))} at the microseisms’; a more intricate
-          pattern can do with less height, but not with less energy (an independent review caught our first wording, which
+          pattern can do with less height, but not with less in total (an independent review caught our first wording, which
           treated the smooth pattern as the only one). Under the ground’s own trembling the room’s modelled mark falls short of that
-          energy {rqAnyStatic != null ? `${inWords(rqAnyStatic)} times over` : 'by far'}. Beside a bouncing lorry, with the wave the
+          total {rqAnyStatic != null ? `${inWords(rqAnyStatic)} times over` : 'by far'}. Beside a bouncing lorry, with the wave the
           room scatters carried undiminished across the whole scene, it falls short by only
           {' '}{rqAnyBench.length ? `${Math.min(...rqAnyBench).toFixed(0)} to ${Math.max(...rqAnyBench).toFixed(0)} times` : 'a few times'}{rqAnyThin.some((v) => v < 1) ? ', and under a 5-metre roof not at all' : ''}.
           That is a requirement under stated conditions, not a proof about every conceivable mechanism, and it says nothing of
@@ -538,9 +542,9 @@ const explore = [
           bouncing beside a room under a 5-metre roof for the whole pass lets such an oracle’s upper bound reach {orWorst.tv_upper.toFixed(2)}
           {orWorst.growth_to_target < 1 ? ', so this argument does not rule out a reliable detection there (which is not the same as showing one is possible)' : `, still ruling out a reliable detection until the motion grows ${orWorst.growth_to_target.toFixed(0)} times`},
           if the wave the room scatters carries undiminished across the whole scene (within 32 metres of the room alone, far less).
-          That is where experiments belong, not a verdict. Where a room is and its shape are bounded the same way, since telling
-          two layouts apart is harder than telling either from none: an L-shaped tunnel from a straight one, or a column with a
-          spiral from a plain column, and no depth allowance helps. Depth, in this model, is carried by the mark’s shape: rooms
+          That is where experiments belong, not a verdict. Where a room is and its shape are bounded too, since how well two
+          layouts can be told apart is capped by the sum of how well each can be told from empty ground: an L-shaped tunnel from a straight one,
+          or a column with a spiral from a plain column, and no depth allowance helps. Depth, in this model, is carried by the mark’s shape: rooms
           spread 15 metres down cannot mimic a room 30 metres down ({(100 * orc.depth.residual_fraction).toFixed(0)}% of its mark is
           left over), so a reader with enough signal to detect could tell those depths apart. A method that
           found a layout at the wrong depth would still be useful, so the claims are scored apart.
@@ -559,7 +563,7 @@ const explore = [
       <div class="qa">
         <details class="q">
           <summary>What if the ground shook harder?</summary>
-          <p>At the most restless places on Earth the ground moves 70 times more than at Giza’s regional level, and in our model no way of reading the image raises its rate of finding the room above its false alarms by more than one in {inWords(1 / noisyEdge)} (step 10). A lorry close by shakes the ground far harder, and faster, which the room scatters more; yet a lorry bouncing over a bump 15 metres away for the whole pass leaves that margin at most <Sci v={hum.truck.ceiling} p={0} />. A detection would need the room itself to add at least {umWords(rqAt(80, 8))} of motion to the ground over it as a smooth mound, or the same energy in some other pattern. The method’s own slices fare worse: one short enough to follow such shaking blurs the ground over 30 metres.</p>
+          <p>At the most restless places on Earth the ground moves 70 times more than at Giza’s regional level, and in our model no way of reading the image raises its rate of finding the room above its false alarms by more than one in {inWords(1 / noisyEdge)} (step 10). A lorry close by shakes the ground far harder, and faster, which the room scatters more; yet a lorry bouncing over a bump 15 metres away for the whole pass leaves the margin of a detector told everything but the answer at most {orTrkTv != null ? orTrkTv.toFixed(2) : '—'}, if the wave the room scatters carries undiminished across the scene. A detection would need the room itself to add at least {umWords(rqAt(80, 8))} of motion to the ground over it as a smooth mound, or as much summed over the ground in some other pattern. The method’s own slices fare worse: one short enough to follow such shaking blurs the ground over 30 metres.</p>
         </details>
         <details class="q">
           <summary>What about a shinier target?</summary>
@@ -571,7 +575,7 @@ const explore = [
         </details>
         <details class="q">
           <summary>What if the room works nonlinearly, or shifts the phase of the ground’s vibration without a new tone?</summary>
-          <p>Our solver is linear, so it cannot rule out an unspecified nonlinear or parametric mechanism. But any mechanism, linear or not, reaches the image only through the motion it adds to the ground over the room, and step 10’s requirement counts that motion whatever made it, by its energy, whatever its pattern. A change of phase alone, of any size, moves the ground by at most twice the vibration it acts on, so such a mechanism is ruled out only while the ground whose phase it changes stays smaller than {phaseArea != null ? `about ${inWords(phaseArea)} square metres` : 'a stated area'} at Giza’s regional levels; the room’s own footprint is about 128. A mechanism would have to show its phase changes reach that far, or have gain, drawing energy together over the room for the whole pass, and it would have to be specified well enough to compute before it could be tested.</p>
+          <p>Our solver is linear, so it cannot rule out an unspecified nonlinear or parametric mechanism. But any mechanism, linear or not, reaches the image only through the motion it adds to the ground over the room, and step 10’s requirement counts that motion whatever made it, summed over the ground, whatever its pattern. A change of phase alone, of any size, moves the ground by at most twice the vibration it acts on, so such a mechanism is ruled out only while the ground whose phase it changes stays smaller than {phaseArea != null ? `about ${inWords(phaseArea)} square metres` : 'a stated area'} at Giza’s regional levels; the room’s own footprint is about 128. A mechanism would have to show its phase changes reach that far, or have gain, drawing energy together over the room for the whole pass, and it would have to be specified well enough to compute before it could be tested.</p>
         </details>
         <details class="q">
           <summary>Then why do the published pictures look so convincing?</summary>

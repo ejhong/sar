@@ -3,9 +3,9 @@
   "id": "p2_31_shape_test",
   "title": "The shape test: location and shape, with depth allowed to be wrong",
   "date": "2026-09-30",
-  "started_utc": "2026-09-30T08:52:28+00:00",
-  "runtime_s": 9.4,
-  "commit": "74c62d5+",
+  "started_utc": "2026-09-30T14:34:54+00:00",
+  "runtime_s": 35.5,
+  "commit": "439c48b+",
   "params": {
    "layouts": {
     "room": [
@@ -123,8 +123,9 @@
     "shape_accuracy": 0.333333,
     "shape_chance": 0.333333,
     "median_location_error_m": 36.486533,
-    "shape_p_vs_chance": 0.622822,
+    "shape_p_permutation": 1.0,
     "images": 9,
+    "scenes": 3,
     "median_presence_z_at_true_place": 0.15583
    },
    "published_blind": {
@@ -132,8 +133,9 @@
     "shape_accuracy": 0.333333,
     "shape_chance": 0.333333,
     "median_location_error_m": 3.406832,
-    "shape_p_vs_chance": 0.622822,
+    "shape_p_permutation": 1.0,
     "images": 9,
+    "scenes": 3,
     "mean_extra_structures": 27.666667,
     "median_centroid_error_m": 6.228822
    },
@@ -142,8 +144,9 @@
     "shape_accuracy": 0.444444,
     "shape_chance": 0.333333,
     "median_location_error_m": 1.977882,
-    "shape_p_vs_chance": 0.349693,
+    "shape_p_permutation": 0.333333,
     "images": 9,
+    "scenes": 3,
     "mean_extra_structures": 27.777778,
     "median_centroid_error_m": 6.056545
    },
@@ -155,8 +158,9 @@
     "shape_accuracy": 0.444444,
     "shape_chance": 0.333333,
     "median_location_error_m": 36.486533,
-    "shape_p_vs_chance": 0.349693,
+    "shape_p_permutation": 0.333333,
     "images": 9,
+    "scenes": 3,
     "median_presence_z_at_true_place": 0.388364
    },
    "published_blind": {
@@ -164,8 +168,9 @@
     "shape_accuracy": 0.333333,
     "shape_chance": 0.333333,
     "median_location_error_m": 3.522516,
-    "shape_p_vs_chance": 0.622822,
+    "shape_p_permutation": 1.0,
     "images": 9,
+    "scenes": 3,
     "mean_extra_structures": 27.333333,
     "median_centroid_error_m": 6.610972
    },
@@ -174,8 +179,9 @@
     "shape_accuracy": 0.666667,
     "shape_chance": 0.333333,
     "median_location_error_m": 2.709623,
-    "shape_p_vs_chance": 0.042422,
+    "shape_p_permutation": 0.037037,
     "images": 9,
+    "scenes": 3,
     "mean_extra_structures": 1.777778,
     "median_centroid_error_m": 5.266661
    },
@@ -187,8 +193,9 @@
     "shape_accuracy": 0.777778,
     "shape_chance": 0.333333,
     "median_location_error_m": 33.863645,
-    "shape_p_vs_chance": 0.008281,
+    "shape_p_permutation": 0.027778,
     "images": 9,
+    "scenes": 3,
     "median_presence_z_at_true_place": 1.946367
    },
    "published_blind": {
@@ -196,8 +203,9 @@
     "shape_accuracy": 0.333333,
     "shape_chance": 0.333333,
     "median_location_error_m": 3.128577,
-    "shape_p_vs_chance": 0.622822,
+    "shape_p_permutation": 1.0,
     "images": 9,
+    "scenes": 3,
     "mean_extra_structures": 28.444444,
     "median_centroid_error_m": 6.022969
    },
@@ -206,8 +214,9 @@
     "shape_accuracy": 0.666667,
     "shape_chance": 0.333333,
     "median_location_error_m": 2.539236,
-    "shape_p_vs_chance": 0.042422,
+    "shape_p_permutation": 0.037037,
     "images": 9,
+    "scenes": 3,
     "mean_extra_structures": 2.111111,
     "median_centroid_error_m": 5.169719
    },
@@ -219,8 +228,9 @@
     "shape_accuracy": 1.0,
     "shape_chance": 0.333333,
     "median_location_error_m": 0.395806,
-    "shape_p_vs_chance": 5.081e-05,
+    "shape_p_permutation": 0.00463,
     "images": 9,
+    "scenes": 3,
     "median_presence_z_at_true_place": 18.272515
    },
    "published_blind": {
@@ -228,8 +238,9 @@
     "shape_accuracy": 0.555556,
     "shape_chance": 0.333333,
     "median_location_error_m": 2.046407,
-    "shape_p_vs_chance": 0.144846,
+    "shape_p_permutation": 0.166667,
     "images": 9,
+    "scenes": 3,
     "mean_extra_structures": 27.444444,
     "median_centroid_error_m": 5.600897
    },
@@ -238,8 +249,9 @@
     "shape_accuracy": 0.333333,
     "shape_chance": 0.333333,
     "median_location_error_m": 4.372988,
-    "shape_p_vs_chance": 0.622822,
+    "shape_p_permutation": 0.666667,
     "images": 9,
+    "scenes": 3,
     "mean_extra_structures": 11.0,
     "median_centroid_error_m": 9.035655
    },
@@ -2315,5 +2327,5 @@
    "branching_tunnel": 3.328e-09
   }
  },
- "finding": "Scenes generated through the forward model (the lab's solver for each cavity's imprint, the synthesizer for the image), with the unrelated ground and shaking matched. At the positive control (each imprint boosted to 20 rad) the reference detector told the shaking and read where the cavity lies names the layout in 100% of images (chance 33%); scanning every placement, its strongest response lies a median 0.4 m from the layout's centre (the controls' 36 m). At 2 rad, near what any reader needs at these frequencies (P2-27), it still names 78% when told where to look, but its response there stands a median 1.9 spreads above the placements' scatter and a scan of the whole image peaks 34 m away: not knowing where costs more than knowing what. The published method's plan map, read blind, names the layout in 56% at 20 rad (p = 0.14 against guessing, nine images) and centres its top places 5.6 m from the layout's centre (the controls' 6.2 m); its change against the same ground without the cavity, a diagnostic it never has, 33% and 9.0 m (the motionless copy's change, 12.1 m); at 2 rad that change names 67% (p = 0.04, before allowing for the dozen comparisons) and centres 5.2 m away: the picture changes near where the image changes (P2-28). The blind map's largest value separates cavities from controls with AUC 0.59 (0.5 is chance) at 20 rad. At the real level the reference detector names 33% and the published blind map 33%, chance. After the predeclared depth family the published change's peak lies 1.5 m from the true depth at 20 rad and the motionless copy's 1.2 m: with 12 candidate depths, closeness alone says little. The reference detector recovers the imposed layouts at the positive control, so the experiment can reveal a real signal. Amplified levels are diagnostics, not physical predictions."
+ "finding": "Scenes generated through the forward model (the lab's solver for each cavity's imprint, the synthesizer for the image), with the unrelated ground and shaking matched. At the positive control (each imprint boosted to 20 rad) the reference detector told the shaking and read where the cavity lies names the layout in 100% of images (chance 33%); scanning every placement, its strongest response lies a median 0.4 m from the layout's centre (the controls' 36 m). At 2 rad, near what any reader needs at these frequencies (P2-27), it still names 78% when told where to look, but its response there stands a median 1.9 spreads above the placements' scatter and a scan of the whole image peaks 34 m away: not knowing where costs more than knowing what. The published method's plan map, read blind, names the layout in 56% at 20 rad (p = 0.17, labels permuted within the three scenes, which are the independent units; a null test, not a confidence interval) and centres its top places 5.6 m from the layout's centre (the controls' 6.2 m); its change against the same ground without the cavity, a diagnostic it never has, 33% and 9.0 m (the motionless copy's change, 12.1 m); at 2 rad that change names 67% (permutation p = 0.04, before allowing for the dozen comparisons) and centres 5.2 m away: the picture changes near where the image changes (P2-28). The blind map's largest value separates cavities from controls with AUC 0.59 (0.5 is chance) at 20 rad. At the real level the reference detector names 33% and the published blind map 33%, chance. After the predeclared depth family the published change's peak lies 1.5 m from the true depth at 20 rad and the motionless copy's 1.2 m: with 12 candidate depths, closeness alone says little. The reference detector recovers the imposed layouts at the positive control, so the experiment can reveal a real signal. Amplified levels are diagnostics, not physical predictions."
 }

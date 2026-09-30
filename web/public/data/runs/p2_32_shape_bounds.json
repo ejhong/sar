@@ -3,9 +3,9 @@
   "id": "p2_32_shape_bounds",
   "title": "Shape discrimination, bounded",
   "date": "2026-09-30",
-  "started_utc": "2026-09-30T13:00:34+00:00",
-  "runtime_s": 212.2,
-  "commit": "afc7174+",
+  "started_utc": "2026-09-30T14:36:46+00:00",
+  "runtime_s": 31.6,
+  "commit": "439c48b+",
   "params": {
    "layouts": {
     "room": [
@@ -1059,50 +1059,60 @@
   {
    "pair": "branching_tunnel vs none",
    "worst_f_hz": 70.975167,
-   "oracle_d": 2.436656,
-   "oracle_tv": 0.730311,
-   "oracle_growth_to_target": 1.490335,
-   "oracle_tv_within_32m": 0.076848,
+   "side_deg": 0,
+   "sides_sampled": 4,
+   "oracle_d": 3.002203,
+   "oracle_tv": 0.779498,
+   "oracle_growth_to_target": 1.342644,
+   "oracle_tv_within_32m": 0.085271,
    "largest_difference_over_motion": 0.335521
   },
   {
    "pair": "L_tunnel vs straight_tunnel",
    "worst_f_hz": 66.179548,
-   "oracle_d": 2.413501,
-   "oracle_tv": 0.728023,
-   "oracle_growth_to_target": 1.497467,
-   "oracle_tv_within_32m": 0.074699,
+   "side_deg": 0,
+   "sides_sampled": 4,
+   "oracle_d": 2.973675,
+   "oracle_tv": 0.777292,
+   "oracle_growth_to_target": 1.349069,
+   "oracle_tv_within_32m": 0.082888,
    "largest_difference_over_motion": 0.368772
   },
   {
    "pair": "column_spiral vs column",
    "worst_f_hz": 52.751814,
-   "oracle_d": 0.572396,
-   "oracle_tv": 0.407333,
-   "oracle_growth_to_target": 3.074911,
-   "oracle_tv_within_32m": 0.041501,
+   "side_deg": 180,
+   "sides_sampled": 4,
+   "oracle_d": 0.705249,
+   "oracle_tv": 0.447369,
+   "oracle_growth_to_target": 2.77019,
+   "oracle_tv_within_32m": 0.046061,
    "largest_difference_over_motion": 0.30234
   },
   {
    "pair": "L_tunnel vs branching_tunnel",
    "worst_f_hz": 68.097796,
-   "oracle_d": 3.584657,
-   "oracle_tv": 0.819357,
-   "oracle_growth_to_target": 1.228732,
-   "oracle_tv_within_32m": 0.090019,
+   "side_deg": 180,
+   "sides_sampled": 4,
+   "oracle_d": 4.416656,
+   "oracle_tv": 0.862733,
+   "oracle_growth_to_target": 1.106966,
+   "oracle_tv_within_32m": 0.099871,
    "largest_difference_over_motion": 0.383349
   },
   {
    "pair": "room vs none",
    "worst_f_hz": 55.629185,
-   "oracle_d": 1.851698,
-   "oracle_tv": 0.664056,
-   "oracle_growth_to_target": 1.709605,
-   "oracle_tv_within_32m": 0.068438,
+   "side_deg": 180,
+   "sides_sampled": 4,
+   "oracle_d": 2.281477,
+   "oracle_tv": 0.714504,
+   "oracle_growth_to_target": 1.540185,
+   "oracle_tv_within_32m": 0.075944,
    "largest_difference_over_motion": 0.272659
   }
  ],
  "background_floor": 0.055937,
  "direction_guard": 1.035276,
- "finding": "Telling one layout from another is bounded as detection is, and depth ambiguity does not rescue a reader: the same-depth bound holds for every allowed vertical transformation. Under Giza's regional microseism level the oracle, told everything but which layout is there, tells an L-shaped from a straight tunnel with detection minus false alarm at most 1.5e-06, and a column with a spiral from a plain column at most 2.0e-06; the tight bound gives 2.6e-09 and 9.1e-09 (each layout against empty ground, summed); the loose certificate with the background, the same way, caps discrimination at 5.110% at 5% for every pair. Discrimination needs 1.2 to 4.1 times the signal that detecting the first layout needs. With a lorry bouncing beside the layouts all pass, known exactly, the oracle's bound for the hardest-to-exclude pair (L_tunnel vs branching_tunnel) reaches 0.82 at 68 Hz, still excluding 95% / 5% until the signal grows 1.2 times: unresolved, not a demonstrated opportunity, for shape as for detection. Only these layouts, this rock and these sources are covered."
+ "finding": "Telling one layout from another is bounded as detection is, and depth ambiguity does not rescue a reader: the same-depth bound holds for every allowed vertical transformation. Under Giza's regional microseism level the oracle, told everything but which layout is there, tells an L-shaped from a straight tunnel with detection minus false alarm at most 1.5e-06, and a column with a spiral from a plain column at most 2.0e-06; the tight bound gives 2.6e-09 and 9.1e-09 (each layout against empty ground, summed); the loose certificate with the background, the same way, caps discrimination at 5.110% at 5% for every pair. Discrimination needs 1.2 to 4.1 times the signal that detecting the first layout needs. With a lorry bouncing beside the layouts all pass, known exactly, at the worst of four sampled sides, the oracle's bound for the hardest-to-exclude pair (L_tunnel vs branching_tunnel) reaches 0.86 at 68 Hz, still excluding 95% / 5% until the signal grows 1.1 times: unresolved, not a demonstrated opportunity, for shape as for detection. Only these layouts, this rock and these sources are covered."
 }

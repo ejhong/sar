@@ -524,25 +524,26 @@ investigation's record, and what it leaves open follow.
     excitations and windows are covered: fractured, layered or coupled structures, the air inside a room and the rock's
     nonlinear response are not modelled.
 
-19. **What one image would need: an energy requirement for every pattern, and a curve for smooth ones (P2-27).** The
-    bound turned around, for the Giza dwell (and the 2022 acquisition), fully developed speckle without a reference image
-    or receiver noise, motion coherent for the whole pass at its worst phase, and a target of 95% found at 5% false
-    alarms. For every pattern, from Theorem C: a room-specific motion whose energy, the integral of max_t |u_los|^2 over
-    the ground, stays below 9.8e-10 m^4 (Giza's background motion in the reference covariance; 1.7e-8 m^4 with the
-    reference taken as the identity) is excluded whatever its shape, frequency or time history, an rms of 1.0 um over
-    1,000 m^2. For one smooth (Gaussian) pattern, exactly within the model (each line's KL from its covariance's
-    determinant, the range band widened): at least 3.0 mm at 0.2 Hz, where only the gradient counts, and 47 um at 80 Hz over
-    279 m^2. The smooth curve binds only that family: at 0.2 Hz the Gaussian holds 4.7e-4 of what the most informative
-    pattern inside its envelope could (the same envelope times a cosine of 4 m period holds 39 times as much, of 1 m period
-    489 times); at 20 to 80 Hz it holds half, and the pattern matters little. The bench room's modelled static imprint under
-    the regional microseisms falls short of the energy requirement by 4.6e5 in amplitude (8.3e8 against the smooth curve).
-    Under a truck over a bump 15 m away all pass, with the scattered wave carried unattenuated to the scene's farthest
-    corner, the bench room's dynamic imprint falls short by only 2.5 to 3.7, and the room under a 5 m roof not at all
-    (0.45 to 0.97); counted within 39 m, 33 to 35 and 5.2 to 8.1: under strong shaking the conclusion rests on how far the
-    scattered wave carries. A change of the ambient motion's phase alone moves the ground by at most twice that motion, so
-    such a mechanism is excluded only while the area it changes stays below E_min / (2a)^2: 5.5e4 m^2 under the regional
-    microseisms (the room's footprint is 128 m^2), 11 m^2 at the noisiest stations, 2,131 m^2 under the truck at 80 Hz. It
-    says nothing of routes outside the model or of mechanisms with gain.
+19. **What one image would need: a displacement-integral requirement for every pattern, and a curve for smooth ones
+    (P2-27).** For the Giza dwell and a target of 95% found at 5% false alarms. For every pattern and time history the
+    requirement is on the displacement integral E = integral of max_t |du_los|^2 over the ground (m^4, an integrated squared
+    displacement envelope, not a mechanical energy). The oracle told the reflectivity, the excitation and both models, with
+    receiver noise at 30 dB per cell, cannot reach the target below 1.0e-9 m^4 whatever motion both worlds share, since that
+    cancels from its mean echoes; it stays within five points of chance below 1.5e-12 m^4. Under quiet ground the speckle
+    certificate with Giza's background in the reference gives 9.8e-10 m^4; under strong shaking it has no valid reference.
+    For one smooth (Gaussian) pattern, exactly within the model: 3.0 mm at 0.2 Hz and 47 um at 80 Hz over 279 m^2; that curve
+    binds only its family (the review's cosine-modulated Gaussian holds 39 times its information; the Gaussian's information
+    is 4.7e-4 of the general upper bound 4 N <Phi^2> for its envelope, a bound, not an attainable optimum). The bench room's
+    static imprint under the regional microseisms, bounded over every strain direction (the largest eigenvalue of its
+    components' Gram matrix) and beyond the grid (Eshelby's void as Okada point sources, scaled to the solver's largest
+    envelope ratio, 1.62, times 1.25), with the grid check's 10% and a random field's peak (3 / sqrt 2), falls short of the
+    oracle's requirement by 1.2e5 in amplitude: near chance (the oracle's bound 1.1e-5). Under a truck over a bump 15 m away
+    all pass, at the worst of four sampled sides, the whole 39 m disk untapered and the scattered wave by energy-flux
+    conservation without attenuation to the scene's corner, with the grid check's allowance: the bench room 2.6 to 4.0
+    (95% at 5% excluded, weaker performance not), the room under a 5 m roof 1.0 at 20 Hz and 0.45 at 80 Hz (unresolved);
+    counted within 39 m only, 4.5 to 33. A phase-only mechanism escapes this bound, under its stated amplitude and noise,
+    only by changing more than 5.9e4 m^2 under the regional microseisms (a disk of radius 137 m), 2,259 m^2 under the truck
+    at 80 Hz: necessary to escape, not sufficient to be detected.
 
 20. **The published picture's depth does not follow the room; its horizontal change follows the image's (P2-28).** The
     published chain run whole (P2-07's) over the bench room 15 m down, the same room 30 m down and a granite block 15 m
@@ -561,9 +562,10 @@ investigation's record, and what it leaves open follow.
     brightest natural ground over ICEYE's best Dwell NESZ, -26.7 dB): 1.6e-06 under the regional microseisms,
     1.2e-04 at the noisiest stations; the imprint would have to grow 8,415 times (117 at the noisiest stations) even after assumed
     allowances (local level 10x the regional, site amplification 3x, 10 dB more SNR). Strong shaking close by, known exactly,
-    is not excluded: the oracle's bound reaches 0.41 with a truck bouncing beside the bench room all pass, and 0.99 beside
-    a room under a 5 m roof, with the scattered wave carried unattenuated to the scene's corner (0.24 within 32 m alone); 14
-    cases are not excluded after the allowances. These are upper bounds (energy bounds, averaged over phases): a large one
+    is not excluded: with the grid checks' allowances the oracle's bound reaches 0.43 with a truck bouncing beside the bench
+    room all pass, and 0.996 beside a room under a 5 m roof, at the worst of four sampled sides, with the scattered wave
+    carried unattenuated to the scene's corner (0.26 within 32 m alone); 14 cases are not excluded after the allowances.
+    Under the regional microseisms the bound is 1.8e-6 with the grid allowance. These are upper bounds (energy bounds, averaged over phases): a large one
     shows that this argument does not exclude detection, not that any detector achieves it. Depth: small rooms 15 m down in any non-negative mix leave 71% of the
     bench room 30 m down's mark unmatched (78% for the bench room 15 m down; two small rooms solved together agree with their
     sum to 3.7%): in uniform rock the mark's shape carries depth, and telling those depths apart takes about
@@ -576,9 +578,9 @@ investigation's record, and what it leaves open follow.
     5.017% found at 5% false alarms under the regional microseism envelope with the background included (TV
     1.7e-04, where P2-25's tighter bound gives 1.3e-09); an arbitrary phase modulation within the background envelope
     on 52,600 pixels at most 9.55%, over the whole image undecided; the thin-roof room with a truck-level
-    harmonic at most 27.3% with the reference covariance taken as the identity, still excluded with 11% more phase (89.1%
-    before the far field was taken direction by direction; the old bound took four times the average), and not excluded
-    with Giza's background motion in the reference.
+    harmonic at most 27.3% with the reference covariance taken as the identity; but under strong shaking the no-cavity world
+    moves with the source, so neither the identity nor the regional background's floor is a valid reference there: those
+    dynamic rows are a restricted surrogate, and P2-29's oracle with receiver noise is the valid bound.
 
 23. **Telling one layout from another is bounded as detection is (P2-32).** For any two layouts A and B,
     TV(A, B) <= TV(A, none) + TV(none, B), and the closest admissible pair of depth variants is no easier than the pair at
@@ -588,20 +590,21 @@ investigation's record, and what it leaves open follow.
     the difference itself, exact there. Under Giza's regional microseisms the oracle tells an L-shaped from a straight
     tunnel at most 1.5e-06 and a column with a spiral from a plain column at most 2.0e-06 (tight 2.6e-09 and 9.1e-09; the
     certificate with the background at most 5.110% at 5% for every pair); discrimination needs 1.2 to 4.1 times detection's
-    signal. With a lorry bouncing beside the layouts all pass, known exactly, the oracle's upper bound reaches 0.82 for an
-    L-shaped against a branching tunnel, still excluding 95% at 5% until the signal grows 1.2 times: unresolved, as
-    detection is. Only these shallow bench-scale layouts in uniform rock are covered.
+    signal. With a lorry bouncing beside the layouts all pass, known exactly, at the worst of four sampled sides and with
+    the grid check's allowance, the oracle's upper bound reaches 0.86 for an L-shaped against a branching tunnel, still
+    excluding 95% at 5% until the signal grows 1.1 times: unresolved, as detection is. Only these shallow bench-scale layouts in uniform rock are covered.
 
 24. **Where the data hold a layout, a reference detector names and places it; the published picture does neither (P2-31).**
     A room, an L-shaped and a branching tunnel, each imprint from the lab's solver, the image from the synthesizer, the
     unrelated ground and shaking matched across layouts and controls (no cavity, a motionless copy), three realisations,
     read at the real level and at labelled amplified diagnostics (0.3, 2 and 20 rad). At 20 rad (the positive control) a
     reference detector told the shaking names 100% of layouts and, scanning every placement, puts its peak a median 0.4 m
-    from the layout's centre (controls 36 m). At 2 rad it names 78% when told where to look (p = 0.008), but its response
+    from the layout's centre (controls 36 m). At 2 rad it names 78% when told where to look (permutation p = 0.03), but its response
     there stands only 1.9 spreads above the scatter over placements and a scan peaks 34 m away. The published method's plan
-    map, read blind, names 56% at 20 rad (p = 0.14 against guessing, nine images) and centres its top places 5.6 m from the
+    map, read blind, names 56% at 20 rad (p = 0.17, the true layouts permuted within each of the three grounds, which are
+    the independent units; a null test, not a confidence interval) and centres its top places 5.6 m from the
     layout's centre against the controls' 6.2 m; its largest value separates cavities from controls with AUC 0.59. Its
-    change against the same ground without the cavity, a diagnostic it never has, names 67% at 0.3 and 2 rad (p = 0.04 each,
+    change against the same ground without the cavity, a diagnostic it never has, names 67% at 0.3 and 2 rad (permutation p = 0.04,
     uncorrected for a dozen comparisons) and centres 5.2 m away against the motionless copy's 12.1 m (the picture changes
     near where the image changes, as in P2-28), and 33% at 20 rad. After the predeclared depth family its change peaks
     1.5 m from the true depth at 20 rad and the motionless copy's 1.2 m: with 12 candidates, closeness says little. At
@@ -666,7 +669,8 @@ The evidence that the published and gated pictures carry no underground informat
 controls instead: the same picture with and without a known chamber (P2-07, P2-20), patterns in motionless copies and
 open ground (P2-13, P2-14), pictures that do not survive a change of pass (P2-21), and a picture that does not follow the
 chamber where the data demonstrably hold it (P2-24). The finite bounds (P2-25, P2-29, P2-30) bound presence within their
-model, and location and shape with it, since telling two layouts apart is harder than telling either from none; a bound
+model, and location and shape through TV(A, B) <= TV(A, none) + TV(none, B), computed for the particular pairs (telling
+two layouts apart is not in general harder than detecting either); a bound
 that excludes 95% at 5% is not by itself a proof of no prospecting value, which is excluded only where the bound on
 detection minus false alarm is itself small. The shape test (P2-31, item 24) found that where the data hold a layout
 a reference detector names and places it and the published picture does neither.
@@ -774,6 +778,54 @@ checks, and found that some conclusions went beyond what the calculations establ
   distinguishable after the allowed depth ambiguity, with a conservative bound on their differing echoes throughout the
   declared range, so that every algorithm receiving less information inherits it. One hard pair rules out uniformly
   reliable mapping across a class, not detection of every member.
+
+### Fourth review, 30 September 2026: corrections adopted
+
+A fourth independent review of the branch (commit 439c48b) found one remaining gap and several overstatements. Adopted:
+
+- **The reference covariance under strong shaking.** The comparison is ground without a cavity shaken by the lorry
+  against ground with a cavity shaken by the same lorry. The first world already moves with the lorry, so neither the
+  identity nor the regional background's floor is a valid reference for it, and motion common to both worlds does not by
+  itself cancel from the unknown-reflectivity (speckle) problem. The speckle bounds' strong-shaking values (P2-25's urban
+  and truck rows, P2-30's dynamic rows, P2-27's certificate comparisons for them) are now labelled restricted surrogates.
+  The valid bound there is the oracle with receiver noise (P2-29): told the reflectivity and the excitation, its two
+  worlds' mean echoes differ by exp(i k u_A) - exp(i k u_0), so the common motion cancels; the noise floor is ICEYE Dwell's
+  best NESZ under the brightest natural ground (30 dB assumed, above the 26.7 dB the specification implies). A covariance
+  floor for the ground moving with the lorry is not proved; the singular-value argument, with the lorry's own phase
+  energy over the scene added to the regional background's, gives none (P2-30: the square roots sum to 1.14 to 1.41).
+- **Tails and tapers.** The static tail is no longer an assumed 1/r^2 from sampled edges: over 16 to 40 m both the solver
+  and the analytic point source decay slower than 1/r (the intermediate field of a source 15 m down), so a power law fitted
+  inside the grid cannot bound it. It is now Eshelby's void as Okada point sources, which carries the far field's angular
+  pattern and r^-2 decay, scaled for each component to the solver's largest envelope ratio inside the grid (1.62) times
+  1.25, integrated to 30 km; directions are enclosed by the largest eigenvalue of the components' Gram matrix; the grid
+  is counted only inside its largest circle. A first attempt took the grid's corner as its radius and left the region
+  between 40 and 55 m uncounted; caught and fixed before publication. The dynamic imprint now counts the whole 39 m disk
+  untapered, and the far field by energy-flux conservation for a surface wave without attenuation; the near and far
+  regions are disjoint and add.
+- **Directions and numerics.** Strong shaking is computed at four sampled incidence sides; the results say "the worst of
+  four sampled sides", not the worst side. The grid checks' allowances are applied: 10% in amplitude for the static
+  imprint (P2-04), 6.3% and 10.5% for the dynamic ones (P2-26), and a random field's peak (3 / sqrt 2) for the ambient
+  static imprint.
+- **Three outcomes.** A bound on detection minus false alarm holds at every operating point (found <= false alarms +
+  TV). Results are now classed as near chance (TV < 0.05), 95% at 5% excluded (weaker, possibly useful performance not),
+  and unresolved; crossing a threshold demonstrates neither detectability nor usefulness.
+- **Terms.** E = integral of max_t |du|^2 dA is an integrated squared displacement envelope in m^4, not an energy;
+  sqrt(E / A) is a spatial rms of temporal peak displacements. "The Gaussian holds 4.7e-4 of what the most informative
+  pattern could" is corrected: the denominator is a general upper bound, not a demonstrated optimum.
+- **The phase-modulation area.** 128 m^2 is the half-peak area of the modelled response, not an upper bound on the area a
+  cavity affects; the area threshold (5.9e4 m^2 under the regional microseisms, a disk of radius 137 m) is necessary to
+  escape this particular exclusion under its stated amplitude and noise. Whether a physically justified field, tails
+  included, exceeds it is what the imprint comparison asks.
+- **The blind test.** Label permutations give a null significance test, not a confidence interval (a bootstrap over
+  scenes is added for that); failure at the amplification tested does not imply failure however strong; telling two
+  layouts apart is not in general harder than detecting either (TV(A, B) <= TV(A, none) + TV(none, B) is computed for
+  the pairs instead). Independent grounds are the evaluation units: P2-31's p-values are now exact permutations of the
+  true layouts within each of its three grounds (0.17 for the published blind map at 20 rad, where a binomial over nine
+  images had given 0.14).
+- **The next milestone, as the review sets it:** one fully specified, auditable comparison, with the same source in both
+  worlds, a valid reference covariance or a calibrated noise floor, bounded displacement tails and numerical error, a
+  stated scattering and noise model, and performance bounds for presence, location and shape; parameter ranges after
+  that comparison is sound.
 
 ### Motion measured from orbit, 2026
 

@@ -38,9 +38,11 @@ Nothing frozen may change after the first product exists. A change starts a new 
 
 Synthetic, from the lab's pipeline on the real Giza dwell geometry (P2-01), each 101 m by 111 m of open desert:
 
-- 24 scenes. For each, the generator draws: whether there is a room (probability one half); if so, its depth (10, 15,
-  20 or 30 m to its centre), size (4, 6 or 10 m), contents (hollow, or a granite block), and position (uniform within
-  30 m of the scene's centre).
+- 24 scenes, each with its own independently drawn ground (texture and shaking realisation): the scenes are the
+  evaluation units. For each, the generator draws: whether there is a room (probability one half); if so, its depth (10,
+  15, 20 or 30 m to its centre), size (4, 6 or 10 m), contents (hollow, or a granite block), and position (uniform within
+  30 m of the scene's centre). Alternative layouts drawn on the same ground are paired comparisons, useful for diagnosis,
+  and are not counted as independent validation trials.
 - Shaking: Giza's measured microseisms and 1-3 Hz level (M1-01), as P2-07 and P2-20 shake. Each scene is made twice:
   at the real level, and with the room's imprint boosted to a stated peak phase (2 rad, where P2-07's and P2-28's
   outputs change visibly), because a test only at the real level cannot tell a method that does not respond from one
@@ -63,8 +65,10 @@ the key regenerated from it.
 Five claims are scored apart, because failure on one does not establish failure on the others: a method that recovers a
 branching tunnel or a room's layout at one of two possible depths is a major success.
 
-- **Presence:** the area under the ROC curve of the scores against presence, with its 95% interval by permuting the
-  labels (1,000 permutations).
+- **Presence:** the area under the ROC curve of the scores against presence, over the scenes. Its null significance
+  test permutes the presence labels across scenes (1,000 permutations); that gives a p-value against chance, not a
+  confidence interval for predictive performance, which comes from a bootstrap over the scenes and is reported beside
+  it.
 - **Horizontal location:** a hit is a reported structure whose plan position lies within 6 m of a true one; every other
   report is a false positive, extra predicted structures included.
 - **Shape:** the reported plan geometry against the true footprints (the overlap of thresholded maps, and which of the
@@ -80,15 +84,19 @@ one allowance; features are never moved or stretched one by one to fit. The same
 (motionless copies, pure speckle, random perturbations) and to any comparison method, so an allowance that makes noise
 look like structure is caught.
 
-Success, for the boosted set: presence AUC at least 0.8 with its interval above 0.5, and location and shape better than
-the controls given the same freedom. At the real level the lab's bound predicts presence indistinguishable from chance for
-any method (P2-25, P2-30), and the same for location and shape, since telling two layouts apart is harder than telling
-either from none; a method that does better at the real level would contradict the model, which is why the real level is
-in the test. A method with some but not 95% / 5% performance may still have prospecting value, and is reported as such.
+Success, for the boosted set: presence AUC at least 0.8 with its bootstrap interval above 0.5 and its permutation test
+against chance passed, and location and shape better than the controls given the same freedom. At the real level the
+lab's bounds predict presence indistinguishable from chance for any method (P2-25, P2-29, P2-30). For location and shape
+the bound is computed for the particular pairs (P2-32: through empty ground, TV(A, B) <= TV(A, none) + TV(none, B));
+telling two layouts apart is not in general harder than detecting either, so no such rule is assumed. A method that does
+better at the real level would contradict the model, which is why the real level is in the test. A bound on detection
+minus false alarm holds at every operating point (found <= false alarms + TV): a method with some but not 95% / 5%
+performance may still have prospecting value, and is reported as such.
 
 ## 5. What each outcome would mean
 
-- Fails on the boosted set: the method does not read the room's motion, however strong; its pictures come from elsewhere.
+- Fails on the boosted set: the method does not read the room's motion at the amplification tested (stronger motion is
+  not tested and not excluded); its pictures come from elsewhere at that level.
 - Passes on the boosted set, fails at the real level: the method reads strong motion, and the real ground's motion is
   too weak for it, as the bound says.
 - Passes at the real level: the lab's model is wrong somewhere, and the finding is the model's error, to be found.
