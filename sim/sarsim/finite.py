@@ -1,7 +1,7 @@
 """Finite, algorithm-independent statistical certificates for a declared SAR model (P2-30).
 
 A complement to sarsim.information, from an independent derivation (29 September 2026; its proofs are set out on the
-site's proof page and in PROOF.md). sarsim.information computes the Fisher information one image holds and bounds the
+site's proof page, /proof/). sarsim.information computes the Fisher information one image holds and bounds the
 finite change with an explicit remainder, tightly, taking the reference covariance as the identity; this module bounds
 the finite change more loosely but more simply, straight from a phase-energy envelope, and can include the common
 background motion through a proved covariance floor (Theorem C), and bounds the oracle told everything but the answer
@@ -53,8 +53,11 @@ def perturbation_certificate(q, mean_energy=0.0):
     if rho >= 1:
         return {"q": q, "rho": rho, "kl_upper": None, "tv_upper": 1.0,
                 "informative": False}
-    kl = rho * rho / (2 * (1 - rho) ** 2) + mean_energy
-    tv = min(1.0, math.sqrt(kl / 2))
+    # every eigenvalue e of the whitened change has |e| <= ||E||_F <= rho, and e - log(1 + e) <= e^2 / (2 (1 - rho))
+    # there, so KL <= ||E||_F^2 / (2 (1 - rho)) <= rho^2 / (2 (1 - rho)) (an earlier version carried (1 - rho)^2 here:
+    # valid, but looser than the derivation)
+    kl = rho * rho / (2 * (1 - rho)) + mean_energy
+    tv = min(1.0, math.sqrt(kl / 2), math.sqrt(-math.expm1(-kl)))     # Pinsker and Bretagnolle-Huber, the smaller
     return {"q": q, "rho": rho, "kl_upper": kl, "tv_upper": tv,
             "informative": tv < 1}
 
@@ -185,12 +188,14 @@ def baseline_floor_from_phase_energy(background_energy):
 def required_q_for_tv(tv_target):
     """Where this sufficient exclusion ceases to certify TV < tv_target.
 
-    In the mean-zero covariance theorem: rho/(2(1-rho))=tv_target.
+    In the mean-zero covariance theorem: rho^2/(2(1-rho)) reaches the KL at which min(Pinsker, Bretagnolle-Huber)
+    reaches tv_target.
     A larger q does not establish detectability.
     """
     if not 0 < tv_target < 1:
         raise ValueError("Target must be in (0,1)")
-    rho = 2 * tv_target / (1 + 2 * tv_target)
+    kl = max(2 * tv_target ** 2, -math.log1p(-tv_target ** 2))      # where min(Pinsker, Bretagnolle-Huber) reaches it
+    rho = (-2 * kl + math.sqrt(4 * kl * kl + 8 * kl)) / 2            # rho^2 / (2 (1 - rho)) = kl
     return math.sqrt(1 + rho) - 1
 
 

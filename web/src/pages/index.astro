@@ -148,7 +148,7 @@ const rqAt = (f: number, L: number) => rq.acquisitions['giza-20250827'].frequenc
 const st20 = (shapeTest as unknown as { summary: Record<string, { reference: { shape_accuracy: number; median_location_error_m: number }; published_blind: { shape_accuracy: number } }> }).summary['diagnostic_20_rad'];
 const umWords = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} millimetres` : `${+(m * 1e6).toPrecision(2)} micrometres`);
 // P2-29: the oracle, told everything but the answer
-type OrRow = { kind: string; tv_upper: number; growth_to_target: number; open: boolean };
+type OrRow = { kind: string; tv_upper: number; growth_to_target: number; not_excluded_after_allowances: boolean };
 const orc = oracle as unknown as { chamber: OrRow[]; depth: { residual_fraction: number; signal_factor_depth_over_detection: number } };
 const orAmb = orc.chamber.filter((r) => r.kind === 'ambient')[0].tv_upper;   // Giza's regional microseisms
 const orWorst = orc.chamber.filter((r) => r.kind === 'cultural').reduce((a, r) => (r.tv_upper > a.tv_upper ? r : a));

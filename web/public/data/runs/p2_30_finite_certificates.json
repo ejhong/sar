@@ -3,9 +3,9 @@
   "id": "p2_30_finite_certificates",
   "title": "Finite certificates: the bound on every processor, the common background included",
   "date": "2026-09-30",
-  "started_utc": "2026-09-30T14:46:52+00:00",
+  "started_utc": "2026-09-30T18:11:25+00:00",
   "runtime_s": 0.1,
-  "commit": "439c48b+",
+  "commit": "ecff0e5+",
   "params": {
    "target": {
     "tpr": 0.95,
@@ -65,6 +65,7 @@
    "informative": true,
    "tpr_upper_at_fpr_005": 0.050041,
    "excludes_095_at_005": true,
+   "state": "near chance",
    "peak_phase_upper_rad": 1.531e-09,
    "peak_displacement_upper_m": 3.805e-12,
    "source_frequency_hz": 0.2,
@@ -77,11 +78,12 @@
    "phase_energy_upper_assumed": 8.532e-06,
    "q": 0.002921,
    "rho": 0.00585,
-   "kl_upper": 1.732e-05,
-   "tv_upper": 0.002942,
+   "kl_upper": 1.721e-05,
+   "tv_upper": 0.002934,
    "informative": true,
-   "tpr_upper_at_fpr_005": 0.052942,
+   "tpr_upper_at_fpr_005": 0.052934,
    "excludes_095_at_005": true,
+   "state": "near chance",
    "peak_phase_upper_rad": 1.102e-07,
    "peak_displacement_upper_m": 2.738e-10,
    "source_frequency_hz": 0.2,
@@ -99,6 +101,7 @@
    "informative": true,
    "tpr_upper_at_fpr_005": 0.050043,
    "excludes_095_at_005": true,
+   "state": "near chance",
    "peak_phase_upper_rad": 1.608e-09,
    "peak_displacement_upper_m": 3.996e-12,
    "source_frequency_hz": 2.0,
@@ -116,6 +119,7 @@
    "informative": true,
    "tpr_upper_at_fpr_005": 0.050037,
    "excludes_095_at_005": true,
+   "state": "near chance",
    "peak_phase_upper_rad": 1.387e-09,
    "peak_displacement_upper_m": 3.446e-12,
    "source_frequency_hz": 5.0,
@@ -133,6 +137,7 @@
    "informative": true,
    "tpr_upper_at_fpr_005": 0.05012,
    "excludes_095_at_005": true,
+   "state": "near chance",
    "peak_phase_upper_rad": 4.526e-09,
    "peak_displacement_upper_m": 1.125e-11,
    "status": "finite certificate conditional on all three peak envelopes",
@@ -146,11 +151,12 @@
    "phase_energy_upper_assumed": 7.245e-06,
    "q": 0.002692,
    "rho": 0.005391,
-   "kl_upper": 1.469e-05,
-   "tv_upper": 0.00271,
+   "kl_upper": 1.461e-05,
+   "tv_upper": 0.002703,
    "informative": true,
-   "tpr_upper_at_fpr_005": 0.05271,
+   "tpr_upper_at_fpr_005": 0.052703,
    "excludes_095_at_005": true,
+   "state": "near chance",
    "source_rms_velocity_m_s": 9e-06,
    "source_frequency_hz": 51.79269,
    "status": "conditional on sampled transfer energy and assumed far-field envelope",
@@ -164,22 +170,23 @@
    "reference_covariance": "identity: a restricted surrogate (the excitation's own motion is not in it)",
    "valid_bound": "P2-29 oracle with receiver noise",
    "stress_11pct_phase_multiplier": 1.11,
-   "stress_11pct_tv_upper": 0.00301,
-   "stress_11pct_tpr_upper_at_fpr_005": 0.05301,
+   "stress_11pct_tv_upper": 0.003001,
+   "stress_11pct_tpr_upper_at_fpr_005": 0.053001,
    "stress_11pct_excludes_095_at_005": true,
    "stress_is_certified_error_bound": false,
-   "phase_multiplier_to_target_boundary": 104.669402
+   "phase_multiplier_to_target_boundary": 127.605492
   },
   {
    "case": "surface: truck-level harmonic",
    "phase_energy_upper_assumed": 0.0008945,
    "q": 0.029908,
    "rho": 0.06071,
-   "kl_upper": 0.002089,
-   "tv_upper": 0.032317,
+   "kl_upper": 0.001962,
+   "tv_upper": 0.031321,
    "informative": true,
-   "tpr_upper_at_fpr_005": 0.082317,
+   "tpr_upper_at_fpr_005": 0.081321,
    "excludes_095_at_005": true,
+   "state": "near chance",
    "source_rms_velocity_m_s": 0.0001,
    "source_frequency_hz": 51.79269,
    "status": "conditional on sampled transfer energy and assumed far-field envelope",
@@ -193,22 +200,23 @@
    "reference_covariance": "identity: a restricted surrogate (the excitation's own motion is not in it)",
    "valid_bound": "P2-29 oracle with receiver noise",
    "stress_11pct_phase_multiplier": 1.11,
-   "stress_11pct_tv_upper": 0.036192,
-   "stress_11pct_tpr_upper_at_fpr_005": 0.086192,
+   "stress_11pct_tv_upper": 0.034949,
+   "stress_11pct_tpr_upper_at_fpr_005": 0.084949,
    "stress_11pct_excludes_095_at_005": true,
    "stress_is_certified_error_bound": false,
-   "phase_multiplier_to_target_boundary": 9.420246
+   "phase_multiplier_to_target_boundary": 11.484494
   },
   {
    "case": "surface_favourable: urban-level harmonic",
    "phase_energy_upper_assumed": 0.0001675,
    "q": 0.012943,
    "rho": 0.026053,
-   "kl_upper": 0.0003578,
-   "tv_upper": 0.013375,
+   "kl_upper": 0.0003484,
+   "tv_upper": 0.013199,
    "informative": true,
-   "tpr_upper_at_fpr_005": 0.063375,
+   "tpr_upper_at_fpr_005": 0.063199,
    "excludes_095_at_005": true,
+   "state": "near chance",
    "source_rms_velocity_m_s": 9e-06,
    "source_frequency_hz": 71.934291,
    "status": "conditional on sampled transfer energy and assumed far-field envelope",
@@ -222,22 +230,23 @@
    "reference_covariance": "identity: a restricted surrogate (the excitation's own motion is not in it)",
    "valid_bound": "P2-29 oracle with receiver noise",
    "stress_11pct_phase_multiplier": 1.11,
-   "stress_11pct_tv_upper": 0.014901,
-   "stress_11pct_tpr_upper_at_fpr_005": 0.064901,
+   "stress_11pct_tv_upper": 0.014683,
+   "stress_11pct_tpr_upper_at_fpr_005": 0.064683,
    "stress_11pct_excludes_095_at_005": true,
    "stress_is_certified_error_bound": false,
-   "phase_multiplier_to_target_boundary": 21.768431
+   "phase_multiplier_to_target_boundary": 26.538524
   },
   {
    "case": "surface_favourable: truck-level harmonic",
    "phase_energy_upper_assumed": 0.02068,
    "q": 0.143807,
    "rho": 0.308293,
-   "kl_upper": 0.099324,
-   "tv_upper": 0.22285,
+   "kl_upper": 0.068703,
+   "tv_upper": 0.185342,
    "informative": true,
-   "tpr_upper_at_fpr_005": 0.27285,
+   "tpr_upper_at_fpr_005": 0.235342,
    "excludes_095_at_005": true,
+   "state": "95% at 5% excluded",
    "source_rms_velocity_m_s": 0.0001,
    "source_frequency_hz": 71.934291,
    "status": "conditional on sampled transfer energy and assumed far-field envelope",
@@ -251,22 +260,23 @@
    "reference_covariance": "identity: a restricted surrogate (the excitation's own motion is not in it)",
    "valid_bound": "P2-29 oracle with receiver noise",
    "stress_11pct_phase_multiplier": 1.11,
-   "stress_11pct_tv_upper": 0.263045,
-   "stress_11pct_tpr_upper_at_fpr_005": 0.313045,
+   "stress_11pct_tv_upper": 0.212932,
+   "stress_11pct_tpr_upper_at_fpr_005": 0.262932,
    "stress_11pct_excludes_095_at_005": true,
    "stress_is_certified_error_bound": false,
-   "phase_multiplier_to_target_boundary": 1.959159
+   "phase_multiplier_to_target_boundary": 2.388467
   },
   {
    "case": "p_below: urban-level harmonic",
    "phase_energy_upper_assumed": 1.281e-05,
    "q": 0.003579,
    "rho": 0.007172,
-   "kl_upper": 2.609e-05,
-   "tv_upper": 0.003612,
+   "kl_upper": 2.59e-05,
+   "tv_upper": 0.003599,
    "informative": true,
-   "tpr_upper_at_fpr_005": 0.053612,
+   "tpr_upper_at_fpr_005": 0.053599,
    "excludes_095_at_005": true,
+   "state": "near chance",
    "source_rms_velocity_m_s": 9e-06,
    "source_frequency_hz": 88.239397,
    "status": "conditional on sampled transfer energy and assumed far-field envelope",
@@ -280,22 +290,23 @@
    "reference_covariance": "identity: a restricted surrogate (the excitation's own motion is not in it)",
    "valid_bound": "P2-29 oracle with receiver noise",
    "stress_11pct_phase_multiplier": 1.11,
-   "stress_11pct_tv_upper": 0.004013,
-   "stress_11pct_tpr_upper_at_fpr_005": 0.054013,
+   "stress_11pct_tv_upper": 0.003997,
+   "stress_11pct_tpr_upper_at_fpr_005": 0.053997,
    "stress_11pct_excludes_095_at_005": true,
    "stress_is_certified_error_bound": false,
-   "phase_multiplier_to_target_boundary": 78.709541
+   "phase_multiplier_to_target_boundary": 95.957075
   },
   {
    "case": "p_below: truck-level harmonic",
    "phase_energy_upper_assumed": 0.001582,
    "q": 0.039772,
    "rho": 0.081126,
-   "kl_upper": 0.003897,
-   "tv_upper": 0.044144,
+   "kl_upper": 0.003581,
+   "tv_upper": 0.042316,
    "informative": true,
-   "tpr_upper_at_fpr_005": 0.094144,
+   "tpr_upper_at_fpr_005": 0.092316,
    "excludes_095_at_005": true,
+   "state": "near chance",
    "source_rms_velocity_m_s": 0.0001,
    "source_frequency_hz": 88.239397,
    "status": "conditional on sampled transfer energy and assumed far-field envelope",
@@ -309,22 +320,23 @@
    "reference_covariance": "identity: a restricted surrogate (the excitation's own motion is not in it)",
    "valid_bound": "P2-29 oracle with receiver noise",
    "stress_11pct_phase_multiplier": 1.11,
-   "stress_11pct_tv_upper": 0.049597,
-   "stress_11pct_tpr_upper_at_fpr_005": 0.099597,
+   "stress_11pct_tv_upper": 0.047307,
+   "stress_11pct_tpr_upper_at_fpr_005": 0.097307,
    "stress_11pct_excludes_095_at_005": true,
    "stress_is_certified_error_bound": false,
-   "phase_multiplier_to_target_boundary": 7.083859
+   "phase_multiplier_to_target_boundary": 8.636137
   },
   {
    "case": "s_below: urban-level harmonic",
    "phase_energy_upper_assumed": 1.764e-05,
    "q": 0.0042,
    "rho": 0.008417,
-   "kl_upper": 3.603e-05,
-   "tv_upper": 0.004244,
+   "kl_upper": 3.572e-05,
+   "tv_upper": 0.004226,
    "informative": true,
-   "tpr_upper_at_fpr_005": 0.054244,
+   "tpr_upper_at_fpr_005": 0.054226,
    "excludes_095_at_005": true,
+   "state": "near chance",
    "source_rms_velocity_m_s": 9e-06,
    "source_frequency_hz": 88.239397,
    "status": "conditional on sampled transfer energy and assumed far-field envelope",
@@ -338,22 +350,23 @@
    "reference_covariance": "identity: a restricted surrogate (the excitation's own motion is not in it)",
    "valid_bound": "P2-29 oracle with receiver noise",
    "stress_11pct_phase_multiplier": 1.11,
-   "stress_11pct_tv_upper": 0.004717,
-   "stress_11pct_tpr_upper_at_fpr_005": 0.054717,
+   "stress_11pct_tv_upper": 0.004695,
+   "stress_11pct_tpr_upper_at_fpr_005": 0.054695,
    "stress_11pct_excludes_095_at_005": true,
    "stress_is_certified_error_bound": false,
-   "phase_multiplier_to_target_boundary": 67.085084
+   "phase_multiplier_to_target_boundary": 81.785364
   },
   {
    "case": "s_below: truck-level harmonic",
    "phase_energy_upper_assumed": 0.002178,
    "q": 0.046664,
    "rho": 0.095505,
-   "kl_upper": 0.005575,
-   "tv_upper": 0.052795,
+   "kl_upper": 0.005042,
+   "tv_upper": 0.05021,
    "informative": true,
-   "tpr_upper_at_fpr_005": 0.102795,
+   "tpr_upper_at_fpr_005": 0.10021,
    "excludes_095_at_005": true,
+   "state": "95% at 5% excluded",
    "source_rms_velocity_m_s": 0.0001,
    "source_frequency_hz": 88.239397,
    "status": "conditional on sampled transfer energy and assumed far-field envelope",
@@ -367,11 +380,11 @@
    "reference_covariance": "identity: a restricted surrogate (the excitation's own motion is not in it)",
    "valid_bound": "P2-29 oracle with receiver noise",
    "stress_11pct_phase_multiplier": 1.11,
-   "stress_11pct_tv_upper": 0.059457,
-   "stress_11pct_tpr_upper_at_fpr_005": 0.109457,
+   "stress_11pct_tv_upper": 0.056209,
+   "stress_11pct_tpr_upper_at_fpr_005": 0.106209,
    "stress_11pct_excludes_095_at_005": true,
    "stress_is_certified_error_bound": false,
-   "phase_multiplier_to_target_boundary": 6.037658
+   "phase_multiplier_to_target_boundary": 7.360683
   }
  ],
  "lorry_reference_floor": [
@@ -435,10 +448,10 @@
    "phase_energy_upper_assumed": 9.331e-05,
    "q": 0.040851,
    "rho": 0.083371,
-   "kl_upper": 0.004136,
-   "tv_upper": 0.045477,
+   "kl_upper": 0.003791,
+   "tv_upper": 0.04354,
    "informative": true,
-   "tpr_upper_at_fpr_005": 0.095477,
+   "tpr_upper_at_fpr_005": 0.09354,
    "status": "conditional on fixed displacement envelope and exact affected-pixel count; no linear cavity kernel used"
   },
   {
@@ -469,7 +482,7 @@
     "case": "Giza microseisms, measured",
     "q": 0.0001716,
     "rho": 0.0003433,
-    "kl_upper": 5.897e-08,
+    "kl_upper": 5.895e-08,
     "tv_upper": 0.0001717,
     "informative": true,
     "tpr_upper_at_fpr_005": 0.050172,
@@ -480,7 +493,7 @@
     "case": "Giza 1-3 Hz, measured",
     "q": 0.0001803,
     "rho": 0.0003605,
-    "kl_upper": 6.504e-08,
+    "kl_upper": 6.502e-08,
     "tv_upper": 0.0001803,
     "informative": true,
     "tpr_upper_at_fpr_005": 0.05018,
@@ -491,10 +504,10 @@
     "case": "Giza 3-8 Hz, measured",
     "q": 0.0001555,
     "rho": 0.0003109,
-    "kl_upper": 4.837e-08,
+    "kl_upper": 4.835e-08,
     "tv_upper": 0.0001555,
     "informative": true,
-    "tpr_upper_at_fpr_005": 0.050156,
+    "tpr_upper_at_fpr_005": 0.050155,
     "status": "conditional, common three-harmonic background included",
     "tight_ceiling_p2_25": 2.764e-08
    },
@@ -502,8 +515,8 @@
     "case": "Three modelled low-frequency bands, coherently summed",
     "q": 0.0005073,
     "rho": 0.001015,
-    "kl_upper": 5.161e-07,
-    "tv_upper": 0.000508,
+    "kl_upper": 5.156e-07,
+    "tv_upper": 0.0005077,
     "informative": true,
     "tpr_upper_at_fpr_005": 0.050508,
     "status": "conditional, common three-harmonic background included",
@@ -512,977 +525,977 @@
   ]
  },
  "requirements": {
-  "q_exclusion_boundary_095_005": 0.28174,
+  "q_exclusion_boundary_095_005": 0.343477,
   "oracle_energy_necessary_for_tv_090": 5.411087,
-  "peak_displacement_boundary_at_1000_m2_m": 4.176e-06,
+  "peak_displacement_boundary_at_1000_m2_m": 5.091e-06,
   "meaning": "below boundary this bound excludes target; above it performance remains undecided",
   "area_conversion": "continuum approximation; use exact affected-pixel count for discrete certification",
   "curve": [
    {
     "footprint_m2": 1.0,
-    "exclusion_boundary_peak_m": 0.0001321,
-    "exclusion_boundary_peak_m_covariance_floor_01": 4.176e-05,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.321e-05
+    "exclusion_boundary_peak_m": 0.000161,
+    "exclusion_boundary_peak_m_covariance_floor_01": 5.091e-05,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.61e-05
    },
    {
     "footprint_m2": 1.112339,
-    "exclusion_boundary_peak_m": 0.0001252,
-    "exclusion_boundary_peak_m_covariance_floor_01": 3.96e-05,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.252e-05
+    "exclusion_boundary_peak_m": 0.0001527,
+    "exclusion_boundary_peak_m_covariance_floor_01": 4.827e-05,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.527e-05
    },
    {
     "footprint_m2": 1.237298,
-    "exclusion_boundary_peak_m": 0.0001187,
-    "exclusion_boundary_peak_m_covariance_floor_01": 3.754e-05,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.187e-05
+    "exclusion_boundary_peak_m": 0.0001447,
+    "exclusion_boundary_peak_m_covariance_floor_01": 4.577e-05,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.447e-05
    },
    {
     "footprint_m2": 1.376295,
-    "exclusion_boundary_peak_m": 0.0001126,
-    "exclusion_boundary_peak_m_covariance_floor_01": 3.56e-05,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.126e-05
+    "exclusion_boundary_peak_m": 0.0001372,
+    "exclusion_boundary_peak_m_covariance_floor_01": 4.34e-05,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.372e-05
    },
    {
     "footprint_m2": 1.530906,
-    "exclusion_boundary_peak_m": 0.0001067,
-    "exclusion_boundary_peak_m_covariance_floor_01": 3.375e-05,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.067e-05
+    "exclusion_boundary_peak_m": 0.0001301,
+    "exclusion_boundary_peak_m_covariance_floor_01": 4.115e-05,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.301e-05
    },
    {
     "footprint_m2": 1.702886,
-    "exclusion_boundary_peak_m": 0.0001012,
-    "exclusion_boundary_peak_m_covariance_floor_01": 3.2e-05,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.012e-05
+    "exclusion_boundary_peak_m": 0.0001234,
+    "exclusion_boundary_peak_m_covariance_floor_01": 3.902e-05,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.234e-05
    },
    {
     "footprint_m2": 1.894187,
-    "exclusion_boundary_peak_m": 9.595e-05,
-    "exclusion_boundary_peak_m_covariance_floor_01": 3.034e-05,
-    "exclusion_boundary_peak_m_covariance_floor_001": 9.595e-06
+    "exclusion_boundary_peak_m": 0.000117,
+    "exclusion_boundary_peak_m_covariance_floor_01": 3.699e-05,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.17e-05
    },
    {
     "footprint_m2": 2.106977,
-    "exclusion_boundary_peak_m": 9.098e-05,
-    "exclusion_boundary_peak_m_covariance_floor_01": 2.877e-05,
-    "exclusion_boundary_peak_m_covariance_floor_001": 9.098e-06
+    "exclusion_boundary_peak_m": 0.0001109,
+    "exclusion_boundary_peak_m_covariance_floor_01": 3.508e-05,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.109e-05
    },
    {
     "footprint_m2": 2.343673,
-    "exclusion_boundary_peak_m": 8.626e-05,
-    "exclusion_boundary_peak_m_covariance_floor_01": 2.728e-05,
-    "exclusion_boundary_peak_m_covariance_floor_001": 8.626e-06
+    "exclusion_boundary_peak_m": 0.0001052,
+    "exclusion_boundary_peak_m_covariance_floor_01": 3.326e-05,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.052e-05
    },
    {
     "footprint_m2": 2.606959,
-    "exclusion_boundary_peak_m": 8.179e-05,
-    "exclusion_boundary_peak_m_covariance_floor_01": 2.586e-05,
-    "exclusion_boundary_peak_m_covariance_floor_001": 8.179e-06
+    "exclusion_boundary_peak_m": 9.972e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 3.153e-05,
+    "exclusion_boundary_peak_m_covariance_floor_001": 9.972e-06
    },
    {
     "footprint_m2": 2.899821,
-    "exclusion_boundary_peak_m": 7.755e-05,
-    "exclusion_boundary_peak_m_covariance_floor_01": 2.452e-05,
-    "exclusion_boundary_peak_m_covariance_floor_001": 7.755e-06
+    "exclusion_boundary_peak_m": 9.455e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 2.99e-05,
+    "exclusion_boundary_peak_m_covariance_floor_001": 9.455e-06
    },
    {
     "footprint_m2": 3.225584,
-    "exclusion_boundary_peak_m": 7.353e-05,
-    "exclusion_boundary_peak_m_covariance_floor_01": 2.325e-05,
-    "exclusion_boundary_peak_m_covariance_floor_001": 7.353e-06
+    "exclusion_boundary_peak_m": 8.964e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 2.835e-05,
+    "exclusion_boundary_peak_m_covariance_floor_001": 8.964e-06
    },
    {
     "footprint_m2": 3.587943,
-    "exclusion_boundary_peak_m": 6.972e-05,
-    "exclusion_boundary_peak_m_covariance_floor_01": 2.205e-05,
-    "exclusion_boundary_peak_m_covariance_floor_001": 6.972e-06
+    "exclusion_boundary_peak_m": 8.5e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 2.688e-05,
+    "exclusion_boundary_peak_m_covariance_floor_001": 8.5e-06
    },
    {
     "footprint_m2": 3.991008,
-    "exclusion_boundary_peak_m": 6.611e-05,
-    "exclusion_boundary_peak_m_covariance_floor_01": 2.09e-05,
-    "exclusion_boundary_peak_m_covariance_floor_001": 6.611e-06
+    "exclusion_boundary_peak_m": 8.059e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 2.549e-05,
+    "exclusion_boundary_peak_m_covariance_floor_001": 8.059e-06
    },
    {
     "footprint_m2": 4.439354,
-    "exclusion_boundary_peak_m": 6.268e-05,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.982e-05,
-    "exclusion_boundary_peak_m_covariance_floor_001": 6.268e-06
+    "exclusion_boundary_peak_m": 7.641e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 2.416e-05,
+    "exclusion_boundary_peak_m_covariance_floor_001": 7.641e-06
    },
    {
     "footprint_m2": 4.938066,
-    "exclusion_boundary_peak_m": 5.943e-05,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.879e-05,
-    "exclusion_boundary_peak_m_covariance_floor_001": 5.943e-06
+    "exclusion_boundary_peak_m": 7.245e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 2.291e-05,
+    "exclusion_boundary_peak_m_covariance_floor_001": 7.245e-06
    },
    {
     "footprint_m2": 5.492803,
-    "exclusion_boundary_peak_m": 5.635e-05,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.782e-05,
-    "exclusion_boundary_peak_m_covariance_floor_001": 5.635e-06
+    "exclusion_boundary_peak_m": 6.87e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 2.172e-05,
+    "exclusion_boundary_peak_m_covariance_floor_001": 6.87e-06
    },
    {
     "footprint_m2": 6.109858,
-    "exclusion_boundary_peak_m": 5.343e-05,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.69e-05,
-    "exclusion_boundary_peak_m_covariance_floor_001": 5.343e-06
+    "exclusion_boundary_peak_m": 6.513e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 2.06e-05,
+    "exclusion_boundary_peak_m_covariance_floor_001": 6.513e-06
    },
    {
     "footprint_m2": 6.796233,
-    "exclusion_boundary_peak_m": 5.066e-05,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.602e-05,
-    "exclusion_boundary_peak_m_covariance_floor_001": 5.066e-06
+    "exclusion_boundary_peak_m": 6.176e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.953e-05,
+    "exclusion_boundary_peak_m_covariance_floor_001": 6.176e-06
    },
    {
     "footprint_m2": 7.559714,
-    "exclusion_boundary_peak_m": 4.803e-05,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.519e-05,
-    "exclusion_boundary_peak_m_covariance_floor_001": 4.803e-06
+    "exclusion_boundary_peak_m": 5.856e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.852e-05,
+    "exclusion_boundary_peak_m_covariance_floor_001": 5.856e-06
    },
    {
     "footprint_m2": 8.408964,
-    "exclusion_boundary_peak_m": 4.554e-05,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.44e-05,
-    "exclusion_boundary_peak_m_covariance_floor_001": 4.554e-06
+    "exclusion_boundary_peak_m": 5.552e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.756e-05,
+    "exclusion_boundary_peak_m_covariance_floor_001": 5.552e-06
    },
    {
     "footprint_m2": 9.353618,
-    "exclusion_boundary_peak_m": 4.318e-05,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.365e-05,
-    "exclusion_boundary_peak_m_covariance_floor_001": 4.318e-06
+    "exclusion_boundary_peak_m": 5.264e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.665e-05,
+    "exclusion_boundary_peak_m_covariance_floor_001": 5.264e-06
    },
    {
     "footprint_m2": 10.404393,
-    "exclusion_boundary_peak_m": 4.094e-05,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.295e-05,
-    "exclusion_boundary_peak_m_covariance_floor_001": 4.094e-06
+    "exclusion_boundary_peak_m": 4.991e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.578e-05,
+    "exclusion_boundary_peak_m_covariance_floor_001": 4.991e-06
    },
    {
     "footprint_m2": 11.573211,
-    "exclusion_boundary_peak_m": 3.882e-05,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.228e-05,
-    "exclusion_boundary_peak_m_covariance_floor_001": 3.882e-06
+    "exclusion_boundary_peak_m": 4.733e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.497e-05,
+    "exclusion_boundary_peak_m_covariance_floor_001": 4.733e-06
    },
    {
     "footprint_m2": 12.873333,
-    "exclusion_boundary_peak_m": 3.681e-05,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.164e-05,
-    "exclusion_boundary_peak_m_covariance_floor_001": 3.681e-06
+    "exclusion_boundary_peak_m": 4.487e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.419e-05,
+    "exclusion_boundary_peak_m_covariance_floor_001": 4.487e-06
    },
    {
     "footprint_m2": 14.319509,
-    "exclusion_boundary_peak_m": 3.49e-05,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.104e-05,
-    "exclusion_boundary_peak_m_covariance_floor_001": 3.49e-06
+    "exclusion_boundary_peak_m": 4.255e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.345e-05,
+    "exclusion_boundary_peak_m_covariance_floor_001": 4.255e-06
    },
    {
     "footprint_m2": 15.928147,
-    "exclusion_boundary_peak_m": 3.309e-05,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.046e-05,
-    "exclusion_boundary_peak_m_covariance_floor_001": 3.309e-06
+    "exclusion_boundary_peak_m": 4.034e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.276e-05,
+    "exclusion_boundary_peak_m_covariance_floor_001": 4.034e-06
    },
    {
     "footprint_m2": 17.717497,
-    "exclusion_boundary_peak_m": 3.137e-05,
-    "exclusion_boundary_peak_m_covariance_floor_01": 9.922e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 3.137e-06
+    "exclusion_boundary_peak_m": 3.825e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.21e-05,
+    "exclusion_boundary_peak_m_covariance_floor_001": 3.825e-06
    },
    {
     "footprint_m2": 19.707861,
-    "exclusion_boundary_peak_m": 2.975e-05,
-    "exclusion_boundary_peak_m_covariance_floor_01": 9.407e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 2.975e-06
+    "exclusion_boundary_peak_m": 3.627e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.147e-05,
+    "exclusion_boundary_peak_m_covariance_floor_001": 3.627e-06
    },
    {
     "footprint_m2": 21.921821,
-    "exclusion_boundary_peak_m": 2.821e-05,
-    "exclusion_boundary_peak_m_covariance_floor_01": 8.92e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 2.821e-06
+    "exclusion_boundary_peak_m": 3.439e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.087e-05,
+    "exclusion_boundary_peak_m_covariance_floor_001": 3.439e-06
    },
    {
     "footprint_m2": 24.384494,
-    "exclusion_boundary_peak_m": 2.674e-05,
-    "exclusion_boundary_peak_m_covariance_floor_01": 8.457e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 2.674e-06
+    "exclusion_boundary_peak_m": 3.26e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.031e-05,
+    "exclusion_boundary_peak_m_covariance_floor_001": 3.26e-06
    },
    {
     "footprint_m2": 27.123821,
-    "exclusion_boundary_peak_m": 2.536e-05,
-    "exclusion_boundary_peak_m_covariance_floor_01": 8.019e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 2.536e-06
+    "exclusion_boundary_peak_m": 3.091e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 9.776e-06,
+    "exclusion_boundary_peak_m_covariance_floor_001": 3.091e-06
    },
    {
     "footprint_m2": 30.170882,
-    "exclusion_boundary_peak_m": 2.404e-05,
-    "exclusion_boundary_peak_m_covariance_floor_01": 7.603e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 2.404e-06
+    "exclusion_boundary_peak_m": 2.931e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 9.269e-06,
+    "exclusion_boundary_peak_m_covariance_floor_001": 2.931e-06
    },
    {
     "footprint_m2": 33.560245,
-    "exclusion_boundary_peak_m": 2.28e-05,
-    "exclusion_boundary_peak_m_covariance_floor_01": 7.209e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 2.28e-06
+    "exclusion_boundary_peak_m": 2.779e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 8.789e-06,
+    "exclusion_boundary_peak_m_covariance_floor_001": 2.779e-06
    },
    {
     "footprint_m2": 37.330366,
-    "exclusion_boundary_peak_m": 2.161e-05,
-    "exclusion_boundary_peak_m_covariance_floor_01": 6.835e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 2.161e-06
+    "exclusion_boundary_peak_m": 2.635e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 8.333e-06,
+    "exclusion_boundary_peak_m_covariance_floor_001": 2.635e-06
    },
    {
     "footprint_m2": 41.524019,
-    "exclusion_boundary_peak_m": 2.049e-05,
-    "exclusion_boundary_peak_m_covariance_floor_01": 6.481e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 2.049e-06
+    "exclusion_boundary_peak_m": 2.498e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 7.901e-06,
+    "exclusion_boundary_peak_m_covariance_floor_001": 2.498e-06
    },
    {
     "footprint_m2": 46.188781,
-    "exclusion_boundary_peak_m": 1.943e-05,
-    "exclusion_boundary_peak_m_covariance_floor_01": 6.145e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.943e-06
+    "exclusion_boundary_peak_m": 2.369e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 7.491e-06,
+    "exclusion_boundary_peak_m_covariance_floor_001": 2.369e-06
    },
    {
     "footprint_m2": 51.377578,
-    "exclusion_boundary_peak_m": 1.842e-05,
-    "exclusion_boundary_peak_m_covariance_floor_01": 5.826e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.842e-06
+    "exclusion_boundary_peak_m": 2.246e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 7.103e-06,
+    "exclusion_boundary_peak_m_covariance_floor_001": 2.246e-06
    },
    {
     "footprint_m2": 57.149279,
-    "exclusion_boundary_peak_m": 1.747e-05,
-    "exclusion_boundary_peak_m_covariance_floor_01": 5.524e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.747e-06
+    "exclusion_boundary_peak_m": 2.13e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 6.735e-06,
+    "exclusion_boundary_peak_m_covariance_floor_001": 2.13e-06
    },
    {
     "footprint_m2": 63.569366,
-    "exclusion_boundary_peak_m": 1.656e-05,
-    "exclusion_boundary_peak_m_covariance_floor_01": 5.238e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.656e-06
+    "exclusion_boundary_peak_m": 2.019e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 6.386e-06,
+    "exclusion_boundary_peak_m_covariance_floor_001": 2.019e-06
    },
    {
     "footprint_m2": 70.710678,
-    "exclusion_boundary_peak_m": 1.57e-05,
-    "exclusion_boundary_peak_m_covariance_floor_01": 4.966e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.57e-06
+    "exclusion_boundary_peak_m": 1.915e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 6.055e-06,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.915e-06
    },
    {
     "footprint_m2": 78.654238,
-    "exclusion_boundary_peak_m": 1.489e-05,
-    "exclusion_boundary_peak_m_covariance_floor_01": 4.709e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.489e-06
+    "exclusion_boundary_peak_m": 1.815e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 5.741e-06,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.815e-06
    },
    {
     "footprint_m2": 87.490168,
-    "exclusion_boundary_peak_m": 1.412e-05,
-    "exclusion_boundary_peak_m_covariance_floor_01": 4.465e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.412e-06
+    "exclusion_boundary_peak_m": 1.721e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 5.443e-06,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.721e-06
    },
    {
     "footprint_m2": 97.318718,
-    "exclusion_boundary_peak_m": 1.339e-05,
-    "exclusion_boundary_peak_m_covariance_floor_01": 4.233e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.339e-06
+    "exclusion_boundary_peak_m": 1.632e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 5.161e-06,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.632e-06
    },
    {
     "footprint_m2": 108.251395,
-    "exclusion_boundary_peak_m": 1.269e-05,
-    "exclusion_boundary_peak_m_covariance_floor_01": 4.014e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.269e-06
+    "exclusion_boundary_peak_m": 1.547e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 4.893e-06,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.547e-06
    },
    {
     "footprint_m2": 120.412238,
-    "exclusion_boundary_peak_m": 1.203e-05,
-    "exclusion_boundary_peak_m_covariance_floor_01": 3.806e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.203e-06
+    "exclusion_boundary_peak_m": 1.467e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 4.64e-06,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.467e-06
    },
    {
     "footprint_m2": 133.939216,
-    "exclusion_boundary_peak_m": 1.141e-05,
-    "exclusion_boundary_peak_m_covariance_floor_01": 3.608e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.141e-06
+    "exclusion_boundary_peak_m": 1.391e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 4.399e-06,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.391e-06
    },
    {
     "footprint_m2": 148.9858,
-    "exclusion_boundary_peak_m": 1.082e-05,
-    "exclusion_boundary_peak_m_covariance_floor_01": 3.421e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.082e-06
+    "exclusion_boundary_peak_m": 1.319e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 4.171e-06,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.319e-06
    },
    {
     "footprint_m2": 165.722701,
-    "exclusion_boundary_peak_m": 1.026e-05,
-    "exclusion_boundary_peak_m_covariance_floor_01": 3.244e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.026e-06
+    "exclusion_boundary_peak_m": 1.251e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 3.955e-06,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.251e-06
    },
    {
     "footprint_m2": 184.339807,
-    "exclusion_boundary_peak_m": 9.727e-06,
-    "exclusion_boundary_peak_m_covariance_floor_01": 3.076e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 9.727e-07
+    "exclusion_boundary_peak_m": 1.186e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 3.75e-06,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.186e-06
    },
    {
     "footprint_m2": 205.048338,
-    "exclusion_boundary_peak_m": 9.223e-06,
-    "exclusion_boundary_peak_m_covariance_floor_01": 2.916e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 9.223e-07
+    "exclusion_boundary_peak_m": 1.124e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 3.555e-06,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.124e-06
    },
    {
     "footprint_m2": 228.083242,
-    "exclusion_boundary_peak_m": 8.744e-06,
-    "exclusion_boundary_peak_m_covariance_floor_01": 2.765e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 8.744e-07
+    "exclusion_boundary_peak_m": 1.066e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 3.371e-06,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.066e-06
    },
    {
     "footprint_m2": 253.705863,
-    "exclusion_boundary_peak_m": 8.291e-06,
-    "exclusion_boundary_peak_m_covariance_floor_01": 2.622e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 8.291e-07
+    "exclusion_boundary_peak_m": 1.011e-05,
+    "exclusion_boundary_peak_m_covariance_floor_01": 3.196e-06,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.011e-06
    },
    {
     "footprint_m2": 282.2069,
-    "exclusion_boundary_peak_m": 7.861e-06,
-    "exclusion_boundary_peak_m_covariance_floor_01": 2.486e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 7.861e-07
+    "exclusion_boundary_peak_m": 9.584e-06,
+    "exclusion_boundary_peak_m_covariance_floor_01": 3.031e-06,
+    "exclusion_boundary_peak_m_covariance_floor_001": 9.584e-07
    },
    {
     "footprint_m2": 313.909712,
-    "exclusion_boundary_peak_m": 7.454e-06,
-    "exclusion_boundary_peak_m_covariance_floor_01": 2.357e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 7.454e-07
+    "exclusion_boundary_peak_m": 9.087e-06,
+    "exclusion_boundary_peak_m_covariance_floor_01": 2.874e-06,
+    "exclusion_boundary_peak_m_covariance_floor_001": 9.087e-07
    },
    {
     "footprint_m2": 349.173984,
-    "exclusion_boundary_peak_m": 7.067e-06,
-    "exclusion_boundary_peak_m_covariance_floor_01": 2.235e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 7.067e-07
+    "exclusion_boundary_peak_m": 8.616e-06,
+    "exclusion_boundary_peak_m_covariance_floor_01": 2.725e-06,
+    "exclusion_boundary_peak_m_covariance_floor_001": 8.616e-07
    },
    {
     "footprint_m2": 388.399805,
-    "exclusion_boundary_peak_m": 6.701e-06,
-    "exclusion_boundary_peak_m_covariance_floor_01": 2.119e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 6.701e-07
+    "exclusion_boundary_peak_m": 8.169e-06,
+    "exclusion_boundary_peak_m_covariance_floor_01": 2.583e-06,
+    "exclusion_boundary_peak_m_covariance_floor_001": 8.169e-07
    },
    {
     "footprint_m2": 432.032211,
-    "exclusion_boundary_peak_m": 6.354e-06,
-    "exclusion_boundary_peak_m_covariance_floor_01": 2.009e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 6.354e-07
+    "exclusion_boundary_peak_m": 7.746e-06,
+    "exclusion_boundary_peak_m_covariance_floor_01": 2.449e-06,
+    "exclusion_boundary_peak_m_covariance_floor_001": 7.746e-07
    },
    {
     "footprint_m2": 480.566234,
-    "exclusion_boundary_peak_m": 6.024e-06,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.905e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 6.024e-07
+    "exclusion_boundary_peak_m": 7.344e-06,
+    "exclusion_boundary_peak_m_covariance_floor_01": 2.322e-06,
+    "exclusion_boundary_peak_m_covariance_floor_001": 7.344e-07
    },
    {
     "footprint_m2": 534.552516,
-    "exclusion_boundary_peak_m": 5.712e-06,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.806e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 5.712e-07
+    "exclusion_boundary_peak_m": 6.964e-06,
+    "exclusion_boundary_peak_m_covariance_floor_01": 2.202e-06,
+    "exclusion_boundary_peak_m_covariance_floor_001": 6.964e-07
    },
    {
     "footprint_m2": 594.603558,
-    "exclusion_boundary_peak_m": 5.416e-06,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.713e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 5.416e-07
+    "exclusion_boundary_peak_m": 6.603e-06,
+    "exclusion_boundary_peak_m_covariance_floor_01": 2.088e-06,
+    "exclusion_boundary_peak_m_covariance_floor_001": 6.603e-07
    },
    {
     "footprint_m2": 661.400667,
-    "exclusion_boundary_peak_m": 5.135e-06,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.624e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 5.135e-07
+    "exclusion_boundary_peak_m": 6.26e-06,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.98e-06,
+    "exclusion_boundary_peak_m_covariance_floor_001": 6.26e-07
    },
    {
     "footprint_m2": 735.701689,
-    "exclusion_boundary_peak_m": 4.869e-06,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.54e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 4.869e-07
+    "exclusion_boundary_peak_m": 5.936e-06,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.877e-06,
+    "exclusion_boundary_peak_m_covariance_floor_001": 5.936e-07
    },
    {
     "footprint_m2": 818.349607,
-    "exclusion_boundary_peak_m": 4.616e-06,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.46e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 4.616e-07
+    "exclusion_boundary_peak_m": 5.628e-06,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.78e-06,
+    "exclusion_boundary_peak_m_covariance_floor_001": 5.628e-07
    },
    {
     "footprint_m2": 910.282102,
-    "exclusion_boundary_peak_m": 4.377e-06,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.384e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 4.377e-07
+    "exclusion_boundary_peak_m": 5.336e-06,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.687e-06,
+    "exclusion_boundary_peak_m_covariance_floor_001": 5.336e-07
    },
    {
     "footprint_m2": 1012.542191,
-    "exclusion_boundary_peak_m": 4.15e-06,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.312e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 4.15e-07
+    "exclusion_boundary_peak_m": 5.06e-06,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.6e-06,
+    "exclusion_boundary_peak_m_covariance_floor_001": 5.06e-07
    },
    {
     "footprint_m2": 1126.290066,
-    "exclusion_boundary_peak_m": 3.935e-06,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.244e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 3.935e-07
+    "exclusion_boundary_peak_m": 4.797e-06,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.517e-06,
+    "exclusion_boundary_peak_m_covariance_floor_001": 4.797e-07
    },
    {
     "footprint_m2": 1252.816252,
-    "exclusion_boundary_peak_m": 3.731e-06,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.18e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 3.731e-07
+    "exclusion_boundary_peak_m": 4.549e-06,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.438e-06,
+    "exclusion_boundary_peak_m_covariance_floor_001": 4.549e-07
    },
    {
     "footprint_m2": 1393.556251,
-    "exclusion_boundary_peak_m": 3.538e-06,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.119e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 3.538e-07
+    "exclusion_boundary_peak_m": 4.313e-06,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.364e-06,
+    "exclusion_boundary_peak_m_covariance_floor_001": 4.313e-07
    },
    {
     "footprint_m2": 1550.106826,
-    "exclusion_boundary_peak_m": 3.354e-06,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.061e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 3.354e-07
+    "exclusion_boundary_peak_m": 4.089e-06,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.293e-06,
+    "exclusion_boundary_peak_m_covariance_floor_001": 4.089e-07
    },
    {
     "footprint_m2": 1724.244121,
-    "exclusion_boundary_peak_m": 3.18e-06,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.006e-06,
-    "exclusion_boundary_peak_m_covariance_floor_001": 3.18e-07
+    "exclusion_boundary_peak_m": 3.877e-06,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.226e-06,
+    "exclusion_boundary_peak_m_covariance_floor_001": 3.877e-07
    },
    {
     "footprint_m2": 1917.943807,
-    "exclusion_boundary_peak_m": 3.016e-06,
-    "exclusion_boundary_peak_m_covariance_floor_01": 9.536e-07,
-    "exclusion_boundary_peak_m_covariance_floor_001": 3.016e-07
+    "exclusion_boundary_peak_m": 3.676e-06,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.163e-06,
+    "exclusion_boundary_peak_m_covariance_floor_001": 3.676e-07
    },
    {
     "footprint_m2": 2133.403503,
-    "exclusion_boundary_peak_m": 2.859e-06,
-    "exclusion_boundary_peak_m_covariance_floor_01": 9.042e-07,
-    "exclusion_boundary_peak_m_covariance_floor_001": 2.859e-07
+    "exclusion_boundary_peak_m": 3.486e-06,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.102e-06,
+    "exclusion_boundary_peak_m_covariance_floor_001": 3.486e-07
    },
    {
     "footprint_m2": 2373.067704,
-    "exclusion_boundary_peak_m": 2.711e-06,
-    "exclusion_boundary_peak_m_covariance_floor_01": 8.573e-07,
-    "exclusion_boundary_peak_m_covariance_floor_001": 2.711e-07
+    "exclusion_boundary_peak_m": 3.305e-06,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.045e-06,
+    "exclusion_boundary_peak_m_covariance_floor_001": 3.305e-07
    },
    {
     "footprint_m2": 2639.655518,
-    "exclusion_boundary_peak_m": 2.57e-06,
-    "exclusion_boundary_peak_m_covariance_floor_01": 8.128e-07,
-    "exclusion_boundary_peak_m_covariance_floor_001": 2.57e-07
+    "exclusion_boundary_peak_m": 3.134e-06,
+    "exclusion_boundary_peak_m_covariance_floor_01": 9.91e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 3.134e-07
    },
    {
     "footprint_m2": 2936.191513,
-    "exclusion_boundary_peak_m": 2.437e-06,
-    "exclusion_boundary_peak_m_covariance_floor_01": 7.707e-07,
-    "exclusion_boundary_peak_m_covariance_floor_001": 2.437e-07
+    "exclusion_boundary_peak_m": 2.971e-06,
+    "exclusion_boundary_peak_m_covariance_floor_01": 9.396e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 2.971e-07
    },
    {
     "footprint_m2": 3266.040036,
-    "exclusion_boundary_peak_m": 2.311e-06,
-    "exclusion_boundary_peak_m_covariance_floor_01": 7.307e-07,
-    "exclusion_boundary_peak_m_covariance_floor_001": 2.311e-07
+    "exclusion_boundary_peak_m": 2.817e-06,
+    "exclusion_boundary_peak_m_covariance_floor_01": 8.909e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 2.817e-07
    },
    {
     "footprint_m2": 3632.943378,
-    "exclusion_boundary_peak_m": 2.191e-06,
-    "exclusion_boundary_peak_m_covariance_floor_01": 6.929e-07,
-    "exclusion_boundary_peak_m_covariance_floor_001": 2.191e-07
+    "exclusion_boundary_peak_m": 2.671e-06,
+    "exclusion_boundary_peak_m_covariance_floor_01": 8.447e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 2.671e-07
    },
    {
     "footprint_m2": 4041.064238,
-    "exclusion_boundary_peak_m": 2.077e-06,
-    "exclusion_boundary_peak_m_covariance_floor_01": 6.569e-07,
-    "exclusion_boundary_peak_m_covariance_floor_001": 2.077e-07
+    "exclusion_boundary_peak_m": 2.533e-06,
+    "exclusion_boundary_peak_m_covariance_floor_01": 8.009e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 2.533e-07
    },
    {
     "footprint_m2": 4495.032947,
-    "exclusion_boundary_peak_m": 1.97e-06,
-    "exclusion_boundary_peak_m_covariance_floor_01": 6.229e-07,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.97e-07
+    "exclusion_boundary_peak_m": 2.401e-06,
+    "exclusion_boundary_peak_m_covariance_floor_01": 7.594e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 2.401e-07
    },
    {
     "footprint_m2": 5000.0,
-    "exclusion_boundary_peak_m": 1.868e-06,
-    "exclusion_boundary_peak_m_covariance_floor_01": 5.906e-07,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.868e-07
+    "exclusion_boundary_peak_m": 2.277e-06,
+    "exclusion_boundary_peak_m_covariance_floor_01": 7.2e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 2.277e-07
    },
    {
     "footprint_m2": 5561.694496,
-    "exclusion_boundary_peak_m": 1.771e-06,
-    "exclusion_boundary_peak_m_covariance_floor_01": 5.6e-07,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.771e-07
+    "exclusion_boundary_peak_m": 2.159e-06,
+    "exclusion_boundary_peak_m_covariance_floor_01": 6.827e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 2.159e-07
    },
    {
     "footprint_m2": 6186.489134,
-    "exclusion_boundary_peak_m": 1.679e-06,
-    "exclusion_boundary_peak_m_covariance_floor_01": 5.31e-07,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.679e-07
+    "exclusion_boundary_peak_m": 2.047e-06,
+    "exclusion_boundary_peak_m_covariance_floor_01": 6.473e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 2.047e-07
    },
    {
     "footprint_m2": 6881.472513,
-    "exclusion_boundary_peak_m": 1.592e-06,
-    "exclusion_boundary_peak_m_covariance_floor_01": 5.034e-07,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.592e-07
+    "exclusion_boundary_peak_m": 1.941e-06,
+    "exclusion_boundary_peak_m_covariance_floor_01": 6.137e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.941e-07
    },
    {
     "footprint_m2": 7654.52956,
-    "exclusion_boundary_peak_m": 1.509e-06,
-    "exclusion_boundary_peak_m_covariance_floor_01": 4.773e-07,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.509e-07
+    "exclusion_boundary_peak_m": 1.84e-06,
+    "exclusion_boundary_peak_m_covariance_floor_01": 5.819e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.84e-07
    },
    {
     "footprint_m2": 8514.430985,
-    "exclusion_boundary_peak_m": 1.431e-06,
-    "exclusion_boundary_peak_m_covariance_floor_01": 4.526e-07,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.431e-07
+    "exclusion_boundary_peak_m": 1.745e-06,
+    "exclusion_boundary_peak_m_covariance_floor_01": 5.518e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.745e-07
    },
    {
     "footprint_m2": 9470.93279,
-    "exclusion_boundary_peak_m": 1.357e-06,
-    "exclusion_boundary_peak_m_covariance_floor_01": 4.291e-07,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.357e-07
+    "exclusion_boundary_peak_m": 1.654e-06,
+    "exclusion_boundary_peak_m_covariance_floor_01": 5.232e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.654e-07
    },
    {
     "footprint_m2": 10534.886954,
-    "exclusion_boundary_peak_m": 1.287e-06,
-    "exclusion_boundary_peak_m_covariance_floor_01": 4.069e-07,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.287e-07
+    "exclusion_boundary_peak_m": 1.569e-06,
+    "exclusion_boundary_peak_m_covariance_floor_01": 4.96e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.569e-07
    },
    {
     "footprint_m2": 11718.364558,
-    "exclusion_boundary_peak_m": 1.22e-06,
-    "exclusion_boundary_peak_m_covariance_floor_01": 3.858e-07,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.22e-07
+    "exclusion_boundary_peak_m": 1.487e-06,
+    "exclusion_boundary_peak_m_covariance_floor_01": 4.703e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.487e-07
    },
    {
     "footprint_m2": 13034.792733,
-    "exclusion_boundary_peak_m": 1.157e-06,
-    "exclusion_boundary_peak_m_covariance_floor_01": 3.658e-07,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.157e-07
+    "exclusion_boundary_peak_m": 1.41e-06,
+    "exclusion_boundary_peak_m_covariance_floor_01": 4.459e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.41e-07
    },
    {
     "footprint_m2": 14499.107001,
-    "exclusion_boundary_peak_m": 1.097e-06,
-    "exclusion_boundary_peak_m_covariance_floor_01": 3.468e-07,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.097e-07
+    "exclusion_boundary_peak_m": 1.337e-06,
+    "exclusion_boundary_peak_m_covariance_floor_01": 4.228e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.337e-07
    },
    {
     "footprint_m2": 16127.920721,
-    "exclusion_boundary_peak_m": 1.04e-06,
-    "exclusion_boundary_peak_m_covariance_floor_01": 3.288e-07,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.04e-07
+    "exclusion_boundary_peak_m": 1.268e-06,
+    "exclusion_boundary_peak_m_covariance_floor_01": 4.009e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.268e-07
    },
    {
     "footprint_m2": 17939.713582,
-    "exclusion_boundary_peak_m": 9.86e-07,
-    "exclusion_boundary_peak_m_covariance_floor_01": 3.118e-07,
-    "exclusion_boundary_peak_m_covariance_floor_001": 9.86e-08
+    "exclusion_boundary_peak_m": 1.202e-06,
+    "exclusion_boundary_peak_m_covariance_floor_01": 3.801e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.202e-07
    },
    {
     "footprint_m2": 19955.041258,
-    "exclusion_boundary_peak_m": 9.349e-07,
-    "exclusion_boundary_peak_m_covariance_floor_01": 2.956e-07,
-    "exclusion_boundary_peak_m_covariance_floor_001": 9.349e-08
+    "exclusion_boundary_peak_m": 1.14e-06,
+    "exclusion_boundary_peak_m_covariance_floor_01": 3.604e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.14e-07
    },
    {
     "footprint_m2": 22196.768627,
-    "exclusion_boundary_peak_m": 8.864e-07,
-    "exclusion_boundary_peak_m_covariance_floor_01": 2.803e-07,
-    "exclusion_boundary_peak_m_covariance_floor_001": 8.864e-08
+    "exclusion_boundary_peak_m": 1.081e-06,
+    "exclusion_boundary_peak_m_covariance_floor_01": 3.417e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.081e-07
    },
    {
     "footprint_m2": 24690.329181,
-    "exclusion_boundary_peak_m": 8.405e-07,
-    "exclusion_boundary_peak_m_covariance_floor_01": 2.658e-07,
-    "exclusion_boundary_peak_m_covariance_floor_001": 8.405e-08
+    "exclusion_boundary_peak_m": 1.025e-06,
+    "exclusion_boundary_peak_m_covariance_floor_01": 3.24e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.025e-07
    },
    {
     "footprint_m2": 27464.013583,
-    "exclusion_boundary_peak_m": 7.969e-07,
-    "exclusion_boundary_peak_m_covariance_floor_01": 2.52e-07,
-    "exclusion_boundary_peak_m_covariance_floor_001": 7.969e-08
+    "exclusion_boundary_peak_m": 9.715e-07,
+    "exclusion_boundary_peak_m_covariance_floor_01": 3.072e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 9.715e-08
    },
    {
     "footprint_m2": 30549.290637,
-    "exclusion_boundary_peak_m": 7.556e-07,
-    "exclusion_boundary_peak_m_covariance_floor_01": 2.389e-07,
-    "exclusion_boundary_peak_m_covariance_floor_001": 7.556e-08
+    "exclusion_boundary_peak_m": 9.211e-07,
+    "exclusion_boundary_peak_m_covariance_floor_01": 2.913e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 9.211e-08
    },
    {
     "footprint_m2": 33981.164319,
-    "exclusion_boundary_peak_m": 7.164e-07,
-    "exclusion_boundary_peak_m_covariance_floor_01": 2.265e-07,
-    "exclusion_boundary_peak_m_covariance_floor_001": 7.164e-08
+    "exclusion_boundary_peak_m": 8.734e-07,
+    "exclusion_boundary_peak_m_covariance_floor_01": 2.762e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 8.734e-08
    },
    {
     "footprint_m2": 37798.570914,
-    "exclusion_boundary_peak_m": 6.793e-07,
-    "exclusion_boundary_peak_m_covariance_floor_01": 2.148e-07,
-    "exclusion_boundary_peak_m_covariance_floor_001": 6.793e-08
+    "exclusion_boundary_peak_m": 8.281e-07,
+    "exclusion_boundary_peak_m_covariance_floor_01": 2.619e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 8.281e-08
    },
    {
     "footprint_m2": 42044.820763,
-    "exclusion_boundary_peak_m": 6.441e-07,
-    "exclusion_boundary_peak_m_covariance_floor_01": 2.037e-07,
-    "exclusion_boundary_peak_m_covariance_floor_001": 6.441e-08
+    "exclusion_boundary_peak_m": 7.852e-07,
+    "exclusion_boundary_peak_m_covariance_floor_01": 2.483e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 7.852e-08
    },
    {
     "footprint_m2": 46768.089646,
-    "exclusion_boundary_peak_m": 6.107e-07,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.931e-07,
-    "exclusion_boundary_peak_m_covariance_floor_001": 6.107e-08
+    "exclusion_boundary_peak_m": 7.445e-07,
+    "exclusion_boundary_peak_m_covariance_floor_01": 2.354e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 7.445e-08
    },
    {
     "footprint_m2": 52021.965355,
-    "exclusion_boundary_peak_m": 5.79e-07,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.831e-07,
-    "exclusion_boundary_peak_m_covariance_floor_001": 5.79e-08
+    "exclusion_boundary_peak_m": 7.059e-07,
+    "exclusion_boundary_peak_m_covariance_floor_01": 2.232e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 7.059e-08
    },
    {
     "footprint_m2": 57866.055679,
-    "exclusion_boundary_peak_m": 5.49e-07,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.736e-07,
-    "exclusion_boundary_peak_m_covariance_floor_001": 5.49e-08
+    "exclusion_boundary_peak_m": 6.693e-07,
+    "exclusion_boundary_peak_m_covariance_floor_01": 2.116e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 6.693e-08
    },
    {
     "footprint_m2": 64366.664677,
-    "exclusion_boundary_peak_m": 5.205e-07,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.646e-07,
-    "exclusion_boundary_peak_m_covariance_floor_001": 5.205e-08
+    "exclusion_boundary_peak_m": 6.346e-07,
+    "exclusion_boundary_peak_m_covariance_floor_01": 2.007e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 6.346e-08
    },
    {
     "footprint_m2": 71597.544934,
-    "exclusion_boundary_peak_m": 4.935e-07,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.561e-07,
-    "exclusion_boundary_peak_m_covariance_floor_001": 4.935e-08
+    "exclusion_boundary_peak_m": 6.017e-07,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.903e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 6.017e-08
    },
    {
     "footprint_m2": 79640.73432,
-    "exclusion_boundary_peak_m": 4.68e-07,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.48e-07,
-    "exclusion_boundary_peak_m_covariance_floor_001": 4.68e-08
+    "exclusion_boundary_peak_m": 5.705e-07,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.804e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 5.705e-08
    },
    {
     "footprint_m2": 88587.486747,
-    "exclusion_boundary_peak_m": 4.437e-07,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.403e-07,
-    "exclusion_boundary_peak_m_covariance_floor_001": 4.437e-08
+    "exclusion_boundary_peak_m": 5.409e-07,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.711e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 5.409e-08
    },
    {
     "footprint_m2": 98539.307494,
-    "exclusion_boundary_peak_m": 4.207e-07,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.33e-07,
-    "exclusion_boundary_peak_m_covariance_floor_001": 4.207e-08
+    "exclusion_boundary_peak_m": 5.129e-07,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.622e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 5.129e-08
    },
    {
     "footprint_m2": 109609.104829,
-    "exclusion_boundary_peak_m": 3.989e-07,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.261e-07,
-    "exclusion_boundary_peak_m_covariance_floor_001": 3.989e-08
+    "exclusion_boundary_peak_m": 4.863e-07,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.538e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 4.863e-08
    },
    {
     "footprint_m2": 121922.471011,
-    "exclusion_boundary_peak_m": 3.782e-07,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.196e-07,
-    "exclusion_boundary_peak_m_covariance_floor_001": 3.782e-08
+    "exclusion_boundary_peak_m": 4.611e-07,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.458e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 4.611e-08
    },
    {
     "footprint_m2": 135619.107196,
-    "exclusion_boundary_peak_m": 3.586e-07,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.134e-07,
-    "exclusion_boundary_peak_m_covariance_floor_001": 3.586e-08
+    "exclusion_boundary_peak_m": 4.372e-07,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.383e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 4.372e-08
    },
    {
     "footprint_m2": 150854.408414,
-    "exclusion_boundary_peak_m": 3.4e-07,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.075e-07,
-    "exclusion_boundary_peak_m_covariance_floor_001": 3.4e-08
+    "exclusion_boundary_peak_m": 4.145e-07,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.311e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 4.145e-08
    },
    {
     "footprint_m2": 167801.226599,
-    "exclusion_boundary_peak_m": 3.224e-07,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.019e-07,
-    "exclusion_boundary_peak_m_covariance_floor_001": 3.224e-08
+    "exclusion_boundary_peak_m": 3.93e-07,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.243e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 3.93e-08
    },
    {
     "footprint_m2": 186651.831685,
-    "exclusion_boundary_peak_m": 3.057e-07,
-    "exclusion_boundary_peak_m_covariance_floor_01": 9.666e-08,
-    "exclusion_boundary_peak_m_covariance_floor_001": 3.057e-08
+    "exclusion_boundary_peak_m": 3.727e-07,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.178e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 3.727e-08
    },
    {
     "footprint_m2": 207620.092996,
-    "exclusion_boundary_peak_m": 2.898e-07,
-    "exclusion_boundary_peak_m_covariance_floor_01": 9.165e-08,
-    "exclusion_boundary_peak_m_covariance_floor_001": 2.898e-08
+    "exclusion_boundary_peak_m": 3.533e-07,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.117e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 3.533e-08
    },
    {
     "footprint_m2": 230943.905701,
-    "exclusion_boundary_peak_m": 2.748e-07,
-    "exclusion_boundary_peak_m_covariance_floor_01": 8.69e-08,
-    "exclusion_boundary_peak_m_covariance_floor_001": 2.748e-08
+    "exclusion_boundary_peak_m": 3.35e-07,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.059e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 3.35e-08
    },
    {
     "footprint_m2": 256887.889852,
-    "exclusion_boundary_peak_m": 2.606e-07,
-    "exclusion_boundary_peak_m_covariance_floor_01": 8.24e-08,
-    "exclusion_boundary_peak_m_covariance_floor_001": 2.606e-08
+    "exclusion_boundary_peak_m": 3.177e-07,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.005e-07,
+    "exclusion_boundary_peak_m_covariance_floor_001": 3.177e-08
    },
    {
     "footprint_m2": 285746.392624,
-    "exclusion_boundary_peak_m": 2.471e-07,
-    "exclusion_boundary_peak_m_covariance_floor_01": 7.812e-08,
-    "exclusion_boundary_peak_m_covariance_floor_001": 2.471e-08
+    "exclusion_boundary_peak_m": 3.012e-07,
+    "exclusion_boundary_peak_m_covariance_floor_01": 9.524e-08,
+    "exclusion_boundary_peak_m_covariance_floor_001": 3.012e-08
    },
    {
     "footprint_m2": 317846.827831,
-    "exclusion_boundary_peak_m": 2.342e-07,
-    "exclusion_boundary_peak_m_covariance_floor_01": 7.407e-08,
-    "exclusion_boundary_peak_m_covariance_floor_001": 2.342e-08
+    "exclusion_boundary_peak_m": 2.856e-07,
+    "exclusion_boundary_peak_m_covariance_floor_01": 9.031e-08,
+    "exclusion_boundary_peak_m_covariance_floor_001": 2.856e-08
    },
    {
     "footprint_m2": 353553.390593,
-    "exclusion_boundary_peak_m": 2.221e-07,
-    "exclusion_boundary_peak_m_covariance_floor_01": 7.023e-08,
-    "exclusion_boundary_peak_m_covariance_floor_001": 2.221e-08
+    "exclusion_boundary_peak_m": 2.708e-07,
+    "exclusion_boundary_peak_m_covariance_floor_01": 8.563e-08,
+    "exclusion_boundary_peak_m_covariance_floor_001": 2.708e-08
    },
    {
     "footprint_m2": 393271.189312,
-    "exclusion_boundary_peak_m": 2.106e-07,
-    "exclusion_boundary_peak_m_covariance_floor_01": 6.659e-08,
-    "exclusion_boundary_peak_m_covariance_floor_001": 2.106e-08
+    "exclusion_boundary_peak_m": 2.567e-07,
+    "exclusion_boundary_peak_m_covariance_floor_01": 8.119e-08,
+    "exclusion_boundary_peak_m_covariance_floor_001": 2.567e-08
    },
    {
     "footprint_m2": 437450.841819,
-    "exclusion_boundary_peak_m": 1.997e-07,
-    "exclusion_boundary_peak_m_covariance_floor_01": 6.314e-08,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.997e-08
+    "exclusion_boundary_peak_m": 2.434e-07,
+    "exclusion_boundary_peak_m_covariance_floor_01": 7.698e-08,
+    "exclusion_boundary_peak_m_covariance_floor_001": 2.434e-08
    },
    {
     "footprint_m2": 486593.587857,
-    "exclusion_boundary_peak_m": 1.893e-07,
-    "exclusion_boundary_peak_m_covariance_floor_01": 5.987e-08,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.893e-08
+    "exclusion_boundary_peak_m": 2.308e-07,
+    "exclusion_boundary_peak_m_covariance_floor_01": 7.299e-08,
+    "exclusion_boundary_peak_m_covariance_floor_001": 2.308e-08
    },
    {
     "footprint_m2": 541256.975889,
-    "exclusion_boundary_peak_m": 1.795e-07,
-    "exclusion_boundary_peak_m_covariance_floor_01": 5.676e-08,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.795e-08
+    "exclusion_boundary_peak_m": 2.188e-07,
+    "exclusion_boundary_peak_m_covariance_floor_01": 6.92e-08,
+    "exclusion_boundary_peak_m_covariance_floor_001": 2.188e-08
    },
    {
     "footprint_m2": 602061.188762,
-    "exclusion_boundary_peak_m": 1.702e-07,
-    "exclusion_boundary_peak_m_covariance_floor_01": 5.382e-08,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.702e-08
+    "exclusion_boundary_peak_m": 2.075e-07,
+    "exclusion_boundary_peak_m_covariance_floor_01": 6.562e-08,
+    "exclusion_boundary_peak_m_covariance_floor_001": 2.075e-08
    },
    {
     "footprint_m2": 669696.079978,
-    "exclusion_boundary_peak_m": 1.614e-07,
-    "exclusion_boundary_peak_m_covariance_floor_01": 5.103e-08,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.614e-08
+    "exclusion_boundary_peak_m": 1.967e-07,
+    "exclusion_boundary_peak_m_covariance_floor_01": 6.221e-08,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.967e-08
    },
    {
     "footprint_m2": 744929.000422,
-    "exclusion_boundary_peak_m": 1.53e-07,
-    "exclusion_boundary_peak_m_covariance_floor_01": 4.839e-08,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.53e-08
+    "exclusion_boundary_peak_m": 1.865e-07,
+    "exclusion_boundary_peak_m_covariance_floor_01": 5.899e-08,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.865e-08
    },
    {
     "footprint_m2": 828613.504335,
-    "exclusion_boundary_peak_m": 1.451e-07,
-    "exclusion_boundary_peak_m_covariance_floor_01": 4.588e-08,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.451e-08
+    "exclusion_boundary_peak_m": 1.769e-07,
+    "exclusion_boundary_peak_m_covariance_floor_01": 5.593e-08,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.769e-08
    },
    {
     "footprint_m2": 921699.0333,
-    "exclusion_boundary_peak_m": 1.376e-07,
-    "exclusion_boundary_peak_m_covariance_floor_01": 4.35e-08,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.376e-08
+    "exclusion_boundary_peak_m": 1.677e-07,
+    "exclusion_boundary_peak_m_covariance_floor_01": 5.303e-08,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.677e-08
    },
    {
     "footprint_m2": 1025241.688124,
-    "exclusion_boundary_peak_m": 1.304e-07,
-    "exclusion_boundary_peak_m_covariance_floor_01": 4.124e-08,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.304e-08
+    "exclusion_boundary_peak_m": 1.59e-07,
+    "exclusion_boundary_peak_m_covariance_floor_01": 5.028e-08,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.59e-08
    },
    {
     "footprint_m2": 1140416.210814,
-    "exclusion_boundary_peak_m": 1.237e-07,
-    "exclusion_boundary_peak_m_covariance_floor_01": 3.911e-08,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.237e-08
+    "exclusion_boundary_peak_m": 1.508e-07,
+    "exclusion_boundary_peak_m_covariance_floor_01": 4.768e-08,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.508e-08
    },
    {
     "footprint_m2": 1268529.312602,
-    "exclusion_boundary_peak_m": 1.173e-07,
-    "exclusion_boundary_peak_m_covariance_floor_01": 3.708e-08,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.173e-08
+    "exclusion_boundary_peak_m": 1.429e-07,
+    "exclusion_boundary_peak_m_covariance_floor_01": 4.52e-08,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.429e-08
    },
    {
     "footprint_m2": 1411034.499223,
-    "exclusion_boundary_peak_m": 1.112e-07,
-    "exclusion_boundary_peak_m_covariance_floor_01": 3.516e-08,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.112e-08
+    "exclusion_boundary_peak_m": 1.355e-07,
+    "exclusion_boundary_peak_m_covariance_floor_01": 4.286e-08,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.355e-08
    },
    {
     "footprint_m2": 1569548.561643,
-    "exclusion_boundary_peak_m": 1.054e-07,
-    "exclusion_boundary_peak_m_covariance_floor_01": 3.333e-08,
-    "exclusion_boundary_peak_m_covariance_floor_001": 1.054e-08
+    "exclusion_boundary_peak_m": 1.285e-07,
+    "exclusion_boundary_peak_m_covariance_floor_01": 4.064e-08,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.285e-08
    },
    {
     "footprint_m2": 1745869.919348,
-    "exclusion_boundary_peak_m": 9.995e-08,
-    "exclusion_boundary_peak_m_covariance_floor_01": 3.161e-08,
-    "exclusion_boundary_peak_m_covariance_floor_001": 9.995e-09
+    "exclusion_boundary_peak_m": 1.218e-07,
+    "exclusion_boundary_peak_m_covariance_floor_01": 3.853e-08,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.218e-08
    },
    {
     "footprint_m2": 1941999.024289,
-    "exclusion_boundary_peak_m": 9.477e-08,
-    "exclusion_boundary_peak_m_covariance_floor_01": 2.997e-08,
-    "exclusion_boundary_peak_m_covariance_floor_001": 9.477e-09
+    "exclusion_boundary_peak_m": 1.155e-07,
+    "exclusion_boundary_peak_m_covariance_floor_01": 3.653e-08,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.155e-08
    },
    {
     "footprint_m2": 2160161.056986,
-    "exclusion_boundary_peak_m": 8.985e-08,
-    "exclusion_boundary_peak_m_covariance_floor_01": 2.841e-08,
-    "exclusion_boundary_peak_m_covariance_floor_001": 8.985e-09
+    "exclusion_boundary_peak_m": 1.095e-07,
+    "exclusion_boundary_peak_m_covariance_floor_01": 3.464e-08,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.095e-08
    },
    {
     "footprint_m2": 2402831.172291,
-    "exclusion_boundary_peak_m": 8.52e-08,
-    "exclusion_boundary_peak_m_covariance_floor_01": 2.694e-08,
-    "exclusion_boundary_peak_m_covariance_floor_001": 8.52e-09
+    "exclusion_boundary_peak_m": 1.039e-07,
+    "exclusion_boundary_peak_m_covariance_floor_01": 3.284e-08,
+    "exclusion_boundary_peak_m_covariance_floor_001": 1.039e-08
    },
    {
     "footprint_m2": 2672762.581225,
-    "exclusion_boundary_peak_m": 8.078e-08,
-    "exclusion_boundary_peak_m_covariance_floor_01": 2.554e-08,
-    "exclusion_boundary_peak_m_covariance_floor_001": 8.078e-09
+    "exclusion_boundary_peak_m": 9.848e-08,
+    "exclusion_boundary_peak_m_covariance_floor_01": 3.114e-08,
+    "exclusion_boundary_peak_m_covariance_floor_001": 9.848e-09
    },
    {
     "footprint_m2": 2973017.787507,
-    "exclusion_boundary_peak_m": 7.659e-08,
-    "exclusion_boundary_peak_m_covariance_floor_01": 2.422e-08,
-    "exclusion_boundary_peak_m_covariance_floor_001": 7.659e-09
+    "exclusion_boundary_peak_m": 9.337e-08,
+    "exclusion_boundary_peak_m_covariance_floor_01": 2.953e-08,
+    "exclusion_boundary_peak_m_covariance_floor_001": 9.337e-09
    },
    {
     "footprint_m2": 3307003.333151,
-    "exclusion_boundary_peak_m": 7.262e-08,
-    "exclusion_boundary_peak_m_covariance_floor_01": 2.296e-08,
-    "exclusion_boundary_peak_m_covariance_floor_001": 7.262e-09
+    "exclusion_boundary_peak_m": 8.853e-08,
+    "exclusion_boundary_peak_m_covariance_floor_01": 2.8e-08,
+    "exclusion_boundary_peak_m_covariance_floor_001": 8.853e-09
    },
    {
     "footprint_m2": 3678508.447352,
-    "exclusion_boundary_peak_m": 6.886e-08,
-    "exclusion_boundary_peak_m_covariance_floor_01": 2.177e-08,
-    "exclusion_boundary_peak_m_covariance_floor_001": 6.886e-09
+    "exclusion_boundary_peak_m": 8.394e-08,
+    "exclusion_boundary_peak_m_covariance_floor_01": 2.655e-08,
+    "exclusion_boundary_peak_m_covariance_floor_001": 8.394e-09
    },
    {
     "footprint_m2": 4091748.037141,
-    "exclusion_boundary_peak_m": 6.529e-08,
-    "exclusion_boundary_peak_m_covariance_floor_01": 2.065e-08,
-    "exclusion_boundary_peak_m_covariance_floor_001": 6.529e-09
+    "exclusion_boundary_peak_m": 7.959e-08,
+    "exclusion_boundary_peak_m_covariance_floor_01": 2.517e-08,
+    "exclusion_boundary_peak_m_covariance_floor_001": 7.959e-09
    },
    {
     "footprint_m2": 4551410.507565,
-    "exclusion_boundary_peak_m": 6.19e-08,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.958e-08,
-    "exclusion_boundary_peak_m_covariance_floor_001": 6.19e-09
+    "exclusion_boundary_peak_m": 7.547e-08,
+    "exclusion_boundary_peak_m_covariance_floor_01": 2.386e-08,
+    "exclusion_boundary_peak_m_covariance_floor_001": 7.547e-09
    },
    {
     "footprint_m2": 5062710.953935,
-    "exclusion_boundary_peak_m": 5.869e-08,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.856e-08,
-    "exclusion_boundary_peak_m_covariance_floor_001": 5.869e-09
+    "exclusion_boundary_peak_m": 7.155e-08,
+    "exclusion_boundary_peak_m_covariance_floor_01": 2.263e-08,
+    "exclusion_boundary_peak_m_covariance_floor_001": 7.155e-09
    },
    {
     "footprint_m2": 5631450.329627,
-    "exclusion_boundary_peak_m": 5.565e-08,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.76e-08,
-    "exclusion_boundary_peak_m_covariance_floor_001": 5.565e-09
+    "exclusion_boundary_peak_m": 6.785e-08,
+    "exclusion_boundary_peak_m_covariance_floor_01": 2.145e-08,
+    "exclusion_boundary_peak_m_covariance_floor_001": 6.785e-09
    },
    {
     "footprint_m2": 6264081.260734,
-    "exclusion_boundary_peak_m": 5.277e-08,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.669e-08,
-    "exclusion_boundary_peak_m_covariance_floor_001": 5.277e-09
+    "exclusion_boundary_peak_m": 6.433e-08,
+    "exclusion_boundary_peak_m_covariance_floor_01": 2.034e-08,
+    "exclusion_boundary_peak_m_covariance_floor_001": 6.433e-09
    },
    {
     "footprint_m2": 6967781.254261,
-    "exclusion_boundary_peak_m": 5.003e-08,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.582e-08,
-    "exclusion_boundary_peak_m_covariance_floor_001": 5.003e-09
+    "exclusion_boundary_peak_m": 6.099e-08,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.929e-08,
+    "exclusion_boundary_peak_m_covariance_floor_001": 6.099e-09
    },
    {
     "footprint_m2": 7750534.13045,
-    "exclusion_boundary_peak_m": 4.744e-08,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.5e-08,
-    "exclusion_boundary_peak_m_covariance_floor_001": 4.744e-09
+    "exclusion_boundary_peak_m": 5.783e-08,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.829e-08,
+    "exclusion_boundary_peak_m_covariance_floor_001": 5.783e-09
    },
    {
     "footprint_m2": 8621220.603121,
-    "exclusion_boundary_peak_m": 4.498e-08,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.422e-08,
-    "exclusion_boundary_peak_m_covariance_floor_001": 4.498e-09
+    "exclusion_boundary_peak_m": 5.483e-08,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.734e-08,
+    "exclusion_boundary_peak_m_covariance_floor_001": 5.483e-09
    },
    {
     "footprint_m2": 9589719.035706,
-    "exclusion_boundary_peak_m": 4.265e-08,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.349e-08,
-    "exclusion_boundary_peak_m_covariance_floor_001": 4.265e-09
+    "exclusion_boundary_peak_m": 5.199e-08,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.644e-08,
+    "exclusion_boundary_peak_m_covariance_floor_001": 5.199e-09
    },
    {
     "footprint_m2": 10667017.516116,
-    "exclusion_boundary_peak_m": 4.043e-08,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.279e-08,
-    "exclusion_boundary_peak_m_covariance_floor_001": 4.043e-09
+    "exclusion_boundary_peak_m": 4.93e-08,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.559e-08,
+    "exclusion_boundary_peak_m_covariance_floor_001": 4.93e-09
    },
    {
     "footprint_m2": 11865338.521959,
-    "exclusion_boundary_peak_m": 3.834e-08,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.212e-08,
-    "exclusion_boundary_peak_m_covariance_floor_001": 3.834e-09
+    "exclusion_boundary_peak_m": 4.674e-08,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.478e-08,
+    "exclusion_boundary_peak_m_covariance_floor_001": 4.674e-09
    },
    {
     "footprint_m2": 13198277.590524,
-    "exclusion_boundary_peak_m": 3.635e-08,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.15e-08,
-    "exclusion_boundary_peak_m_covariance_floor_001": 3.635e-09
+    "exclusion_boundary_peak_m": 4.432e-08,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.401e-08,
+    "exclusion_boundary_peak_m_covariance_floor_001": 4.432e-09
    },
    {
     "footprint_m2": 14680957.566794,
-    "exclusion_boundary_peak_m": 3.447e-08,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.09e-08,
-    "exclusion_boundary_peak_m_covariance_floor_001": 3.447e-09
+    "exclusion_boundary_peak_m": 4.202e-08,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.329e-08,
+    "exclusion_boundary_peak_m_covariance_floor_001": 4.202e-09
    },
    {
     "footprint_m2": 16330200.179511,
-    "exclusion_boundary_peak_m": 3.268e-08,
-    "exclusion_boundary_peak_m_covariance_floor_01": 1.033e-08,
-    "exclusion_boundary_peak_m_covariance_floor_001": 3.268e-09
+    "exclusion_boundary_peak_m": 3.984e-08,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.26e-08,
+    "exclusion_boundary_peak_m_covariance_floor_001": 3.984e-09
    },
    {
     "footprint_m2": 18164716.891906,
-    "exclusion_boundary_peak_m": 3.099e-08,
-    "exclusion_boundary_peak_m_covariance_floor_01": 9.799e-09,
-    "exclusion_boundary_peak_m_covariance_floor_001": 3.099e-09
+    "exclusion_boundary_peak_m": 3.778e-08,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.195e-08,
+    "exclusion_boundary_peak_m_covariance_floor_001": 3.778e-09
    },
    {
     "footprint_m2": 20205321.192393,
-    "exclusion_boundary_peak_m": 2.938e-08,
-    "exclusion_boundary_peak_m_covariance_floor_01": 9.291e-09,
-    "exclusion_boundary_peak_m_covariance_floor_001": 2.938e-09
+    "exclusion_boundary_peak_m": 3.582e-08,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.133e-08,
+    "exclusion_boundary_peak_m_covariance_floor_001": 3.582e-09
    },
    {
     "footprint_m2": 22475164.733764,
-    "exclusion_boundary_peak_m": 2.786e-08,
-    "exclusion_boundary_peak_m_covariance_floor_01": 8.809e-09,
-    "exclusion_boundary_peak_m_covariance_floor_001": 2.786e-09
+    "exclusion_boundary_peak_m": 3.396e-08,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.074e-08,
+    "exclusion_boundary_peak_m_covariance_floor_001": 3.396e-09
    },
    {
     "footprint_m2": 25000000.0,
-    "exclusion_boundary_peak_m": 2.641e-08,
-    "exclusion_boundary_peak_m_covariance_floor_01": 8.352e-09,
-    "exclusion_boundary_peak_m_covariance_floor_001": 2.641e-09
+    "exclusion_boundary_peak_m": 3.22e-08,
+    "exclusion_boundary_peak_m_covariance_floor_01": 1.018e-08,
+    "exclusion_boundary_peak_m_covariance_floor_001": 3.22e-09
    }
   ]
  },
@@ -1502,7 +1515,7 @@
    "covariance_floor": 0.1,
    "q": 0.0001284,
    "rho": 0.0002567,
-   "kl_upper": 3.297e-08,
+   "kl_upper": 3.296e-08,
    "tv_upper": 0.0001284,
    "informative": true,
    "tpr_upper_at_fpr_005": 0.050128
@@ -1512,8 +1525,8 @@
    "covariance_floor": 0.01,
    "q": 0.0004059,
    "rho": 0.0008119,
-   "kl_upper": 3.301e-07,
-   "tv_upper": 0.0004063,
+   "kl_upper": 3.299e-07,
+   "tv_upper": 0.0004061,
    "informative": true,
    "tpr_upper_at_fpr_005": 0.050406
   },
@@ -1522,18 +1535,18 @@
    "covariance_floor": 0.001,
    "q": 0.001284,
    "rho": 0.002569,
-   "kl_upper": 3.316e-06,
-   "tv_upper": 0.001288,
+   "kl_upper": 3.307e-06,
+   "tv_upper": 0.001286,
    "informative": true,
-   "tpr_upper_at_fpr_005": 0.051288
+   "tpr_upper_at_fpr_005": 0.051286
   },
   {
    "phase_multiplier": 10,
    "covariance_floor": 1,
    "q": 0.0004059,
    "rho": 0.0008119,
-   "kl_upper": 3.301e-07,
-   "tv_upper": 0.0004063,
+   "kl_upper": 3.299e-07,
+   "tv_upper": 0.0004061,
    "informative": true,
    "tpr_upper_at_fpr_005": 0.050406
   },
@@ -1542,99 +1555,99 @@
    "covariance_floor": 0.1,
    "q": 0.001284,
    "rho": 0.002569,
-   "kl_upper": 3.316e-06,
-   "tv_upper": 0.001288,
+   "kl_upper": 3.307e-06,
+   "tv_upper": 0.001286,
    "informative": true,
-   "tpr_upper_at_fpr_005": 0.051288
+   "tpr_upper_at_fpr_005": 0.051286
   },
   {
    "phase_multiplier": 10,
    "covariance_floor": 0.01,
    "q": 0.004059,
    "rho": 0.008134,
-   "kl_upper": 3.363e-05,
-   "tv_upper": 0.0041,
+   "kl_upper": 3.335e-05,
+   "tv_upper": 0.004084,
    "informative": true,
-   "tpr_upper_at_fpr_005": 0.0541
+   "tpr_upper_at_fpr_005": 0.054084
   },
   {
    "phase_multiplier": 10,
    "covariance_floor": 0.001,
    "q": 0.012835,
    "rho": 0.025835,
-   "kl_upper": 0.0003517,
-   "tv_upper": 0.01326,
+   "kl_upper": 0.0003426,
+   "tv_upper": 0.013088,
    "informative": true,
-   "tpr_upper_at_fpr_005": 0.06326
+   "tpr_upper_at_fpr_005": 0.063088
   },
   {
    "phase_multiplier": 100,
    "covariance_floor": 1,
    "q": 0.004059,
    "rho": 0.008134,
-   "kl_upper": 3.363e-05,
-   "tv_upper": 0.0041,
+   "kl_upper": 3.335e-05,
+   "tv_upper": 0.004084,
    "informative": true,
-   "tpr_upper_at_fpr_005": 0.0541
+   "tpr_upper_at_fpr_005": 0.054084
   },
   {
    "phase_multiplier": 100,
    "covariance_floor": 0.1,
    "q": 0.012835,
    "rho": 0.025835,
-   "kl_upper": 0.0003517,
-   "tv_upper": 0.01326,
+   "kl_upper": 0.0003426,
+   "tv_upper": 0.013088,
    "informative": true,
-   "tpr_upper_at_fpr_005": 0.06326
+   "tpr_upper_at_fpr_005": 0.063088
   },
   {
    "phase_multiplier": 100,
    "covariance_floor": 0.01,
    "q": 0.040588,
    "rho": 0.082823,
-   "kl_upper": 0.004077,
-   "tv_upper": 0.045151,
+   "kl_upper": 0.00374,
+   "tv_upper": 0.043241,
    "informative": true,
-   "tpr_upper_at_fpr_005": 0.095151
+   "tpr_upper_at_fpr_005": 0.093241
   },
   {
    "phase_multiplier": 100,
    "covariance_floor": 0.001,
    "q": 0.128351,
    "rho": 0.273175,
-   "kl_upper": 0.07063,
-   "tv_upper": 0.187924,
+   "kl_upper": 0.051336,
+   "tv_upper": 0.160212,
    "informative": true,
-   "tpr_upper_at_fpr_005": 0.237924
+   "tpr_upper_at_fpr_005": 0.210212
   },
   {
    "phase_multiplier": 1000,
    "covariance_floor": 1,
    "q": 0.040588,
    "rho": 0.082823,
-   "kl_upper": 0.004077,
-   "tv_upper": 0.045151,
+   "kl_upper": 0.00374,
+   "tv_upper": 0.043241,
    "informative": true,
-   "tpr_upper_at_fpr_005": 0.095151
+   "tpr_upper_at_fpr_005": 0.093241
   },
   {
    "phase_multiplier": 1000,
    "covariance_floor": 0.1,
    "q": 0.128351,
    "rho": 0.273175,
-   "kl_upper": 0.07063,
-   "tv_upper": 0.187924,
+   "kl_upper": 0.051336,
+   "tv_upper": 0.160212,
    "informative": true,
-   "tpr_upper_at_fpr_005": 0.237924
+   "tpr_upper_at_fpr_005": 0.210212
   },
   {
    "phase_multiplier": 1000,
    "covariance_floor": 0.01,
    "q": 0.40588,
    "rho": 0.976499,
-   "kl_upper": 863.254207,
+   "kl_upper": 20.287388,
    "tv_upper": 1.0,
-   "informative": false,
+   "informative": true,
    "tpr_upper_at_fpr_005": 1
   },
   {
@@ -1688,5 +1701,5 @@
   ],
   "status": "P2-29 solver kernels; the class admits rooms spread 15 m down (dilute superposition checked)"
  },
- "finding": "Loose but simple, and with the common background included, the finite certificate caps any processor's detection rate at 5.0172% at 5% false alarms under the regional microseism envelope (detection minus false alarm at most 1.72e-04; P2-25's tighter bound, reference covariance I: 1.3e-09). Every static row excludes 95% at 5%. Of P2-26's dynamic rows, computed with the reference covariance taken as the identity, the largest is the thin-roof room under a truck-level harmonic, at most 27.3% at 5%; but those are a restricted surrogate, not certificates: the no-cavity world already moves with the truck, its covariance is not the identity, and the regional background's floor does not cover it; adding the lorry's own phase energy over the scene, the singular-value argument gives no floor at all (the square roots sum to 1.14 to 1.41, above 1). Under strong shaking the valid bound here is P2-29's oracle with receiver noise. An arbitrary phase modulation within the background envelope on 52,600 pixels is capped at 9.55%; on the whole image the certificate is uninformative. Depth: P2-29's spread rooms 15 m down leave 71% of a room 30 m down's mark unmatched, so where detection just reaches 95% at 5% Theorem E's floor on any method's mean depth error between the two is only 1.8 m of their 15 m separation: in this model the mark's shape carries depth."
+ "finding": "Loose but simple, and with the common background included, the finite certificate caps any processor's detection rate at 5.0172% at 5% false alarms under the regional microseism envelope (detection minus false alarm at most 1.72e-04; P2-25's tighter bound, reference covariance I: 1.3e-09). Every static row excludes 95% at 5%. Of P2-26's dynamic rows, computed with the reference covariance taken as the identity, the largest is the thin-roof room under a truck-level harmonic, at most 23.5% at 5%; but those are a restricted surrogate, not certificates: the no-cavity world already moves with the truck, its covariance is not the identity, and the regional background's floor does not cover it; adding the lorry's own phase energy over the scene, the singular-value argument gives no floor at all (the square roots sum to 1.14 to 1.41, above 1). Under strong shaking the valid bound here is P2-29's oracle with receiver noise. An arbitrary phase modulation within the background envelope on 52,600 pixels is capped at 9.35%; on the whole image the certificate is uninformative. Depth: P2-29's spread rooms 15 m down leave 71% of a room 30 m down's mark unmatched, so where detection just reaches 95% at 5% Theorem E's floor on any method's mean depth error between the two is only 1.8 m of their 15 m separation: in this model the mark's shape carries depth."
 }

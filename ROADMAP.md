@@ -20,9 +20,11 @@ in order of strength:
    chamber in uniform rock, quasi-static, under the regional microseism level (not measured on the plateau during a
    pass).
 4. **A bound on every way of reading one image (P2-25), with the imprint at every frequency (P2-26):** for ordinary
-   ground modelled as fully developed speckle, whatever reads one image beats a coin toss on the bench chamber by at
-   most 1.3e-9 under Giza's microseisms; a truck bouncing 15 m away for the whole pass lifts it to 1.7e-2. A theorem
-   under stated models, reached by the best detector in simulation.
+   ground modelled as fully developed speckle, whatever reads one image raises its detection rate above its false-alarm
+   rate on the bench chamber by at most 1.3e-9 under Giza's microseisms. Under a truck close by the speckle bound's
+   reference leaves out the truck's own motion, so only the oracle with receiver noise bounds that case (P2-29: 0.43 for
+   the bench room, 0.996 under a 5 m roof). A theorem under stated models; a bound, not what a detector achieves (on small
+   test images the best test comes within 1.3 to 1.4 times of it).
 
 Run whole (P2-07), over simulated desert shaking at Giza's level with the chamber's imprint, imaged on the real dwell
 and put through the published pipeline unchanged, the depth sections with and without the chamber differ by 1e-8.

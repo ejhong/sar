@@ -12,9 +12,11 @@ Scenes, generated physically and never through any inversion's depth-steering fo
 limestone with, in turn: no cavity; an isolated room (6 m, centre 12 m down); an L-shaped tunnel (2.5 m square, arms of
 18 m and 17 m, 10 m down); a branching (T) tunnel (a 28 m main run and a 15 m branch, 10 m down). Each cavity's imprint
 on the ground's motion is the lab's elastic solver settling under a uniform horizontal strain (P2-28's loading, checked
-against P2-04's). The unrelated ground is matched: the same scatterers (three speckle realisations, each shared by every
-scene) and the same microseism field (Giza's measured level, P2-07's realisation) for every scene; the images come from
-the lab's synthesizer on the real dwell (P2-07's chain).
+against P2-04's). The unrelated ground is matched within each ground: three independent grounds, each with its own
+speckle realisation and its own microseism realisation (Giza's measured level), shared by every layout and control on
+that ground; the grounds are the evaluation units and the layouts on one ground are paired comparisons. The images come
+from the lab's synthesizer on the real dwell (P2-07's chain) in complex128 (a first version synthesised in single
+precision, whose rounding lies 20 to 40 times above the real-level imprints: its real-level row measured rounding).
 
 Levels. The real one (the imprint as it is); and three amplified diagnostics, each cavity's imprint boosted to the same
 largest phase, 0.3, 2 and 20 rad, labelled as such: physically shaped, not physically sized. At microseism frequencies
@@ -74,7 +76,8 @@ BOXES = {
 SHAPES = list(BOXES)
 SEEDS = (71, 171, 271)
 LEVELS = {'real': None, 'diagnostic_0.3_rad': 0.3, 'diagnostic_2_rad': 2.0, 'diagnostic_20_rad': 20.0}
-READINGS = 'readings-v1'      # the version of the scenes and readers; bump it if either changes
+READINGS = 'readings-v2'      # the version of the scenes and readers; bump it if either changes (v2: complex128, a field per ground)
+FIELD_SEED = 1000             # each ground's microseism realisation: default_rng(FIELD_SEED + seed)
 TAPER = (45.0, 54.0)
 TOP_SHARE = 0.05
 EXTRA_M = 5.0
@@ -208,10 +211,17 @@ def main():
         print(f"  kernels: {time.time() - t0:.0f} s", flush=True)
         interp = {n: interpolators(k[0], los) for n, k in kern.items()}
         f = np.linspace(0.1, 0.3, 21)
-        field = microseisms(f, np.full(len(f), level ** 2 / 0.2), np.random.default_rng(72), per_bin=4, speed=speed,
-                            hv=rayleigh_hv(vp, vs))
-        eps = lambda tt, c: (lambda G: [G[0, 0], G[1, 1], 0.5 * (G[0, 1] + G[1, 0])][c])(field.centre_series(tt)['g'])
-        taus = [lambda tt, c=c: eps(tt, c) for c in range(3)]
+        # each ground its own microseism realisation, so the grounds are independent scenes (the evaluation units)
+        fields = {}
+        def field_for(seed):
+            if seed not in fields:
+                fields[seed] = microseisms(f, np.full(len(f), level ** 2 / 0.2), np.random.default_rng(FIELD_SEED + seed),
+                                           per_bin=4, speed=speed, hv=rayleigh_hv(vp, vs))
+            return fields[seed]
+        def taus_for(seed):
+            fld = field_for(seed)
+            eps = lambda tt, c: (lambda G: [G[0, 0], G[1, 1], 0.5 * (G[0, 1] + G[1, 0])][c])(fld.centre_series(tt)['g'])
+            return [lambda tt, c=c: eps(tt, c) for c in range(3)]
         SH = m07.SHAPE
         # the image's pixels in the site frame, and the pipeline's positions
         xa = (np.arange(SH[0]) - SH[0] // 2) * g.dx
@@ -229,10 +239,10 @@ def main():
         tmpl, unit = {}, {}
         t_fine = np.linspace(-12.0, 12.0, 2401)
         for n in SHAPES:
-            sh = m07.Shaking(g, field, interp[n], 1.0)
-            L = sh.lk(PE.ravel(), PN.ravel())                                   # [pixels, 3] LOS per unit strain
+            L = m07.Shaking(g, field_for(SEEDS[0]), interp[n], 1.0).lk(PE.ravel(), PN.ravel())   # [pixels, 3] LOS per unit strain
             tmpl[n] = [(-k0 * L[:, c]).reshape(SH) for c in range(3)]
-            unit[n] = sh.imprint_phase(t_fine)
+            for sd in SEEDS:
+                unit[(sd, n)] = m07.Shaking(g, field_for(sd), interp[n], 1.0).imprint_phase(t_fine)
         # a compact template for location: the room's, cut to 24 m about its centre
         room_t = [T[SH[0] // 2 - int(24 / g.dx): SH[0] // 2 + int(24 / g.dx), SH[1] // 2 - int(24 * np.sin(g.theta) / g.dr): SH[1] // 2 + int(24 * np.sin(g.theta) / g.dr)]
                   for T in tmpl['room']]
@@ -240,16 +250,18 @@ def main():
         def reading(seed, key):
             """One image, made and read: kept on disk so a run cut short resumes (katabasis.runs.memo)."""
             scat = m07.scene(g, np.random.default_rng(seed))
+            field = field_for(seed)
+            # complex128: the real-level imprints (1e-9 rad) lie far below single precision's rounding
             if key == 'none':
-                img = synthesize(scat, g, SH, motion=m07.Shaking(g, field, interp['room'], 0.0))
+                img = synthesize(scat, g, SH, motion=m07.Shaking(g, field, interp['room'], 0.0), dtype=np.complex128)
             elif key == 'motionless':
-                img = synthesize(scat, g, SH)
+                img = synthesize(scat, g, SH, dtype=np.complex128)
             else:
                 n, lv = key.split('|')
-                G = 1.0 if LEVELS[lv] is None else LEVELS[lv] / unit[n]
-                img = synthesize(scat, g, SH, motion=m07.Shaking(g, field, interp[n], G))
+                G = 1.0 if LEVELS[lv] is None else LEVELS[lv] / unit[(seed, n)]
+                img = synthesize(scat, g, SH, motion=m07.Shaking(g, field, interp[n], G), dtype=np.complex128)
             T, z = m07.run_method(img, g, RR.ravel(), CC.ravel())
-            q = score_fields(img, g, taus)
+            q = score_fields(img, g, taus_for(seed))
             # each layout's statistic at every placement; its value at the true placement (the scene's centre), and
             # the spread of its values over placements (used from the controls as the null)
             stats, spread, peak_at = {}, {}, {}
@@ -449,7 +461,7 @@ def main():
                "a real signal." if ok_ref else "The reference detector does not recover the imposed layouts even at the positive control: "
                "the forward model or the acquisition's sensitivity must be examined before any reader is judged.")
             + " Amplified levels are diagnostics, not physical predictions.")
-        run.save({'summary': summary, 'results': results, 'unit_gain_phase_rad': unit, 'kernel_runs': {n: k[1] for n, k in kern.items()},
+        run.save({'summary': summary, 'results': results, 'unit_gain_phase_rad': {f'{k[0]}|{k[1]}': v for k, v in unit.items()}, 'kernel_runs': {n: k[1] for n, k in kern.items()},
                   'normalisation': {'location_sd': sd_loc, 'layout_sd': sd_stat}, 'finding': finding})
         print(finding)
 

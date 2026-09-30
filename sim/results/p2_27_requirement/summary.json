@@ -3,9 +3,9 @@
   "id": "p2_27_requirement",
   "title": "What one image would need: the motion a room must add to the ground",
   "date": "2026-09-30",
-  "started_utc": "2026-09-30T14:32:51+00:00",
-  "runtime_s": 10.3,
-  "commit": "439c48b+",
+  "started_utc": "2026-09-30T18:11:26+00:00",
+  "runtime_s": 9.7,
+  "commit": "ecff0e5+",
   "params": {
    "acquisitions": [
     "giza-20250827",
@@ -1843,7 +1843,7 @@
        "share_of_envelope_bound": 8.738e-08
       }
      ],
-     "runtime_s": 0.2
+     "runtime_s": 0.1
     },
     {
      "f_hz": 2.0,
@@ -3103,7 +3103,7 @@
        "share_of_envelope_bound": 1.345e-05
       }
      ],
-     "runtime_s": 0.2
+     "runtime_s": 0.1
     },
     {
      "f_hz": 5.0,
@@ -4363,7 +4363,7 @@
        "share_of_envelope_bound": 0.0002457
       }
      ],
-     "runtime_s": 0.2
+     "runtime_s": 0.1
     },
     {
      "f_hz": 20.0,
@@ -6727,7 +6727,7 @@
        "share_of_envelope_bound": 0.167357
       }
      ],
-     "runtime_s": 2.8
+     "runtime_s": 1.8
     }
    ]
   },
@@ -10953,7 +10953,7 @@
        }
       }
      ],
-     "runtime_s": 0.1
+     "runtime_s": 0.2
     },
     {
      "f_hz": 20.0,
@@ -13289,7 +13289,7 @@
    "least_necessary_area_m2": 0.043552,
    "constrained_short_by": 21361.746457,
    "phase_only_area_oracle_m2": 58790.824353,
-   "phase_only_area_certificate_m2": 55464.315064
+   "phase_only_area_certificate_m2": 82435.238657
   },
   {
    "label": "the noisiest stations on Earth",
@@ -13301,7 +13301,7 @@
    "least_necessary_area_m2": 0.043552,
    "constrained_short_by": 296.943426,
    "phase_only_area_oracle_m2": 11.360134,
-   "phase_only_area_certificate_m2": 10.717354
+   "phase_only_area_certificate_m2": 15.928938
   },
   {
    "label": "Giza 1-3 Hz, regional",
@@ -13313,7 +13313,7 @@
    "least_necessary_area_m2": 1114.924078,
    "constrained_short_by": 39645.03151,
    "phase_only_area_oracle_m2": 16784395.870715,
-   "phase_only_area_certificate_m2": 15834699.223256
+   "phase_only_area_certificate_m2": 23534721.523711
   },
   {
    "label": "Giza 3-8 Hz, regional",
@@ -13325,7 +13325,7 @@
    "least_necessary_area_m2": 1114.924078,
    "constrained_short_by": 46159.361937,
    "phase_only_area_oracle_m2": 141156769.27271,
-   "phase_only_area_certificate_m2": 133169820.467587
+   "phase_only_area_certificate_m2": 197927008.014411
   },
   {
    "label": "urban background, all of 8-100 Hz at one frequency",
@@ -13386,7 +13386,7 @@
    "oracle_tv_upper": 1.083e-05,
    "outcome": "near chance",
    "short_by_oracle": 121139.388457,
-   "short_by_certificate": 117662.325899
+   "short_by_certificate": 143445.540678
   },
   {
    "label": "bench room, static, The world's noisiest stations",
@@ -13404,7 +13404,7 @@
    "oracle_tv_upper": 0.0007792,
    "outcome": "near chance",
    "short_by_oracle": 1684.372741,
-   "short_by_certificate": 1636.026209
+   "short_by_certificate": 1994.526814
   },
   {
    "label": "bench room, static, Giza 1-3 Hz, measured",
@@ -13422,7 +13422,7 @@
    "oracle_tv_upper": 1.137e-05,
    "outcome": "near chance",
    "short_by_oracle": 115377.972205,
-   "short_by_certificate": 112066.279516
+   "short_by_certificate": 136623.238867
   },
   {
    "label": "bench room, dynamic, truck over a bump 15 m away",
@@ -13515,14 +13515,14 @@
    "0.9": 1.034e-09
   },
   "E_min_m4": {
-   "0.05": 2.429e-11,
-   "0.5": 6.205e-10,
-   "0.9": 9.752e-10
+   "0.05": 2.654e-11,
+   "0.5": 9.091e-10,
+   "0.9": 1.449e-09
   },
   "E_min_identity_m4": {
-   "0.05": 4.344e-10,
-   "0.5": 1.11e-08,
-   "0.9": 1.744e-08
+   "0.05": 4.747e-10,
+   "0.5": 1.626e-08,
+   "0.9": 2.592e-08
   }
  },
  "pattern_check": [
@@ -13815,5 +13815,5 @@
   "0.9": 3.289707,
   "0.5": 1.34898
  },
- "finding": "Under the stated conditions (the Giza dwell, fully developed speckle, no reference image, motion coherent for the whole pass at its worst phase), a detection at 95% with 5% false alarms needs, for one smooth (Gaussian) pattern of room-specific line-of-sight motion, at least 3.02 mm at 0.2 Hz and 47.3 um at 80 Hz over 279 m^2, exactly within the model. That binds only that family: a Gaussian 4 m wide at 0.2 Hz times a cosine of 4 m period along track holds 39 times its information (489 times for 1 m) though nowhere larger, and the Gaussian's is 4.7e-4 of the general upper bound for its envelope. For every pattern and time history the requirement is on the displacement integral E, the integral of max_t |du_los|^2 over the ground (m^4, an integrated squared displacement envelope, not a mechanical energy): an oracle told the reflectivity, the excitation and both models, with receiver noise at 30 dB per cell, cannot reach 95% at 5% below 1.0e-9 m^4 (a spatial rms of temporal peak displacement of 1.0 um over 1,000 m^2), whatever the motion common to both worlds, since that cancels from its mean echoes; under quiet ground the certificate, with Giza's background in the reference, gives 9.8e-10 m^4 without receiver noise. At every operating point found <= false alarms + TV: below 1.5e-12 m^4 the oracle stays within 5 points of chance. The bench room's static imprint under the regional microseisms, bounded over every strain direction and beyond the solver's grid (the tail by the analytic point-source field scaled 2.0 times) with numerical and peak allowances, falls short of the oracle's requirement by 1.2e5 in amplitude and of the certificate's by 1.2e5: near chance (oracle TV at most 1.1e-05). Under a truck over a bump 15 m away all pass, at the worst of four sampled sides, with the scattered wave carried unattenuated to the scene's corner, the dynamic imprints fall short by 0.45 to 4 (room under a 5 m roof at 80 Hz unresolved), and counted within 39 m only by 4.5 to 33: under strong shaking the answer rests on how far the scattered wave carries. Crossing a threshold demonstrates neither detectability nor usefulness. A mechanism that only changes the ambient motion's phase moves the ground by at most twice its amplitude; to escape this exclusion under its stated amplitude and noise it must change the phase over more than 5.9e4 m^2 under the regional microseisms (a disk of radius 137 m) or 2,259 m^2 under the truck at 80 Hz. These are requirements conditional on the model; they say nothing of routes outside it."
+ "finding": "Under the stated conditions (the Giza dwell, fully developed speckle, no reference image, motion coherent for the whole pass at its worst phase), a detection at 95% with 5% false alarms needs, for one smooth (Gaussian) pattern of room-specific line-of-sight motion, at least 3.02 mm at 0.2 Hz and 47.3 um at 80 Hz over 279 m^2, exactly within the model. That binds only that family: a Gaussian 4 m wide at 0.2 Hz times a cosine of 4 m period along track holds 39 times its information (489 times for 1 m) though nowhere larger, and the Gaussian's is 4.7e-4 of the general upper bound for its envelope. For every pattern and time history the requirement is on the displacement integral E, the integral of max_t |du_los|^2 over the ground (m^4, an integrated squared displacement envelope, not a mechanical energy): an oracle told the reflectivity, the excitation and both models, with receiver noise at 30 dB per cell, cannot reach 95% at 5% below 1.0e-9 m^4 (a spatial rms of temporal peak displacement of 1.0 um over 1,000 m^2), whatever the motion common to both worlds, since that cancels from its mean echoes; under quiet ground the certificate, with Giza's background in the reference, gives 1.4e-9 m^4 without receiver noise. At every operating point found <= false alarms + TV: below 1.5e-12 m^4 the oracle stays within 5 points of chance. The bench room's static imprint under the regional microseisms, bounded over every strain direction and beyond the solver's grid (the tail by the analytic point-source field scaled 2.0 times) with numerical and peak allowances, falls short of the oracle's requirement by 1.2e5 in amplitude and of the certificate's by 1.4e5: near chance (oracle TV at most 1.1e-05). Under a truck over a bump 15 m away all pass, at the worst of four sampled sides, with the scattered wave carried unattenuated to the scene's corner, the dynamic imprints fall short by 0.45 to 4 (room under a 5 m roof at 80 Hz unresolved), and counted within 39 m only by 4.5 to 33: under strong shaking the answer rests on how far the scattered wave carries. Crossing a threshold demonstrates neither detectability nor usefulness. A mechanism that only changes the ambient motion's phase moves the ground by at most twice its amplitude; to escape this exclusion under its stated amplitude and noise it must change the phase over more than 5.9e4 m^2 under the regional microseisms (a disk of radius 137 m) or 2,259 m^2 under the truck at 80 Hz. These are requirements conditional on the model; they say nothing of routes outside it."
 }

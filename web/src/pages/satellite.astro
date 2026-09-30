@@ -450,7 +450,7 @@ const rqAnyStatic = rqStatic.short_by_oracle ?? null;
 const rqAnyDyn = rqDyn.map((i) => i.short_by_oracle ?? NaN).filter((v) => Number.isFinite(v));
 const rqShort = (v: number) => (v < 1 ? `not excluded (${v.toFixed(2)})` : sci(v));
 // P2-29: the oracle, told everything but the answer
-type OrRow = { case: string; kind: string; delta: number; tv_upper: number; growth_to_target: number; growth_after_allowances: number; open: boolean; note: string };
+type OrRow = { case: string; kind: string; delta: number; tv_upper: number; growth_to_target: number; growth_after_allowances: number; not_excluded_after_allowances: boolean; state?: string; note: string };
 const orc = oracle as unknown as {
   raw_echo_check: { scatterers: number; pulses: number; summary: Record<string, { mean: number; se: number; spread: number }> };
   chamber: OrRow[];
@@ -698,7 +698,7 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
       <thead><tr><th>the oracle, the bench room</th><th>Δ</th><th>detection − false alarm</th><th>motion must grow, for 95% at 5%</th><th>after allowances (×{Math.round(orc.allowance_product)})</th></tr></thead>
       <tbody>
         {orc.chamber.map((r) => (
-          <tr><td>{r.case}</td><td>{sci(r.delta)}</td><td>{sci(r.tv_upper)}</td><td>{r.growth_to_target >= 100 ? sci(r.growth_to_target) : r.growth_to_target.toFixed(1)}×</td><td>{r.open ? 'open' : `${r.growth_after_allowances >= 100 ? sci(r.growth_after_allowances) : r.growth_after_allowances.toFixed(1)}×`}</td></tr>
+          <tr><td>{r.case}</td><td>{sci(r.delta)}</td><td>{sci(r.tv_upper)}</td><td>{r.growth_to_target >= 100 ? sci(r.growth_to_target) : r.growth_to_target.toFixed(1)}×</td><td>{r.not_excluded_after_allowances ? 'not excluded after allowances' : `${r.growth_after_allowances >= 100 ? sci(r.growth_after_allowances) : r.growth_after_allowances.toFixed(1)}×`}</td></tr>
         ))}
       </tbody>
     </table>

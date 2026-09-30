@@ -3,9 +3,9 @@
   "id": "p2_29_oracle",
   "title": "The oracle: what an ideal detector could learn, told more than any method knows",
   "date": "2026-09-30",
-  "started_utc": "2026-09-30T14:33:57+00:00",
-  "runtime_s": 0.8,
-  "commit": "439c48b+",
+  "started_utc": "2026-09-30T18:11:20+00:00",
+  "runtime_s": 4.9,
+  "commit": "ecff0e5+",
   "params": {
    "acquisition": "giza-20250827",
    "snr_db": 30.0,
@@ -232,7 +232,8 @@
    "growth_to_target": 725762.172812,
    "note": "",
    "growth_after_allowances": 7650.205019,
-   "open": false
+   "not_excluded_after_allowances": false,
+   "state": "near chance"
   },
   {
    "case": "The world's noisiest stations (static imprint)",
@@ -243,7 +244,8 @@
    "growth_to_target": 10089.377579,
    "note": "",
    "growth_after_allowances": 106.351378,
-   "open": false
+   "not_excluded_after_allowances": false,
+   "state": "near chance"
   },
   {
    "case": "Giza 1-3 Hz, measured (static imprint)",
@@ -254,7 +256,8 @@
    "growth_to_target": 691062.25497,
    "note": "",
    "growth_after_allowances": 7284.435769,
-   "open": false
+   "not_excluded_after_allowances": false,
+   "state": "near chance"
   },
   {
    "case": "Giza 3-8 Hz, measured (static imprint)",
@@ -265,7 +268,8 @@
    "growth_to_target": 801711.972474,
    "note": "",
    "growth_after_allowances": 8450.786201,
-   "open": false
+   "not_excluded_after_allowances": false,
+   "state": "near chance"
   },
   {
    "case": "urban background, all pass (surface)",
@@ -276,7 +280,8 @@
    "growth_to_target": 41.377156,
    "note": "scattered wave unattenuated across the scene",
    "growth_after_allowances": 0.436154,
-   "open": true
+   "not_excluded_after_allowances": true,
+   "state": "near chance"
   },
   {
    "case": "urban background, all pass, within 32 m (surface)",
@@ -287,7 +292,8 @@
    "growth_to_target": 483.351082,
    "note": "",
    "growth_after_allowances": 5.094968,
-   "open": false
+   "not_excluded_after_allowances": false,
+   "state": "near chance"
   },
   {
    "case": "truck over a bump 15 m away, all pass, at 52 Hz (surface)",
@@ -298,7 +304,8 @@
    "growth_to_target": 2.862414,
    "note": "scattered wave unattenuated across the scene",
    "growth_after_allowances": 0.030172,
-   "open": true
+   "not_excluded_after_allowances": true,
+   "state": "95% at 5% excluded"
   },
   {
    "case": "truck over a bump 15 m away, all pass, within 32 m, at 36 Hz (surface)",
@@ -309,7 +316,8 @@
    "growth_to_target": 29.543527,
    "note": "",
    "growth_after_allowances": 0.311416,
-   "open": true
+   "not_excluded_after_allowances": true,
+   "state": "near chance"
   },
   {
    "case": "urban background, all pass (surface_favourable)",
@@ -320,7 +328,8 @@
    "growth_to_target": 7.947347,
    "note": "scattered wave unattenuated across the scene",
    "growth_after_allowances": 0.083772,
-   "open": true
+   "not_excluded_after_allowances": true,
+   "state": "95% at 5% excluded"
   },
   {
    "case": "urban background, all pass, within 32 m (surface_favourable)",
@@ -331,7 +340,8 @@
    "growth_to_target": 75.774516,
    "note": "",
    "growth_after_allowances": 0.798734,
-   "open": true
+   "not_excluded_after_allowances": true,
+   "state": "near chance"
   },
   {
    "case": "truck over a bump 15 m away, all pass, at 72 Hz (surface_favourable)",
@@ -342,7 +352,8 @@
    "growth_to_target": 0.569337,
    "note": "scattered wave unattenuated across the scene",
    "growth_after_allowances": 0.006001,
-   "open": true
+   "not_excluded_after_allowances": true,
+   "state": "unresolved"
   },
   {
    "case": "truck over a bump 15 m away, all pass, within 32 m, at 59 Hz (surface_favourable)",
@@ -353,7 +364,8 @@
    "growth_to_target": 4.971541,
    "note": "",
    "growth_after_allowances": 0.052405,
-   "open": true
+   "not_excluded_after_allowances": true,
+   "state": "95% at 5% excluded"
   },
   {
    "case": "urban background, all pass (p_below)",
@@ -364,7 +376,8 @@
    "growth_to_target": 34.138414,
    "note": "scattered wave unattenuated across the scene",
    "growth_after_allowances": 0.35985,
-   "open": true
+   "not_excluded_after_allowances": true,
+   "state": "near chance"
   },
   {
    "case": "urban background, all pass, within 32 m (p_below)",
@@ -375,7 +388,8 @@
    "growth_to_target": 386.679835,
    "note": "",
    "growth_after_allowances": 4.075963,
-   "open": false
+   "not_excluded_after_allowances": false,
+   "state": "near chance"
   },
   {
    "case": "truck over a bump 15 m away, all pass, at 88 Hz (p_below)",
@@ -386,7 +400,8 @@
    "growth_to_target": 2.049975,
    "note": "scattered wave unattenuated across the scene",
    "growth_after_allowances": 0.021609,
-   "open": true
+   "not_excluded_after_allowances": true,
+   "state": "95% at 5% excluded"
   },
   {
    "case": "truck over a bump 15 m away, all pass, within 32 m, at 80 Hz (p_below)",
@@ -397,7 +412,8 @@
    "growth_to_target": 26.960384,
    "note": "",
    "growth_after_allowances": 0.284187,
-   "open": true
+   "not_excluded_after_allowances": true,
+   "state": "near chance"
   },
   {
    "case": "urban background, all pass (s_below)",
@@ -408,7 +424,8 @@
    "growth_to_target": 33.198554,
    "note": "scattered wave unattenuated across the scene",
    "growth_after_allowances": 0.349943,
-   "open": true
+   "not_excluded_after_allowances": true,
+   "state": "near chance"
   },
   {
    "case": "urban background, all pass, within 32 m (s_below)",
@@ -419,7 +436,8 @@
    "growth_to_target": 425.99769,
    "note": "",
    "growth_after_allowances": 4.49041,
-   "open": false
+   "not_excluded_after_allowances": false,
+   "state": "near chance"
   },
   {
    "case": "truck over a bump 15 m away, all pass, at 88 Hz (s_below)",
@@ -430,7 +448,8 @@
    "growth_to_target": 1.761736,
    "note": "scattered wave unattenuated across the scene",
    "growth_after_allowances": 0.01857,
-   "open": true
+   "not_excluded_after_allowances": true,
+   "state": "95% at 5% excluded"
   },
   {
    "case": "truck over a bump 15 m away, all pass, within 32 m, at 93 Hz (s_below)",
@@ -441,7 +460,8 @@
    "growth_to_target": 25.708489,
    "note": "",
    "growth_after_allowances": 0.270991,
-   "open": true
+   "not_excluded_after_allowances": true,
+   "state": "95% at 5% excluded"
   },
   {
    "case": "corner reflector on the peak, microseisms",
@@ -452,7 +472,8 @@
    "growth_to_target": 202317.034813,
    "note": "",
    "growth_after_allowances": 2132.608798,
-   "open": false
+   "not_excluded_after_allowances": false,
+   "state": "near chance"
   },
   {
    "case": "corner reflector on the peak, truck over a bump, 15 m",
@@ -463,7 +484,8 @@
    "growth_to_target": 12.934011,
    "note": "",
    "growth_after_allowances": 0.136336,
-   "open": true
+   "not_excluded_after_allowances": true,
+   "state": "95% at 5% excluded"
   }
  ],
  "snr_per_cell_raw": 1150.22901,

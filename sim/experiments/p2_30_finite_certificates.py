@@ -41,11 +41,16 @@ def band_count(n, fraction):
     return int(np.count_nonzero(np.abs(np.fft.fftfreq(n)) <= fraction / 2))
 
 
+def state(tv):
+    """One rule for every layer (found <= false alarms + TV at every operating point)."""
+    return 'near chance' if tv < 0.05 else ('95% at 5% excluded' if tv < 0.9 else 'unresolved')
+
+
 def row(label, phase_energy, **metadata):
     c = certificate_from_energy(phase_energy)
     return {"case": label, "phase_energy_upper_assumed": phase_energy,
             **c, "tpr_upper_at_fpr_005": min(1.0, 0.05 + c["tv_upper"]),
-            "excludes_095_at_005": c["tv_upper"] < 0.90, **metadata}
+            "excludes_095_at_005": c["tv_upper"] < 0.90, "state": state(c["tv_upper"]), **metadata}
 
 
 def certificates():

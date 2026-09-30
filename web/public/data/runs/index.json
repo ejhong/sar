@@ -1964,9 +1964,9 @@
   "id": "p2_27_requirement",
   "title": "What one image would need: the motion a room must add to the ground",
   "date": "2026-09-30",
-  "started_utc": "2026-09-30T14:32:51+00:00",
-  "runtime_s": 10.3,
-  "commit": "439c48b+",
+  "started_utc": "2026-09-30T18:11:26+00:00",
+  "runtime_s": 9.7,
+  "commit": "ecff0e5+",
   "params": {
    "acquisitions": [
     "giza-20250827",
@@ -2123,9 +2123,9 @@
   "id": "p2_29_oracle",
   "title": "The oracle: what an ideal detector could learn, told more than any method knows",
   "date": "2026-09-30",
-  "started_utc": "2026-09-30T14:33:57+00:00",
-  "runtime_s": 0.8,
-  "commit": "439c48b+",
+  "started_utc": "2026-09-30T18:11:20+00:00",
+  "runtime_s": 4.9,
+  "commit": "ecff0e5+",
   "params": {
    "acquisition": "giza-20250827",
    "snr_db": 30.0,
@@ -2176,9 +2176,9 @@
   "id": "p2_30_finite_certificates",
   "title": "Finite certificates: the bound on every processor, the common background included",
   "date": "2026-09-30",
-  "started_utc": "2026-09-30T14:46:52+00:00",
+  "started_utc": "2026-09-30T18:11:25+00:00",
   "runtime_s": 0.1,
-  "commit": "439c48b+",
+  "commit": "ecff0e5+",
   "params": {
    "target": {
     "tpr": 0.95,
@@ -2325,9 +2325,9 @@
   "id": "p2_32_shape_bounds",
   "title": "Shape discrimination, bounded",
   "date": "2026-09-30",
-  "started_utc": "2026-09-30T14:36:46+00:00",
-  "runtime_s": 31.6,
-  "commit": "439c48b+",
+  "started_utc": "2026-09-30T18:11:37+00:00",
+  "runtime_s": 192.9,
+  "commit": "ecff0e5+",
   "params": {
    "layouts": {
     "room": [

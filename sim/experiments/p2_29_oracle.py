@@ -34,7 +34,7 @@ raised by the processed band's share since the raw echoes hold the whole illumin
    (-26.7 dB, ICEYE's product specification); and a corner reflector 50 dB over the ground on the imprint's peak.
 3. Margins: how many times the room-specific motion would have to grow for the oracle to reach 95% found at 5% false
    alarms (Delta = 3.29; the phase saturating only raises it), and what survives stated, assumed allowances (the local level
-   ten times the regional, site amplification three times, SNR 10 dB higher). A case whose margin does not survive is open.
+   ten times the regional, site amplification three times, SNR 10 dB higher). A case whose margin does not survive them is marked not excluded after allowances.
 4. Depth: the bench room 30 m down against rooms 15 m down, small and spread so that their marks on the ground match it
    (a non-negative combination of one small room's kernel, the lab's solver settling under strain as in P2-28), and the
    dilute superposition checked by solving two small rooms together. What is left of the imprint to tell the depths apart
@@ -245,7 +245,9 @@ def chamber(g, p225, maps, amb, p226):
     allowance = float(np.prod(list(ALLOWANCES.values())))
     for r in rows:
         r['growth_after_allowances'] = r['growth_to_target'] / allowance
-        r['open'] = bool(r['growth_after_allowances'] <= 1.0)
+        r['not_excluded_after_allowances'] = bool(r['growth_after_allowances'] <= 1.0)
+        # one rule for every layer: found <= false alarms + TV at every operating point
+        r['state'] = 'near chance' if r['tv_upper'] < 0.05 else ('95% at 5% excluded' if r['tv_upper'] < 0.9 else 'unresolved')
     return rows, snr, allowance
 
 
@@ -366,13 +368,13 @@ def main():
         rows, snr, allowance = chamber(g, p225, maps, amb, load('p2_26_imprint_spectrum'))
         for r in rows:
             print(f"  {r['case']}: Delta {r['delta']:.3g}, TV {r['tv_upper']:.3g}, grow x{r['growth_to_target']:.3g}"
-                  f"{' (open)' if r['open'] else ''}", flush=True)
+                  f"{' (not excluded after allowances)' if r['not_excluded_after_allowances'] else ''}", flush=True)
         t0 = time.time()
         dep = memo(RID, 'depth', lambda: depth(g, host, m28), __file__, version='depth-v1')
         print(f"  depth: residual {dep['residual_fraction']:.3g} ({time.time() - t0:.0f} s)", flush=True)
         amb_rows = [r for r in rows if r['kind'] == 'ambient']
         cult = [r for r in rows if r['kind'] == 'cultural']
-        opened = [r['case'] for r in rows if r['open']]
+        opened = [r['case'] for r in rows if r['not_excluded_after_allowances']]
         worst = max(cult, key=lambda r: r['tv_upper'])
         reg = amb_rows[0]                                   # Giza's regional microseisms
         loud = max(amb_rows, key=lambda r: r['tv_upper'])   # the noisiest stations

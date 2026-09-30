@@ -57,7 +57,7 @@ class FiniteProofTests(unittest.TestCase):
             with localcontext() as ctx:
                 ctx.prec=80
                 d=Decimal(value);exact=d-(1+d).ln()
-                rho=abs(d);upper=d*d/(2*(1-rho)**2)
+                rho=abs(d);upper=d*d/(2*(1-rho))
                 self.assertLessEqual(exact,upper)
                 result=finite_complex_kl(np.eye(1),np.array([[float(d)]]))['kl']
                 self.assertLess(abs(result-float(exact)),float(exact)*2e-13)

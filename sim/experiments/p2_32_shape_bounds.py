@@ -246,7 +246,7 @@ def main():
         for n in sorted({x for pair in PAIRS for x in pair} - {'none'}):
             t1 = time.time()
             single[n] = memo(RID, f'single-{n}', lambda: static_layer(g, get(n), bands, m25, snr, floor), __file__,
-                             version=f'static-v2-{GUARD:.6f}')
+                             version=f'static-v3-{GUARD:.6f}')
             print(f"  {n} against none: tight {single[n][0][0]['tight_ceiling']:.2e} ({time.time() - t1:.0f} s)", flush=True)
         static = []
         for a, b in PAIRS:
@@ -254,7 +254,7 @@ def main():
             KA, KB = get(a), get(b)
             diff = {'xy': KA['xy'], **{k: KA[k] - KB[k] for k in ('Kxx', 'Kyy', 'Kxy')}}
             rows, fb = memo(RID, f'pair-{a}-{b}', lambda: static_layer(g, diff, bands, m25, snr, floor), __file__,
-                            version=f'static-v2-{GUARD:.6f}')
+                            version=f'static-v3-{GUARD:.6f}')
             for i, r in enumerate(rows):
                 ra = single[a][0][i]
                 rb = single[b][0][i] if b != 'none' else None
@@ -292,9 +292,12 @@ def main():
             + (f" With a lorry bouncing beside the layouts all pass, known exactly, at the worst of four sampled sides, "
                f"the oracle's bound for the hardest-to-exclude pair ({worst_dyn['pair']}) reaches {worst_dyn['oracle_tv']:.2f} at "
                f"{worst_dyn['worst_f_hz']:.0f} Hz"
-               + (f", so this argument does not exclude telling them apart at 95% / 5%" if worst_dyn['oracle_growth_to_target'] < 1
-                  else f", still excluding 95% / 5% until the signal grows {worst_dyn['oracle_growth_to_target']:.1f} times")
-               + ": unresolved, not a demonstrated opportunity, for shape as for detection." if worst_dyn else "")
+               + (f": unresolved (this argument does not exclude telling them apart at 95% / 5%), not a demonstrated "
+                  f"opportunity" if worst_dyn['oracle_tv'] >= 0.9
+                  else f": found <= false alarms + {worst_dyn['oracle_tv']:.2f}, so 95% / 5% is excluded (until the signal "
+                       f"grows {worst_dyn['oracle_growth_to_target']:.1f} times) though weaker, possibly useful performance "
+                       f"is not")
+               + "." if worst_dyn else "")
             + " Only these layouts, this rock and these sources are covered.")
         run.save({'static': static, 'single': {n: v[0] for n, v in single.items()}, 'dynamic': dynamic,
                   'background_floor': floor, 'direction_guard': float(GUARD), 'finding': finding})

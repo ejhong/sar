@@ -37,7 +37,7 @@ const fc = finite as unknown as {
 type TS = { case: string; ceiling: number };
 type TD = { case: string; urban: { ceiling: number }; truck: { ceiling: number; worst_f_hz: number } };
 const tb = tight as unknown as { static: TS[]; dynamic: TD[]; checks: { detection: { pinsker_from_exact_kl: number; likelihood_ratio: { largest_pd_minus_pfa: number } }[] } };
-type OrRow = { case: string; kind: string; delta: number; tv_upper: number; growth_to_target: number; growth_after_allowances: number; open: boolean };
+type OrRow = { case: string; kind: string; delta: number; tv_upper: number; growth_to_target: number; growth_after_allowances: number; not_excluded_after_allowances: boolean; state?: string };
 const orc = oracle as unknown as {
   chamber: OrRow[];
   allowance_product: number;
@@ -77,7 +77,7 @@ const orThin = orTruck('surface_favourable');
 const orBenchTruck = orTruck('surface');
 const orAmb = Math.max(...orc.chamber.filter((r) => r.kind === 'ambient').map((r) => r.tv_upper));
 const orReg = orFind(s0[0].case)?.tv_upper ?? orAmb;   // the regional microseisms, as the certificate and tight rows quote
-const orOpen = orc.chamber.filter((r) => r.open);
+const orOpen = orc.chamber.filter((r) => r.not_excluded_after_allowances);
 
 // ---- shape discrimination (P2-32)
 type ShRow = { case: string; tight_ceiling: number; oracle_tv: number; oracle_growth_to_target: number | null; certificate_tpr_at_005: number };
@@ -338,7 +338,7 @@ const conc = (r: DRes) => r.over_room / r.elsewhere;
       <div class="note-card">
         <span class="tag">C · a certificate from a phase envelope</span>
         <h3>The whole image given the room’s largest phase</h3>
-        <p>If ‖C₀<sup>−½</sup>ΔA‖<sub>F</sub> ≤ q, ρ = 2q + q² bounds ‖E‖ exactly (E = DB* + BD* + DD*), so TV ≤ ρ/(2(1 − ρ)). A phase-only change
+        <p>If ‖C₀<sup>−½</sup>ΔA‖<sub>F</sub> ≤ q, ρ = 2q + q² bounds ‖E‖ exactly (E = DB* + BD* + DD*), so KL ≤ ρ²/(2(1 − ρ)) and TV ≤ min(√(KL/2), √(1 − e<sup>−KL</sup>)). A phase-only change
         obeys |e<sup>−iΦ</sup> − 1|² ≤ Φ², so q² ≤ Σ|T₀|²Φ² / λ<sub>min</sub>(C₀) ≤ m P²/λ<sub>min</sub>: the peak phase P at every one of the image’s
         {' '}{(fc.geometry.pixel_count / 1e9).toFixed(2)} billion pixels, over its {(fc.geometry.in_band_bins / 1e6).toFixed(0)} million retained bins. A background
         motion bounded the same way proves λ<sub>min</sub>(C₀) ≥ (1 − √Q<sub>bg</sub>)² = {fc.background_included.covariance_floor_proved_within_model.toFixed(4)}.</p>
@@ -523,11 +523,12 @@ const conc = (r: DRes) => r.over_room / r.elsewhere;
       }
       const q = Math.sqrt((dens * A) / z) * ((4 * Math.PI * u) / lam);
       const rho = 2 * q + q * q;
-      const v = rho < 1 ? Math.min(1, rho / (2 * (1 - rho))) : 1;
+      const kl = rho < 1 ? (rho * rho) / (2 * (1 - rho)) : Infinity;
+      const v = Math.min(1, Math.sqrt(kl / 2), Math.sqrt(-Math.expm1(-kl)));
       out.textContent =
-        v >= 1
-          ? 'The certificate does not decide for these inputs (which does not make detection possible).'
-          : `Detection − false alarm ≤ ${v.toPrecision(3)}; at 5% false alarms, found ≤ ${(100 * Math.min(1, 0.05 + v)).toFixed(2)}%. ${v < 0.9 ? 'The 95% / 5% target is excluded.' : 'The target is not excluded by this bound.'}`;
+        v >= 0.9
+          ? 'The certificate does not exclude 95% at 5% for these inputs: unresolved, which does not make detection possible.'
+          : `Found ≤ false alarms + ${v.toPrecision(3)}: at 5% false alarms, at most ${(100 * Math.min(1, 0.05 + v)).toFixed(1)}%. ${v < 0.05 ? 'Within five points of chance.' : 'The 95% at 5% target is excluded; a detector could still find up to that much.'}`;
     };
     [area, disp, floor].forEach((el) => el.addEventListener('input', calc));
     calc();

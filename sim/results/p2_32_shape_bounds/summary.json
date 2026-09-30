@@ -3,9 +3,9 @@
   "id": "p2_32_shape_bounds",
   "title": "Shape discrimination, bounded",
   "date": "2026-09-30",
-  "started_utc": "2026-09-30T14:36:46+00:00",
-  "runtime_s": 31.6,
-  "commit": "439c48b+",
+  "started_utc": "2026-09-30T18:11:37+00:00",
+  "runtime_s": 192.9,
+  "commit": "ecff0e5+",
   "params": {
    "layouts": {
     "room": [
@@ -323,10 +323,10 @@
      "phase_energy_unit": 105754487.095537,
      "peak_phase_unit_rad": 87.120752,
      "tight_ceiling_difference_diagnostic": 1.035e-07,
-     "certificate_tv_difference_diagnostic": 0.01113,
+     "certificate_tv_difference_diagnostic": 0.011008,
      "tight_ceiling": 1.035e-07,
-     "certificate_tv": 0.01113,
-     "certificate_tpr_at_005": 0.06113,
+     "certificate_tv": 0.011008,
+     "certificate_tpr_at_005": 0.061008,
      "via": "TV(A, none) + TV(none, B) for tight and certificate; the difference for the oracle"
     },
     {
@@ -359,9 +359,9 @@
      "phase_energy_unit": 105754487.095537,
      "peak_phase_unit_rad": 87.120752,
      "tight_ceiling_difference_diagnostic": 2.856e-08,
-     "certificate_tv_difference_diagnostic": 0.0001364,
+     "certificate_tv_difference_diagnostic": 0.0001363,
      "tight_ceiling": 2.856e-08,
-     "certificate_tv": 0.0001364,
+     "certificate_tv": 0.0001363,
      "certificate_tpr_at_005": 0.050136,
      "via": "TV(A, none) + TV(none, B) for tight and certificate; the difference for the oracle"
     }
@@ -383,9 +383,9 @@
      "phase_energy_unit": 50280716.589715,
      "peak_phase_unit_rad": 91.709994,
      "tight_ceiling_difference_diagnostic": 1.004e-09,
-     "certificate_tv_difference_diagnostic": 0.0001586,
+     "certificate_tv_difference_diagnostic": 0.0001585,
      "tight_ceiling": 2.647e-09,
-     "certificate_tv": 0.0002711,
+     "certificate_tv": 0.000271,
      "certificate_tpr_at_005": 0.050271,
      "via": "TV(A, none) + TV(none, B) for tight and certificate; the difference for the oracle"
     },
@@ -401,10 +401,10 @@
      "phase_energy_unit": 50280716.589715,
      "peak_phase_unit_rad": 91.709994,
      "tight_ceiling_difference_diagnostic": 7.222e-08,
-     "certificate_tv_difference_diagnostic": 0.011733,
+     "certificate_tv_difference_diagnostic": 0.011598,
      "tight_ceiling": 1.904e-07,
-     "certificate_tv": 0.019977,
-     "certificate_tpr_at_005": 0.069977,
+     "certificate_tv": 0.019779,
+     "certificate_tpr_at_005": 0.069779,
      "via": "TV(A, none) + TV(none, B) for tight and certificate; the difference for the oracle"
     },
     {
@@ -463,8 +463,8 @@
      "tight_ceiling_difference_diagnostic": 1.337e-09,
      "certificate_tv_difference_diagnostic": 0.0001592,
      "tight_ceiling": 9.127e-09,
-     "certificate_tv": 0.001105,
-     "certificate_tpr_at_005": 0.051105,
+     "certificate_tv": 0.001104,
+     "certificate_tpr_at_005": 0.051104,
      "via": "TV(A, none) + TV(none, B) for tight and certificate; the difference for the oracle"
     },
     {
@@ -479,10 +479,10 @@
      "phase_energy_unit": 94828108.565999,
      "peak_phase_unit_rad": 92.095843,
      "tight_ceiling_difference_diagnostic": 9.618e-08,
-     "certificate_tv_difference_diagnostic": 0.011784,
+     "certificate_tv_difference_diagnostic": 0.011648,
      "tight_ceiling": 6.565e-07,
-     "certificate_tv": 0.088183,
-     "certificate_tpr_at_005": 0.138183,
+     "certificate_tv": 0.084489,
+     "certificate_tpr_at_005": 0.134489,
      "via": "TV(A, none) + TV(none, B) for tight and certificate; the difference for the oracle"
     },
     {
@@ -517,7 +517,7 @@
      "tight_ceiling_difference_diagnostic": 2.575e-08,
      "certificate_tv_difference_diagnostic": 0.0001441,
      "tight_ceiling": 1.774e-07,
-     "certificate_tv": 0.001,
+     "certificate_tv": 0.0009997,
      "certificate_tpr_at_005": 0.051,
      "via": "TV(A, none) + TV(none, B) for tight and certificate; the difference for the oracle"
     }
@@ -541,7 +541,7 @@
      "tight_ceiling_difference_diagnostic": 1.142e-09,
      "certificate_tv_difference_diagnostic": 0.0001579,
      "tight_ceiling": 2.644e-09,
-     "certificate_tv": 0.0002937,
+     "certificate_tv": 0.0002936,
      "certificate_tpr_at_005": 0.050294,
      "via": "TV(A, none) + TV(none, B) for tight and certificate; the difference for the oracle"
     },
@@ -557,10 +557,10 @@
      "phase_energy_unit": 58022139.523074,
      "peak_phase_unit_rad": 91.340297,
      "tight_ceiling_difference_diagnostic": 8.212e-08,
-     "certificate_tv_difference_diagnostic": 0.011685,
+     "certificate_tv_difference_diagnostic": 0.01155,
      "tight_ceiling": 1.901e-07,
-     "certificate_tv": 0.021686,
-     "certificate_tpr_at_005": 0.071686,
+     "certificate_tv": 0.021455,
+     "certificate_tpr_at_005": 0.071455,
      "via": "TV(A, none) + TV(none, B) for tight and certificate; the difference for the oracle"
     },
     {
@@ -577,7 +577,7 @@
      "tight_ceiling_difference_diagnostic": 1.179e-08,
      "certificate_tv_difference_diagnostic": 0.0001658,
      "tight_ceiling": 2.719e-08,
-     "certificate_tv": 0.0003084,
+     "certificate_tv": 0.0003083,
      "certificate_tpr_at_005": 0.050308,
      "via": "TV(A, none) + TV(none, B) for tight and certificate; the difference for the oracle"
     },
@@ -593,9 +593,9 @@
      "phase_energy_unit": 58022139.523074,
      "peak_phase_unit_rad": 91.340297,
      "tight_ceiling_difference_diagnostic": 2.338e-08,
-     "certificate_tv_difference_diagnostic": 0.000143,
+     "certificate_tv_difference_diagnostic": 0.0001429,
      "tight_ceiling": 5.282e-08,
-     "certificate_tv": 0.0002659,
+     "certificate_tv": 0.0002658,
      "certificate_tpr_at_005": 0.050266,
      "via": "TV(A, none) + TV(none, B) for tight and certificate; the difference for the oracle"
     }
@@ -617,9 +617,9 @@
      "phase_energy_unit": 224159399.961316,
      "peak_phase_unit_rad": 144.437319,
      "tight_ceiling_difference_diagnostic": 1.863e-09,
-     "certificate_tv_difference_diagnostic": 0.0002498,
+     "certificate_tv_difference_diagnostic": 0.0002497,
      "tight_ceiling": 1.863e-09,
-     "certificate_tv": 0.0002498,
+     "certificate_tv": 0.0002497,
      "certificate_tpr_at_005": 0.05025,
      "via": "TV(A, none) + TV(none, B) for tight and certificate; the difference for the oracle"
     },
@@ -635,10 +635,10 @@
      "phase_energy_unit": 224159399.961316,
      "peak_phase_unit_rad": 144.437319,
      "tight_ceiling_difference_diagnostic": 1.34e-07,
-     "certificate_tv_difference_diagnostic": 0.018795,
+     "certificate_tv_difference_diagnostic": 0.018452,
      "tight_ceiling": 1.34e-07,
-     "certificate_tv": 0.018795,
-     "certificate_tpr_at_005": 0.068795,
+     "certificate_tv": 0.018452,
+     "certificate_tpr_at_005": 0.068452,
      "via": "TV(A, none) + TV(none, B) for tight and certificate; the difference for the oracle"
     },
     {
@@ -653,9 +653,9 @@
      "phase_energy_unit": 224159399.961316,
      "peak_phase_unit_rad": 144.437319,
      "tight_ceiling_difference_diagnostic": 1.929e-08,
-     "certificate_tv_difference_diagnostic": 0.0002623,
+     "certificate_tv_difference_diagnostic": 0.0002622,
      "tight_ceiling": 1.929e-08,
-     "certificate_tv": 0.0002623,
+     "certificate_tv": 0.0002622,
      "certificate_tpr_at_005": 0.050262,
      "via": "TV(A, none) + TV(none, B) for tight and certificate; the difference for the oracle"
     },
@@ -693,7 +693,7 @@
     "oracle_d": 1.218e-11,
     "oracle_tv": 1.969e-06,
     "oracle_growth_to_target": 666482.142147,
-    "certificate_tv": 0.0001431,
+    "certificate_tv": 0.000143,
     "certificate_tpr_at_005": 0.050143,
     "phase_energy_unit": 89096716.054862,
     "peak_phase_unit_rad": 82.749549
@@ -708,8 +708,8 @@
     "oracle_d": 6.302e-08,
     "oracle_tv": 0.0001416,
     "oracle_growth_to_target": 9267.046557,
-    "certificate_tv": 0.010557,
-    "certificate_tpr_at_005": 0.060557,
+    "certificate_tv": 0.010447,
+    "certificate_tpr_at_005": 0.060447,
     "phase_energy_unit": 89096716.054862,
     "peak_phase_unit_rad": 82.749549
    },
@@ -739,7 +739,7 @@
     "oracle_tv": 1.783e-06,
     "oracle_growth_to_target": 736185.861884,
     "certificate_tv": 0.0001295,
-    "certificate_tpr_at_005": 0.05013,
+    "certificate_tpr_at_005": 0.050129,
     "phase_energy_unit": 89096716.054862,
     "peak_phase_unit_rad": 82.749549
    }
@@ -770,8 +770,8 @@
     "oracle_d": 7.48e-08,
     "oracle_tv": 0.0001543,
     "oracle_growth_to_target": 8505.949339,
-    "certificate_tv": 0.01113,
-    "certificate_tpr_at_005": 0.06113,
+    "certificate_tv": 0.011008,
+    "certificate_tpr_at_005": 0.061008,
     "phase_energy_unit": 105754487.095537,
     "peak_phase_unit_rad": 87.120752
    },
@@ -800,7 +800,7 @@
     "oracle_d": 1.185e-11,
     "oracle_tv": 1.942e-06,
     "oracle_growth_to_target": 675723.339355,
-    "certificate_tv": 0.0001364,
+    "certificate_tv": 0.0001363,
     "certificate_tpr_at_005": 0.050136,
     "phase_energy_unit": 105754487.095537,
     "peak_phase_unit_rad": 87.120752
@@ -817,7 +817,7 @@
     "oracle_d": 1.256e-10,
     "oracle_tv": 6.323e-06,
     "oracle_growth_to_target": 207579.149692,
-    "certificate_tv": 0.0004928,
+    "certificate_tv": 0.0004926,
     "certificate_tpr_at_005": 0.050493,
     "phase_energy_unit": 918483321.458819,
     "peak_phase_unit_rad": 284.789017
@@ -832,8 +832,8 @@
     "oracle_d": 6.497e-07,
     "oracle_tv": 0.0004547,
     "oracle_growth_to_target": 2886.267347,
-    "certificate_tv": 0.038822,
-    "certificate_tpr_at_005": 0.088822,
+    "certificate_tv": 0.037397,
+    "certificate_tpr_at_005": 0.087397,
     "phase_energy_unit": 918483321.458819,
     "peak_phase_unit_rad": 284.789017
    },
@@ -847,7 +847,7 @@
     "oracle_d": 1.385e-10,
     "oracle_tv": 6.639e-06,
     "oracle_growth_to_target": 197706.639176,
-    "certificate_tv": 0.0005174,
+    "certificate_tv": 0.0005172,
     "certificate_tpr_at_005": 0.050517,
     "phase_energy_unit": 918483321.458819,
     "peak_phase_unit_rad": 284.789017
@@ -862,7 +862,7 @@
     "oracle_d": 1.029e-10,
     "oracle_tv": 5.724e-06,
     "oracle_growth_to_target": 229288.716924,
-    "certificate_tv": 0.0004461,
+    "certificate_tv": 0.0004459,
     "certificate_tpr_at_005": 0.050446,
     "phase_energy_unit": 918483321.458819,
     "peak_phase_unit_rad": 284.789017
@@ -879,7 +879,7 @@
     "oracle_d": 2.138e-10,
     "oracle_tv": 8.25e-06,
     "oracle_growth_to_target": 159093.300541,
-    "certificate_tv": 0.0006122,
+    "certificate_tv": 0.0006118,
     "certificate_tpr_at_005": 0.050612,
     "phase_energy_unit": 1563633434.240974,
     "peak_phase_unit_rad": 353.669134
@@ -894,8 +894,8 @@
     "oracle_d": 1.106e-06,
     "oracle_tv": 0.0005933,
     "oracle_growth_to_target": 2212.099815,
-    "certificate_tv": 0.049361,
-    "certificate_tpr_at_005": 0.099361,
+    "certificate_tv": 0.047092,
+    "certificate_tpr_at_005": 0.097092,
     "phase_energy_unit": 1563633434.240974,
     "peak_phase_unit_rad": 353.669134
    },
@@ -909,8 +909,8 @@
     "oracle_d": 2.357e-10,
     "oracle_tv": 8.662e-06,
     "oracle_growth_to_target": 151526.787792,
-    "certificate_tv": 0.0006428,
-    "certificate_tpr_at_005": 0.050643,
+    "certificate_tv": 0.0006424,
+    "certificate_tpr_at_005": 0.050642,
     "phase_energy_unit": 1563633434.240974,
     "peak_phase_unit_rad": 353.669134
    },
@@ -924,7 +924,7 @@
     "oracle_d": 1.753e-10,
     "oracle_tv": 7.469e-06,
     "oracle_growth_to_target": 175731.998163,
-    "certificate_tv": 0.0005541,
+    "certificate_tv": 0.0005538,
     "certificate_tpr_at_005": 0.050554,
     "phase_energy_unit": 1563633434.240974,
     "peak_phase_unit_rad": 353.669134
@@ -941,7 +941,7 @@
     "oracle_d": 3.065e-11,
     "oracle_tv": 3.124e-06,
     "oracle_growth_to_target": 420185.332322,
-    "certificate_tv": 0.0002498,
+    "certificate_tv": 0.0002497,
     "certificate_tpr_at_005": 0.05025,
     "phase_energy_unit": 224159399.961316,
     "peak_phase_unit_rad": 144.437319
@@ -956,8 +956,8 @@
     "oracle_d": 1.586e-07,
     "oracle_tv": 0.0002247,
     "oracle_growth_to_target": 5842.432664,
-    "certificate_tv": 0.018795,
-    "certificate_tpr_at_005": 0.068795,
+    "certificate_tv": 0.018452,
+    "certificate_tpr_at_005": 0.068452,
     "phase_energy_unit": 224159399.961316,
     "peak_phase_unit_rad": 144.437319
    },
@@ -971,7 +971,7 @@
     "oracle_d": 3.379e-11,
     "oracle_tv": 3.28e-06,
     "oracle_growth_to_target": 400201.224484,
-    "certificate_tv": 0.0002623,
+    "certificate_tv": 0.0002622,
     "certificate_tpr_at_005": 0.050262,
     "phase_energy_unit": 224159399.961316,
     "peak_phase_unit_rad": 144.437319
@@ -1018,8 +1018,8 @@
     "oracle_d": 4.188e-08,
     "oracle_tv": 0.0001155,
     "oracle_growth_to_target": 11367.201181,
-    "certificate_tv": 0.00942,
-    "certificate_tpr_at_005": 0.05942,
+    "certificate_tv": 0.009332,
+    "certificate_tpr_at_005": 0.059332,
     "phase_energy_unit": 59215758.163531,
     "peak_phase_unit_rad": 74.044034
    },
@@ -1114,5 +1114,5 @@
  ],
  "background_floor": 0.055937,
  "direction_guard": 1.035276,
- "finding": "Telling one layout from another is bounded as detection is, and depth ambiguity does not rescue a reader: the same-depth bound holds for every allowed vertical transformation. Under Giza's regional microseism level the oracle, told everything but which layout is there, tells an L-shaped from a straight tunnel with detection minus false alarm at most 1.5e-06, and a column with a spiral from a plain column at most 2.0e-06; the tight bound gives 2.6e-09 and 9.1e-09 (each layout against empty ground, summed); the loose certificate with the background, the same way, caps discrimination at 5.110% at 5% for every pair. Discrimination needs 1.2 to 4.1 times the signal that detecting the first layout needs. With a lorry bouncing beside the layouts all pass, known exactly, at the worst of four sampled sides, the oracle's bound for the hardest-to-exclude pair (L_tunnel vs branching_tunnel) reaches 0.86 at 68 Hz, still excluding 95% / 5% until the signal grows 1.1 times: unresolved, not a demonstrated opportunity, for shape as for detection. Only these layouts, this rock and these sources are covered."
+ "finding": "Telling one layout from another is bounded as detection is, and depth ambiguity does not rescue a reader: the same-depth bound holds for every allowed vertical transformation. Under Giza's regional microseism level the oracle, told everything but which layout is there, tells an L-shaped from a straight tunnel with detection minus false alarm at most 1.5e-06, and a column with a spiral from a plain column at most 2.0e-06; the tight bound gives 2.6e-09 and 9.1e-09 (each layout against empty ground, summed); the loose certificate with the background, the same way, caps discrimination at 5.110% at 5% for every pair. Discrimination needs 1.2 to 4.1 times the signal that detecting the first layout needs. With a lorry bouncing beside the layouts all pass, known exactly, at the worst of four sampled sides, the oracle's bound for the hardest-to-exclude pair (L_tunnel vs branching_tunnel) reaches 0.86 at 68 Hz: found <= false alarms + 0.86, so 95% / 5% is excluded (until the signal grows 1.1 times) though weaker, possibly useful performance is not. Only these layouts, this rock and these sources are covered."
 }
