@@ -10,6 +10,7 @@ parameters, environment). Results are generated, never edited by hand.
 from __future__ import annotations
 
 import json
+import math
 import os
 import platform
 import subprocess
@@ -41,10 +42,12 @@ def _clean(o):
     if isinstance(o, np.ndarray):
         return _clean(o.tolist())
     if isinstance(o, (np.floating,)):
-        return float(o)
+        return _clean(float(o))
     if isinstance(o, (np.integer,)):
         return int(o)
     if isinstance(o, float):
+        if not math.isfinite(o):                   # a vacuous bound (infinite) or an undefined score travels as null
+            return None
         return round(o, 6) if abs(o) >= 1e-3 or o == 0 else float(f'{o:.4g}')
     return o
 
@@ -79,7 +82,7 @@ class Run:
     def save(self, summary: dict, name: str = 'summary.json') -> Path:
         out = {'manifest': self.manifest(), **summary}
         p = self.dir / name
-        p.write_text(json.dumps(_clean(out), indent=1, ensure_ascii=False))
+        p.write_text(json.dumps(_clean(out), indent=1, ensure_ascii=False, allow_nan=False))
         print(f'wrote {p.relative_to(ROOT)}')
         return p
 

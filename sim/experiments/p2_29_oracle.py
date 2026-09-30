@@ -51,7 +51,7 @@ from numba import njit, prange
 from scipy.optimize import nnls
 from scipy.special import ndtr
 
-from katabasis.runs import RESULTS, Run, load
+from katabasis.runs import RESULTS, Run, load, memo
 from sarsim import information as inf
 from sarsim.acquisition import DwellGeometry
 from sarsim.echo import EchoSetup, window
@@ -348,14 +348,14 @@ def main():
               'depth': {'small_room': SMALL, 'spacing_m': SHIFT_CELLS * 2.0, 'reach_m': SHIFT_MAX * SHIFT_CELLS * 2.0}}
     with Run(RID, 'The oracle: what an ideal detector could learn, told more than any method knows', params) as run:
         t0 = time.time()
-        raw = check_raw(g)
+        raw = memo(RID, 'raw_check', lambda: check_raw(g), __file__, version='raw-v1')
         print(f"  raw-echo check: {time.time() - t0:.0f} s", flush=True)
         rows, snr, allowance = chamber(g, p225, maps, amb)
         for r in rows:
             print(f"  {r['case']}: Delta {r['delta']:.3g}, TV {r['tv_exact']:.3g}, grow x{r['growth_to_target']:.3g}"
                   f"{' (open)' if r['open'] else ''}", flush=True)
         t0 = time.time()
-        dep = depth(g, host, m28)
+        dep = memo(RID, 'depth', lambda: depth(g, host, m28), __file__, version='depth-v1')
         print(f"  depth: residual {dep['residual_fraction']:.3g} ({time.time() - t0:.0f} s)", flush=True)
         amb_rows = [r for r in rows if r['kind'] == 'ambient']
         cult = [r for r in rows if r['kind'] == 'cultural']

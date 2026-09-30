@@ -29,13 +29,16 @@ Readers.
    cavity (paired).
 2. A reference detector told the shaking: the locally most powerful statistic for each candidate layout (the score, as
    P2-25 checks it), q_c(x) = Im z conj(z_eps_c) per strain component correlated with each layout's imprint templates;
-   presence and shape by the largest normalised score among the three layouts, location by the room template's map.
+   presence and shape by the largest normalised score among the three layouts at the true placement (it is told where
+   to look), location by where each layout's statistic peaks when every placement is scanned.
    Normalised by the spread of the same maps over the images with no cavity and the motionless copies.
 Controls: no cavity, and a motionless copy of the ground, for every realisation, read identically.
 
 Scoring, stated before the run. Presence: each image's largest normalised response, cavity scenes against the controls.
 Horizontal location: the distance from the reader's strongest place (the centroid of its top 5% for the published maps)
-to the nearest point of the true plan footprint. Shape: the layout whose plan footprint the reader's map correlates with
+to the nearest point of the true plan footprint; added after the first run, because the tunnels' footprints reach
+within a few metres of almost any central place (chance 3.4 m), the distance from that centroid to the footprint's
+centroid, with its chance from the controls. Shape: the layout whose plan footprint the reader's map correlates with
 best (chance one in three), the controls scored the same way. Extra structures: connected regions of the top 5% that
 touch no true footprint within 5 m, counted as false positives. Depth, for the published method: one predeclared family of
 global transformations (lambda_s of 0.24 or 0.48 m, and the axis's repeat and mirror branches), the same for every image;
@@ -346,9 +349,14 @@ def main():
                 le = summarise(cav, reader, 'location_error_m')
                 s[reader] = {'presence_auc_vs_controls': auc, 'shape_accuracy': float(np.mean(sc)) if sc else None,
                              'shape_chance': 1 / len(SHAPES), 'median_location_error_m': float(np.median(le)) if le else None}
-                if reader != 'reference':
+                if reader == 'reference':
+                    # presence and shape are read at the true placement (told where to look); location by scanning
+                    s[reader]['median_presence_z_at_true_place'] = float(np.median(pres_c)) if pres_c else None
+                else:
                     ex = summarise(cav, reader, 'extra_structures')
                     s[reader]['mean_extra_structures'] = float(np.mean(ex)) if ex else None
+                    cen = summarise(cav, reader, 'centroid_error_m')
+                    s[reader]['median_centroid_error_m'] = float(np.median(cen)) if cen else None
             dep = [x['published_depth']['best_error_after_allowance_m'] for x in cav if 'published_depth' in x]
             s['published_depth_error_after_allowance_m'] = float(np.median(dep)) if dep else None
             summary[lv] = s
@@ -358,6 +366,16 @@ def main():
             ce, cn, _ = top_centroid(pub_norm(gaussian_filter(r['blind'], 1.0)), GE, GN)
             chance_loc += [distance_to(truth_pub[n], GE, GN, ce, cn) for n in SHAPES]
         summary['control_location_error_to_layouts_m'] = float(np.median(chance_loc))
+        # chance for the centroid: the controls' top places against each layout's footprint centroid; for the paired map
+        # the motionless copy's change (the no-cavity image's change against itself is identically zero)
+        def chance_centroid(maps_):
+            out_ = []
+            for M in maps_:
+                ce, cn, _ = top_centroid(pub_norm(gaussian_filter(M, 1.0)), GE, GN)
+                out_ += [float(np.hypot(ce - GE[truth_pub[n]].mean(), cn - GN[truth_pub[n]].mean())) for n in SHAPES]
+            return float(np.median(out_))
+        summary['control_centroid_error_blind_m'] = chance_centroid([r['blind'] for r in ctrl])
+        summary['control_centroid_error_paired_m'] = chance_centroid([r['paired'] for r in ctrl if r['key'] == 'motionless'])
         summary['control_reference_peak_distance_m'] = float(np.median([x['reference']['location_error_m'] for x in ctrl_rows]))
         np.savez_compressed(Path(run.dir) / 'maps.npz',
                             **{f"{r['seed']}_{r['key'].replace('|', '_')}_blind": r['blind'].astype(np.float32) for r in records},
@@ -367,22 +385,26 @@ def main():
         mid = summary['diagnostic_2_rad']
         real = summary['real']
         ok_ref = (pos['reference']['shape_accuracy'] or 0) >= 2 / 3
+        rp, rm = pos['reference'], mid['reference']
+        bp, pp = pos['published_blind'], pos['published_paired']
         finding = (
             f"Scenes generated through the forward model (the lab's solver for each cavity's imprint, the synthesizer for "
             f"the image), with the unrelated ground and shaking matched. At the positive control (each imprint boosted to "
-            f"20 rad) the reference detector told the shaking names the layout in "
-            f"{100 * pos['reference']['shape_accuracy']:.0f}% of images (chance {100 / len(SHAPES):.0f}%) and places it "
-            f"{pos['reference']['median_location_error_m']:.1f} m from where it lies (median; the controls' peaks lie "
-            f"{summary['control_reference_peak_distance_m']:.1f} m away); the published method's plan "
-            f"map read blind names it in {100 * pos['published_blind']['shape_accuracy']:.0f}% and places it "
-            f"{pos['published_blind']['median_location_error_m']:.1f} m away, and its change against the same ground "
-            f"without the cavity (a diagnostic it never has) {100 * pos['published_paired']['shape_accuracy']:.0f}% and "
-            f"{pos['published_paired']['median_location_error_m']:.1f} m (the controls' top places lie a median "
-            f"{summary['control_location_error_to_layouts_m']:.1f} m from the footprints). At 2 rad, near what any reader "
-            f"needs at these frequencies, the reference detector names {100 * mid['reference']['shape_accuracy']:.0f}% and "
-            f"the published blind map {100 * mid['published_blind']['shape_accuracy']:.0f}%. At the real level the reference "
-            f"detector names {100 * real['reference']['shape_accuracy']:.0f}% and the published blind map "
-            f"{100 * real['published_blind']['shape_accuracy']:.0f}%. "
+            f"20 rad) the reference detector told the shaking and read where the cavity lies names the layout in "
+            f"{100 * rp['shape_accuracy']:.0f}% of images (chance {100 / len(SHAPES):.0f}%); scanning every placement, its "
+            f"strongest response lies a median {rp['median_location_error_m']:.1f} m from the layout's centre (the controls' "
+            f"{summary['control_reference_peak_distance_m']:.0f} m). At 2 rad, near what any reader needs at these "
+            f"frequencies (P2-27), it still names {100 * rm['shape_accuracy']:.0f}% when told where to look, but its "
+            f"response there stands a median {rm['median_presence_z_at_true_place']:.1f} spreads above the placements' "
+            f"scatter and a scan of the whole image peaks {rm['median_location_error_m']:.0f} m away: not knowing where "
+            f"costs more than knowing what. The published method's plan map, read blind, names the layout in "
+            f"{100 * bp['shape_accuracy']:.0f}% at 20 rad and centres its top places {bp['median_centroid_error_m']:.1f} m "
+            f"from the layout's centre (the controls' {summary['control_centroid_error_blind_m']:.1f} m); its change "
+            f"against the same ground without the cavity, a diagnostic it never has, {100 * pp['shape_accuracy']:.0f}% and "
+            f"{pp['median_centroid_error_m']:.1f} m (the motionless copy's change, "
+            f"{summary['control_centroid_error_paired_m']:.1f} m). At the real level the reference detector names "
+            f"{100 * real['reference']['shape_accuracy']:.0f}% and the published blind map "
+            f"{100 * real['published_blind']['shape_accuracy']:.0f}%, chance. "
             + ("The reference detector recovers the imposed layouts at the positive control, so the experiment can reveal "
                "a real signal." if ok_ref else "The reference detector does not recover the imposed layouts even at the positive control: "
                "the forward model or the acquisition's sensitivity must be examined before any reader is judged.")
