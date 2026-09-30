@@ -1,108 +1,242 @@
 # Fourth review: what the proof still needs to be airtight, and what the site needs
 
-Reviewed 30 September 2026: branch `claude/upbeat-pascal-swk910` at `439c48b` (P2-25 to P2-32, `/proof/`, the
-overview's step 10, the satellite page's `#bound`) against `main` at `8cc150b`. On the branch `uv run pytest` (164
-tests) and `npm run check && npm test && npm run build` pass. `sarsim/information.py` and `sarsim/finite.py` were read
-whole; the numbers quoted below that are not on the site were computed with them (the snippet is in the appendix).
+Updated 30 September 2026 after the external reviewer's six comments on `439c48b` (R1 to R6 below) and a code-level
+verification of those comments and of this review's own first version: eleven claims, each read against the code by one
+reader and then by a second reader told to refute the first, with recomputation wherever a number was involved. Where
+the first version of this review was wrong it says so. Branch `claude/upbeat-pascal-swk910` at `439c48b` against `main`
+at `8cc150b`; on the branch `uv run pytest` (164 tests) and `npm run check && npm test && npm run build` pass.
 
-**The short version.** The theorems are right and the checks are real. What is not yet airtight is the join between the
-layers. The page leads with three numbers for one claim (5.017% found at 5%, 1.3 × 10⁻⁹, 1.6 × 10⁻⁶) because the tight
-layer takes the reference covariance as the identity while the certificate proves a floor of 0.056 under it, and the
-gap between those two is not physics, it is a loose lemma: the background's own information across the whole scene is
-about 10⁻⁹, so the reference is within 4 × 10⁻⁵ of the identity. Close that (A1), compute the case the site is actually
-about, the Khafre claim on the real image (A3), state the physical envelope as a declared product of factors with the
-margin that survives it (A7), and the proof is as tight as a proof about a model can be. The rest is bookkeeping,
-sample size and cutting.
+**The short version.** The reviewer's six points all hold in the code. The largest is R1: every lorry number outside the
+oracle is computed against a reference that leaves out the lorry's own wave, and with that wave in the reference
+Theorem C's floor argument proves nothing at all, so those rows are uncertified either way. The fix is one exact
+computation per world (A1). Two things the verification found that neither the reviewer nor this review had seen:
+P2-31 synthesises its images in single precision while its real-level imprints are 20 to 40 times below single
+precision's rounding, so its "real level" row measures rounding, not the imprint (A7); and 99% of each lorry energy in
+P2-27 is a far-field extrapolation that no grid check covers (A3). One claim of the first version was wrong: the static
+kernel is exactly a quadratic form in the wave's direction, so the sec δ guards are exact for the static rows (A9). The
+rest stands: the Khafre claim is uncomputed (A2), the envelope needs a declared product (A8), the overview's step 10 is
+an essay (B2), and the branch must merge `main` before anything else (B1). The quiet-ground conclusion survives every
+correction here with margins of 10⁵ and more; the lorry rows, whose margins are 2 to 4, do not survive them unchanged.
 
 ## A. The proof
 
-### A1. Put the background into the tight layer: the identity assumption costs 4 × 10⁻⁵, not a factor 18
+### A1. One reference per world, computed exactly (R1)
 
-The tight bound (P2-25) is stated "with the reference covariance taken as the identity"; the certificate (P2-30)
-carries the background by proving λ_min(C₀) ≥ (1 − √Q_bg)² = 0.056 from the background's Frobenius phase energy,
-which gives every pixel the background's peak phase and so loses a factor 1/√0.056 = 4.2 in TV and 18 in E_min for
-nothing. The background is long-wavelength motion nearly shared by the scene, which is exactly what the tight layer
-knows holds almost nothing. Two routes, do the first, keep the second as the analytic backstop:
+What the code does, verified. P2-30 builds its floor of 0.0559 from the three regional harmonics alone (lines 88 to 97)
+and reuses it for every dynamic row's `background_*` fields (168 to 174) and, through P2-27's `any_pattern`, for E_min
+(9.75 × 10⁻¹⁰ m⁴ = 1.74 × 10⁻⁸ × 0.0559). P2-25's dynamic rows whiten by C₀ = I (`fisher_grid`, `ambient_kl`); the only
+justification in its text, "the method is told the ambient motion", tells the mathematics nothing. P2-26 defines the
+imprint as with-minus-without the room against the incident motion, so in the lorry world the no-room reference carries
+the lorry's incident wave, whose line-of-sight envelope is 7.3 times the regional one at 52 Hz. Under P2-30's own
+whole-image convention √Q_bg is 2.7 to 36 for the truck and urban rows, so `baseline_floor_from_phase_energy` returns
+no floor: Theorem C proves nothing in those worlds and the regional floor does not bound them. The identity-reference
+lorry values (thin roof 27.3% at 5%) are conditional on C₀ = I in a world whose reference is demonstrably not I under
+that convention, so they are no better certified than the floor-based ones. Only the oracle's lorry rows are clean: its
+Δ² cancels the background exactly, scatterer by scatterer, checked pulse by pulse (0.993 ± 0.025, and 1.011 ± 0.030
+with the background ten times larger). P2-32's lorry rows are oracle-only and need no change.
 
-1. **Exact, per line, with the background in both worlds.** P2-27's `line_kl` already computes KL exactly for one
-   line along track with the full range band. In the model the lines are independent exactly (white scatterers; with the
-   whole range band each range pixel's scatterers reach only their own line), and the narrower image is a function of
-   the wider one (Theorem A), so Σ over lines bounds the SLC's KL with no Fisher information, no remainder and no
-   floor. Generalise `line_kl` from the Gaussian family to (a) the imprint's actual map on the line, direction by
-   direction, and (b) a common phase ψ(x, t) in both worlds, with KL = tr(C₀⁻¹C₁) − n_b − log det(C₀⁻¹C₁). Lines the
-   imprint does not touch contribute zero. With ψ present the window along track is a truncation; show the sum is
-   insensitive to the window's length (the check a reviewer will ask for). Run it for the microseisms and for the
-   lorry's own direct wave (A2). This replaces "reference covariance I" everywhere with one exact number per case, and
-   the four-number stat row with one.
-2. **The lemma.** ‖C_bg − I‖_F ≤ √F_bg + ε_bg by the tight layer's own bound applied to the background's phase, so
-   λ_min(C₀) ≥ 1 − √F_bg − ε_bg. For a plane Rayleigh wave at the regional level (4.9 × 10⁻⁸ m/s, 0.2 Hz, 3,000 m/s)
-   across the whole 3.5 km scene the slow-limit formula gives F_bg = 1.5 × 10⁻⁹, √F_bg = 3.8 × 10⁻⁵ (confirm with
-   `fisher_sinusoid` on the pixel grid). The noisiest stations: √F_bg = 2.8 × 10⁻³, so that row gets a
-   background-included certificate too (the Frobenius floor fails there, √Q_bg > 1; this one does not). The imprint's
-   first-order term changes by at most 2ψ_max√F plus a gradient term (the background's phase varies by
-   2π × 40 m / 15 km across the footprint), both below 10⁻⁴ relative here.
+Relabel now, before the computation. (i) In P2-30 drop or mark the dynamic rows' `background_*` fields: "with the lorry's
+own wave in the reference no floor is proved"; keep the identity values labelled "conditional on C₀ = I, an assumption
+not implied by shared motion for a source 15 m away". (ii) In P2-27 report the lorry comparisons against
+`E_min_identity`, conditional on C₀ = I (bench 10.5 to 15.8, thin roof 1.9 to 4.1; near-only 141 to 150 and 22 to 34),
+and say the floor-based E_min applies to the regional-background world only. (iii) Propagate to the P2-27 finding, the
+proof, satellite and overview pages and the audit, all of which quote the floor-based lorry numbers.
 
-Consequences to compute, not assume: E_min (Theorem C) rises from 9.8 × 10⁻¹⁰ toward the identity value
-1.7 × 10⁻⁸ m⁴; the static margin from 4.6 × 10⁵ toward 1.9 × 10⁶ in amplitude; the thin-roof-under-a-lorry rows
-(0.45, 0.97) move by the square root of the floor's improvement, which may or may not take them past 1 once the
-lorry's own wave is in the reference (A2).
+The computation. Two routes; do the first, keep the second as the analytic backstop.
 
-### A2. The lorry rows carry the microseisms in the reference but not the lorry's own wave
+1. **Exact, per line, with each world's own reference in it.** P2-27's `line_kl` computes KL exactly for one line along
+   track with the full range band. In the model the lines are independent exactly (white scatterers; with the whole
+   range band each range pixel's scatterers reach only their own line), and the narrower image is a function of the
+   wider (Theorem A), so Σ over lines bounds the SLC's KL with no Fisher information, no remainder and no floor.
+   Generalise it from the Gaussian family to (a) the imprint's actual map on the line, direction by direction, and (b)
+   the world's common phase ψ(x, t) in both covariances, KL = tr(C₀⁻¹C₁) − n_b − log det(C₀⁻¹C₁). Lines the imprint
+   does not touch contribute zero. With ψ present the window along track is a truncation: show the sum is insensitive
+   to the window's length. Run it for the regional microseisms and for the lorry's direct wave. It replaces "reference
+   covariance I" everywhere with one exact number per world, and the stat row's four numbers with one.
+2. **The lemma, with corrected numbers.** λ_min(C_bg) ≥ 1 − √F_bg − ε_bg holds (information.py's derivation is for any
+   phase field; checked exactly on 64 × 8 images), and carrying the background into the imprint's bound needs one more
+   term: ‖E′‖_F ≤ (√F_imp + ε_imp + (e^{2P_bg} − 1)(√(2F_bound,imp) + ε_imp)) / λ_min(C_bg). The first version of this
+   review quoted F_bg = 1.5 × 10⁻⁹ from the slow-limit formula; that omits the pass's own along-track sampling, which
+   adds f/V = 2.85 × 10⁻⁵ cycles/m to the wave's spatial frequency. For a 15 km wave at 0.2 Hz the interior value is
+   3.0 × 10⁻⁹ travelling one way along track, 4.8 × 10⁻¹⁰ the other way, 2.7 × 10⁻¹⁰ across track (3,535 m disc). Two
+   conventions must be kept apart: the model's own covariance over the image's pixels, for a field that fills the
+   image, is dominated by the image's edge or periodic wrap (1.6 × 10⁻⁵ exact over the full 5 km strip; hard-edged
+   discs on coarse grids give grid-dependent 4 to 8 × 10⁻⁷), an artefact of cutting a field that continues past the
+   image, but it is what the model gives; the rigorous route to the interior value treats the image as a window on a
+   periodic box that contains it (105 km × 5 km), whose in-band covariance bounds the window's from below, with F_box
+   21 times the interior value. Floors: regional microseisms 0.9997 (box) or 0.996 (wrap), ε_bg = 1.3 × 10⁻⁵; the
+   noisiest stations 0.68 (box; ε_bg = 0.31 dominates) or 0.65 (wrap); the lorry's direct wave carried unattenuated to
+   the scene's edge, `fisher_bound` 0.572 and ε = 3 × 10⁻⁵, floor 0.24 (0.44 with the travelling-wave F of 0.315). The
+   cross term is negligible for the microseisms (7.6 × 10⁻¹² against √F_imp = 2.6 × 10⁻⁹) and a 21% addition at the
+   noisiest stations. Note that in this model a spatially uniform oscillation is not shared motion: the pass sees each
+   row at its own time, so it carries spatial frequency f/V and F ≈ 2.7 × 10⁻¹⁰ over the scene, not zero; the audit's
+   "shared" is approximate, which is exactly why a floor is needed and why it is nearly one for the microseisms.
 
-In the lorry world the dominant motion common to both hypotheses is the lorry's direct wave, not the microseisms.
-P2-30's `background_included` uses the three regional harmonics only, and P2-25's lorry rows use the identity. So the
-static rows and the lorry rows are not the same theorem, and only the oracle's lorry rows are clean (there the
-background cancels exactly). The lorry's direct wave at 15 m has a peak phase of 1.7 × 10⁻⁴ rad; carried unattenuated
-as 1/√r to the scene's edge its any-frequency cap is √F ≤ 0.76 (0.12 within 100 m), so even the crude lemma gives
-λ_min ≥ 0.24, four times the certificate's floor, and A1's exact route does far better. Until it is computed, say on
-the page that the tight and certificate lorry rows take the lorry's wave out of the reference.
+To compute, not assume: E_min for the regional world rises from 9.8 × 10⁻¹⁰ toward 1.7 × 10⁻⁸ m⁴ and the static margin
+from 4.6 × 10⁵ toward 1.9 × 10⁶; for the lorry world the lemma's floor is 0.24 to 0.44 and route 1 does better; whether
+the thin-roof rows (0.45, 0.97) cross 1 is unknown until it is run.
 
-### A3. The Khafre claim is the one case not computed, and a reader goes there first
+### A2. The Khafre claim is the one case not computed, and a reader goes there first
 
 P2-25's `claimed` block is "an estimate by scaling, not computed" (relative imprint 0.36 of the bench room's). The
-site's question is the claim. Compute it: P2-04's kernel on `bench-khafre-claim` (composed, `listed: false`) or on
-`giza-deep`, then the tight layer and the oracle for the 80 m cube at 1,220 m, whose imprint spreads over a
-kilometre. For the oracle use the real 2025 image's pixel powers over that footprint, Σ_j SNR_j = Σ|z_j|² / NESZ per
-cell, the pyramid's bright faces included: a real-data anchor that needs no texture model, and the strongest single
-number the site could hold. The product lives only on the desktop; a downsampled power map (a few hundred kB) exported
-into `sites/acquisitions/` makes the run reproducible in the cloud. Do the 2022 pass as well.
+site's question is the claim. Compute it: P2-04's kernel on `bench-khafre-claim` (composed, `listed: false`) or
+`giza-deep`, then the tight layer and the oracle for the 80 m cube at 1,220 m, whose imprint spreads over a kilometre.
+For the oracle use the real 2025 image's pixel powers over that footprint, Σ_j SNR_j = Σ|z_j|² / NESZ per cell, the
+pyramid's bright faces included: a real-data anchor that needs no texture model, and the strongest single number the
+site could hold. The product lives only on the desktop; a downsampled power map (a few hundred kB) exported into
+`sites/acquisitions/` makes the run reproducible in the cloud. Do the 2022 pass as well.
 
-### A4. Every realisation, not the average
+### A3. The displacement integral needs a declared error budget: tail, taper, far field, directions, grid (R2)
 
-Two places take an expectation where the statement should hold for every case:
+Verified, with numbers, all on the worst direction of P2-27's `imprint_energy` unless said otherwise.
 
-- P2-25's static rows use F = Σ_d A_d / n: waves from every direction with independent phases, each with 1/n of the
-  power. That is the expectation over the field's phases and over how its power is split. The triangle inequality on
-  ‖E‖_F gives, for every realisation and every split, F ≤ Σ_d (A_d + |B_d|): at most n = 24 times the mean, √24 = 4.9
-  in TV. Free at these margins, and it turns "on average over the ambient field" into "for every realisation".
-- P2-29's Jensen step bounds the oracle's TV averaged over the scatterers' phases; the plateau is one realisation.
-  Δ² is a sum over the scatterers in the imprint's footprint (thousands within its half-peak, far more in its tail), so
-  it concentrates: the check's spread of ±7% at 802 scatterers scales as 1/√N. One sentence on the page, either as
-  Var/mean² ≈ 1/N_eff or in the Markov form: with probability at least 1 − 1/t over the phases, Δ² ≤ t E Δ²; at
-  t = 10⁶ the microseism row is still ≤ 1.6 × 10⁻³.
+- **The static tail.** The code sums u² over P2-04's 41 × 41 grid at 2 m (r_max 57 m) and adds a 1/r² tail from
+  R_edge = 55 m whose constant comes from 21 points that all sit at the four corner azimuths; the annulus 40 < r < 55 m
+  outside the square (69% of its area) is counted nowhere (4.5% of the total). The grid's fully sampled annuli decay as
+  r^−1.3 to r^−1.7 over 22 to 38 m: pre-asymptotic. The second reader re-ran P2-04's kernel on a 100 m domain with
+  receivers to ±84 m (three runs of about 200 s): the vertical component is r^−2.8 to r^−3.3 beyond 40 m and the
+  horizontal r^−1.4 to r^−2.0 over 40 to 84 m, so 1/r² is the right line-of-sight asymptote; the true energy beyond
+  55 m is 1.23 times the coded tail, the full worst-direction energy 1.064 times the coded, and the static margin moves
+  from 4.57 × 10⁵ to 4.43 × 10⁵ (the 100 m domain reproduces the 60 m domain's kernels on every ring to 0.05%). Fix:
+  extend P2-04's receiver grid to ±84 m and replace the assumption with a measured disc plus a tail under 5%; or state
+  the tail as an assumed asymptote (p = 2, the slowest force-free static decay), take its constant from the 36 to 40 m
+  ring's azimuthal mean, start it at 40 m, and report the fitted exponent beside it. Replace "bounded as 1/r²" and
+  "(generous)" with that.
+- **The taper.** `energy_near` weights |H|² by tp², full to 32 m and zero at 39 m (∫tp² over 32 to 39 m is 7/3 of
+  7 m). The untapered energy within 39 m is 1.07 to 1.20 times the coded value, so the near-only margins move from
+  35.4 and 33.3 (bench) and 8.05 and 5.17 (thin roof) to 33.8, 30.3, 7.77 and 4.82. The same quantity carries three
+  labels: "within 39 m exactly" (P2-25, P2-27), "counted within 39 m only" (proof page, audit) and "within 32 m"
+  (satellite page, overview, P2-29's "within 32 m alone"). One phrase, "the solver's field at full weight to 32 m,
+  tapered to zero at 39 m", or compute it untapered (`maps.npz`, four runs of about 270 s).
+- **The far field, 99% of every lorry energy.** In P2-25 the annulus 32 to 39 m is counted twice (tapered in the near
+  field, at full σ in the far bound), an over-count of 0.13% of the far term, conservative, and the totals under-count
+  nothing. But 98.6 to 99.4% of each dynamic energy in P2-27, and nearly all of the dynamic Fisher information, is the
+  far-field bound: the cross-width σ (energy per metre of radius, the largest over the 25 to 40 m annuli) carried
+  unattenuated to the scene's corner. That σ never exceeds its 25 to 40 m maximum beyond 40 m is the assumption the
+  word "unattenuated" stands for; a Rayleigh part keeps constant energy per metre of radius while body-wave parts fall,
+  so it is plausible and untested in the code. Test it on the 100 m domain (σ on annuli to 84 m) and name it as the
+  load-bearing assumption of every lorry row.
+- **Directions.** P2-27 takes the largest of the sampled directions with no guard; the P2-25 and P2-27 docstrings say
+  "every direction" and "whichever side" where the dynamic maps are four quarter-turn copies of one west-wave run (the
+  diagonal incidence is not simulated); P2-30 alone says "no unsampled-direction claim". With four samples no guard is
+  possible: any angular harmonic of order two or more can vanish at all four. In the long-wave limit worst-of-four
+  under-reads the continuous worst direction by about 10% in amplitude (the static analogue gives 1.198 in energy).
+  Either simulate 8 or 12 incidence directions at the worst frequency (guard sec(mh/2) for angular content of order m;
+  ka is 0.2 to 1.3 for the bench room over 20 to 120 Hz) or label the dynamic energies worst-of-four everywhere.
+- **The grid.** P2-26's fine grid gives smaller near-field imprints (amplitude 0.94 to 0.99 for the bench, 0.90 to
+  0.98 for the thin roof), so the 1 m grid overestimates the near field, conservative in sign; but the check covers
+  the near field under a surface wave only (nothing for P or S from below) and not the far-field σ. P2-30's uniform
+  11% phase stress is labelled a stress, not an error bar, correctly.
 
-### A5. Two sentences that pre-empt two objections
+None of this moves the quiet-ground conclusion (4.6 × 10⁵ becomes 4.4 × 10⁵). All of it matters for the lorry rows,
+whose margins are 2 to 4 and whose every-pattern rows sit within 20% of 1.
 
-- **Composite alternatives.** The bound is computed for one specified room. For any prior over rooms, layouts, depths
-  and sizes, TV(mixture, P₀) ≤ max over the members, so the largest-imprint member (the thin-roof room) covers every
-  mixture. Say so once.
-- **Several images.** KL adds over independent images: N images give TV ≤ √N times the one-image bound (Pinsker), and
-  the oracle's Δ² grows by N. State how many passes the 2025 announcement used; with two the bound is 1.4 times.
+### A4. Three states, per layer, and headlines that name the 5 m roof (R3)
 
-### A6. Say which layer covers which data, and take the headline off the Doppler-to-time check
+Verified: "found ≤ false alarms + TV" is stated once in prose on the proof page and nowhere as a table state. The
+boundary table's lorry row folds the bench room under the lorry, which every layer excludes at 95/5 (found at most 46%
+by the oracle, 23% by the certificate with the background, 8% with the identity, tight 0.023), into "not excluded,
+unresolved", driven by the thin roof (oracle 0.99); its shape cell says "not excluded: 0.82" where 0.82 < 0.9 and
+P2-32's own finding says still excluded until the signal grows 1.2 times. The proof page's headline and the satellite
+page's say "strong shaking close by, known exactly, is not excluded" without naming the thin roof; the overview names
+it. The satellite page's "open" is a fourth notion (growth after allowances ≤ 1) that attaches to rows as low as TV
+0.016. In the runs `excludes_095_at_005` is a bare TV < 0.9 test, so TV 0.3 is flagged True. P2-32 also applies Giza's
+floor to the noisiest-station rows where P2-30 gives no floor. The reviewer's example that the noisiest ground is
+"excluded but not near chance" is wrong: every layer puts it at or below 2.9 × 10⁻³.
 
-The stationary-phase model was checked against pulses to 3.6% from 5 to 150 Hz on a 0.5 s aperture; at 0.5 Hz the
-model holds 1.47 times more. "On the side of more information" is an observation, not a proof, and a reviewer will say
-so. Either prove the direction or route the universal statement through the oracle, which is pulse by pulse and needs
-no such relation, and let the SLC layers carry the check as a note. A three-row table settles what covers what: raw
-echoes, any texture → the oracle (Theorem D, at a stated SNR); the SLC under speckle → the tight layer and the
-certificate (the SLC is a function of the raw data, so the oracle bounds it too); any processing of either → Theorem A.
-The phrase "the method is told the ambient motion" in P2-25 should go: with C₀ = I nothing is told; A1 is what telling
-it would mean.
+Fix: declare one rule and apply it per layer (suggested: near chance if TV ≤ 0.01, that is found ≤ false alarms + 1%
+and accuracy ≤ 50.5%; "95% at 5% excluded, not near chance" if 0.01 < TV < 0.9; unresolved if TV ≥ 0.9 or the bound
+is uninformative), a row's state from the smallest valid bound, every cell printing "found ≤ false alarms + X". Split
+the lorry row into the bench room (excluded, not near chance) and the thin roof (unresolved); fix the shape cell; add
+a state column to the three-layers table; give the calculator a third branch; name the 5 m roof in every headline that
+says "not excluded"; rename the satellite's "open" to "not excluded after allowances"; add a `state` field to the runs
+beside the boolean. For the owner's goal, say plainly which of presence, location and shape each state applies to:
+one hard pair rules out uniformly reliable mapping over a class, not the detection of every member.
 
-### A7. The physical envelope as a declared product, with the margin that survives it
+### A5. Every realisation, every case, and how many images
 
-The third review's next step, and the thing that makes the boundary a boundary. One table on the proof page:
+- **The ambient field's phases.** The static rows are the expectation over the field's phases at a fixed even split of
+  the power over 24 directions (12 in P2-32); `ambient_kl` already carries the worst-phase bound in its denominator.
+  For every realisation and every split the triangle inequality gives F ≤ Σ_d (A_d + |B_d|) ≤ 2n × mean, so the TV
+  ceiling rises by at most √(2n) = 6.9 (4.9 in practice: 1.3 × 10⁻⁹ becomes 6.3 × 10⁻⁹). The page shows the
+  expectation, and the proof page's "static imprint, every direction" reads as worst-over-directions. The worst-phase
+  case is n aligned phasors, a local level √n louder with probability about e^−n, and the cap grows with finer
+  direction sampling, so the expectation is the right ceiling for a measured rms level: say so, and give √(2n) as the
+  cost of "every realisation".
+- **The scene's phases.** The oracle's Jensen step bounds the average over the scatterers' phases; the plateau is one
+  realisation. State a concentration: the raw check's spread (±7% at 802 scatterers) scales as 1/√N; or the Markov
+  form: with probability at least 1 − 1/t over the phases Δ² ≤ t E Δ², so at t = 10⁶ the microseism row is still
+  ≤ 1.6 × 10⁻³.
+- **Composite alternatives and several images.** TV(mixture, P₀) ≤ max over members, so the largest-imprint member
+  covers every prior over rooms and layouts. N independent images: KL adds, TV ≤ √N times the one-image bound; state
+  how many passes the 2025 announcement used.
+
+### A6. Wording that overstates, with the replacements (R4, R5, R6c)
+
+- **"Energy" and "rms".** E = ∫ max_t |u_los|² dA is m⁴, a sum of squares inherited from `finite.py`'s dimensionless
+  phase energy, not a mechanical energy; and "an rms of 1.0 µm over 1,000 m²" is √(E_min / A), the area-rms of the
+  temporal peak, that is the peak of a motion filling 1,000 m² evenly (the time-rms of such a sinusoid is 0.70 µm;
+  P2-30 names the same quantity "peak displacement", correctly). Replace throughout: the P2-27 finding and docstring,
+  audit item 19 and the third-review entry, ROADMAP, the proof page's mechanism heading and card, the satellite page,
+  and the overview's "carry enough energy" (→ "its peak displacement squared, added up over the ground, must reach a
+  stated value"). Keep the key names or rename `energy_m4` to `E_m4`.
+- **"4.7 × 10⁻⁴ of what the most informative pattern could".** The denominator is `fisher_bound`, 4N⟨Φ²⟩, an upper bound
+  no pattern attains (equality would need every spectral component at the sin² maximum and no out-of-band loss at
+  once); the best pattern found inside the same envelope reaches 0.84 to 0.89 of it (a sign-modulated or travelling
+  pattern of 0.5 m period, half the paired-echo shift). Replace with "4.7 × 10⁻⁴ of the ceiling 4N⟨Φ²⟩ that bounds every
+  pattern inside its envelope (an upper bound; the best pattern found reaches 0.84 of it, so the Gaussian holds at most
+  5.6 × 10⁻⁴ of the best)". The 39× and 489× examples stand as computed.
+- **128 m² against 55,000 m².** 128 m² is the count of 2 m cells at or above half the peak of the rms static map (the
+  room is 36 m² in plan); the same map is above a tenth of its peak over 3,900 m² and never below 1.7% of it anywhere
+  on the 80 m grid, and its extrapolated 1% contour lies at r ≈ 100 to 130 m, 3 to 5 × 10⁴ m², the same order as the
+  55,000 m² disc (radius 133 m). The juxtaposition cannot stand in for a stated extent. Drop "the room's own footprint
+  is about 128" (hard-coded in the overview) and say: the bound excludes a change of the full 2a over less than
+  55,000 m² under the regional microseisms; a change that tapers is judged by its E; the extent is the mechanism's to
+  state. Worth adding: a 2a change shaped like the static imprint (effective area 275 to 350 m²) would still be 160 to
+  200 times short in area, so the exclusion survives that shape.
+- **"Harder than telling either from none".** Three prose occurrences (overview step 10, the audit's "The organising
+  question, widened", BLIND_TEST §4) and the built overview; the code and the proof page use the sum,
+  TV(A, B) ≤ TV(A, none) + TV(none, B), at most twice as easy and never harder. It is false in general and the branch's
+  own data show it: in P2-32's dynamic layer the L-shaped-against-branching pair (0.82) is easier than
+  branching-against-none (0.73), and the proof page prints both. Replace with the sum inequality everywhere and note
+  that for the static pairs computed the difference happens to carry 1.2 to 4.1 times less signal. The closest-pair
+  argument in P2-32's docstring is valid for uniform (worst-case) reliability over the depth allowance, not for an
+  average criterion over a depth prior; say which.
+
+### A7. The shape test and the blind test (R6, and a defect the reviewer did not see)
+
+- **Single precision.** `sarsim.synth.synthesize` defaults to complex64 and its own docstring warns that a chamber's
+  imprint (10⁻⁹ rad) needs complex128; P2-07 and P2-28 pass complex128, P2-31's three synthesize calls do not. Its
+  real-level unit imprints are 1.5 to 3 × 10⁻⁹ rad, 20 to 40 times below single precision's rounding, and in the
+  results the real-level cavity images differ from the no-cavity image by the same 10⁻⁵ as no-cavity differs from the
+  motionless copy. So "at the real level every reader is at chance" (audit item 24, ROADMAP, the proof page) measures
+  rounding, not the imprint. The conclusion is what the bound predicts anyway, but the row is not evidence for it.
+  Rerun P2-31 in complex128; any BLIND_TEST product at the real level must be made that way.
+- **Independence and p-values.** Nine images per level are three layouts on three shared speckle seeds under one
+  microseism realisation, so the three images of a seed are paired, not independent, and the Binomial(9, ⅓) p-values
+  are wrong. The exact within-seed label-permutation test (6³ = 216 arrangements) gives: blind at 20 rad, 5 of 9,
+  p = 0.17 (not 0.14); paired 6 of 9, p = 0.037; reference at 2 rad, 7 of 9, p = 0.028 (not 0.008); reference at
+  20 rad, 9 of 9, p = 0.0046 (not 5 × 10⁻⁵); and when a map does not respond 3 of 9 is forced (the null's support is
+  {3}, not a chance rate). Report the exact p, say "three seeds, layouts paired within a seed", and let the display
+  print "1/216" at its floor. The paired reader's presence AUC is 0.5 by construction (the no-cavity control's paired
+  map is identically zero, the motionless copy's above every cavity): drop or flag it. The controls' presence values
+  are near-identical within a seed, so the control sample holds three distinct values, not six.
+- **Sample size.** With p = 0.17 for 5 of 9, "the published picture, read blind, does neither" is not shown. Either 30
+  seeds (the kernels are cached; the synthesizer is the cost) or "no better than chance was shown".
+- **BLIND_TEST.md.** (a) "its 95% interval by permuting the labels" asks a null distribution to be a confidence
+  interval (the permutation null for 12 against 12 spans 0.27 to 0.74 around 0.5 by construction): ask for a bootstrap
+  or DeLong interval and a separate permutation p. (b) The boosted set is one level, 2 rad; at 2 rad even the
+  reference detector told the shaking cannot locate a layout by scanning (34 m against the controls' 36 m), though its
+  scanning presence statistic already separates cavities from controls (AUC 0.96). So "fails on the boosted set: the
+  method does not read the room's motion, however strong" must become "at the tested amplifications", the set must
+  include a positive-control level (20 rad), and the outcome must be scored per claim, as §4 says. (c) The "harder
+  than" sentence (A6). (d) Evaluation units are independent scenes; shared seeds serve paired comparisons and are not
+  independent trials.
+
+### A8. The physical envelope as a declared product, with the numerical budget in it
+
+The third review's next step and the reviewer's milestone: one table on the proof page, the margin that survives it
+stated as a product.
 
 | factor | value | status |
 |---|---|---|
@@ -110,101 +244,99 @@ The third review's next step, and the thing that makes the boundary a boundary. 
 | site amplification | ×3 | assumed |
 | cover or layering under the room | ×? | run one layered bench at low frequency rather than assume |
 | SNR for the oracle | +10 dB | assumed |
-| far-field attenuation of the scattered wave | none | generous by construction |
-| grid error | 6–11% | measured (P2-26) |
-| wave direction between samples | sec 15° | see A8 |
+| far-field attenuation of the scattered wave | none | generous by construction; σ beyond 40 m untested (A3) |
+| static tail beyond the grid | 6% | measured on the 100 m domain (A3) |
+| near-field grid | 6 to 11% | measured, sign conservative; no check for P or S from below (A3) |
+| wave direction, dynamic rows | worst of four | about 10% in the long-wave limit; simulate more (A3) |
+| wave direction, static rows | sec 7.5° | exact (A9) |
 | product, in amplitude | about 300 | |
 
-Against margins of 4.6 × 10⁵ (or ~2 × 10⁶ after A1) the ground's own trembling survives every declared allowance
-with three orders of magnitude to spare; under a lorry (2 to 4) it does not. That sentence is the airtight form of the
-boundary, and the table is what a proponent must argue with.
+Against margins of 4.4 × 10⁵ (or about 2 × 10⁶ after A1) the ground's own trembling survives every declared allowance
+with three orders of magnitude to spare; under a lorry (2 to 4, near-only tens) it does not. That sentence is the
+airtight form of the boundary, and the table is what a proponent must argue with.
 
-### A8. Small rigour items
+### A9. Small rigour items, revised
 
-- **The direction guard for a cube.** sec δ covers a + b cos 2φ + c sin 2φ; the bench room is a cube, so its
-  imprint's dependence on wave direction has cos 4φ terms, for which the guard is sec 2δ: 1.035 at 7.5° (P2-25,
-  P2-30 use 1.01) and 1.155 at 15° (P2-32 uses 1.035). State the harmonic content assumed or use the larger guard.
-- **`perturbation_certificate`** uses KL ≤ ρ²/(2(1 − ρ)²); the derivation supports ρ²/(2(1 − ρ)) (Σe² = ‖E‖_F² ≤ ρ²
-  and e − log(1 + e) ≤ e²/(2(1 − ρ))). Valid either way; make the code and the page's TV ≤ ρ/(2(1 − ρ)) agree with
-  the derivation, or say why the extra (1 − ρ) is kept.
-- `finite.py`'s docstring cites `PROOF.md`, which does not exist.
-- ROADMAP's State list, item 4, still says "reached by the best detector in simulation", which the second review
-  withdrew; the audit and the page say "a bound, not an attained value".
-- The relative-vertical-geometry row of the claims table says "not shown"; it is untestable with single-level layouts
-  (P2-31 says so); say "not testable yet", not "not shown".
-
-### A9. Nine images cannot carry "the published picture, read blind, does neither"
-
-The headline of the shape test rests on 5 of 9 named against 3 of 9 by chance (p = 0.14) and on centroid distances of
-5.6 m against 6.2 m. The reference detector's 9 of 9 is decisive (p = 5 × 10⁻⁵); the published method's is not. Either
-run 30 realisations (the kernels are cached; the synthesizer is the cost) or change the headline to "no better than
-chance was shown" until then. The same for the "44% at the real level" cell, which is 4 of 9.
+- **Withdrawn from the first version: the cube's cos 4φ guard.** The static kernel is Kxx sin²φ + Kyy cos²φ + Kxy sin φ
+  cos φ, exactly a + b cos 2φ + c sin 2φ (fit residual 3 × 10⁻¹⁶), so sec 7.5° (P2-25; P2-30's 1.01) and sec 15°
+  (P2-32) are exact for the static rows, and the 24-direction mean is the exact continuous mean. P2-27's static energy,
+  quadratic in u, does carry 4φ terms; its 24-sample maximum is 0.11% below the continuous one, and a sec 15° guard or
+  the trigonometric interpolant closes it. The dynamic rows' gap is A3's.
+- **The certificate's constant.** `perturbation_certificate` and the page agree (TV ≤ ρ/(2(1 − ρ))) but both are
+  looser than the page's own Theorem B step by 1/(1 − ρ) in KL: valid and conservative, 1.45× at the thin-roof row
+  (0.223 printed, 0.185 supported). Tightening it moves q_b from 0.282 to 0.342, E_min by ×1.48 and every
+  `short_by_any_pattern` by ×1.21, which takes the thin-roof row from 0.97 to 1.17, across 1; it propagates to P2-27,
+  P2-32 and the export. Either tighten code, tests, page and calculator together and regenerate, or change the page's
+  Theorem B line to the constant the code uses. The certificate uses Pinsker only where the tight layer takes the
+  smaller of Pinsker and Bretagnolle–Huber; the page says both.
+- `finite.py` cites `PROOF.md`, which does not exist.
+- ROADMAP's State item 4 still says "reached by the best detector in simulation", withdrawn by the second review.
+- The claims table's "not shown" for relative vertical geometry should read "not testable with single-level layouts".
+- The 1 to 3 Hz and 3 to 8 Hz static rows (wavelengths 845 m and 338 m at the rock's Rayleigh speed) are not shared
+  motion either; P2-30's background rows cover them, and the audit's gloss should not call them shared.
 
 ## B. The site
 
-1. **Merge `main` first.** The branch is 10 commits behind (Sacsayhuamán, P2-33 to P2-35). `git merge-tree` shows
+1. **Merge `main` first.** The branch is ten commits behind (Sacsayhuamán, P2-33 to P2-35). `git merge-tree` shows
    conflicts in `METHOD_AUDIT.md`, `web/src/pages/satellite.astro`, `sim/katabasis/export/runs.py` (both sides extend
    `PUBLISHED`), `web/public/data/runs/index.json` and `docs/*`. Regenerate the index with the export (runs only on a
    cloud machine, per the roadmap's note), rebuild `docs/`, run both suites and the stale-export test before pushing.
 2. **Step 10 on the overview is an essay.** 1,116 words in one column with the right column empty, where steps 1 to 9
    run 67 to 281 words beside their pictures; the FAQ under "could anything change it" is 911; the overview grew from
-   3,381 to 4,954 words. On a phone step 10 is five screens of prose before any figure. Keep the headline, one paragraph
-   (what an image is made of; shared motion leaves nothing; the cap), the Routes figure, the Ceiling chart, one line on
-   what stays open and the link to `/proof/`. Everything else is already on the proof page.
-3. **One headline number, one unit.** The proof page's stat row shows 5.017%, 1.3 × 10⁻⁹, 1.6 × 10⁻⁶ and 27%: two
-   units, three layers. After A1 lead with the one exact number; until then lead with the tight number and give the
-   certificate as "the loose check". The overview says one in 770 million and the proof page says 5.017%; a reader
-   cannot tell they are the same claim.
-4. **The three-layers table** notes "background included" on three certificate rows and "reference covariance I" on
-   the fourth; after A1 every row says the same thing.
+   3,381 to 4,954 words; on a phone step 10 is five screens of prose before any figure. Keep the headline, one
+   paragraph (what an image is made of; shared motion leaves almost nothing; the cap), the Routes figure, the Ceiling
+   chart, one line on what stays open and the link to `/proof/`. Everything else is already on the proof page.
+3. **One headline number, one unit, one state.** The proof page's stat row shows 5.017%, 1.3 × 10⁻⁹, 1.6 × 10⁻⁶ and
+   27%: two units, three layers, two of them uncertified for the lorry (A1). After A1 lead with the one exact number per
+   world; until then lead with the tight number for the microseisms, the oracle for the lorry, and label the rest. The
+   overview says one in 770 million and the proof page says 5.017%; a reader cannot tell they are the same claim.
+4. **The three-layers and boundary tables** take the state rule of A4; the certificate notes ("background included" on
+   three rows, "reference covariance I" on the fourth) become one phrase after A1.
 5. **The Routes figure** has a stray "×" glyph beside "Its echo" and arrows that do not meet the cards; check the phone
    stacking.
 6. **The satellite page's status line** says "revised after two independent reviews"; the audit lists three.
-7. **Precision theatre.** "5.017%", "5.110%", "0.0559", "1.31 billion pixels": round to what the reader uses (5.02%,
-   "1.3 billion"), and say "0.02 above chance" where that is the point.
+7. **Precision theatre.** "5.017%", "5.110%", "0.0559", "1.31 billion pixels": round to what the reader uses, and say
+   "0.02 above chance" where that is the point.
 8. **The requirement chart** has seven legend entries and its 20 and 80 Hz lines overlap; keep 0.2 Hz, 80 Hz and the
-   two any-pattern lines, with direct labels.
-9. `SectionMap.astro` declares `fmt` and never uses it (the one hint from `astro check`).
-10. **The answer section's** 456-word sub-paragraph and the mechanism card's 300 words are prose where the rest of the
-    page is dashboard; the five-theorem cards are the right form, copy it.
-11. **The audit** takes a "Fourth review, 30 September 2026: corrections adopted" entry as before, and item 17's
-    "reference covariance I" wording changes with A1.
+   two any-pattern lines, with direct labels, and relabel the y-axis per A6 (peak displacement, not energy).
+9. `SectionMap.astro` declares `fmt` and never uses it (the one hint from `astro check`); the overview hard-codes
+   "about 128" where the proof page reads it from the run.
+10. **The answer section's** 456-word paragraph and the mechanism card's 300 words are prose where the rest of the page
+    is dashboard; the five-theorem cards are the right form, copy it.
+11. **The audit** takes a "Fourth review, 30 September 2026: corrections adopted" entry as before; item 17's "reference
+    covariance I", item 24's real-level sentence and the third-review entry's "energy" change with A1, A7 and A6.
 
-## C. In what order
+## C. The milestone and the order
 
-1. Merge `main` (B1).
-2. A1, route 1: the exact per-line layer with the background, microseisms and the lorry's wave (A2). One run;
-   it rewrites the stat row, the three-layers table and the certificate's floor.
-3. A3: the claim on the real image, both passes.
-4. A7: the declared-range table, with the layered bench run if it can be had in a day; otherwise the row says assumed.
-5. A4, A5, A6, A8: sentences and small fixes, an hour.
-6. A9: thirty realisations, or the softer headline.
+The reviewer's next milestone is the right organising deliverable: one fully specified, auditable comparison, the same
+source in both worlds, a valid reference covariance for that world, bounded displacement tails and numerical errors, a
+stated scattering and noise model, and bounds for presence, location and shape; parameter ranges only after that
+comparison is sound. In this repository that is:
+
+1. Merge `main` (B1), then the relabelling of A1 so nothing uncertified stays labelled certified while the rest runs.
+2. A1 route 1: the exact per-line layer for the regional microseisms and for the lorry. One run; it rewrites the stat
+   row, the layers table, P2-27's any-pattern rows and P2-30's floor.
+3. A3's error budget: the kernel grid to ±84 m, σ tested to 84 m, 8 or 12 dynamic directions at the worst frequency,
+   the 39 m disc untapered; each row of A8's table filled from a run, not an assumption.
+4. A7: P2-31 rerun in complex128 with the exact p-values and thirty seeds; BLIND_TEST.md corrected.
+5. A2: the claim on the real image, both passes.
+6. A4, A5, A6, A9: states, sentences and constants, an hour or two.
 7. B2 and B3: cut step 10, one headline number.
-8. The rest of B, then the audit entry, then publish.
+8. The rest of B, the audit entry, publish.
 
-## Appendix: the background's own information, reproduced
+## Appendix: numbers reproduced during the verification (a rerun should match them)
 
-Run in `sim/` on the branch (`uv run python`):
-
-```python
-import numpy as np
-from sarsim.acquisition import DwellGeometry
-from sarsim import information as inf
-g = DwellGeometry.from_record('giza-20250827')
-k0, R, A = 4 * np.pi / g.lam, 3535.0, np.pi * 3535.0 ** 2
-for label, v0, f, c in [('regional microseisms', 4.9e-8, 0.2, 3000.0), ('noisiest stations', 3.525e-6, 0.2, 3000.0),
-                        ('1-3 Hz', 2.9e-8, 2.0, 1690.8), ('3-8 Hz', 2.5e-8, 5.0, 1690.8)]:
-    kw = 2 * np.pi * f / c
-    F_slow = (g.R0 / g.V_platform) ** 2 * inf.cells_per_m2(g) * 0.5 * (v0 * kw) ** 2 * A   # a plane Rayleigh wave over the scene
-    print(f'{label}: F_bg (slow limit) = {F_slow:.2g}, sqrt = {np.sqrt(F_slow):.2g}')
-v15, f = 1e-4 * np.sqrt(2), 51.8                       # the lorry's direct wave at 15 m, spreading as 1/sqrt(r), no attenuation
-K15 = v15 / (2 * np.pi * f)
-for Rmax in (100.0, 3535.0):
-    F_cap = 2 * inf.cells_per_m2(g) * k0 ** 2 * 2 * np.pi * 15.0 * K15 ** 2 * (Rmax - 15.0)   # 4 N <Phi^2>, any frequency
-    print(f'lorry wave to {Rmax:.0f} m: F <= {F_cap:.2g}, sqrt = {np.sqrt(F_cap):.2g}; peak phase {k0 * K15:.2g} rad')
-```
-
-Output on this machine: regional microseisms F_bg = 1.5 × 10⁻⁹ (√ = 3.8 × 10⁻⁵); noisiest stations 7.6 × 10⁻⁶
-(2.8 × 10⁻³); 1–3 Hz 1.6 × 10⁻⁷ (4.0 × 10⁻⁴); 3–8 Hz 7.5 × 10⁻⁷ (8.7 × 10⁻⁴); the lorry's wave √F ≤ 0.12 within
-100 m and 0.76 to the scene's edge, peak phase 1.7 × 10⁻⁴ rad. The slow limit is the right form at 0.2 Hz over a
-15 km wavelength (P2-25's own check: 1.37 against 1.33 exact at 0.5 Hz); confirm on the pixel grid before quoting.
+- Regional microseism floor as coded: LOS envelope 7.16 × 10⁻⁸ m, phase 2.88 × 10⁻⁵ rad, Q_bg 0.583 over
+  7.03 × 10⁸ in-band bins, floor 0.0559. The lorry's incident wave: LOS envelope 5.2 × 10⁻⁷ m at 52 Hz, Q_bg 31 (16 at
+  72 Hz, 11 at 88 Hz): no floor. Any positive floor by Theorem C needs an envelope under 9.4 × 10⁻⁸ m.
+- F_bg of a 15 km plane wave at 0.2 Hz, regional level, interior: 3.0 × 10⁻⁹ (along track, one way), 4.8 × 10⁻¹⁰
+  (the other), 2.7 × 10⁻¹⁰ (across track), 3,535 m disc; exact over the image's own pixels with wrap 1.6 × 10⁻⁵;
+  ε_bg 1.3 × 10⁻⁵. Noisiest stations: ×5,175 in F, ε_bg 0.068 (interior) to 0.31 (box). Lorry direct wave:
+  `fisher_bound` 0.572, travelling-wave F 0.315, ε 3 × 10⁻⁵.
+- Static energy, worst direction (52.5°): grid 18.04 + coded tail 1.59 = 19.63 m⁴ per strain²; measured to 84 m:
+  20.88 to 20.90; margin 4.57 × 10⁵ → 4.43 × 10⁵. P2-27's 24-sample maximum 19.631 against the continuous 19.653.
+- Taper deficit within 39 m: ×1.10 and ×1.20 (bench, 20 and 80 Hz), ×1.07 and ×1.15 (thin roof).
+- Far-field share of P2-27's dynamic energies: 98.6 to 99.4%.
+- Exact within-seed permutation p (216 arrangements): 5/9 → 0.167, 6/9 → 0.037, 7/9 → 0.028, 9/9 → 0.0046.
+- Certificate constant: q_b 0.2817 (code) against 0.3423 (derivation); thin-roof row 0.223 against 0.185.
+- Ambient worst-phase cap: √(2n) = 6.93 for n = 24; the even-split worst phase 4.86.
