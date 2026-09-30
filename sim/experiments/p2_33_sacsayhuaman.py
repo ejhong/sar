@@ -189,7 +189,11 @@ def main():
             idx = np.where(d < 4.0, idx, -1).reshape(EX.shape)
             vols[key] = {'T': T.astype(np.float16), 'index': idx.astype(np.int32),
                          'grid': np.array([len(gr[::KEEP_EVERY_ROW]), len(gc)])}
-            patches.append({'key': key, 'label': label, 'kind': kind, 'centre_m': [ax_, ay_], 'placed': placed,
+            # the trajectories come from the first investigation's code and are cached under results/cache: say which, and
+            # how long each took when it was computed, since this run's own runtime does not include them
+            traj = {'computed_by': 'sim/legacy/experiments/real_common.run_patch', 'runtime_s': round(meta['runtime_s'], 1),
+                    'twin_runtime_s': round(twins[key]['meta']['runtime_s'], 1)}
+            patches.append({'key': key, 'label': label, 'kind': kind, 'centre_m': [ax_, ay_], 'placed': placed, 'trajectories': traj,
                             'pixels': int(keep.sum()), 'crop_origin': meta['crop_origin'], 'repeat_depth_raw_m': float(zrep),
                             'pillar_power_vs_energy': pillar, 'cells_on_site': int((idx >= 0).sum()),
                             'mean_energy': float(energy.mean())})
