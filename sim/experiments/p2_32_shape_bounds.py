@@ -18,12 +18,17 @@ Pairs (the shapes the published pictures are read for):
 Each layout's imprint on the ground's motion is the lab's elastic solver: statically (settling under a uniform strain,
 P2-28) for the ambient levels below 8 Hz; dynamically (P2-26's surface wave, 6-120 Hz) for strong shaking close by. The
 difference between two layouts' imprints is what any reader would have to see. Three layers, as for detection:
-- tight: the Fisher information of the difference on the image's own pixels, with its explicit remainder, the waves from
-  every direction with independent phases (P2-25's static_cases, for the difference);
-- the oracle told everything but which layout is there: TV = erf(sqrt(d) / 2), d from the difference's phase energy at
-  30 dB per cell (P2-29), any texture;
-- the loose certificate from the difference's peak phase over the whole image, with the common background's covariance
-  floor (P2-30).
+- tight and certificate, through empty ground: TV(A, B) <= TV(A, none) + TV(none, B), each layout certified against the
+  same empty-ground reference (P2-25's static_cases; P2-30's certificate from the peak phase over the whole image, with
+  the common background's covariance floor). Subtracting two layouts' displacement fields does not remove the reference
+  covariance: in the speckle model the same added phase is more or less distinguishable depending on the motion already
+  there (an independent review's check), so the difference kernel's values are kept only as a diagnostic;
+- the oracle told everything but which layout is there, on the difference itself: given the reflectivity and the
+  background motion the two worlds' echoes differ in mean by exp(i k u_A) - exp(i k u_B), of size 2 |sin(k (u_A - u_B) / 2)|
+  whatever the background, so the difference is exact there: TV <= erf(sqrt(d) / 2), d from the difference's phase
+  energy at 30 dB per cell (P2-29), any texture, an upper bound (Jensen over the phases).
+The directions of the ambient waves are sampled every 15 degrees; the peak over directions is enlarged by sec(15 deg)
+(a function a + b cos 2 phi + c sin 2 phi sampled at that spacing can peak at most that factor above its samples).
 Reported beside each: how many times the signal would have to grow for the oracle to tell the pair apart at 95% / 5%,
 and how many times more signal discrimination needs than detecting the first layout. Only these layouts, this rock and
 these sources are covered.
@@ -36,7 +41,7 @@ from pathlib import Path
 
 import numpy as np
 
-from katabasis.runs import RESULTS, Run, load
+from katabasis.runs import RESULTS, Run, load, memo
 from sarsim import information as inf
 from sarsim import finite as fin
 from sarsim.acquisition import DwellGeometry
@@ -54,6 +59,7 @@ EXTRA = {
 PAIRS = [('branching_tunnel', 'none'), ('L_tunnel', 'straight_tunnel'), ('column_spiral', 'column'),
          ('L_tunnel', 'branching_tunnel'), ('room', 'none')]
 DIRECTIONS = np.deg2rad(np.arange(0, 180, 15.0))
+GUARD = 1 / np.cos(DIRECTIONS[1] - DIRECTIONS[0])   # sec(15 deg): the peak between sampled directions
 HALF = 60.0
 TAPER = (50.0, 59.0)
 SNR_DB = 30.0
@@ -80,7 +86,7 @@ def static_layer(g, kern, bands, m25, snr, floor):
         pads[f] = m25.grid_pad(g, *maps[0].shape, f)
         unit[f] = [inf.fisher_grid(M, g, f, pad=pads[f]) for M in maps]
     fb_unit = float(np.mean([inf.fisher_bound(M, (g.dx, dg), g) for M in maps]))
-    peak_unit = 1.01 * k0 * max(float(np.abs(M).max()) for M in maps)
+    peak_unit = GUARD * k0 * max(float(np.abs(M).max()) for M in maps)
     worst_unit = sum(np.abs(M) for M in maps) / np.sqrt(n)
     rows = []
     for b in bands:
@@ -181,12 +187,12 @@ def dynamic_layer(g, m26, layouts, pairs, amb, snr):
         if D.ndim == 0:
             continue
         near = (np.abs(D) ** 2 * (tp ** 2)[None, :, :, None]).sum(axis=(1, 2)) * dA          # [direction, f]
-        sig = np.max([(np.abs(D[:, (R >= r) & (R < r + 5), :]) ** 2).sum(axis=1).mean(axis=0) * dA / 5.0
-                      for r in (25.0, 30.0, 35.0)], axis=0)                                 # [f]
+        sig = np.max([(np.abs(D[:, (R >= r) & (R < r + 5), :]) ** 2).sum(axis=1) * dA / 5.0
+                      for r in (25.0, 30.0, 35.0)], axis=0)                                 # [direction, f], each its own
         w2 = (2 * np.pi * f) ** 2
         nb = 2 * cells * k0 ** 2 * near / w2[None, :]
-        fb = 2 * cells * k0 ** 2 * sig * (corner - 32.0) / w2
-        tot = (np.sqrt(nb) + np.sqrt(fb)[None, :]) ** 2
+        fb = 2 * cells * k0 ** 2 * sig * (corner - 32.0) / w2[None, :]
+        tot = (np.sqrt(nb) + np.sqrt(fb)) ** 2
         tot_sel = np.where(sel[None, :], tot, 0)
         j, k = np.unravel_index(np.argmax(tot_sel), tot.shape)
         d = 0.5 * snr * 2 * v * v * float(tot[j, k])
@@ -232,18 +238,35 @@ def main():
         zero = {k: np.zeros_like(next(iter(kern.values()))[k]) for k in ('Kxx', 'Kyy', 'Kxy')}
         get = lambda n: kern[n] if n in kern else {'xy': next(iter(kern.values()))['xy'], **zero}
         floor = background_floor(p204, amb, g)
-        static, detect_fb = [], {}
+        # each layout against empty ground (the common reference), all bands; then each pair's difference for the oracle
+        single = {}
+        for n in sorted({x for pair in PAIRS for x in pair} - {'none'}):
+            t1 = time.time()
+            single[n] = memo(RID, f'single-{n}', lambda: static_layer(g, get(n), bands, m25, snr, floor), __file__,
+                             version=f'static-v2-{GUARD:.6f}')
+            print(f"  {n} against none: tight {single[n][0][0]['tight_ceiling']:.2e} ({time.time() - t1:.0f} s)", flush=True)
+        static = []
         for a, b in PAIRS:
             t1 = time.time()
             KA, KB = get(a), get(b)
             diff = {'xy': KA['xy'], **{k: KA[k] - KB[k] for k in ('Kxx', 'Kyy', 'Kxy')}}
-            rows, fb = static_layer(g, diff, bands, m25, snr, floor)
-            if a not in detect_fb:
-                detect_fb[a] = static_layer(g, KA, bands[:1], m25, snr, floor)[1]
+            rows, fb = memo(RID, f'pair-{a}-{b}', lambda: static_layer(g, diff, bands, m25, snr, floor), __file__,
+                            version=f'static-v2-{GUARD:.6f}')
+            for i, r in enumerate(rows):
+                ra = single[a][0][i]
+                rb = single[b][0][i] if b != 'none' else None
+                r['tight_ceiling_difference_diagnostic'] = r.pop('tight_ceiling')
+                r['certificate_tv_difference_diagnostic'] = r.pop('certificate_tv')
+                r.pop('certificate_tpr_at_005')
+                r['tight_ceiling'] = ra['tight_ceiling'] + (rb['tight_ceiling'] if rb else 0.0)
+                r['certificate_tv'] = min(1.0, ra['certificate_tv'] + (rb['certificate_tv'] if rb else 0.0))
+                r['certificate_tpr_at_005'] = min(1.0, 0.05 + r['certificate_tv'])
+                r['via'] = 'TV(A, none) + TV(none, B) for tight and certificate; the difference for the oracle'
+            fa = single[a][1]
             static.append({'pair': f'{a} vs {b}', 'rows': rows,
-                           'discrimination_signal_factor': float(np.sqrt(detect_fb[a] / fb)) if fb > 0 else None})
-            print(f"  {a} vs {b}: oracle TV {rows[0]['oracle_tv']:.2e} under the microseisms ({time.time() - t1:.0f} s)",
-                  flush=True)
+                           'discrimination_signal_factor': float(np.sqrt(fa / fb)) if fb > 0 else None})
+            print(f"  {a} vs {b}: oracle TV {rows[0]['oracle_tv']:.2e}, tight {rows[0]['tight_ceiling']:.2e} under the "
+                  f"microseisms ({time.time() - t1:.0f} s)", flush=True)
         t1 = time.time()
         dynamic = dynamic_layer(g, m26, layouts, PAIRS, amb, snr)
         print(f"  dynamic: {time.time() - t1:.0f} s", flush=True)
@@ -257,17 +280,21 @@ def main():
             f"oracle, told everything but which layout is there, tells an L-shaped from a straight tunnel with detection "
             f"minus false alarm at most {lvs['rows'][0]['oracle_tv']:.1e}, and a column with a spiral from a plain column at "
             f"most {spiral['rows'][0]['oracle_tv']:.1e}; the tight bound gives {lvs['rows'][0]['tight_ceiling']:.1e} and "
-            f"{spiral['rows'][0]['tight_ceiling']:.1e}; the loose certificate with the background caps discrimination at "
+            f"{spiral['rows'][0]['tight_ceiling']:.1e} (each layout against empty ground, summed); the loose certificate with "
+            f"the background, the same way, caps discrimination at "
             f"{100 * max(r['certificate_tpr_at_005'] for r in mic):.3f}% at 5% for every pair. Discrimination needs "
             f"{min(p['discrimination_signal_factor'] for p in static if not p['pair'].endswith('none')):.1f} to "
             f"{max(p['discrimination_signal_factor'] for p in static if not p['pair'].endswith('none')):.1f} "
             f"times the signal that detecting the first layout needs."
-            + (f" With a lorry bouncing beside the layouts all pass, known exactly, the hardest-to-exclude pair "
-               f"({worst_dyn['pair']}) gives the oracle {worst_dyn['oracle_tv']:.2f} at {worst_dyn['worst_f_hz']:.0f} Hz, "
-               f"{worst_dyn['oracle_growth_to_target']:.1f} times short of 95% at 5%: the open regime for shape as for "
-               f"detection." if worst_dyn else "")
+            + (f" With a lorry bouncing beside the layouts all pass, known exactly, the oracle's bound for the "
+               f"hardest-to-exclude pair ({worst_dyn['pair']}) reaches {worst_dyn['oracle_tv']:.2f} at "
+               f"{worst_dyn['worst_f_hz']:.0f} Hz"
+               + (f", so this argument does not exclude telling them apart at 95% / 5%" if worst_dyn['oracle_growth_to_target'] < 1
+                  else f", still excluding 95% / 5% until the signal grows {worst_dyn['oracle_growth_to_target']:.1f} times")
+               + ": unresolved, not a demonstrated opportunity, for shape as for detection." if worst_dyn else "")
             + " Only these layouts, this rock and these sources are covered.")
-        run.save({'static': static, 'dynamic': dynamic, 'background_floor': floor, 'finding': finding})
+        run.save({'static': static, 'single': {n: v[0] for n, v in single.items()}, 'dynamic': dynamic,
+                  'background_floor': floor, 'direction_guard': float(GUARD), 'finding': finding})
         print(finding)
 
 

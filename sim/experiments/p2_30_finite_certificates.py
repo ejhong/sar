@@ -138,16 +138,18 @@ def certificates():
         f = np.asarray(source['f_hz'])
         A = np.asarray(physical['imprint_area_m2'])
         sigma = np.asarray(source['cross_width_m'])
+        if sigma.ndim == 2:                  # P2-25 now keeps each direction's own far field: take the largest
+            sigma = sigma.max(axis=1)
         assert np.allclose(f, physical['f_hz'], atol=1e-6)
         # rotations() creates four LOS maps for line incidence; the plane
         # cases have one map. physical['runs'] counts cavity/background runs,
         # NOT directions.
         directions = 4 if physical['incidence'] == 'line' else 1
-        # A and sigma are arithmetic averages over recorded directions.
-        # max <= number_of_directions * average. Count the entire raw near
+        # A is an arithmetic average over recorded directions, and
+        # max <= number_of_directions * average; sigma is each direction's own, its largest taken. Count the entire raw near
         # grid PLUS the assumed far-field envelope; overlap is conservative.
         # sqrt(2)*v is the peak of the declared single harmonic.
-        coefficient = directions * density * k0**2 * 2 * (A + sigma * length) / (2 * math.pi * f)**2
+        coefficient = density * k0**2 * 2 * (directions * A + sigma * length) / (2 * math.pi * f)**2
         for kind, band in [('urban', (8, 100)), ('truck', None)]:
             eligible = np.flatnonzero((f >= band[0]) & (f <= band[1])) if band else np.arange(len(f))
             idx = int(eligible[np.argmax(coefficient[eligible])])

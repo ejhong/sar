@@ -79,7 +79,9 @@ def module(name, path):
     return mod
 
 
-def tv_exact(delta):
+def tv_of_delta(delta):
+    """2 Phi(Delta / 2) - 1: exact for a given Delta; with Delta^2 an upper bound on the mean energy (Jensen, energy
+    bounds, the far field carried unattenuated), an upper bound on what the oracle achieves, not an achieved value."""
     return float(2 * ndtr(np.asarray(delta, float) / 2) - 1)
 
 
@@ -197,7 +199,7 @@ def chamber(g, p225, maps, amb):
     k0 = 4 * np.pi / g.lam
     rows = []
     add = lambda label, d2, kind, note='': rows.append({'case': label, 'kind': kind, 'delta': float(np.sqrt(d2)),
-                                                        'tv_exact': tv_exact(np.sqrt(d2)),
+                                                        'tv_upper': tv_of_delta(np.sqrt(d2)),
                                                         'tv_pinsker': float(min(np.sqrt(d2) / 2, 1.0)),
                                                         'growth_to_target': float(D_TARGET / np.sqrt(d2)), 'note': note})
     for r in p225['static']:
@@ -207,12 +209,12 @@ def chamber(g, p225, maps, amb):
     v_truck = cul['bus_or_truck_over_bump']['value']
     for d in p225['dynamic']:
         fs, near = near_bounds(maps, d['case'], g)
-        far = np.asarray(d['far_bound_per_v2'])
+        far = np.asarray(d['far_bound_per_v2'])                         # [f, direction], each direction its own
         nd = near.shape[1]
         sel = (fs >= band[0]) & (fs <= band[1])
         df = float(np.mean(np.diff(fs)))
         amp2 = 2 * v_urban ** 2 / (band[1] - band[0]) * df / nd
-        tot = (np.sqrt(near) + np.sqrt(far)[:, None]) ** 2
+        tot = (np.sqrt(near) + np.sqrt(far)) ** 2
         add(f"urban background, all pass ({d['case']})", 0.5 * snr * amp2 * tot[sel].sum(), 'cultural',
             'scattered wave unattenuated across the scene')
         add(f"urban background, all pass, within 32 m ({d['case']})", 0.5 * snr * amp2 * near[sel].sum(), 'cultural')
@@ -352,7 +354,7 @@ def main():
         print(f"  raw-echo check: {time.time() - t0:.0f} s", flush=True)
         rows, snr, allowance = chamber(g, p225, maps, amb)
         for r in rows:
-            print(f"  {r['case']}: Delta {r['delta']:.3g}, TV {r['tv_exact']:.3g}, grow x{r['growth_to_target']:.3g}"
+            print(f"  {r['case']}: Delta {r['delta']:.3g}, TV {r['tv_upper']:.3g}, grow x{r['growth_to_target']:.3g}"
                   f"{' (open)' if r['open'] else ''}", flush=True)
         t0 = time.time()
         dep = memo(RID, 'depth', lambda: depth(g, host, m28), __file__, version='depth-v1')
@@ -360,9 +362,9 @@ def main():
         amb_rows = [r for r in rows if r['kind'] == 'ambient']
         cult = [r for r in rows if r['kind'] == 'cultural']
         opened = [r['case'] for r in rows if r['open']]
-        worst = max(cult, key=lambda r: r['tv_exact'])
+        worst = max(cult, key=lambda r: r['tv_upper'])
         reg = amb_rows[0]                                   # Giza's regional microseisms
-        loud = max(amb_rows, key=lambda r: r['tv_exact'])   # the noisiest stations
+        loud = max(amb_rows, key=lambda r: r['tv_upper'])   # the noisiest stations
         sb = raw['summary']
         finding = (
             f"An oracle told the exact reflectivity, the background motion, the shaking's realisation and both physical models, "
@@ -371,16 +373,19 @@ def main():
             f"pulse on the real dwell the formula for Delta holds ({sb['background_x1']['mean']:.3f} +- "
             f"{sb['background_x1']['se']:.3f} of it; {sb['background_x10']['mean']:.3f} +- {sb['background_x10']['se']:.3f} "
             f"with the background ten times larger, which cancels). At {SNR_DB:.0f} dB per resolution cell, under Giza's "
-            f"regional microseisms the bench room gives the oracle {reg['tv_exact']:.1e}: its imprint would have to grow "
+            f"regional microseisms the oracle's bound for the bench room is {reg['tv_upper']:.1e}: its imprint would have to grow "
             f"{reg['growth_to_target']:.1e} times, {reg['growth_after_allowances']:.1e} after allowing the local level ten "
             f"times the regional, site amplification three times and 10 dB more SNR; at the noisiest stations on Earth "
-            f"{loud['tv_exact']:.1e} ({loud['growth_to_target']:.1e} and {loud['growth_after_allowances']:.1e} times). "
+            f"{loud['tv_upper']:.1e} ({loud['growth_to_target']:.1e} and {loud['growth_after_allowances']:.1e} times). "
             f"The open regime is strong nearby shaking known exactly, the scattered wave carried unattenuated across the "
-            f"scene: {worst['case']} gives the oracle {worst['tv_exact']:.2f}"
-            + (f", enough within the model for 95% found at 5% false alarms (it would need only {worst['growth_to_target']:.2f} "
-               f"of its motion)" if worst['growth_to_target'] < 1 else
-               f", {worst['growth_to_target']:.1f} times short of 95% found at 5% false alarms")
-            + f"; {len(opened)} cases are open after the allowances. "
+            f"scene: for {worst['case']} the oracle's bound reaches {worst['tv_upper']:.2f}"
+            + (f", so this argument no longer excludes 95% found at 5% false alarms (it would below "
+               f"{worst['growth_to_target']:.2f} of that motion)" if worst['growth_to_target'] < 1 else
+               f", which still excludes 95% found at 5% false alarms: that motion would have to grow "
+               f"{worst['growth_to_target']:.1f} times before this bound stops excluding it")
+            + f"; {len(opened)} cases are not excluded after the allowances. A large upper bound shows only that this "
+            f"argument does not exclude detection, not that any detector achieves it; that would take an implemented "
+            f"detector succeeding on independent tests. "
             + (f"Depth is carried by the mark's shape in this model: rooms 15 m down, small and spread, leave "
                f"{100 * dep['residual_fraction']:.0f}% of the mark of a room 30 m down unmatched (the bench room 15 m down, "
                f"{100 * dep['best_single_bench_room_residual']:.0f}%), so telling those two depths apart takes only "

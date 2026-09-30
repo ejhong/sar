@@ -15,9 +15,12 @@ Conditions.
   pulse-by-pulse physics: where the two differ, the model holds more).
 - The room-specific motion: the part of the surface's motion that is there because the room is, along the line of sight,
   D exp(-r^2 / 2 L^2) cos(2 pi f (t + x_a / V_g) + psi), coherent for the whole pass, at the worst phase psi. Its
-  footprint is the area within half its peak, 2 pi ln 2 L^2. Any mechanism that acts through the surface's motion must
-  put such motion on the ground, whatever drives it. Outside: changes of the surface's reflectivity during the pass, the
-  echo from beneath (P2-11), scatterers that are not speckle, more than one image.
+  footprint is the area within half its peak, 2 pi ln 2 L^2. These curves hold for this family of smooth patterns only:
+  what an image holds depends on the motion's spatial pattern, not only its amplitude, frequency and area, and a pattern
+  with more structure inside the same envelope can hold far more (computed below: a Gaussian 4 m wide at 0.2 Hz
+  multiplied by a cosine of 4 m period holds 39 times the information, though nowhere larger; an independent review's
+  example). The requirement for every pattern is on the motion's energy (5). Outside: changes of the surface's
+  reflectivity during the pass, the echo from beneath (P2-11), scatterers that are not speckle, more than one image.
 - The target: detection rate 95% at false-alarm rate 5% (detection minus false alarm, TV, 0.9), and TV 0.5.
 
 Computed.
@@ -31,11 +34,22 @@ Computed.
    weak-signal theory (deflection 3.29 for TV 0.9), an estimate, not a bound.
 3. Helped: the method handed the ground's reflectivity, every pixel 30 dB over receiver noise, KL <= SNR sum_cells
    <Phi^2>; and a corner reflector (50 dB, P2-23) on the footprint's peak, KL <= SCR (k0 D)^2 / 2.
+5. For every pattern (Theorem C of P2-30, finite and exact within the model): q^2 <= Q / floor with
+   Q <= density * integral max_t Phi^2 dA, so any room-specific motion, whatever its spatial pattern, frequency or time
+   history, whose energy E = integral max_t |u_los|^2 dA stays below E_min = q_b^2 floor / (k0^2 density) cannot reach the
+   target (q_b where the certificate stops excluding it). With the ground's common background motion in the reference
+   covariance (P2-30's proved floor) and without it (the covariance taken as the identity, as 1 to 3 take it). A
+   change of the ambient motion's phase alone moves the ground by at most twice its amplitude a, so such a mechanism is
+   excluded only while the area it changes stays below E_min / (2 a)^2: the area is the mechanism's to justify.
+6. How much the pattern matters: the Gaussian's F against the largest any pattern inside its envelope could hold,
+   4 N <Phi^2> (sarsim.information.fisher_bound); and the review's modulated Gaussians, exactly on the image's pixels.
 4. Beside the curve: the ambient motion itself (Giza's regional microseism level, measured 67 km east; the noisiest
    stations on Earth; the measured 1-3 and 3-8 Hz levels; the FTA's urban background and a truck over a bump 15 m away),
    none of them an upper limit at the pyramids; the largest room-specific motion per unit ambient motion in the rooms
    P2-26 models, a marker for mechanisms that only redistribute the ambient motion, within those rooms; and the bench
-   room's own modelled imprints (P2-04, P2-26).
+   room's own modelled imprints (P2-04, P2-26), each also by its energy against 5 (the static imprint on P2-04's whole
+   grid, its tail beyond bounded as 1/r^2; the dynamic imprint within 39 m exactly and its scattered wave carried
+   unattenuated to the scene's farthest corner, P2-25's bound, each wave direction with its own).
 """
 import importlib.util
 import json
@@ -46,6 +60,7 @@ import numpy as np
 from scipy.special import ndtri
 
 from katabasis.runs import RESULTS, Run, load, memo
+from sarsim import finite as fin
 from sarsim import information as inf
 from sarsim.acquisition import DwellGeometry
 
@@ -219,6 +234,89 @@ def helped(g, L, targets, snr, scr):
             'D_reflector_m': {tv: float(np.sqrt(2 * kl_needed(tv) / scr) / k0) for tv in targets}}
 
 
+# ------------------------------------------------------------------ 5. every pattern: the energy requirement
+
+def any_pattern(g, p230, targets):
+    """E_min, the least energy integral max_t |u_los|^2 dA (m^4) at which Theorem C stops excluding each target, with the
+    common background in the reference covariance (P2-30's floor) and without it (identity)."""
+    k0 = 4 * np.pi / g.lam
+    density = p230['geometry']['area_density_used']
+    floor = p230['background_included']['covariance_floor_proved_within_model']
+    out = {'density_per_m2': density, 'covariance_floor': floor, 'E_min_m4': {}, 'E_min_identity_m4': {}}
+    for tv in targets:
+        qb = fin.required_q_for_tv(tv)
+        out['E_min_identity_m4'][tv] = qb * qb / (k0 * k0 * density)
+        out['E_min_m4'][tv] = out['E_min_identity_m4'][tv] * floor
+    return out
+
+
+def pattern_check(g):
+    """The review's example and its neighbours: a Gaussian envelope (L = 4 m) alone and multiplied by cosines along track
+    and across, F exactly on the pixels at each frequency; and the Gaussian's share of 4 N <Phi^2> for its envelope."""
+    dg = g.dr / np.sin(g.theta)
+    L = 4.0
+    G = gaussian(g, L, (g.dx, dg))
+    xa = (np.arange(G.shape[0]) - G.shape[0] / 2) * g.dx
+    xg = (np.arange(G.shape[1]) - G.shape[1] / 2) * dg
+    cap = inf.fisher_bound(G, (g.dx, dg), g)
+    rows = []
+    for f in FREQS:
+        A0, _ = inf.fisher_grid(G, g, f)
+        row = {'f_hz': f, 'L_m': L, 'gaussian_share_of_envelope_ceiling': A0 / cap, 'ratio_to_gaussian': {}}
+        for label, K in (('cos along track, 4 m period', G * np.cos(2 * np.pi * xa / 4.0)[:, None]),
+                         ('cos along track, 1 m period', G * np.cos(2 * np.pi * xa / 1.0)[:, None]),
+                         ('cos across track, 4 m period', G * np.cos(2 * np.pi * xg / 4.0)[None, :])):
+            A, _ = inf.fisher_grid(K, g, f)
+            row['ratio_to_gaussian'][label] = A / A0
+        rows.append(row)
+    return rows
+
+
+def imprint_energy(m25, p204, p225, maps, g, amb):
+    """integral max_t |u_los|^2 dA (m^4) of the bench room's modelled imprints: the static ones at each band's peak
+    strain from the worst wave direction on P2-04's whole grid, with a 1/r^2 tail beyond; the dynamic ones under a
+    truck over a bump 15 m away, within 39 m exactly and beyond by P2-25's far-field bound, worst direction."""
+    kern, _ = m25.static_kernels()
+    xy = kern['xy']
+    sp = float(np.min(np.diff(np.unique(xy[:, 0]))))
+    los = np.asarray(g.los_enu)
+    r = np.hypot(xy[:, 0], xy[:, 1])
+    edge = r >= r.max() - 2 * sp
+    per_dir = []
+    for phi in np.deg2rad(np.arange(0, 180, 7.5)):
+        s_, c_ = np.sin(phi), np.cos(phi)
+        u = -((kern['Kxx'] * s_ * s_ + kern['Kyy'] * c_ * c_ + kern['Kxy'] * s_ * c_) @ los)
+        R_edge = float(np.mean(r[edge]))
+        tail = np.pi * float(np.mean(u[edge] ** 2)) * R_edge ** 2          # u ~ 1/r^2 beyond the grid (generous)
+        per_dir.append(float(np.sum(u ** 2)) * sp * sp + tail)
+    unit_static = max(per_dir)                                             # per unit strain amplitude squared
+    out = []
+    for c, row in zip(p204['cases'][:3], p225['static'][:3]):
+        eps0 = row['strain_amplitude']
+        out.append({'label': f"bench room, static, {c['case']}", 'f_hz': row['f_hz'], 'energy_m4': unit_static * eps0 ** 2,
+                    'energy_note': "worst wave direction, P2-04's whole grid and a 1/r^2 tail"})
+    v = amb['cultural']['bus_or_truck_over_bump']['value']
+    k0 = 4 * np.pi / g.lam
+    cells = inf.cells_per_m2(g)
+    for key, label in (('surface', 'bench room'), ('surface_favourable', 'room under a 5 m roof')):
+        xs, ys, fs, H = maps[f'{key}_x'], maps[f'{key}_y'], maps[f'{key}_f'], maps[f'{key}_H']
+        X, Y = np.meshgrid(xs, ys, indexing='ij')
+        tp = np.clip((39.0 - np.hypot(X, Y)) / 7.0, 0, 1)
+        dA = float(xs[1] - xs[0]) ** 2
+        dyn = next(d for d in p225['dynamic'] if d['case'] == key)
+        far = np.asarray(dyn['far_bound_per_v2'])                         # [f, direction], 2 cells k0^2 E per v^2
+        for f in (20.0, 80.0):
+            k = int(np.argmin(np.abs(fs - f)))
+            near = (np.abs(H[..., k]) ** 2 * tp ** 2).sum(axis=(1, 2)) * dA / (2 * np.pi * fs[k]) ** 2     # [direction]
+            far_e = far[k] / (2 * cells * k0 ** 2) if far.ndim == 2 else np.full_like(near, far[k] / (2 * cells * k0 ** 2))
+            tot = (np.sqrt(near) + np.sqrt(far_e)) ** 2
+            j = int(np.argmax(tot))
+            out.append({'label': f'{label}, dynamic, truck over a bump 15 m away', 'f_hz': float(fs[k]),
+                        'energy_m4': float(tot[j]) * 2 * v * v, 'energy_near_m4': float(near[j]) * 2 * v * v,
+                        'energy_note': 'within 39 m exactly, the scattered wave unattenuated to the scene corner'})
+    return out
+
+
 # ------------------------------------------------------------------ 4. beside the curve
 
 def markers(amb, p204, p226, maps):
@@ -291,6 +389,8 @@ def on_curve(curve, area, key, tv):
 def main():
     amb = json.loads((SITES / 'ambient.json').read_text())
     p204, p226, p223 = (load(r) for r in ('p2_04_chamber_imprint', 'p2_26_imprint_spectrum', 'p2_23_every_reader'))
+    p225, p230 = load('p2_25_information_bound'), load('p2_30_finite_certificates')
+    m25 = module('p225', Path(__file__).with_name('p2_25_information_bound.py'))
     maps = np.load(RESULTS / 'p2_26_imprint_spectrum' / 'maps.npz')
     snr = 10 ** (SNR_GENIE_DB / 10)
     scr = 10 ** (p223['manifest']['params']['reflector_scr_db'] / 10)
@@ -309,7 +409,8 @@ def main():
                 widths = L_EXACT + (L_EXACT_SLOW if f <= SLOW else ())
                 exact = []
                 for L in widths:
-                    ex = memo(RID, f'exact-{acq}-{f}-{L}', lambda: exact_requirement(g, f, L, TARGETS), __file__)
+                    ex = memo(RID, f'exact-{acq}-{f}-{L}', lambda: exact_requirement(g, f, L, TARGETS), __file__,
+                              version='exact-v1')
                     lin = linear_requirement(g, f, L, TARGETS)
                     exact.append({'L_m': L, 'area_half_m2': area_half(L), **ex,
                                   'lines_over_image_small': ex['kl_lines_per_D2_small'] / (lin['fisher_largest_per_m2'] / 2),
@@ -355,30 +456,71 @@ def main():
                 Ac = inf.fisher_sinusoid(gaussian(g, L, (L / 8, L / 8)), (L / 8, L / 8), f, g)
                 checks['grid_vs_continuum'].append({'f_hz': f, 'L_m': L, 'continuum_over_pixels': Ac / A})
 
+        # 5. every pattern: the energy requirement, the imprints' energies against it, and the area a phase-only
+        # mechanism would have to change
+        anyp = any_pattern(g, p230, TARGETS)
+        E_min, E_id = anyp['E_min_m4'][0.9], anyp['E_min_identity_m4'][0.9]
+        energies = imprint_energy(m25, p204, p225, maps, g, amb)
+        for im in imprints:
+            e = min((x for x in energies if x['label'] == im['label']), key=lambda x: abs(x['f_hz'] - im['f_hz']))
+            im['energy_m4'] = e['energy_m4']
+            im['energy_note'] = e['energy_note']
+            if 'energy_near_m4' in e:
+                im['energy_near_m4'] = e['energy_near_m4']
+            im['short_by_any_pattern'] = float(np.sqrt(E_min / e['energy_m4']))
+            im['short_by_any_pattern_identity'] = float(np.sqrt(E_id / e['energy_m4']))
+        hv = p204['hv']
+        for a in ambient:
+            a_los = np.sqrt(1 + hv * hv) * a['displacement_amplitude_m']            # a Rayleigh wave's LOS amplitude, at most
+            a['phase_only_area_m2'] = float(E_min / (2 * a_los) ** 2)
+            a['phase_only_area_identity_m2'] = float(E_id / (2 * a_los) ** 2)
+        patterns = pattern_check(g)
+        for fr in main_acq:
+            for r in fr['linear']:
+                K = gaussian(g, r['L_m'], (r['L_m'] / 8, r['L_m'] / 8)) if r['method'] == 'continuum' else gaussian(g, r['L_m'], (g.dx, dg))
+                sp_ = (r['L_m'] / 8, r['L_m'] / 8) if r['method'] == 'continuum' else (g.dx, dg)
+                r['share_of_envelope_ceiling'] = float(r['fisher_largest_per_m2'] / inf.fisher_bound(K, sp_, g))
         lo = min(a['constrained_short_by'] for a in ambient)
         sb = [im for im in imprints if 'static' in im['label']][0]
         dyn = [im for im in imprints if 'dynamic' in im['label']]
         e02 = byf[0.2]['exact']
         e80 = byf[80.0]['exact']
         at = lambda rows, L: next(r for r in rows if r['L_m'] == L)
+        p02 = next(r for r in patterns if r['f_hz'] == 0.2)
+        rt = p02['ratio_to_gaussian']
+        amb_reg = next(a for a in ambient if 'microseisms, regional' in a['label'])
+        amb_loud = next(a for a in ambient if 'noisiest' in a['label'])
+        amb_t80 = next(a for a in ambient if 'truck' in a['label'] and a['f_hz'] == 80.0)
         finding = (
             f"Under the stated conditions (the Giza dwell, fully developed speckle, no reference image, no receiver noise, "
-            f"one room-specific motion pattern coherent for the whole pass, at its worst phase), a detection at 95% with 5% "
-            f"false alarms needs at least these room-specific line-of-sight amplitudes, exactly within the model: "
-            f"{at(e02, 8.0)['D_necessary_m'][0.9] * 1e3:.2f} mm at 0.2 Hz over a footprint of "
-            f"{area_half(8.0):.0f} m^2 ({at(e02, 1.0)['D_necessary_m'][0.9] * 1e3:.2f} mm over {area_half(1.0):.1f} m^2); "
+            f"motion coherent for the whole pass at its worst phase), a detection at 95% with 5% false alarms needs, for a "
+            f"smooth Gaussian pattern of room-specific line-of-sight motion, at least "
+            f"{at(e02, 8.0)['D_necessary_m'][0.9] * 1e3:.2f} mm at 0.2 Hz over {area_half(8.0):.0f} m^2 "
+            f"({at(e02, 1.0)['D_necessary_m'][0.9] * 1e3:.2f} mm over {area_half(1.0):.1f} m^2) and "
             f"{at(e80, 8.0)['D_necessary_m'][0.9] * 1e6:.1f} um at 80 Hz over {area_half(8.0):.0f} m^2 "
-            f"({at(e80, 1.0)['D_necessary_m'][0.9] * 1e6:.0f} um over {area_half(1.0):.1f} m^2). The bench room's "
-            f"modelled static imprint under Giza's regional microseism level falls short of the curve at its own footprint "
-            f"by {sci(sb['short_by'])}; its dynamic imprints under a truck over a bump 15 m away for the whole pass by "
-            f"{sci(min(im['short_by'] for im in dyn))} to {sci(max(im['short_by'] for im in dyn))}. A mechanism that only "
-            f"changes the ambient motion's phase (any phase change moves the ground by at most twice the ambient amplitude, "
-            f"linear or not) or scatters it as P2-26's rooms do (at most {constrained['modelled_ratio']:.2f} times), would "
-            f"need the ambient levels here raised at least {sci(lo)} times. Handing the method the ground's "
-            f"reflectivity lowers the curve; a corner reflector on the footprint's peak needs "
+            f"({at(e80, 1.0)['D_necessary_m'][0.9] * 1e6:.0f} um over {area_half(1.0):.1f} m^2), exactly within the model. "
+            f"Those amplitudes hold for that family only: what the image holds depends on the pattern, and a Gaussian 4 m "
+            f"wide at 0.2 Hz multiplied by a cosine of 4 m period along track holds {rt['cos along track, 4 m period']:.0f} "
+            f"times the Gaussian's information ({rt['cos along track, 1 m period']:.0f} times for a 1 m period) though "
+            f"nowhere larger; at 0.2 Hz the Gaussian holds only {sci(p02['gaussian_share_of_envelope_ceiling'])} of what "
+            f"the most informative pattern inside its envelope could. For every pattern the requirement is on energy "
+            f"(Theorem C): any room-specific motion whose integral of max_t |u_los|^2 over the ground stays below "
+            f"{sci(E_min)} m^4 (with Giza's background motion in the reference; {sci(E_id)} m^4 without) is excluded, "
+            f"whatever its shape, frequency or time history: an rms of {np.sqrt(E_min / 1000.0) * 1e6:.1f} um over "
+            f"1,000 m^2. The bench room's modelled static imprint under the regional microseisms falls short of that "
+            f"energy by {sci(sb['short_by_any_pattern'])} in amplitude (against a Gaussian of its peak and footprint, "
+            f"{sci(sb['short_by'])}); its dynamic imprints under a truck over a bump 15 m away for the whole pass, the "
+            f"scattered wave carried unattenuated to the scene's corner, by {sci(min(im['short_by_any_pattern'] for im in dyn))} "
+            f"to {sci(max(im['short_by_any_pattern'] for im in dyn))}. A mechanism that only changes the ambient motion's "
+            f"phase (moving the ground by at most twice its amplitude, linear or not) is excluded only while the area it "
+            f"changes stays below {sci(amb_reg['phase_only_area_m2'])} m^2 under the regional microseisms, "
+            f"{sci(amb_loud['phase_only_area_m2'])} m^2 at the noisiest stations and {sci(amb_t80['phase_only_area_m2'])} m^2 "
+            f"under a truck at 80 Hz; the bench room's footprint is {sb['area_half_m2']:.0f} m^2, so such a mechanism must "
+            f"show its phase changes spread over that much ground. A corner reflector on the footprint's peak needs "
             f"{byf[0.2]['linear'][0]['D_reflector_m'][0.9] * 1e6:.0f} um whatever the footprint. These are requirements "
-            f"conditional on the model: they say nothing of routes outside it, nor of mechanisms not specified.")
+            f"conditional on the model: they say nothing of routes outside it.")
         run.save({'acquisitions': out, 'ambient': ambient, 'constrained': constrained, 'imprints': imprints,
+                  'any_pattern': anyp, 'pattern_check': patterns,
                   'checks': checks, 'kl_needed': {tv: kl_needed(tv) for tv in TARGETS},
                   'deflection_needed': {tv: deflection_needed(tv) for tv in TARGETS}, 'finding': finding})
         print(finding)

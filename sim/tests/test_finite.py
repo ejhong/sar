@@ -171,3 +171,44 @@ class FiniteProofTests(unittest.TestCase):
             self.assertLessEqual(true,1.01*sampled+1e-15)
 
 if __name__=='__main__':unittest.main(verbosity=2)
+
+
+class PatternTests(unittest.TestCase):
+    """An independent review's point, checked in a small phase-only Fourier model with the exact finite divergence: at the
+    same displacement envelope the spatial pattern changes how distinguishable the motion is, so a requirement computed for
+    one pattern binds only that pattern; the energy certificate (Theorem C) bounds every pattern."""
+
+    def model(self, pattern, n=48, keep=24, f=0.04):
+        k = np.arange(n)
+        T0 = np.exp(-2j * np.pi * np.outer(k, k) / n) / math.sqrt(n)
+        rows = np.r_[0:keep // 2, n - keep // 2:n]                      # the retained band
+        t = rows / n                                                     # each bin's time, the Doppler-to-time relation
+        Phi = np.outer(np.cos(2 * np.pi * f * n * t), pattern)           # [bin, scatterer]
+        A0 = T0[rows]
+        dA = A0 * np.expm1(1j * Phi)
+        c0 = A0 @ A0.conj().T
+        dC = A0 @ dA.conj().T + dA @ A0.conj().T + dA @ dA.conj().T
+        q2 = float(np.sum(np.abs(A0) ** 2 * Phi ** 2))
+        return finite_complex_kl(c0, dC)['kl'], q2
+
+    def test_pattern_matters_at_equal_envelope(self):
+        n = 48
+        x = np.arange(n) - n / 2
+        env = 0.25 * np.exp(-x ** 2 / (2 * 6.0 ** 2))
+        kl_smooth, q2_smooth = self.model(env)
+        kl_mod, q2_mod = self.model(env * np.cos(2 * np.pi * x / 4.0))
+        self.assertTrue(np.all(np.abs(env * np.cos(2 * np.pi * x / 4.0)) <= env + 1e-15))
+        self.assertGreater(kl_mod, 5 * kl_smooth)                        # nowhere larger, far more distinguishable
+        # and both stay within the energy certificate, which does not care about the pattern
+        for kl, q2 in ((kl_smooth, q2_smooth), (kl_mod, q2_mod)):
+            cert = perturbation_certificate(math.sqrt(q2))
+            self.assertLessEqual(min(1.0, math.sqrt(kl / 2)), cert['tv_upper'] + 1e-12)
+
+    def test_certificate_bounds_random_patterns(self):
+        rng = np.random.default_rng(31)
+        n = 48
+        for _ in range(20):
+            pattern = rng.uniform(-0.2, 0.2, n) * (rng.uniform(size=n) < 0.5)
+            kl, q2 = self.model(pattern)
+            cert = perturbation_certificate(math.sqrt(q2))
+            self.assertLessEqual(min(1.0, math.sqrt(kl / 2)), cert['tv_upper'] + 1e-12)

@@ -502,7 +502,7 @@ def dynamic_information(g, maps_path, p226):
         R = np.hypot(X, Y)
         dA = float(xs[1] - xs[0]) ** 2
         tp = taper(xs, ys, *TAPER_DYNAMIC)
-        A_near, M_near, far, sigma, l2, peak = [], [], [], [], [], []
+        A_near, M_near, far, sigma, l2, peak, l2_far, p_far = [], [], [], [], [], [], [], []
         dpx = g.dx * g.dr / np.sin(g.theta)                           # ground area of one pixel
         for k, f in enumerate(fs):
             Kd = Hm[..., k] / (2j * np.pi * f)                      # displacement per unit incident velocity amplitude
@@ -520,19 +520,18 @@ def dynamic_information(g, maps_path, p226):
             M_near.append(m_d)
             l2.append(l_d)
             peak.append(p_d)
-            E = [float((np.abs(Hm[:, (R >= r) & (R < r + 5), k]) ** 2).sum(axis=1).mean()) * dA / 5.0
-                 for r in (25.0, 30.0, 35.0)]
-            s = max(E)
+            # each direction's own far field (an average over directions cannot support a worst-direction claim):
+            # its energy per metre of radius, the largest over the outer annuli
+            s = np.max([(np.abs(Hm[:, (R >= r) & (R < r + 5), k]) ** 2).sum(axis=1) * dA / 5.0
+                        for r in (25.0, 30.0, 35.0)], axis=0)                       # [direction]
             sigma.append(s)
             far.append(2 * inf.cells_per_m2(g) * k0 ** 2 * s * (scene_radius - FAR_FROM) / (2 * np.pi * f) ** 2)
             # the far field's norms on the pixels, for the remainder: |K|^2 = sigma / (2 pi r) / (2 pi f)^2 in metres
-            l2_far = k0 * np.sqrt(s * (scene_radius - FAR_FROM) / dpx) / (2 * np.pi * f)
-            p_far = k0 * np.sqrt(s / (2 * np.pi * FAR_FROM)) / (2 * np.pi * f)
-            l2[-1].append(l2_far)
-            peak[-1].append(p_far)
+            l2_far.append(k0 * np.sqrt(s * (scene_radius - FAR_FROM) / dpx) / (2 * np.pi * f))
+            p_far.append(k0 * np.sqrt(s / (2 * np.pi * FAR_FROM)) / (2 * np.pi * f))
         out[name] = {'f_hz': fs, 'A_near': np.array(A_near), 'M_near': np.array(M_near), 'far_bound': np.array(far),
                      'cross_width_m': np.array(sigma), 'directions': Hm.shape[0], 'l2': np.array(l2),
-                     'peak': np.array(peak)}
+                     'peak': np.array(peak), 'l2_far': np.array(l2_far), 'peak_far': np.array(p_far)}
         print(f"  dynamic {name}: {time.time() - t0:.0f} s", flush=True)
     return out, scene_radius
 
@@ -555,26 +554,25 @@ def dynamic_cases(dyn, g, amb, maps_path):
         for k in np.nonzero(sel)[0]:
             amp2 = 2 * psd * df / nd                                 # each direction's share of the bin's power
             for j in range(nd):
-                a = (np.sqrt(d['A_near'][k][j]) + np.sqrt(d['far_bound'][k])) ** 2 * amp2
-                m = (np.sqrt(d['M_near'][k][j]) + np.sqrt(d['far_bound'][k])) ** 2 * amp2
+                a = (np.sqrt(d['A_near'][k][j]) + np.sqrt(d['far_bound'][k][j])) ** 2 * amp2
+                m = (np.sqrt(d['M_near'][k][j]) + np.sqrt(d['far_bound'][k][j])) ** 2 * amp2
                 parts.append((a, m))
                 parts_near.append((d['A_near'][k][j] * amp2, d['M_near'][k][j] * amp2))
         # the remainder: every component's amplitude added at every pixel, near maps and far field alike (safe)
         amps = np.sqrt(2 * psd * df / nd)
-        l2_sum = amps * float(d['l2'][sel][:, :nd].sum() + nd * d['l2'][sel][:, nd].sum())
-        k_sum = amps * float(d['peak'][sel][:, :nd].sum() + nd * d['peak'][sel][:, nd].sum())
+        l2_sum = amps * float(d['l2'][sel].sum() + d['l2_far'][sel].sum())
+        k_sum = amps * float(d['peak'][sel].sum() + d['peak_far'][sel].sum())
         eps = eps_from_norms(l2_sum, k_sum, g)
         EF, kl, x = ambient_kl(parts, eps)
         EFn, kln, _ = ambient_kl(parts_near, eps)
         # truck: the worst frequency and side, the mean over its phase (random) and the largest (reported)
-        tot = [(np.sqrt(np.max(d['A_near'][k])) + np.sqrt(d['far_bound'][k])) ** 2 for k in range(len(f))]
-        k = int(np.argmax(np.where(sel, tot, 0)))
-        jw = int(np.argmax(d['A_near'][k]))
+        tot = (np.sqrt(np.asarray(d['A_near'])) + np.sqrt(np.asarray(d['far_bound']))) ** 2          # [f, direction]
+        k, jw = np.unravel_index(np.argmax(np.where(sel[:, None], tot, 0)), tot.shape)
         amp2 = 2 * v_truck ** 2
-        eps_t = eps_from_norms(np.sqrt(amp2) * (d['l2'][k][jw] + d['l2'][k][nd]),
-                               np.sqrt(amp2) * (d['peak'][k][jw] + d['peak'][k][nd]), g)
-        Ft = tot[k] * amp2
-        Ft_max = (np.sqrt(d['M_near'][k][jw]) + np.sqrt(d['far_bound'][k])) ** 2 * amp2
+        eps_t = eps_from_norms(np.sqrt(amp2) * (d['l2'][k][jw] + d['l2_far'][k][jw]),
+                               np.sqrt(amp2) * (d['peak'][k][jw] + d['peak_far'][k][jw]), g)
+        Ft = float(tot[k, jw]) * amp2
+        Ft_max = (np.sqrt(d['M_near'][k][jw]) + np.sqrt(d['far_bound'][k][jw])) ** 2 * amp2
         Ft_near = d['A_near'][k][jw] * amp2
         rows.append({'case': name,
                      'urban': {**summary(EF, kl), 'remainder_eps': eps, 'fisher_near_only': EFn,
@@ -585,7 +583,7 @@ def dynamic_cases(dyn, g, amb, maps_path):
                                'ceiling_largest_over_phase': float(inf.ceiling(Ft_max, eps_t)),
                                'fisher_near_only': Ft_near, 'ceiling_near_only': float(inf.ceiling(Ft_near)),
                                'worst_f_hz': float(f[k]), 'rms_velocity_m_s': v_truck},
-                     'f_hz': f, 'fisher_near_per_v2': np.max(d['A_near'], axis=1), 'far_bound_per_v2': d['far_bound'],
+                     'f_hz': f, 'fisher_near_per_v2': np.max(d['A_near'], axis=1), 'far_bound_per_v2': d['far_bound'],   # [f, direction]
                      'cross_width_m': d['cross_width_m']})
         print(f"  {name}: urban ceiling {rows[-1]['urban']['ceiling']:.2g}, truck {rows[-1]['truck']['ceiling']:.2g} "
               f"at {f[k]:.0f} Hz", flush=True)
@@ -642,9 +640,9 @@ def main():
         checks['grid'] = check_grid(g)
         checks['continuum'] = check_continuum(g)
         checks['finite_kl'] = check_finite_kl(g)
-        checks['detection'] = memo(RID, 'detection', lambda: check_detection(g), __file__)
-        checks['pulse_domain'] = memo(RID, 'pulse_domain', lambda: check_pulse_domain(g), __file__)
-        checks['estimator'] = memo(RID, 'estimator', lambda: check_estimator(g), __file__)
+        checks['detection'] = memo(RID, 'detection', lambda: check_detection(g), __file__, version='checks-v1')
+        checks['pulse_domain'] = memo(RID, 'pulse_domain', lambda: check_pulse_domain(g), __file__, version='checks-v1')
+        checks['estimator'] = memo(RID, 'estimator', lambda: check_estimator(g), __file__, version='checks-v1')
 
         kern, kern_src = static_kernels()
         los = np.asarray(g.los_enu)
@@ -655,9 +653,10 @@ def main():
         kernel_check = {'source': kern_src, 'peak_m_per_strain': float(rms.max()),
                         'published_peak_m_per_strain': float(pub.max()),
                         'largest_difference_over_peak': float(np.max(np.abs(rms - pub)) / pub.max())}
-        static = memo(RID, 'static', lambda: static_cases(g, kern, p204, amb), __file__)
+        static = memo(RID, 'static', lambda: static_cases(g, kern, p204, amb), __file__, version='checks-v1')
 
-        dyn, scene_radius = memo(RID, 'dynamic', lambda: dynamic_information(g, maps_path, p226), __file__)
+        dyn, scene_radius = memo(RID, 'dynamic', lambda: dynamic_information(g, maps_path, p226), __file__,
+                                 version='dynamic-v2')   # v2: each direction's own far field
         dynamic = dynamic_cases(dyn, g, amb, maps_path)
 
         # 4. bright points over the imprint's peak: KL <= SCR <Phi^2> (the point's phase and position handed over, the
@@ -693,9 +692,9 @@ def main():
         Kd = maps226['surface_H'][..., kt] / (2j * np.pi * f226[kt])
         dg = g.dr / np.sin(g.theta)
         axes = pixel_axes(g)
-        near_bound = max(inf.fisher_bound(to_pixels(Kd[q] * tp, xs6, ys6, g, axes), (g.dx, dg), g) for q in range(len(Kd)))
-        far_bound = float(dyn['surface']['far_bound'][kt])
-        Fg = 0.5 * snr * (np.sqrt(near_bound) + np.sqrt(far_bound)) ** 2 * 2 * v_truck ** 2
+        Fg = 0.5 * snr * max((np.sqrt(inf.fisher_bound(to_pixels(Kd[q] * tp, xs6, ys6, g, axes), (g.dx, dg), g))
+                              + np.sqrt(float(dyn['surface']['far_bound'][kt][q]))) ** 2
+                             for q in range(len(Kd))) * 2 * v_truck ** 2
         genie.append({'case': 'truck over a bump, 15 m (surface wave)', **summary(Fg, Fg / 2)})
 
         # 5. the claimed deep structure: the static imprint scales as volume / depth^2 (P2-04), and in the stretch regime
