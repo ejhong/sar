@@ -34,7 +34,7 @@ const genie = b.genie[0];
 
 type Row = { name: string; sub: string; edge: number; kind: 'natural' | 'cultural' | 'helped' | 'claim' };
 const rows: Row[] = [
-  { name: 'Giza’s trembling', sub: 'microseisms, the regional level (67 km east)', edge: st[0].ceiling, kind: 'natural' },
+  { name: 'Giza’s trembling', sub: 'the regional microseisms, 67 km east', edge: st[0].ceiling, kind: 'natural' },
   { name: 'The most restless ground on Earth', sub: `the noisiest stations, ${Math.round(st[1].rms_velocity_m_s / st[0].rms_velocity_m_s)}× that level`, edge: st[1].ceiling, kind: 'natural' },
   { name: 'Faster trembling', sub: '1–3 and 3–8 Hz, the regional levels', edge: Math.max(st[2].ceiling, st[3].ceiling), kind: 'natural' },
   { name: 'A city’s traffic hum', sub: `urban background, ${surf.urban.band_hz[0]}–${surf.urban.band_hz[1]} Hz, all pass`, edge: surf.urban.ceiling, kind: 'cultural' },

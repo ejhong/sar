@@ -570,6 +570,16 @@ investigation's record, and what it leaves open follow.
     on 52,600 pixels at most 9.55%, over the whole image undecided; the thin-roof room with a truck-level
     harmonic at most 89.1%, undecided with 11% more phase.
 
+23. **Telling one layout from another is bounded as detection is (P2-32).** For any two layouts A and B,
+    TV(A, B) <= TV(A, none) + TV(none, B), and the closest admissible pair of depth variants is no easier than the pair at
+    the same depth, so the same-depth bound covers every allowed vertical transformation. Computed on the difference of the
+    two layouts' imprints (the lab's solver, statically for the ambient levels, dynamically for a lorry): under Giza's
+    regional microseisms the oracle tells an L-shaped from a straight tunnel at most 1.5e-06 and a column with a spiral from
+    a plain column at most 2.0e-06 (tight 1.0e-09 and 1.3e-09; the certificate with the background 5.024% at 5% for every
+    pair); discrimination needs 1.2 to 4.1 times detection's signal. With a lorry bouncing beside the layouts all pass,
+    known exactly, the oracle reaches 0.81 for an L-shaped against a branching tunnel: open, as detection is. Only these
+    shallow bench-scale layouts in uniform rock are covered.
+
 These reasons differ in kind and strength. 4 is algebraic and holds whatever the ground does: the depth axis is a
 frequency axis with a repeat and a mirror, and no validated model turns it into a physical depth; that makes depth
 uncalibrated and non-unique, and does not by itself decide horizontal location or shape (P2-31 tests those). 1 and 12 are

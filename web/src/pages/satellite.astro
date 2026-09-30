@@ -47,7 +47,7 @@ const sup = (n: number) => String(n).replace('-', '⁻').replace(/\d/g, (d) => S
 const sci = (v: number, p = 1) => {
   const e = Math.floor(Math.log10(Math.abs(v)));
   const m = v / 10 ** e;
-  return Math.abs(e) < 3 ? v.toPrecision(p + 1) : `${m.toFixed(p)} × 10${sup(e)}`;
+  return Math.abs(e) < 3 ? String(+v.toPrecision(p + 1)) : `${m.toFixed(p)} × 10${sup(e)}`;   // 140, not 1.4e+2
 };
 const order = (v: number) => `10${sup(Math.round(Math.log10(v)))}`;
 const um = (v: number) => v * 1e6;
@@ -403,7 +403,7 @@ const ringUnresolved = [...new Set(ringRecs.flatMap((r) => r.unresolved_peaks))]
 const ringRes = Math.max(...Object.values(sp.rings).map((r) => r.resolution_hz));
 const ringLen = Math.max(...Object.values(sp.rings).map((r) => (r.model === 'ring' ? 4 : 2)));
 const lateShare = Math.max(...Object.values(sp.long).map((l) => l.energy_after_pass_fraction));
-const longLen = Math.max(...Object.values(sp.long).map((l) => l.record_s));
+const longLen = +Math.max(...Object.values(sp.long).map((l) => l.record_s)).toPrecision(2);
 const dyn7 = sp.static.dynamic_over_static;
 const staticLine = (f: number) => (2 * Math.PI * f * (imp.hv as number) * (imp.imprint_peak_los_per_strain_m as number)) / (imp.rayleigh_speed_m_s as number);
 const fStatic = Array.from({ length: 25 }, (_, i) => 6 + i);
@@ -524,10 +524,10 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
         <h3>The bound</h3>
         <p>For any test, detection rate − false-alarm rate ≤ TV ≤ min(√(KL/2), √(1 − e<sup>−KL</sup>)) (Pinsker,
         Bretagnolle–Huber); with the two cases equally likely, the best accuracy is ½ + TV/2. Ordinary ground is
-        <Term k="speckle">speckle</Term>: the image is a zero-mean circular Gaussian vector, and the change from no chamber
+        {' '}<Term k="speckle">speckle</Term>: the image is a zero-mean circular Gaussian vector, and the change from no chamber
         to the chamber is bounded exactly, not to first order: whitening the covariance change into <i>E</i>,
         KL ≤ ‖<i>E</i>‖²/(2(1 − ‖<i>E</i>‖)) with ‖<i>E</i>‖ ≤ √<i>F</i> + ε, <i>F</i> the
-        <Term k="fisher">Fisher information</Term> and ε an explicit remainder (a power series in the imprint’s phase).
+        {' '}<Term k="fisher">Fisher information</Term> and ε an explicit remainder (a power series in the imprint’s phase).
         With the spectrum’s bins independent</p>
         <p class="eq"><i>F</i> = Σ<sub><i>f</i>, <i>f</i>′</sub> |Φ̃(<i>f</i> − <i>f</i>′; <i>f</i>) − Φ̃(<i>f</i> − <i>f</i>′; <i>f</i>′)|²</p>
         <p>Φ̃(<i>k</i>; <i>f</i>) is the spatial Fourier coefficient at <i>k</i> of the imprint’s radar phase 4π<i>d</i>/λ at the slow
@@ -632,7 +632,7 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
       </div>
     </div>
 
-    <h3 class="bound-h">Told everything but the answer, an oracle still gains at most {sci(Math.max(...orAmb.map((r) => r.tv_exact)))} under the ambient levels; the open regime is strong shaking close by, known exactly</h3>
+    <h3 class="bound-h">Told everything but the answer, an oracle still gains at most {sci(orAmb[0].tv_exact)} under Giza’s regional trembling ({sci(Math.max(...orAmb.map((r) => r.tv_exact)))} at the noisiest stations); the open regime is strong shaking close by, known exactly</h3>
     <div class="grid-2">
       <div class="note-card">
         <span class="tag">exact · any texture · P2-29</span>

@@ -361,6 +361,8 @@ def main():
         cult = [r for r in rows if r['kind'] == 'cultural']
         opened = [r['case'] for r in rows if r['open']]
         worst = max(cult, key=lambda r: r['tv_exact'])
+        reg = amb_rows[0]                                   # Giza's regional microseisms
+        loud = max(amb_rows, key=lambda r: r['tv_exact'])   # the noisiest stations
         sb = raw['summary']
         finding = (
             f"An oracle told the exact reflectivity, the background motion, the shaking's realisation and both physical models, "
@@ -368,10 +370,11 @@ def main():
             f"rate by 2 Phi(Delta / 2) - 1, and no method told less does better, whatever the ground's texture. Pulse by "
             f"pulse on the real dwell the formula for Delta holds ({sb['background_x1']['mean']:.3f} +- "
             f"{sb['background_x1']['se']:.3f} of it; {sb['background_x10']['mean']:.3f} +- {sb['background_x10']['se']:.3f} "
-            f"with the background ten times larger, which cancels). At {SNR_DB:.0f} dB per resolution cell, under the ambient "
-            f"levels the bench room gives the oracle at most {max(r['tv_exact'] for r in amb_rows):.1e}: its imprint would "
-            f"have to grow {min(r['growth_to_target'] for r in amb_rows):.1e} times, {min(r['growth_after_allowances'] for r in amb_rows):.1e} "
-            f"after allowing the local level ten times the regional, site amplification three times and 10 dB more SNR. "
+            f"with the background ten times larger, which cancels). At {SNR_DB:.0f} dB per resolution cell, under Giza's "
+            f"regional microseisms the bench room gives the oracle {reg['tv_exact']:.1e}: its imprint would have to grow "
+            f"{reg['growth_to_target']:.1e} times, {reg['growth_after_allowances']:.1e} after allowing the local level ten "
+            f"times the regional, site amplification three times and 10 dB more SNR; at the noisiest stations on Earth "
+            f"{loud['tv_exact']:.1e} ({loud['growth_to_target']:.1e} and {loud['growth_after_allowances']:.1e} times). "
             f"The open regime is strong nearby shaking known exactly, the scattered wave carried unattenuated across the "
             f"scene: {worst['case']} gives the oracle {worst['tv_exact']:.2f}"
             + (f", enough within the model for 95% found at 5% false alarms (it would need only {worst['growth_to_target']:.2f} "

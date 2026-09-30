@@ -17,7 +17,7 @@ const sup = (n: number) => String(n).replace('-', '⁻').replace(/\d/g, (d) => S
 const sci = (v: number, p = 1) => {
   if (!(v > 0)) return '0';
   const e = Math.floor(Math.log10(Math.abs(v)));
-  return Math.abs(e) < 3 ? v.toPrecision(p + 1) : `${(v / 10 ** e).toFixed(p)} × 10${sup(e)}`;
+  return Math.abs(e) < 3 ? String(+v.toPrecision(p + 1)) : `${(v / 10 ** e).toFixed(p)} × 10${sup(e)}`;
 };
 const pctp = (v: number, d = 2) => `${(100 * v).toFixed(d)}%`;
 const len = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m >= 1e-6 ? `${+(m * 1e6).toPrecision(2)} µm` : `${+(m * 1e9).toPrecision(2)} nm`);
