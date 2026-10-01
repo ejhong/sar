@@ -8,6 +8,7 @@
 import bound from '../../public/data/runs/p2_25_information_bound.json';
 import oracle from '../../public/data/runs/p2_29_oracle.json';
 import bench from '../../public/data/runs/p2_36_benchmark.json';
+import claim from '../../public/data/runs/p2_38_claim.json';
 
 interface Props {
   compact?: boolean;
@@ -44,6 +45,11 @@ const orTruck = orc.find((r) => r.case.startsWith('truck over a bump 15 m away, 
 const bmCurves = (bench as unknown as { curves: Record<string, { l1_tv_upper: number }[]> }).curves;
 const bmOne = Math.max(...Object.values(bmCurves).flatMap((c) => c.map((r) => r.l1_tv_upper)));   // the band's largest sampled
 
+// the structures claimed under Khafre, computed (P2-38): any reader of the 2025 image, under Giza's trembling
+type ClPass = { headline_db: number; parts: Record<string, { rows: Record<string, { l1: Record<string, { tv_upper: number }> }> }> };
+const cl25 = (claim as unknown as { passes: Record<string, ClPass> }).passes['giza-20250827'];
+const clEdge = cl25?.parts['claim (both)']?.rows['as computed']?.l1[String(cl25.headline_db)]?.tv_upper;
+
 type Row = { name: string; sub: string; edge: number; kind: 'natural' | 'cultural' | 'helped' | 'claim' };
 const rows: Row[] = [
   { name: 'Giza’s trembling', sub: 'the regional microseisms, 67 km east', edge: st[0].ceiling, kind: 'natural' },
@@ -54,7 +60,9 @@ const rows: Row[] = [
   { name: 'The same, one image, any reader', sub: 'rooms under a 5 m roof; the benchmark, worst frequency', edge: bmOne, kind: 'cultural' },
   { name: 'A corner reflector over the room', sub: `${Math.round(refl.scr_db)} dB, Giza’s trembling`, edge: refl.ceiling, kind: 'helped' },
   { name: 'Told the ground’s texture', sub: 'a genie; Giza’s trembling', edge: genie.ceiling, kind: 'helped' },
-  { name: 'The claimed deep structure', sub: '80 m at 1,220 m, by scaling', edge: b.claimed.microseisms.ceiling, kind: 'claim' },
+  clEdge != null
+    ? { name: 'The structures claimed under Khafre', sub: 'eight shafts, a void at 1,220 m; computed, any reader', edge: clEdge, kind: 'claim' }
+    : { name: 'The claimed deep structure', sub: '80 m at 1,220 m, by scaling', edge: b.claimed.microseisms.ceiling, kind: 'claim' },
 ];
 const shown = compact ? rows.filter((r) => r.kind !== 'helped') : rows;
 
@@ -115,7 +123,7 @@ const reliable = 0.9;
       toss by half this. A reliable detection, 95% found with 5% false alarms, needs 0.9; at every operating point found
       ≤ false alarms + this. A bound, not what a detector reaches: on small test images the best detector gets within
       {over.toFixed(1)} times of it. The traffic and lorry rows are the oracle’s (P2-29: told the texture and the shaking,
-      receiver noise at the image’s calibrated level, {snrCal} dB per cell), because under strong shaking the ground without a chamber already moves with the lorry
+      receiver noise at the most favourable specified level, {snrCal} dB per cell), because under strong shaking the ground without a chamber already moves with the lorry
       and a whole-image speckle bound’s reference would leave that out; the scattered wave is carried undiminished across
       the scene. The row below them is the benchmark’s (P2-36): a room under a 5 m roof, any reader of the one image,
       bounded line by line with the lorry’s wave in each line’s reference, the largest over presence, a 6 m location and

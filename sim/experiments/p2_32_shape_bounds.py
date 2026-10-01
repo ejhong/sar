@@ -64,7 +64,7 @@ GUARD = 1 / np.cos(DIRECTIONS[1] - DIRECTIONS[0])   # sec(15 deg): the peak betw
 GRID_ALLOWANCE = 0.11                              # P2-26's grid check: at most 10.5% in amplitude on halving the grid
 HALF = 60.0
 TAPER = (50.0, 59.0)
-SNR_DB = snr_per_cell('giza-20250827')['nominal_db']   # calibrated per cell (sarsim.radiometry); was 30, untraced
+SNR_DB = snr_per_cell('giza-20250827')['headline_db']   # measured backscatter over ICEYE's best specified noise for the mode (sarsim.radiometry): conditional, not measured
 D_TARGET = 3.29
 DYN_TAPER = (32.0, 39.0)
 

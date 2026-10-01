@@ -1,12 +1,18 @@
 ---
 /**
- * How a buried room could reach a radar image, and what each route carries (P2-25). The image is made of the echo from
- * what the radar wave reaches, the surface, and the surface's motion during the pass; every method is a function of the
- * image, so none can hold more than the image does. Laid out left to right on a wide screen, top to bottom on a phone.
+ * How a buried room could reach a radar image, and what each route carries. The image is made of the echo from what the
+ * radar wave reaches, the surface, and the surface's motion during the pass; every method is a function of the image, so
+ * none can hold more than the image does. Laid out left to right on a wide screen, top to bottom on a phone.
+ * variant 'bench' (default): the bench room 15 m down under Giza's regional trembling, the tight layer's number (P2-25).
+ * variant 'benchmark': the benchmark's room WA under a 5 m roof beside a lorry, the per-line certificate's (P2-36).
  */
 import bound from '../../public/data/runs/p2_25_information_bound.json';
 import imp from '../../public/data/runs/p2_04_chamber_imprint.json';
+import p211 from '../../public/data/runs/p2_11_every_way_in.json';
+import bench from '../../public/data/runs/p2_36_benchmark.json';
 
+interface Props { variant?: 'bench' | 'benchmark' }
+const { variant = 'bench' } = Astro.props;
 const b = bound as unknown as { penetration_db_x_band: number; stretch_seconds: number; static: { ceiling: number }[] };
 const SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹';
 const sup = (n: number) => String(n).replace('-', '⁻').replace(/\d/g, (d) => SUP[+d]);
@@ -14,14 +20,23 @@ const sci = (v: number, p = 1) => {
   const e = Math.floor(Math.log10(v));
   return `${(v / 10 ** e).toFixed(p)}×10${sup(e)}`;
 };
-const pen = Math.round(b.penetration_db_x_band);
 const frac = imp.cases[0].imprint_over_motion as number;
+// the two-way loss to the roof, linear in its depth (P2-11, X band, dry sand: the most favourable cover)
+const row = (p211 as unknown as { A_penetration: { rows: { roof_m: number; bands: { X: { two_way_loss_db_if_sand: number } } }[] } }).A_penetration.rows[0];
+const perM = row.bands.X.two_way_loss_db_if_sand / row.roof_m;
+const bm = bench as unknown as { curves: Record<string, { l1_tv_upper: number }[]>; manifest: { params: { frozen: { worlds: Record<string, [number[], number[]][]> } } } };
+const wa = bm.manifest.params.frozen.worlds['WA'][0];
+const waRoof = -(wa[0][2] + wa[1][2] / 2);
+const waBand = Math.max(...bm.curves['presence (room)'].map((r) => r.l1_tv_upper));
+const isBm = variant === 'benchmark';
+const pen = Math.round(isBm ? perM * waRoof : b.penetration_db_x_band);
+const pc = (v: number) => `${(100 * v).toFixed(1)}%`;
 ---
 <figure class="routes">
   <div class="node room">
     <span class="k">below</span>
     <b>The room</b>
-    <span>6 m across, 15 m down, in limestone</span>
+    <span>{isBm ? `6 m across, its roof ${waRoof} m down, a lorry 15 m away (the benchmark’s world WA)` : '6 m across, 15 m down, in limestone'}</span>
   </div>
   <div class="paths">
     <div class="path closed">
@@ -36,8 +51,10 @@ const frac = imp.cases[0].imprint_over_motion as number;
     </div>
     <div class="path open">
       <b>How the surface moves in the 25 s pass</b>
-      <span>the room changes the trembling by {sci(frac)} (a model); in speckle, motion shared by the whole scene leaves no trace in the texture; only motion that differs from place to place leaves any</span>
-      <em>detection − false alarm at most {sci(b.static[0].ceiling, 1)}</em>
+      {isBm
+        ? <span>the room changes how the ground moves under the lorry’s wave and the trembling (computed); in speckle, motion shared by the whole scene leaves no trace in the texture; only motion that differs from place to place leaves any</span>
+        : <span>the room changes the trembling by {sci(frac)} (a model); in speckle, motion shared by the whole scene leaves no trace in the texture; only motion that differs from place to place leaves any</span>}
+      <em>{isBm ? `found ≤ false alarms + ${pc(waBand)} (P2-36)` : `detection − false alarm at most ${sci(b.static[0].ceiling, 1)}`}</em>
     </div>
   </div>
   <div class="node image">

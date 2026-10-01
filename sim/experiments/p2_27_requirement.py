@@ -84,8 +84,8 @@ L_GRID_MAX = 4.0                                      # m: fisher_grid on the pi
 TARGETS = (0.9, 0.5)
 PSI_ALL = (0.0, np.pi / 4, np.pi / 2, 3 * np.pi / 4)
 PSI_FAST = (0.0, np.pi / 2)                           # above 1 Hz, where the swing over psi is below 0.5%
-SNR_GENIE_DB = snr_per_cell('giza-20250827')['nominal_db']   # calibrated per cell (sarsim.radiometry); was 30, untraced
-SNR_ORACLE_DB = snr_per_cell('giza-20250827')['nominal_db']   # per cell, calibrated: the site's median sigma0 over ICEYE's best specified NESZ (-18 dB); was 30 dB on an untraced -26.7 dB
+SNR_GENIE_DB = snr_per_cell('giza-20250827')['headline_db']   # measured backscatter over ICEYE's best specified noise for the mode (sarsim.radiometry): conditional, not measured
+SNR_ORACLE_DB = snr_per_cell('giza-20250827')['headline_db']   # measured backscatter over ICEYE's best specified noise for the mode (sarsim.radiometry): conditional, not measured
 TARGETS_ANY = (0.05, 0.5, 0.9)                         # near chance, even odds, 95% found at 5% false alarms
 EXTENT = 5.3                                          # the footprint is cut at this many L (exp(-14) of its peak)
 

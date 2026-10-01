@@ -452,7 +452,7 @@ const rqAnyDyn = rqDyn.map((i) => i.short_by_oracle ?? NaN).filter((v) => Number
 const rqShort = (v: number) => (v < 1 ? `not excluded (${v.toFixed(2)})` : sci(v));
 // P2-29: the oracle, told everything but the answer
 type OrRow = { case: string; kind: string; delta: number; tv_upper: number; growth_to_target: number; growth_after_allowances: number; not_excluded_after_allowances: boolean; state?: string; note: string };
-const snrCal = Math.round((oracle as unknown as { manifest: { params: { snr_db: number } } }).manifest.params.snr_db);   // the calibrated SNR per cell (P2-29)
+const snrCal = Math.round((oracle as unknown as { manifest: { params: { snr_db: number } } }).manifest.params.snr_db);   // the SNR per cell (P2-29): measured ground over ICEYE's best specified noise for the mode
 const orc = oracle as unknown as {
   raw_echo_check: { scatterers: number; pulses: number; summary: Record<string, { mean: number; se: number; spread: number }> };
   chamber: OrRow[];
@@ -615,9 +615,9 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
           <tr><td>A point {p.scr_db.toFixed(0)} dB over the clutter on the imprint’s peak ({p.point.replace(/ \(P2-23\)$/, '')}), {p.shaking}</td><td></td><td>{sci(p.fisher)}</td><td>{sci(p.ceiling)}</td><td>{sci(p.accuracy_above_half)}</td></tr>
         ))}
         {[bd.genie[0], bd.genie[bd.genie.length - 1]].map((r) => (
-          <tr><td>Told the ground’s reflectivity (a genie: no single image has it), every pixel at the image’s calibrated signal-to-noise ratio ({snrCal} dB): {r.case === bd.static[0].case ? 'Giza’s microseisms' : 'the truck, all pass'}</td><td></td><td>{sci(r.fisher)}</td><td>{sci(r.ceiling)}</td><td>{sci(r.accuracy_above_half)}</td></tr>
+          <tr><td>Told the ground’s reflectivity (a genie: no single image has it), every pixel at the most favourable specified signal-to-noise ratio ({snrCal} dB): {r.case === bd.static[0].case ? 'Giza’s microseisms' : 'the truck, all pass'}</td><td></td><td>{sci(r.fisher)}</td><td>{sci(r.ceiling)}</td><td>{sci(r.accuracy_above_half)}</td></tr>
         ))}
-        <tr><td>The claimed deep structure, 80 m at 1,220 m, Giza’s microseisms (an estimate by P2-04’s scaling, not computed)</td><td></td><td>{sci(bd.claimed.microseisms.fisher)}</td><td>{sci(bd.claimed.microseisms.ceiling)}</td><td>{sci(bd.claimed.microseisms.accuracy_above_half)}</td></tr>
+        <tr><td>The claimed deep structure, 80 m at 1,220 m, Giza’s microseisms (an estimate by P2-04’s scaling here; computed with the shafts in P2-38, on the proof page)</td><td></td><td>{sci(bd.claimed.microseisms.fisher)}</td><td>{sci(bd.claimed.microseisms.ceiling)}</td><td>{sci(bd.claimed.microseisms.accuracy_above_half)}</td></tr>
       </tbody>
     </table>
     <div class="ceiling-wrap"><Ceiling /></div>
@@ -660,7 +660,7 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
         {rqPat02 ? ` the same Gaussian multiplied by a cosine of 4 m period along track holds ${rqPat02.ratio_to_gaussian['cos along track, 4 m period'].toFixed(0)} times its information at 0.2 Hz, though nowhere larger (an independent review’s example, reproduced), and the Gaussian’s information is ${sci(rqPat02.gaussian_share_of_envelope_bound)} of the general upper bound for its envelope (a bound, not an attainable optimum).` : ''}
         {' '}For every pattern the requirement is on the displacement integral ∫ max<sub>t</sub>|Δu|² dA (m⁴, an integrated
         squared displacement envelope, not an energy; <a href={`${base}/proof/#mechanism`}>the proof</a>): an oracle told the
-        reflectivity, the shaking and both models, with receiver noise at the image’s calibrated level ({snrCal} dB per cell), cannot reach 95% at 5% below
+        reflectivity, the shaking and both models, with receiver noise at the most favourable specified level ({snrCal} dB per cell), cannot reach 95% at 5% below
         {' '}{rqEor != null ? `${sci(rqEor)} m⁴` : 'the boundary'}, whatever the pattern and whatever motion both worlds share;
         under quiet ground the speckle certificate, with Giza’s background in the reference, gives
         {' '}{rqEmin != null ? `${sci(rqEmin)} m⁴` : '—'}. Under a lorry the certificate has no proved reference, since the
@@ -672,7 +672,7 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
       </div>
     </div>
 
-    <h3 class="bound-h">Told everything but the answer, an oracle still gains at most {sci(orAmb[0].tv_upper)} under Giza’s regional trembling ({sci(Math.max(...orAmb.map((r) => r.tv_upper)))} at the noisiest stations){orCulMax < 0.9 ? `; at the image’s measured noise level strong shaking close by stays below reliable detection too (at most ${orCulMax.toFixed(2)})` : '; strong shaking close by, known exactly, is not excluded by it, though one image without the texture is (the benchmark, P2-36)'}</h3>
+    <h3 class="bound-h">Told everything but the answer, an oracle still gains at most {sci(orAmb[0].tv_upper)} under Giza’s regional trembling ({sci(Math.max(...orAmb.map((r) => r.tv_upper)))} at the noisiest stations){orCulMax < 0.9 ? `; at the most favourable specified noise floor strong shaking close by stays below reliable detection too (at most ${orCulMax.toFixed(2)})` : '; strong shaking close by, known exactly, is not excluded by it, though one image without the texture is (the benchmark, P2-36)'}</h3>
     <div class="grid-2">
       <div class="note-card">
         <span class="tag">an upper bound · any texture · P2-29</span>
@@ -686,8 +686,9 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
         E Δ² = 8 Σ<sub><i>j</i></sub> SNR<sub><i>j</i></sub> ⟨sin²(<i>k</i>₀δ<sub><i>j</i></sub>/2)⟩, δ the motion the room adds.
         Pulse by pulse on the real dwell ({orc.raw_echo_check.scatterers} scatterers, {orc.raw_echo_check.pulses.toLocaleString('en-US')} pulses) the formula
         holds to {orChk.background_x1.mean.toFixed(3)} ± {orChk.background_x1.se.toFixed(3)}, and to {orChk.background_x10.mean.toFixed(3)} ± {orChk.background_x10.se.toFixed(3)} with the
-        background ten times larger. Each pixel is taken {orc.manifest.params.snr_db} dB over the receiver noise, above the
-        brightest natural ground over ICEYE’s best Dwell noise floor ({orc.manifest.params.nesz_best_db} dB).</p>
+        background ten times larger. Each pixel is taken {orc.manifest.params.snr_db.toFixed(1)} dB over the receiver noise: the
+        site’s median ground measured in the image over the best noise floor ICEYE specifies for the mode
+        ({orc.manifest.params.nesz_best_db} dB, documentation 6.0.8; a scenario, not a measurement).</p>
       </div>
       <div class="note-card">
         <span class="tag">depth · any method</span>
@@ -788,7 +789,7 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
         <tr><td>Other routes carry far too little at X band</td><td>modelled estimates</td><td>penetration, loads, heat, surface (P2-11)</td><td>measured penetration in Mokattam limestone; deformation over known voids</td></tr>
         <tr><td>Single images measure vibration of bright targets</td><td>established</td><td>2026 papers with ground truth; P2-03</td><td>none</td></tr>
         <tr><td>However one image of ordinary ground is read, the bench chamber’s imprint on the ground’s motion lets no test’s detection rate exceed its false-alarm rate by more than {sci(bd.static[0].ceiling)} under Giza’s regional microseism level; under an urban hum or a truck bouncing 15 m away all pass the oracle’s bound, told the texture, is {orUrb ? sci(orUrb.tv_upper) : '—'} and {orTrk ? orTrk.tv_upper.toFixed(2) : '—'}; one image without the texture, bounded line by line with the lorry’s wave in each line’s reference, allows at most {bmOne.toFixed(2)} for a room under a 5 m roof, its location to 6 m or its shape (the benchmark, P2-36, at the worst sampled frequency; the oracle’s bound stops excluding 95% at 5% only at {Math.round(bmSnr)} dB)</td><td>bounded: a theorem within a model</td><td>fully developed speckle, the Doppler-to-time relation, linear elasticity, the chamber’s imprint by the elastic solver at every frequency, the regional ambient levels; a bound, within {Math.max(...detOver).toFixed(1)} times of the best test on small test images (P2-25, P2-26)</td><td>ground whose texture departs from speckle beyond bright points; shaking far above these levels for a whole pass; an imprint beyond linear elasticity; measured ground motion and radar data that disagree</td></tr>
-        <tr><td>Under stated conditions a detection needs the room-specific motion to reach a displacement integral (∫ max<sub>t</sub>|Δu|² dA) of {rqEor != null ? `${sci(rqEor)} m⁴` : 'a stated value'}, whatever its pattern and whatever motion both worlds share; for a smooth pattern, at least {umText(rqAt(0.2, 8).D_necessary_m['0.9'])} at microseism frequencies, {umText(rqAt(80, 8).D_necessary_m['0.9'])} at 80 Hz</td><td>a conditional requirement</td><td>the Giza dwell, the oracle told everything but the answer with receiver noise at the image’s calibrated level ({snrCal} dB per cell: the site’s measured ground over ICEYE’s best specified noise floor), 95% found at 5% false alarms (P2-27, P2-29); the speckle certificate agrees under quiet ground; corrected after two reviews</td><td>a mechanism shown to put that much motion on the ground over a justified extent; a calibrated noise floor for the real product; routes outside the model (reflectivity changes, the echo from beneath, more than one image)</td></tr>
+        <tr><td>Under stated conditions a detection needs the room-specific motion to reach a displacement integral (∫ max<sub>t</sub>|Δu|² dA) of {rqEor != null ? `${sci(rqEor)} m⁴` : 'a stated value'}, whatever its pattern and whatever motion both worlds share; for a smooth pattern, at least {umText(rqAt(0.2, 8).D_necessary_m['0.9'])} at microseism frequencies, {umText(rqAt(80, 8).D_necessary_m['0.9'])} at 80 Hz</td><td>a conditional requirement</td><td>the Giza dwell, the oracle told everything but the answer with receiver noise at the most favourable specified level ({snrCal} dB per cell: the site’s measured ground over ICEYE’s best specified noise floor for the mode, a scenario rather than a measurement), 95% found at 5% false alarms (P2-27, P2-29); the speckle certificate agrees under quiet ground; corrected after two reviews</td><td>a mechanism shown to put that much motion on the ground over a justified extent; a measured noise floor for the real product; routes outside the model (reflectivity changes, the echo from beneath, more than one image)</td></tr>
         <tr><td>Whether a single image at a longer wavelength, or many images, could sense a subsurface structure</td><td>open</td><td>estimates only (P2-11)</td><td>the tests under <a href="#settle">What would settle it</a></td></tr>
       </tbody>
     </table>

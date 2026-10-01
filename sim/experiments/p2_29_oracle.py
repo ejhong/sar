@@ -61,8 +61,8 @@ from sarsim.echo import EchoSetup, window
 RID = 'p2_29_oracle'
 SITES = Path(__file__).resolve().parents[2] / 'sites'
 _SNR = snr_per_cell('giza-20250827')
-SNR_DB = _SNR['nominal_db']           # calibrated per cell (sarsim.radiometry); was 30 dB on an untraced -26.7 dB NESZ
-NESZ_BEST_DB = _SNR['nesz_specified_db'][0]   # ICEYE Product Documentation 6.0.0, Table 2-11 (Dwell): -18 to -15 dB
+SNR_DB = _SNR['headline_db']          # measured backscatter over ICEYE's best specified noise for the mode (sarsim.radiometry): conditional, not measured
+NESZ_BEST_DB = _SNR['nesz_headline_db']   # ICEYE Product Documentation 6.0.8, Table 2-11, the product's mode, best end
 REFLECTOR_DB = 50.0                   # over the ground, as P2-23
 D_TARGET = 3.29                       # Delta for 95% found at 5% false alarms (2 Phi(D / 2) - 1 = 0.9)
 STATIC_GRID = 1.10                    # P2-04's grid check: the static imprint within 10% in amplitude
@@ -359,7 +359,7 @@ def main():
     val = lambda q: rock[q]['value'] if isinstance(rock[q], dict) else rock[q]
     host = (val('rho') * val('vp') ** 2 - 2 * val('rho') * val('vs') ** 2, val('rho') * val('vs') ** 2)
     params = {'acquisition': 'giza-20250827', 'snr_db': SNR_DB, 'nesz_best_db': NESZ_BEST_DB,
-              'nesz_source': _SNR['nesz_source'], 'snr': _SNR,
+              'nesz_source': _SNR['nesz_headline_source'], 'snr': _SNR,
               'sigma0_ground_db': _SNR['ground_sigma0_median_db'], 'sigma0_status': 'measured in the image (median, 10 m cells)', 'reflector_db': REFLECTOR_DB,
               'target_delta': D_TARGET, 'allowances': ALLOWANCES, 'allowance_status': 'assumed',
               'check': {'prf_hz': CHECK_PRF, 'realisations': CHECK_REALISATIONS},

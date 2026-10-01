@@ -91,15 +91,56 @@ def load(rid: str) -> dict:
     return json.loads((RESULTS / rid / 'summary.json').read_text())
 
 
-def memo(rid: str, name: str, compute, source: str | Path, version: str | None = None):
+def digest(obj) -> bytes:
+    """A stable byte digest of a step's inputs: numbers, strings, None, arrays (their dtype, shape and bytes), and lists,
+    tuples and dicts of them."""
+    import hashlib
+    import numpy as np
+    h = hashlib.sha1()
+
+    def feed(o):
+        if isinstance(o, np.ndarray):
+            a = np.ascontiguousarray(o)
+            h.update(f'nd{a.dtype.str}{a.shape}'.encode())
+            h.update(a.tobytes())
+        elif isinstance(o, dict):
+            h.update(b'{')
+            for k in sorted(o, key=str):
+                feed(str(k))
+                feed(o[k])
+            h.update(b'}')
+        elif isinstance(o, (list, tuple)):
+            h.update(b'[')
+            for v in o:
+                feed(v)
+            h.update(b']')
+        elif isinstance(o, (float, np.floating)):
+            h.update(f'f{float(o)!r}'.encode())
+        elif isinstance(o, (bool, np.bool_)):
+            h.update(f'b{bool(o)}'.encode())
+        elif isinstance(o, (int, np.integer)):
+            h.update(f'i{int(o)}'.encode())
+        elif o is None:
+            h.update(b'N')
+        else:
+            h.update(f's{o}'.encode())
+    feed(obj)
+    return h.digest()
+
+
+def memo(rid: str, name: str, compute, source: str | Path, version: str | None = None, inputs=None):
     """A long step of a run kept on disk, so a run cut short resumes where it stopped: the value of compute() under
     sim/results/cache/<rid>/, keyed by `name` and by the experiment's source file, so any change to the code recomputes.
-    With `version`, keyed by it instead: the caller declares that the step is unchanged while the version is, so a run
-    can be extended without recomputing what it already has. Only intermediate values are kept; the summary is always
-    written by the run itself."""
+    With `version`, keyed by it instead: the caller declares that the step's implementation is unchanged while the
+    version is, so a run can be extended without recomputing what it already has. `inputs` (any value `digest` takes:
+    the step's parameters and arrays) joins the key, so a step whose inputs change is recomputed whatever its version;
+    a step given a version should pass every input it depends on. Only intermediate values are kept; the summary is
+    always written by the run itself."""
     import hashlib
     import pickle
     head = version.encode() if version is not None else Path(source).read_bytes()
+    if inputs is not None:
+        head += digest(inputs)
     key = hashlib.sha1(head + name.encode()).hexdigest()[:16]
     path = RESULTS / 'cache' / rid / f'{key}.pkl'
     if path.is_file():

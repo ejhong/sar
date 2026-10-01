@@ -248,6 +248,26 @@ class PerLineTests(unittest.TestCase):
             self.assertTrue(cert['informative'])
             self.assertLessEqual(kl, cert['kl_upper'])
 
+    def test_noise_floors_where_motion_fails(self):
+        # common motion past one: the Weyl term gives nothing, the receiver noise still floors the covariance
+        rng = np.random.default_rng(38)
+        n = 64
+        k = np.arange(n)
+        rows = np.arange(10, 40)
+        E = np.exp(-2j * np.pi * np.outer(rows, k) / n) / np.sqrt(n)
+        for _ in range(6):
+            phi0 = rng.uniform(1.0, 3.0) * np.cos(2 * np.pi * k / rng.uniform(5, 20) + rng.uniform(0, 6.3))
+            B0 = E * np.exp(-1j * phi0)
+            Qc = float(np.sum(np.abs(E * np.expm1(-1j * phi0)) ** 2))
+            noise = rng.uniform(0.01, 0.2)
+            lam_min = float(np.linalg.eigvalsh(B0 @ B0.conj().T + noise * np.eye(len(rows))).min())
+            self.assertGreaterEqual(Qc, 1.0)
+            self.assertAlmostEqual(line_floor(Qc, noise), noise)
+            self.assertLessEqual(line_floor(Qc, noise), lam_min + 1e-12)
+        self.assertIsNone(line_floor(2.0, 0.0))
+        self.assertFalse(per_line_certificate([1e-6], [2.0], 0.0)['informative'])
+        self.assertTrue(per_line_certificate([1e-6], [2.0], 0.1)['informative'])
+
     def test_lines_add(self):
         rng = np.random.default_rng(37)
         rows = [self.line(rng) for _ in range(4)]

@@ -315,7 +315,9 @@ def predicted(S):
 
 def main():
     S = setup()
-    params = {'benchmark_frozen_hash': m36.FROZEN_HASH, 'f_hz': S['f'], 'grounds': GROUNDS, 'levels': LEVELS,
+    params = {'benchmark_frozen_hash': m36.FROZEN_HASH, 'benchmark_worlds_hash': m36.WORLDS_HASH,
+              'images_note': 'the images depend only on the worlds hash (worlds, lorry, solver, geometry), unchanged since '
+                             'revision 2, whose fields they were read from', 'f_hz': S['f'], 'grounds': GROUNDS, 'levels': LEVELS,
               'taper_m': TAPER, 'top_share': TOP_SHARE, 'image_px': m07.SHAPE, 'geometry': m36.FROZEN['acquisition'],
               'microseisms': 'regional level, each ground its own realisation', 'amplified_levels_are_diagnostic': True}
     with Run(RID, 'The benchmark read: the published method and a detector told the lorry', params) as run:
@@ -350,7 +352,9 @@ def main():
             f"separates cavities from controls with AUC {pos['published_blind']['presence_auc_vs_controls']:.2f} and centres "
             f"its top places {pos['published_blind']['median_centroid_error_m']:.1f} m from the footprint (controls "
             f"{summary['control_centroid_error_m']:.1f} m); its change against the no-cavity image, a diagnostic it never "
-            f"has, names {100 * pos['published_paired']['named_of_three']:.0f}%. "
+            f"has, names {100 * pos['published_paired']['named_of_three']:.0f}% (its presence statistic is not scored: the "
+            f"synthetic twin has no receiver noise, so any difference shows, and it falls as the difference grows). Where "
+            f"p is 1 the reader named the same world for every image of a ground, its answer unchanged by the cavity. "
             + ("The told detector recovers the imposed worlds at the positive control, so the experiment can reveal a real "
                "signal; what the published method does not read there it does not read in the image." if told_ok else
                "The told detector does not recover the worlds even at the positive control; the experiment is examined "
