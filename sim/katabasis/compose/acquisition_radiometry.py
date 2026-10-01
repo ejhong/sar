@@ -16,6 +16,12 @@ For giza-20250827 and giza-20220715:
    the geoid undulation and the residual offset fitted for that pass (P2-12 for 2025, P2-13 for 2022), and tie points
    every 10 m over the footprint giving each ground point's site-frame, geographic and image coordinates.
 
+3. With --wide, sites/acquisitions/<name>-khafre-power-2km.npz: |z|^2 summed (not averaged) over cells of about 5 m,
+   in the image's own geometry, over a 4 km square round Khafre's base centre (2 km every way, clipped where the image
+   ends), with the calibration, each column's incidence, and the same georeference with tie points every 50 m. The
+   surface the tie points stand on is the Giza site's (terrain and pyramids) inside its block and the Copernicus GLO-30
+   DSM beyond it.
+
 Only these two passes, and only on the desktop where the products are; P2-01 carries the block forward when it rewrites
 a record.
 """
@@ -44,6 +50,9 @@ HALF_M = 160.0              # Khafre's base is 215 m; a 320 m square round its c
 CELL_M = 1.5                # the power map's cells, about 1.5 m on the ground each way (Khafre's top lays over 360 m at 21 deg)
 TIE_M = 10.0
 DARK_CELL_M = 10.0          # cells for the noise-floor bound
+WIDE_HALF_M = 2000.0        # the wide map: 2 km every way from Khafre's base centre
+WIDE_CELL_M = 5.0
+WIDE_TIE_M = 50.0
 SPEC = {'nesz_db': [-18.0, -15.0], 'source': 'ICEYE Product Documentation 6.0.0, Product Specification, 2. Imaging Modes, '
         'Table 2-11 (Dwell and Dwell Fine): "Noise Equivalent Sigma-Zero [dBm2/m2]: -18 to -15" (scene-centre values)'}
 H5_FIELDS = ['calibration_factor', 'range_spread_comp_flag', 'ant_elev_corr_flag', 'antenna_pattern_compensation',
@@ -96,7 +105,78 @@ def delivery_fields(path: Path) -> dict:
     return out
 
 
+def wide_surface(sc, crop, x, y):
+    """Orthometric surface over the wide square: the site's own (inpainted terrain and pyramids) inside its block, the
+    Copernicus DSM crop beyond it."""
+    from scipy.interpolate import RegularGridInterpolator
+    from sarsim.ortho import surface
+    xs = crop['x0'] + crop['dx'] * np.arange(crop['nx'])
+    ys = crop['y0'] + crop['dx'] * np.arange(crop['ny'])
+    f = RegularGridInterpolator((xs, ys), np.asarray(crop['z'], float), bounds_error=False, fill_value=None)
+    z = f(np.stack([np.ravel(x), np.ravel(y)], 1)).reshape(np.shape(x))
+    (ex0, ex1), (ey0, ey1) = sc['extent']['x'], sc['extent']['y']
+    inside = (x >= ex0) & (x <= ex1) & (y >= ey0) & (y <= ey1)
+    return np.where(inside, surface(sc, x, y), z), inside
+
+
+def wide_maps() -> None:
+    """The 4 km power maps: summed |z|^2 in about 5 m cells, image geometry, tie points every 50 m."""
+    from sarsim.dwell import DwellProduct
+    from sarsim.ortho import frame_to_lla, multilook, project
+    from ..compose import load_site
+    from ..export.sites import scene as site_scene
+    from .dem import local_crop
+    sc = site_scene(load_site('giza'))
+    geoid = float(sc['frame'].get('geoid_m', 15.5))
+    o = sc['frame']['origin']
+    crop = local_crop(o['latitude'], o['longitude'], (-WIDE_HALF_M - 100, WIDE_HALF_M + 100), (-WIDE_HALF_M - 100, WIDE_HALF_M + 100), 30.0)
+    for name, cfg in PASSES.items():
+        p = DwellProduct(cfg['product'])
+        shift = tuple(json.loads((RESULTS / cfg['offset_from'] / 'summary.json').read_text())['registration']['shift_px'])
+        with h5py.File(cfg['product'], 'r') as f:
+            k = float(f['calibration_factor'][()])
+            dx = float(f['azimuth_ground_spacing'][()])
+            dr = float(f['slant_range_spacing'][()])
+            theta = np.deg2rad(float(f['incidence_center'][()]))
+            lia = np.asarray(f['local_incidence_angle'][()], float)
+            rpc = {f'rpc_{kk.lower()}': np.asarray(f['RPC/' + kk][()], float) for kk in f['RPC'].keys()}
+        tx = np.arange(-WIDE_HALF_M, WIDE_HALF_M + 1e-6, WIDE_TIE_M)
+        TX, TY = np.meshgrid(tx, tx)
+        TZ, in_site = wide_surface(sc, crop, TX, TY)
+        tr, tc = project(p, sc, TX, TY, TZ, geoid, shift)
+        in_image = (tr >= 0) & (tr < p.shape[0]) & (tc >= 0) & (tc < p.shape[1])
+        la, lr = max(1, round(WIDE_CELL_M / dx)), max(1, round(WIDE_CELL_M * np.sin(theta) / dr))
+        mean, (r0, c0) = multilook(p, int(np.floor(tr.min())) - la, int(np.ceil(tr.max())) + la,
+                                   int(np.floor(tc.min())) - lr, int(np.ceil(tc.max())) + lr, la, lr)
+        total = mean.astype(np.float64) * (la * lr)            # summed, not averaged: each cell's whole |z|^2
+        ccols = c0 + lr * (np.arange(mean.shape[1]) + 0.5) - 0.5
+        inc = np.interp(ccols, np.arange(lia.size), lia)
+        lat, lon = frame_to_lla(o, TX, TY)
+        out = RECORDS / f'{name}-khafre-power-2km.npz'
+        np.savez_compressed(
+            out, power_sum_dn2=total.astype(np.float32), line0=np.int64(r0), sample0=np.int64(c0),
+            lines_per_cell=np.int64(la), samples_per_cell=np.int64(lr), line_spacing_m=np.float64(dx),
+            slant_range_spacing_m=np.float64(dr), incidence_deg=inc.astype(np.float32), calibration_factor=np.float64(k),
+            tie_x_m=TX, tie_y_m=TY, tie_z_m=TZ, tie_in_site_block=in_site, tie_latitude=lat, tie_longitude=lon,
+            tie_height_ellipsoid_m=TZ + geoid, tie_line=tr, tie_sample=tc, tie_in_image=in_image,
+            geoid_m=np.float64(geoid), shift_px=np.asarray(shift, float),
+            frame_origin=np.array([o['latitude'], o['longitude']]), **rpc,
+            about=np.array('power_sum_dn2[i, j]: the SUM of I^2 + Q^2 over product lines line0 + i*lines_per_cell .. '
+                           '+lines_per_cell-1 and samples sample0 + j*samples_per_cell .. +samples_per_cell-1 '
+                           '(lines_per_cell x samples_per_cell pixels; divide by their number for the mean). beta0 of a '
+                           'pixel = calibration_factor x I^2 + Q^2; sigma0 = beta0 x sin(incidence_deg[j]). The square runs '
+                           '2 km every way from Khafre\'s base centre, clipped where the image ends (tie_in_image). Tie '
+                           'points every 50 m: site-frame x, y, z (z from the Giza site inside its block, tie_in_site_block, '
+                           'and the Copernicus GLO-30 DSM beyond), latitude, longitude, ellipsoidal height, and product line '
+                           'and sample through the RPC with shift_px added (the offset fitted for this pass).'))
+        print(f"{name}: {mean.shape} cells of {la} x {lr} px (about {la * dx:.1f} m x {lr * dr / np.sin(theta):.1f} m), "
+              f"tie points in the image {in_image.mean() * 100:.0f}% -> {out.stat().st_size / 1e6:.1f} MB")
+
+
 def main() -> None:
+    import sys
+    if '--wide' in sys.argv[1:]:
+        return wide_maps()
     from sarsim.dwell import DwellProduct
     from sarsim.ortho import frame_to_lla, multilook, project, surface
     from ..compose import load_site
