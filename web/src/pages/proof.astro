@@ -302,7 +302,7 @@ const conc = (r: DRes) => r.over_room / r.elsewhere;
           );
         })}
         {cl25 && <>
-          <tr class="divider"><td colspan="5">the claim under Khafre, computed (P2-38): the 2025 pass; the pyramid omitted, which is generous</td></tr>
+          <tr class="divider"><td colspan="5">the claim under Khafre, computed (P2-38): representative structures at the claimed depths, the 2025 pass, the pyramid omitted</td></tr>
           <tr><td>Are there eight shafts, 10 m across, to 640 m?</td><td class={stCls(clL1('shafts') < 0.05 ? 'near chance' : 'x')}>{found(clL1('shafts'))}</td><td class="dim">not computed (under the pyramid)</td><td class="dim">—</td><td class={stCls(clOr('shafts') < 0.05 ? 'near chance' : 'x')}>{found(clOr('shafts'))}</td></tr>
           <tr><td>Is there an 80 m void 1,220 m down?</td><td class={stCls(clL1('deep structure') < 0.05 ? 'near chance' : 'x')}>{found(clL1('deep structure'))}</td><td class="dim">does not reach it</td><td class="dim">—</td><td class={stCls(clOr('deep structure') < 0.05 ? 'near chance' : 'x')}>{found(clOr('deep structure'))}</td></tr>
         </>}
@@ -353,21 +353,24 @@ const conc = (r: DRes) => r.over_room / r.elsewhere;
         {bmMC && (() => { const hi = bmMC.rows[bmMC.rows.length - 1], lo = bmMC.rows[0]; return <p><b>Achieved:</b> the score test, told the pattern, on synthesised images with one noise law, its threshold
         from {bmMC.calibration_grounds} calibration grounds and read on {bmMC.evaluation_grounds_each} + {bmMC.evaluation_grounds_each} others: with the difference
         amplified {hi.amplification.toLocaleString('en-US')} times it finds {Math.round(100 * hi.found_at_threshold_achieved)}% (95% interval {Math.round(100 * hi.found_interval_95[0])}–{Math.round(100 * hi.found_interval_95[1])}%)
-        at {Math.round(100 * hi.false_alarms_at_threshold_achieved)}% false alarms ({Math.round(100 * hi.false_alarm_interval_95[0])}–{Math.round(100 * hi.false_alarm_interval_95[1])}%: the evaluation grounds’ upper tail, the samples otherwise alike, p {(hi.null_samples_ks_p ?? NaN).toFixed(2)}), AUC {hi.auc_achieved.toFixed(2)} (predicted {hi.auc_predicted.toFixed(2)}); at the real level
+        at {Math.round(100 * hi.false_alarms_at_threshold_achieved)}% false alarms, AUC {hi.auc_achieved.toFixed(2)} (predicted {hi.auc_predicted.toFixed(2)}).
+        The threshold targeted 5% false alarms but gave {Math.round(100 * hi.false_alarms_at_threshold_achieved)}% ({Math.round(100 * hi.false_alarm_interval_95[0])}–{Math.round(100 * hi.false_alarm_interval_95[1])}%) on the held-out grounds,
+        which remains unexplained: the discrimination is supported by the AUC, calibration at a 5% operating point is not
+        established. At the real level
         {' '}{Math.round(100 * lo.found_at_threshold_achieved)}% at {Math.round(100 * lo.false_alarms_at_threshold_achieved)}% false alarms (p {lo.found_over_false_alarms_p_one_sided.toFixed(2)}), AUC {lo.auc_achieved.toFixed(2)}: at chance.</p>; })()}
       </div>
     </div>
     {rdLevels.length > 0 && <>
-    <h3 class="subhead">Read as images: a detector told the lorry finds every world once the difference is large enough; the published method’s blind map finds none at any level</h3>
+    <h3 class="subhead">Read as images: a detector told the lorry finds every world once the difference is large enough; our implementation of the published method, with its stated readout, finds none at any level</h3>
     <table class="data compact">
-      <thead><tr><th>the cavity’s difference</th><th>told the lorry: names the world (chance 33%)</th><th>room or room 6 m east</th><th>room or L tunnel</th><th>published, blind: names</th><th>its presence AUC</th></tr></thead>
+      <thead><tr><th>the cavity’s difference</th><th>told the lorry: names the world (chance 33%)</th><th>room or room 6 m east</th><th>room or L tunnel</th><th>our implementation of the published method, blind: names</th><th>its presence AUC</th></tr></thead>
       <tbody>
         {rdLevels.map((k) => { const v = rd.summary[k]; return (
           <tr><td>{k === 'real' ? 'as it is' : `amplified ${k.slice(1)} times (a diagnostic)`}</td><td>{Math.round(100 * v.told.named_of_three)}% ({rdP(v.told.named_of_three_p)})</td><td>{v.told.location_correct}</td><td>{v.told.shape_correct}</td><td>{Math.round(100 * v.published_blind.named_of_three)}% ({rdP(v.published_blind.named_of_three_p)})</td><td>{v.published_blind.presence_auc_vs_controls.toFixed(2)}</td></tr>
         ); })}
       </tbody>
     </table>
-    <p class="note">P2-37: the benchmark’s worlds synthesised as images on the real dwell, {rd.manifest.params.grounds.length} independent grounds (each its own speckle, trembling and lorry timing), the room, the L tunnel and the room 6 m east on each, with controls; p from the true worlds permuted within grounds. The told detector succeeding at the positive control shows the experiment can reveal a signal; p = 1 means a reader named the same world for every image of a ground, its answer unchanged by the cavity.</p>
+    <p class="note">P2-37: the benchmark’s worlds synthesised as images on the real dwell, {rd.manifest.params.grounds.length} independent grounds (each its own speckle, trembling and lorry timing; the grounds are the experimental units), the room, the L tunnel and the room 6 m east on each, with controls; p from the true worlds permuted within grounds. The told detector succeeding at the positive control shows the images hold recoverable information, which the tested tomogram-and-readout pipeline does not recover; p = 1 means a reader named the same world for every image of a ground, its answer unchanged by the cavity. A diagnostic of our implementation of the published method (from the paper, not the authors’ software) with a frozen plan-map readout, on a smaller scene than P2-36’s, without receiver noise and with the motion field truncated at 70 m.</p>
     </>}
   </section>
 
@@ -488,8 +491,8 @@ const conc = (r: DRes) => r.over_room / r.elsewhere;
     <table class="data compact">
       <thead><tr><th>open</th><th>why</th><th>what would close or open it</th></tr></thead>
       <tbody>
-        <tr><td>Bright persistent ground beside strong shaking: the one open corner of the strong case</td><td>at {bmTop} dB, which stands for a building, a corner reflector or the pyramid’s edge, the oracle’s bound is {tvTxt(Math.min(...bmOrTop))} to {tvTxt(Math.max(...bmOrTop))} for every strong pair, and the speckle layer does not apply there: a shallow room beside a lorry under a bright persistent target is excluded by no layer of this benchmark</td><td>a diffuse-plus-bright-scatterer model fitted to the image itself, with Khafre’s geometry and the specified noise</td></tr>
-        <tr><td>The rest of the real acquisition</td><td>the benchmark is one geology and five shallow layouts in fully developed speckle; a shallow room is not by itself an upper bound on larger or deeper structures; the claim is computed under the ground’s own trembling with the pyramid omitted (its load and scattering), its sizes and layout representative</td><td>the pyramid in the model; ground motion measured on the plateau during a pass</td></tr>
+        <tr><td>Bright persistent ground beside strong shaking: an important unresolved case within the benchmark</td><td>at {bmTop} dB, which stands for a building, a corner reflector or the pyramid’s edge, the oracle’s bound is {tvTxt(Math.min(...bmOrTop))} to {tvTxt(Math.max(...bmOrTop))} for every strong pair, and the speckle layer does not apply there: a shallow room beside a lorry under a bright persistent target is excluded by no layer of this benchmark</td><td>a diffuse-plus-bright-scatterer model fitted to the image itself, with Khafre’s geometry and the specified noise</td></tr>
+        <tr><td>The rest of the real acquisition</td><td>the benchmark is one geology and five shallow layouts in fully developed speckle; a shallow room is not by itself an upper bound on larger or deeper structures; the claim is computed under the ground’s own trembling with the pyramid omitted (its load, coupling and scattering; the direction of its effect not established), its sizes and layout representative, the shafts’ column model matched to the solver empirically</td><td>the pyramid in the model; ground motion measured on the plateau during a pass</td></tr>
         <tr><td>The envelope beyond 70 m</td><td>97–98% of the strong case’s signal is an assumed surface wave carried undiminished to the image’s edge; the measured fall to 70 m supports it, the ×5 test is robustness, not verification</td><td>the scattered field measured to 100 m or more; attenuation measured in the plateau’s rock</td></tr>
         <tr><td>The physical envelopes</td><td>the imprint is the lab’s linear solver in uniform bare rock (P2-04, P2-26) and, for the claim, a damped half-space at 0.2 Hz; the ambient levels are regional; other excitations of the deep structure (a lorry’s body waves, local sources) and nonlinear or parametric coupling are not modelled</td><td>ground motion measured on the plateau during a pass; a proponent’s quantitative prediction of the room-specific motion</td></tr>
         <tr><td>The noise floor</td><td>neither product carries one, and ICEYE’s specification changed between versions (Dwell Fine at best −18 dB in documentation 6.0.0, {String(bmSnr.nesz_headline_db).replace('-', '−')} dB in 6.0.8); every oracle row takes the most favourable, {bmSnrNom.toFixed(1)} dB, the older figure {bmOld != null ? `${bmOld.toFixed(1)} dB` : '—'}; the image’s darkest cells bound the ratio only from below ({bmSnr.measured_floor_lower_db.toFixed(1)} dB)</td><td>the applicable noise for this acquisition from ICEYE, or a noise-only record for the product</td></tr>
@@ -545,7 +548,7 @@ const conc = (r: DRes) => r.over_room / r.elsewhere;
       the cavity is a diagnostic it never has. Amplified levels are diagnostics, not predictions.
     </p>
     <table class="data compact">
-      <thead><tr><th>imprint</th><th>reference: names</th><th>reference: scan peaks from the centre</th><th>published, blind: names</th><th>its top places from the centre</th><th>published change (diagnostic): names</th><th>its top places</th></tr></thead>
+      <thead><tr><th>imprint</th><th>reference: names</th><th>reference: scan peaks from the centre</th><th>our implementation of the published method, blind: names</th><th>its top places from the centre</th><th>published change (diagnostic): names</th><th>its top places</th></tr></thead>
       <tbody>
         {stLevels.map(({ label, v }) => (
           <tr><td>{label}</td><td>{named(v.reference)}</td><td>{m1(v.reference.median_location_error_m)}</td><td>{named(v.published_blind)}</td><td>{m1(v.published_blind.median_centroid_error_m)}</td><td>{named(v.published_paired)}</td><td>{m1(v.published_paired.median_centroid_error_m)}</td></tr>

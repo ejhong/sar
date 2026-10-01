@@ -6,11 +6,11 @@ Frozen parameters hash `2684dc43b817` (worlds `dee606bbff0f`, unchanged since re
 
 | pair | L1 whole image | state | L1 within 70 m | growth to 0.9 | oracle | state | oracle bound stops excluding 95/5 at | oracle within 70 m | predicted (score test, within 70 m) | tail share | L1 averaged over realisations (linear bound) | worst realisation |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| presence (room) | 2.3e-07 | near chance | 2.2e-07 | 3.5e+06 | 8.6e-07 | near chance | 142 dB | 8.2e-07 | 2.8e-09 | 9% | 2.3e-07 | 1e-06 |
-| presence (L tunnel) | 2.6e-07 | near chance | 2.5e-07 | 3.1e+06 | 9.8e-07 | near chance | 141 dB | 9.4e-07 | 3.1e-09 | 9% | 2.6e-07 | 1.2e-06 |
-| location (6 m) | 1.9e-07 | near chance | 1.9e-07 | 3.9e+06 | 7.3e-07 | near chance | 143 dB | 7.3e-07 | 3e-09 | 1% | 1.9e-07 | 8.9e-07 |
-| shape (room or L tunnel) | 1.9e-07 | near chance | 1.9e-07 | 4e+06 | 7.1e-07 | near chance | 144 dB | 7e-07 | 2.9e-09 | 1% | 1.9e-07 | 8.4e-07 |
-| presence (10 m room) | 7.9e-07 | near chance | 7.3e-07 | 1e+06 | 3e-06 | near chance | 131 dB | 2.8e-06 | 7.1e-09 | 15% | 7.9e-07 | 3.5e-06 |
+| presence (room) | 2.3e-07 | near chance | 2.2e-07 | 2.3e+06 | 8.6e-07 | near chance | 142 dB | 8.2e-07 | 2.8e-09 | 9% | 2.3e-07 | 1e-06 |
+| presence (L tunnel) | 2.6e-07 | near chance | 2.5e-07 | 1.9e+06 | 9.8e-07 | near chance | 141 dB | 9.4e-07 | 3.1e-09 | 9% | 2.6e-07 | 1.2e-06 |
+| location (6 m) | 1.9e-07 | near chance | 1.9e-07 | 2.1e+06 | 7.3e-07 | near chance | 143 dB | 7.3e-07 | 3e-09 | 1% | 1.9e-07 | 8.9e-07 |
+| shape (room or L tunnel) | 1.9e-07 | near chance | 1.9e-07 | 2.3e+06 | 7.1e-07 | near chance | 144 dB | 7e-07 | 2.9e-09 | 1% | 1.9e-07 | 8.4e-07 |
+| presence (10 m room) | 7.9e-07 | near chance | 7.3e-07 | 7.1e+05 | 3e-06 | near chance | 131 dB | 2.8e-06 | 7.1e-09 | 15% | 7.9e-07 | 3.5e-06 |
 
 SNR sweep (L1 / oracle):
 

@@ -1020,9 +1020,11 @@ The external reviewer's review of afee349, each point checked against the code b
 - **The score test's evaluation grounds were calibration grounds** (seeds 3600-3799 and 3700-3759). Seed streams are now
   named and asserted disjoint; the score test's Monte Carlo is rerun with 400 calibration grounds and 100 + 100 evaluation grounds,
   each rate with its interval: with the difference amplified 800 times it finds 73% (63 to 81%) at 15% false alarms
-  (9 to 24%), AUC 0.91 (predicted 0.93); at the real level 7% at 15% false alarms, AUC 0.47: at chance. The false alarms
-  exceed 5% because these 100 null grounds have a heavier upper tail than the calibration's 400; as samples the two are
-  not distinguishable (Kolmogorov-Smirnov p 0.33), so this is reported as measured, not tuned away. A first run of
+  (9 to 24%), AUC 0.91 (predicted 0.93); at the real level 7% at 15% false alarms, AUC 0.47: at chance. The threshold
+  targeted 5% false alarms but produced 15% on the held-out grounds; that remains unexplained (a Kolmogorov-Smirnov
+  comparison of the two null samples, p 0.33, does not settle it, and with the threshold's own uncertainty at least 15
+  exceedances in 100 has a probability near 0.1%), so the discrimination rests on the AUC and calibration at a 5%
+  operating point is not established; the scores are kept for later investigation, not tuned away. A first run of
   revision 3 reported no separation at x800: its new bookkeeping reused the name of the radar wavenumber for a count,
   scaling the second amplification's statistics towards zero; it was caught by recomputing every image's statistic
   apart, and each image's statistic is now kept under its inputs.
@@ -1048,10 +1050,11 @@ The external reviewer's review of afee349, each point checked against the code b
   integral over the image (Q = 100 and 1,000 within 0.5%). The eight shafts are computed: the static solver for one open
   shaft near the surface (truncated at 100 and 200 m, the near field changing by at most 2%), a column of Eshelby
   cylinder moments (equal to Lame's hole and the deviatoric Kirsch result) to their full 640 m beyond, through the same
-  half-space at 0.2 Hz, scaled by 1.47, the largest solver/column ratio on the ring where they meet. Both passes, each
+  half-space at 0.2 Hz, matched to the solver empirically where they meet (1.47, the larger of two ring rms ratios, not a
+  pointwise enclosure of every component, direction and place). Both passes, each
   at its own SNR; the oracle weighted by the image's own brightness from the desktop's 2 km maps (5 m cells placed
-  through their tie points), beyond the map at its brightest cell (29.5 dB over the median for 2025): a bound, and
-  30 times the median's value. On the 2025 pass any reader of one image is at most 2.4 x 10^-5 above chance (1.1 x 10^-4
+  through their tie points), beyond the map at its brightest cell (29.5 dB over the median for 2025): a deliberately generous assumption, not a
+  measured bound on ground not mapped, and 30 times the median's value. On the 2025 pass any reader of one image is at most 2.4 x 10^-5 above chance (1.1 x 10^-4
   at the worst realisation), the oracle 6.3 x 10^-4; the shafts dominate (peak 1.0 x 10^-10 m on the line of sight
   against the void's 2.5 x 10^-12 m); margins 3.4 x 10^4 and 2.1 x 10^3, and 96 and 46 with the cube, the louder level
   and site amplification applied to the background too. The 2022 pass: 2.8 x 10^-5 and 1.3 x 10^-3. The sizes and layout
@@ -1061,6 +1064,40 @@ The external reviewer's review of afee349, each point checked against the code b
   acquisition.
 - **Revision 2 preserved.** BENCHMARK.md carries revision 3 and an erratum; revision 2 is at afee349. P2-37 read the
   images of revision 2, which revision 3 shares (the worlds' hash is unchanged).
+
+### Ninth review, 1 October 2026: the scope on the first screen, the quiet columns, the wording
+
+Both reviewers read b5fa1ae (one ran twenty focused tests of the finite bounds, the radiometry and the half-space; all
+passed). Both recommended publishing after a finite set of changes, without a new round of simulations. Adopted:
+
+- **The quiet case's every column through the averaged bound.** The quiet case's SNR sweep, its disc value and its growth
+  were still certificates at the mean phase energy; only the headline used the averaged bound. Every quiet entry now
+  goes through it (P2-36 regenerated from its cached fields; the numbers barely move), and BENCHMARK.md's covariance
+  floor carries the positive part.
+- **The answer, scoped in its first sentence.** "Not with the published method, and not with any other way of reading one
+  image" exceeded what is established. The answer now reads: can vibration processing of one radar image map the
+  structures claimed beneath Khafre? Our assessment: no, under the conditions modelled here; representative structures
+  at the claimed depths; our implementation of the published method. It is on the first screen (the hero) and at the top
+  of the satellite page.
+- **The lead number as an accuracy.** The front page's first number had called the bound on detection minus false
+  alarms the margin over a coin toss, which is half of it. It now leads with the told reader's best equal-prior accuracy,
+  1/2 + TV/2: 50.031% for the 2025 image and 50.065% for 2022 against 50% by guessing, labelled a bound over the modelled
+  ensemble, not a measurement on the files; the margins after every allowance (96 and 46) sit beside the objection about
+  the trembling's distance.
+- **Physical assumptions labelled as what they are.** Beyond the brightness map, the brightest cell everywhere is a
+  deliberately generous assumption, not a bound; the pyramid is omitted and the direction of its effect is not
+  established (the earlier "which helps the claim" is withdrawn); the shafts' 1.47 is an empirical matching of two
+  approximations; the half-space tests check the implementation against known limits and do not certify the geology;
+  bright persistent ground beside strong shaking is "an important unresolved case within the benchmark", not the only
+  one.
+- **P2-37 as a diagnostic of this implementation.** The told detector names 24 of 24 layouts at the positive control and
+  our implementation of the published method, with its stated plan-map readout, 8 of 24: the images hold recoverable
+  information and the tested pipeline does not recover it. It is not the whole-image observation of P2-36 (a smaller
+  scene, no receiver noise, the motion field truncated at 70 m), and not a test of the authors' own software. The
+  paired reader's presence statistic is recorded as unscored (null), not 0.
+- **The score test's calibration** is stated as not established, the 15% false alarms as unexplained (above).
+- **Next, not blocking:** the unresolved case for Khafre itself (the pyramid as a bright persistent target, the shafts
+  under it, a bus on the plateau road at its nearest approach), the most valuable next computation.
 
 ### Motion measured from orbit, 2026
 

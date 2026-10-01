@@ -3,9 +3,9 @@
   "id": "p2_38_claim",
   "title": "The claim computed: the structures announced under Khafre",
   "date": "2026-10-01",
-  "started_utc": "2026-10-01T02:19:19+00:00",
-  "runtime_s": 139.5,
-  "commit": "51d2d3f",
+  "started_utc": "2026-10-01T06:47:39+00:00",
+  "runtime_s": 142.2,
+  "commit": "b5fa1ae+",
   "params": {
    "structure": {
     "centre": [
@@ -160,6 +160,7 @@
     "ground_sigma0_median_db": -5.344089,
     "bright_ground_db_assumed": 0.0,
     "mode": "SpotlightDwellFine",
+    "mode_source": "the product code in the product's name (SLEDF Spotlight Dwell Fine, SLED Spotlight Dwell), as the record's source states; only ICEYE can confirm which noise applies to this product",
     "nesz_headline_db": -23.7,
     "nesz_headline_source": "ICEYE Product Documentation 6.0.8, Table 2-11, SpotlightDwellFine: best end (https://sar.iceye.com/6.0.8/productspecification/imagingmodes/)",
     "nesz_in_product": false,
@@ -1342,6 +1343,7 @@
     "ground_sigma0_median_db": -7.916237,
     "bright_ground_db_assumed": 0.0,
     "mode": "SpotlightDwell",
+    "mode_source": "the product code in the product's name (SLEDF Spotlight Dwell Fine, SLED Spotlight Dwell), as the record's source states; only ICEYE can confirm which noise applies to this product",
     "nesz_headline_db": -26.7,
     "nesz_headline_source": "ICEYE Product Documentation 6.0.8, Table 2-11, SpotlightDwell: best end (https://sar.iceye.com/6.0.8/productspecification/imagingmodes/)",
     "nesz_in_product": false,
@@ -2540,5 +2542,5 @@
    }
   }
  },
- "finding": "The structures announced under Khafre, computed: the eight shafts (10 m across, layout representative, open at the surface with the pyramid omitted, which is generous) and the deep structure (a void 80 m on a side at 1,220 m, its size representative), loaded by Giza's regional microseisms at 0.2 Hz, strained at most as at the surface. The shafts: the lab's static solver for one shaft near the surface (truncated at 100 and 200 m, the near field changing by 0.9% between them), a column of Eshelby cylinder moments to their full 640 m beyond, scaled by 1.47 where the two meet; the deep structure as Eshelby's sphere of its volume; both through a damped half-space's response at 0.2 Hz, so the field radiated to the image's edge is counted (the deep structure's dynamic integral 1.99 times its static one). Imprint on the line of sight: the shafts peak at 1.0e-10 m, the deep structure at 2.5e-12 m. On the 2025 pass (Dwell Fine, 18.4 dB, the best specified noise floor), any reader of the one image, bounded line by line with the microseisms in each line's reference and averaged over the field's realisations: at most 2.4e-05 above its false-alarm rate (1.1e-04 at the worst realisation); the oracle told every scatterer's reflectivity, weighted by the image's own measured brightness over 2 km (beyond, its brightest cell): 6.3e-04. The motion would have to grow 3.4e+04 times for one image and 2.1e+03 for the oracle; with a cube's moment 1.5 times the sphere's (the solver's cube measured 1.22 to 1.36 times the sphere for the bench room), the local level ten times the regional and site amplification three times, applied to the background as well, still 9.6e+01 and 4.6e+01. The 2022 pass (Dwell, its own 18.8 dB): one image at most 2.8e-05, the oracle 1.3e-03. These allowances are sensitivities, not enclosures of missing physics. Not computed: the pyramid's own load and scattering, other excitations (a lorry's body waves, local sources), a layered geology; the speckle layer's model is not validated for the real acquisition by the brightness map, which enters only the oracle."
+ "finding": "Representative structures at the depths announced under Khafre, computed: eight shafts (10 m across, layout representative, open at the surface, the pyramid omitted: its load, coupling and scattering, the direction of its effect not established) and a deep void (80 m on a side at 1,220 m, its size representative), loaded by Giza's regional microseisms at 0.2 Hz, strained at most as at the surface. The shafts: the lab's static solver for one shaft near the surface (truncated at 100 and 200 m, the near field changing by 0.9% between them), a column of Eshelby cylinder moments to their full 640 m beyond, matched to the solver where the two meet by an empirical scaling (1.47, the larger of two ring rms ratios, not a pointwise enclosure); the deep structure as Eshelby's sphere of its volume; both through a damped half-space's response at 0.2 Hz (the implementation checked against Okada's static solution, the geology itself not certified), so the field radiated to the image's edge is counted (the deep structure's dynamic integral 1.99 times its static one). Imprint on the line of sight: the shafts peak at 1.0e-10 m, the deep structure at 2.5e-12 m. On the 2025 pass (Dwell Fine, 18.4 dB, the best specified noise floor), any reader of the one image, bounded line by line with the microseisms in each line's reference and averaged over the field's realisations: at most 2.4e-05 above its false-alarm rate (1.1e-04 at the worst realisation); the oracle told every scatterer's reflectivity, weighted by the image's own measured brightness over 2 km (beyond it, its brightest cell everywhere: a deliberately generous assumption, not a measured bound): 6.3e-04, a best equal-prior accuracy of 50.031% against 50% by guessing. The motion would have to grow 3.4e+04 times for one image and 2.1e+03 for the oracle; with a cube's moment 1.5 times the sphere's (the solver's cube measured 1.22 to 1.36 times the sphere for the bench room), the local level ten times the regional and site amplification three times, applied to the background as well, still 9.6e+01 and 4.6e+01. These are bounds averaged over the modelled ensemble, not performance measured on the acquired files. The 2022 pass (Dwell, its own 18.8 dB): one image at most 2.8e-05, the oracle 1.3e-03 (50.065%). These allowances are sensitivities, not enclosures of missing physics. Not computed: the pyramid's own load and scattering, other excitations (a lorry's body waves, local sources), a layered geology; the speckle layer's model is not validated for the real acquisition by the brightness map, which enters only the oracle."
 }

@@ -859,8 +859,9 @@ def main():
             # every realisation: |dd| <= sum over directions of eps0 / sqrt(n) |M_phi|, and over a finite pass the mean of
             # cos^2(w t + phi) is at most (1 + 1 / (w T)) / 2 whatever the phase (osc_q; the exact |sin w T| / (w T) is smaller)
             e_max = (eps0 / np.sqrt(len(maps)) * np.sum(np.abs(maps), axis=0)) ** 2
-            Qq_max = lines_for(g, frame, e_max, xq, yq, AN['quiet_disc_m'], AN['quiet_ring_m'],
-                               AN['quiet_energy_exponent'], osc_q)['Q']
+            integ_q_max = lines_for(g, frame, e_max, xq, yq, AN['quiet_disc_m'], AN['quiet_ring_m'],
+                                    AN['quiet_energy_exponent'], osc_q)
+            Qq_max = integ_q_max['Q']
             Qc_q = np.full_like(Qq, Qc_micro)
             if kern[w0] is not None:           # world 0's own imprint in its reference too, at its worst realisation
                 _, _, _, maps0 = quiet_energy(kern[w0], g, eps0)
@@ -869,7 +870,18 @@ def main():
                                 AN['quiet_energy_exponent'], osc_q)
                 Qc_q = (np.sqrt(Qc_q) + np.sqrt(i0q['Q'])) ** 2
             lay = layers(g, frame, Qq, Qc_q, integ_q, 0.0)
-            lay['l1_ensemble'] = l1_ensemble(Qq, Qq_max, Qc_q, 10 ** (-FROZEN['snr_db_headline'] / 10))
+            # every single-image number of the quiet case through the ensemble argument (a certificate evaluated at the
+            # mean phase energy bounds nothing): the sweep, the disc and the growth, not only the headline
+            s2h = 10 ** (-FROZEN['snr_db_headline'] / 10)
+            for snr in FROZEN['snr_db_sweep']:
+                e_ = l1_ensemble(Qq, Qq_max, Qc_q, 10 ** (-snr / 10))
+                e_['state'] = state(e_['tv_upper'])
+                lay['l1'][snr_key(snr)] = e_
+            lay['l1_disc'] = l1_ensemble(integ_q['Q_disc'], integ_q_max['Q_disc'], Qc_q, s2h)
+            lay['l1_growth_to_target'] = growth(lambda a: l1_ensemble(Qq * a * a, Qq_max * a * a, Qc_q, s2h)['tv_upper'],
+                                                AN['target_tv'])
+            lay['l1_ensemble'] = l1_ensemble(Qq, Qq_max, Qc_q, s2h)
+            lay['l1_kind'] = 'averaged over the excitation\'s realisations (l1_ensemble), every entry'
             ach = memo(RID, f'achieved_quiet_{pname}', lambda: _achieved_quiet(g, xq, yq, maps, eps0, ql['f_hz']),
                        __file__, version='achq-v1', inputs={'maps': maps, 'eps0': eps0, 'f': ql['f_hz'],
                                                              'disc': AN['quiet_disc_m'], 'acq': FROZEN['acquisition']})
@@ -1004,10 +1016,12 @@ def finding(quiet, strong, curves, f_star):
                   f"{mcr['cavity_evaluation_grounds']} evaluation grounds disjoint from them: with the difference amplified "
                   f"{hi['amplification']:g} times it finds {pct(hi['found_at_threshold_achieved'])} (95% interval "
                   f"{ci(hi['found_interval_95'])}) at {pct(hi['false_alarms_at_threshold_achieved'])} false alarms "
-                  f"({ci(hi['false_alarm_interval_95'])}; the null evaluation grounds and the calibration grounds are "
-                  f"not distinguishable as samples, Kolmogorov-Smirnov p {hi.get('null_samples_ks_p', float('nan')):.2f}, "
-                  f"so the excess is the upper tail of these grounds), AUC {hi['auc_achieved']:.2f} +- {hi['auc_se']:.2f} "
-                  f"(predicted {hi['auc_predicted']:.2f}); at the real level {pct(lo['found_at_threshold_achieved'])} found at "
+                  f"({ci(hi['false_alarm_interval_95'])}), AUC {hi['auc_achieved']:.2f} +- {hi['auc_se']:.2f} "
+                  f"(predicted {hi['auc_predicted']:.2f}); the threshold targeted 5% false alarms but produced "
+                  f"{pct(hi['false_alarms_at_threshold_achieved'])} on the held-out grounds, which remains unexplained (a "
+                  f"Kolmogorov-Smirnov comparison of the two null samples, p {hi.get('null_samples_ks_p', float('nan')):.2f}, "
+                  f"does not settle it): the discrimination is supported by the AUC, calibration at a 5% operating point is "
+                  f"not established; at the real level {pct(lo['found_at_threshold_achieved'])} found at "
                   f"{pct(lo['false_alarms_at_threshold_achieved'])} false alarms (one-sided p {lo['found_over_false_alarms_p_one_sided']:.2f} "
                   f"that it finds more than it falsely alarms), AUC {lo['auc_achieved']:.2f} +- {lo['auc_se']:.2f} "
                   f"(p {lo['auc_p_one_sided']:.2f}): at chance.")
@@ -1034,12 +1048,12 @@ def finding(quiet, strong, curves, f_star):
         + (f" ({rng_(or_old)} at 12.7 dB, documentation 6.0.0's best)" if or_old else '')
         + f", at {gen:.1f} dB (ground at 0 dB) {rng_(org)}; its upper bound stops excluding 95% at 5% only at "
         f"{min(stop.values()):.0f} to {max(stop.values()):.0f} dB, which no specified ICEYE noise floor reaches over natural "
-        f"ground. The one open corner of the strong case is bright persistent ground: at {max(sweep):.0f} dB, which stands "
-        f"for a building, a corner reflector or the pyramid's edge, the oracle's bound is {rng_(or40)} for every strong pair "
-        f"and the speckle layer does not apply, so a shallow room beside a lorry under a bright persistent target is not "
-        f"excluded by any layer here; that is the real-acquisition case (diffuse ground with bright scatterers) still to "
-        f"compute. Under Giza's regional microseisms, averaged over the field's realisations through a bound linear in each "
-        f"line's phase energy, one image is at most {q_ens:.1e} above chance ({q_worst:.1e} at the worst realisation, its "
+        f"ground. An important unresolved case within the benchmark is bright persistent ground: at {max(sweep):.0f} dB, "
+        f"which stands for a building, a corner reflector or the pyramid's edge, the oracle's bound is {rng_(or40)} for every "
+        f"strong pair and the speckle layer does not apply, so a shallow room beside a lorry under a bright persistent target "
+        f"is not excluded by any layer here; that is the real-acquisition case (diffuse ground with bright scatterers) still "
+        f"to compute. Under Giza's regional microseisms, averaged over the field's realisations through a bound linear in each "
+        f"line's phase energy (every quiet entry, the sweep, the disc and the growth included), one image is at most {q_ens:.1e} above chance ({q_worst:.1e} at the worst realisation, its "
         f"pass-mean bounded over the finite window) and the oracle {q_or:.1e}. Checks: the exact divergence on lines of the "
         f"model is {min(ver):.2f} to {max(ver):.2f} of the certificate; pulse by pulse on fixed scenes the coherent echo "
         f"difference is {fx['common_x1']['mean']:.3f} +- {fx['common_x1']['se']:.3f} of the ensemble formula, the same "

@@ -12,48 +12,62 @@ const { heading = 'h2' } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 type ClRow = { l1: Record<string, { tv_upper: number }>; oracle_power_weighted: Record<string, { tv_upper: number }>; l1_growth_to_target: number | null; oracle_growth_to_target: number };
+type ClRows = Record<string, ClRow>;
 type ClPass = { headline_db: number; parts: Record<string, { rows: Record<string, ClRow> }> };
 const cl25 = (claim as unknown as { passes: Record<string, ClPass> }).passes['giza-20250827'];
 const key = String(cl25.headline_db);
 const row = cl25.parts['claim (both)'].rows['as computed'];
-const l1 = row.l1[key].tv_upper;
+// the margins after every allowance (a louder local ground, site amplification and a cube's larger moment, the
+// background scaled too): the last row of the claim's table
+const allowed = Object.values(cl25.parts['claim (both)'].rows as ClRows).slice(-1)[0];
 const orGrowth = row.oracle_growth_to_target;
-type RdR = { named_of_three: number };
-const rd = (read as unknown as { summary: Record<string, { told: RdR; published_blind: RdR }>; manifest: { params: { grounds: number[] } } });
-const pos = rd.summary['x1000'];
+const rd = (read as unknown as { summary: Record<string, unknown>; manifest: { params: { grounds: number[] } } });
 const nGrounds = rd.manifest.params.grounds.length;
 
-const inWords = (n: number) =>
-  n >= 1e9 ? `${+(n / 1e9).toPrecision(2)} billion` : n >= 1e6 ? `${+(n / 1e6).toPrecision(2)} million` : n >= 1e3 ? `${+(n / 1e3).toPrecision(2)} thousand` : `${Math.round(n)}`;
 const times = (v: number) => Number(v.toPrecision(2)).toLocaleString('en-US');
-const pc = (v: number) => `${Math.round(100 * v)}%`;
+const cl22 = (claim as unknown as { passes: Record<string, ClPass> }).passes['giza-20220715'];
+// the best equal-prior accuracy, 1/2 + TV/2, of a reader told every scatterer's reflectivity (the oracle, weighted by the
+// image's measured brightness): a bound averaged over the modelled ensemble, not a measurement on the files
+const acc = (tv: number) => `${(100 * (0.5 + tv / 2)).toFixed(tv < 2e-3 ? 3 : 2).replace(/0+$/, '').replace(/\.$/, '')}%`;
+const or25 = row.oracle_power_weighted[key].tv_upper;
+const or22 = cl22?.parts['claim (both)'].rows['as computed'].oracle_power_weighted[String(cl22.headline_db)]?.tv_upper;
+type RdN = { named_of_three: number; images: number };
+const blind = (rd.summary['x1000'] as unknown as { published_blind: RdN; told: RdN });
+const nBlind = Math.round(blind.published_blind.named_of_three * blind.published_blind.images);
+const nTold = Math.round(blind.told.named_of_three * blind.told.images);
+const nImg = blind.published_blind.images;
 const H = heading;
 ---
 <div class="claim-verdict">
   <p class="cv-label">The question readers bring</p>
-  <H class="cv-title">Can one satellite radar image see the shafts and chambers claimed under Khafre? In our assessment, no</H>
+  <H class="cv-title">Can vibration processing of one radar image map the structures claimed beneath Khafre? Our assessment: no, under the conditions modelled here</H>
   <p class="cv-lede">
-    Not with the published method, and not with any other way of reading one image. We computed the claimed structures
-    themselves, at their claimed depths, and the trace they leave in the image is far below anything a reading could pick out.
+    We modelled representative shafts and a deep chamber at the claimed depths. Their vibration signatures are too weak
+    for reliable recovery, even for an ideal reader given the surface’s reflectivity. Our implementation of the published
+    method also failed to recover the tested layouts when their signals were greatly amplified.
   </p>
   <div class="stat-row">
-    <div class="stat"><span class="value">1 in {inWords(1 / l1)}</span><span class="what">the most any way of reading one image of Khafre can do better than a coin toss at telling whether the claimed shafts and void are there: the published method, any future algorithm, a trained network</span><span class="src">P2-38 · computed for the claim · an upper bound</span></div>
-    <div class="stat"><span class="value">{times(orGrowth)}<small>×</small></span><span class="what">how much more the claimed structures would have to move the ground before even a reader told every detail of the scene except the answer could find them reliably</span><span class="src">P2-38 · the oracle · most favourable noise floor</span></div>
-    <div class="stat"><span class="value">{pc(pos.published_blind.named_of_three)}</span><span class="what">how often the published method names the right buried layout on images of known ground, the cavity’s effect amplified a thousandfold: chance. A detector told what to look for names {pc(pos.told.named_of_three)}</span><span class="src">P2-37 · blind · {nGrounds} grounds</span></div>
+    <div class="stat"><span class="value">{acc(or25)}</span><span class="what">the best any reading of one image of Khafre could do at saying whether the claimed shafts and void are there, against 50% by guessing, even for a reader given every scatterer’s reflectivity{or22 != null ? ` (the 2022 image: ${acc(or22)})` : ''}</span><span class="src">P2-38 · a bound over the modelled ensemble, not a measurement on the files</span></div>
+    <div class="stat"><span class="value">{times(orGrowth)}<small>×</small></span><span class="what">how much more the claimed structures would have to move the ground before that reader could find them reliably (95% found at 5% false alarms)</span><span class="src">P2-38 · most favourable specified noise floor</span></div>
+    <div class="stat"><span class="value">{nBlind} of {nImg}</span><span class="what">layouts our implementation of the published method named correctly, with its stated readout, on simulated images of known ground with the cavities’ effect amplified a thousandfold: chance. A detector given the candidate patterns named {nTold} of {nImg}</span><span class="src">P2-37 · blind · {nGrounds} grounds · a diagnostic of this implementation</span></div>
   </div>
   <div class="cv-cols">
     <div>
       <p class="cv-sub">What the assessment rests on</p>
       <p>Calculations on a model of the ground, not field measurements: uniform limestone, the trembling measured 67 km
-      away, the radar maker’s most favourable noise figure, the claim’s own depths and a representative layout, with the
-      pyramid left out, which helps the claim. The bound covers every way of reading one image, not only the published one;
-      the 2022 paper was retracted in August 2026.</p>
+      away, the radar maker’s most favourable noise figure, representative structures at the claimed depths; the pyramid is
+      omitted, the direction of its effect not established. The physical bound covers every way of reading one image within
+      that model, the published method included; the test of the method itself is of our implementation from the paper, not
+      the authors’ software. The 2022 paper was retracted in August 2026.</p>
     </div>
     <div>
       <p class="cv-sub">What could still change it</p>
-      <p>A mechanism nobody has yet specified that makes the ground move thousands of times more over a void; a bright fixture
-      over a cavity beside strong shaking, the one case these bounds leave open; or a method shown to find surveyed voids
-      blind, on ground withheld from it. None has been shown.</p>
+      <p>Not a louder ground nearby: with the trembling ten times the level measured 67 km away, amplified three times by the
+      site and a cube’s larger moment, the structures are still {times(allowed.l1_growth_to_target ?? NaN)} times short for one
+      image and {times(allowed.oracle_growth_to_target)} times for the told reader. What could: a mechanism nobody has yet
+      specified that makes the ground move thousands of times more over a void; a bright fixture over a cavity beside strong
+      shaking, an important unresolved case within the benchmark; or a method shown to find surveyed voids blind, on ground
+      withheld from it. None has been shown.</p>
     </div>
   </div>
   <p class="cv-links"><a href={`${base}/proof/`}>The proof, finite and stated →</a> · <a href={`${base}/satellite/`}>every test, on the satellite page →</a></p>

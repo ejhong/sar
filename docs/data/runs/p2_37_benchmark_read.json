@@ -3,11 +3,13 @@
   "id": "p2_37_benchmark_read",
   "title": "The benchmark read: the published method and a detector told the lorry",
   "date": "2026-10-01",
-  "started_utc": "2026-10-01T00:31:59+00:00",
-  "runtime_s": 12.0,
-  "commit": "5aa28ff+",
+  "started_utc": "2026-10-01T06:47:19+00:00",
+  "runtime_s": 18.4,
+  "commit": "b5fa1ae+",
   "params": {
-   "benchmark_frozen_hash": "4bc4c58f8948",
+   "benchmark_frozen_hash": "2684dc43b817",
+   "benchmark_worlds_hash": "dee606bbff0f",
+   "images_note": "the images depend only on the worlds hash (worlds, lorry, solver, geometry), unchanged since revision 2, whose fields they were read from",
    "f_hz": 69.0,
    "grounds": [
     3701,
@@ -70,7 +72,7 @@
     "median_centroid_error_m": 9.501585
    },
    "published_paired": {
-    "presence_auc_vs_controls": 0.973958,
+    "presence_auc_vs_controls": null,
     "named_of_three": 0.333333,
     "named_of_three_p": 0.58445,
     "location_correct": "9 of 16",
@@ -105,7 +107,7 @@
     "median_centroid_error_m": 9.474984
    },
    "published_paired": {
-    "presence_auc_vs_controls": 0.0,
+    "presence_auc_vs_controls": null,
     "named_of_three": 0.208333,
     "named_of_three_p": 1.0,
     "location_correct": "9 of 16",
@@ -140,7 +142,7 @@
     "median_centroid_error_m": 9.750376
    },
    "published_paired": {
-    "presence_auc_vs_controls": 0.0,
+    "presence_auc_vs_controls": null,
     "named_of_three": 0.208333,
     "named_of_three_p": 1.0,
     "location_correct": "9 of 16",
@@ -3394,5 +3396,5 @@
    }
   }
  },
- "finding": "The benchmark's worlds read as images (P2-36's solver fields, a lorry 15 m west at the FTA's truck-over-a-bump level held at 69 Hz, Giza's microseisms, 8 independent grounds). At the real level the detector told the lorry separates cavities from controls with AUC 0.53 and names the world in 33% (chance 33%); the published map read blind, AUC 0.52 and 33%. With the cavity's difference amplified 1,000 times (a diagnostic), the told detector names 100% (p < 0.001, labels permuted within grounds), places the room against the room 6 m east in 16 of 16 and tells room from L tunnel in 16 of 16; the published map read blind names 33% (p = 1), separates cavities from controls with AUC 0.52 and centres its top places 9.8 m from the footprint (controls 9.5 m); its change against the no-cavity image, a diagnostic it never has, names 21%. The told detector recovers the imposed worlds at the positive control, so the experiment can reveal a real signal; what the published method does not read there it does not read in the image. Amplified levels are diagnostics, not physical predictions."
+ "finding": "The benchmark's worlds read as images (P2-36's solver fields, a lorry 15 m west at the FTA's truck-over-a-bump level held at 69 Hz, Giza's microseisms, 8 independent grounds). At the real level the detector told the lorry separates cavities from controls with AUC 0.53 and names the world in 33% (chance 33%); the published map read blind, AUC 0.52 and 33%. With the cavity's difference amplified 1,000 times (a diagnostic), the told detector names 100% (p < 0.001, labels permuted within grounds), places the room against the room 6 m east in 16 of 16 and tells room from L tunnel in 16 of 16; the published map read blind names 33% (p = 1), separates cavities from controls with AUC 0.52 and centres its top places 9.8 m from the footprint (controls 9.5 m); its change against the no-cavity image, a diagnostic it never has, names 21% (its presence statistic is not scored: the synthetic twin has no receiver noise, so any difference shows, and it falls as the difference grows). Where p is 1 the reader named the same world for every image of a ground, its answer unchanged by the cavity. The told detector recovers the imposed worlds at the positive control, so the experiment can reveal a real signal; what the published method does not read there it does not read in the image. Amplified levels are diagnostics, not physical predictions."
 }

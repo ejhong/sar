@@ -79,6 +79,8 @@ def snr_per_cell(name: str, bright_ground_db: float = 0.0) -> dict:
         'ground_sigma0_median_db': ground,
         'bright_ground_db_assumed': bright_ground_db,
         'mode': mode,
+        'mode_source': "the product code in the product's name (SLEDF Spotlight Dwell Fine, SLED Spotlight Dwell), as "
+                       "the record's source states; only ICEYE can confirm which noise applies to this product",
         'nesz_headline_db': best_new,
         'nesz_headline_source': f"ICEYE Product Documentation {NEWEST}, Table 2-11, {mode}: best end "
                                 f"({SPECIFICATION[NEWEST]['url']})",

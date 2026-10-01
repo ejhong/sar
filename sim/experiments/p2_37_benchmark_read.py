@@ -19,7 +19,7 @@ Readers.
 2. A detector told the lorry: the score statistic for each cavity world's difference pattern and timing (told the
    excitation and where to look, not the speckle), sarsim.information's score as P2-36 implements it.
 Scored, stated before the run: presence (each image's largest normalised response, cavity images against the controls,
-AUC); shape and location together, naming which of the three cavity worlds (chance one in three); location alone, the
+AUC; not for the paired change, whose noise-free twin shows any difference); shape and location together, naming which of the three cavity worlds (chance one in three); location alone, the
 room or the room 6 m east (chance one in two); shape alone, the room or the L tunnel (chance one in two); for the
 published maps, the centroid of the top 5% against the true footprint's centroid, with its chance from the controls.
 p-values are null tests with the true labels permuted within each ground. Amplified levels are diagnostics, not
@@ -281,6 +281,8 @@ def score(S, recs):
             pc = [x[reader]['presence'] for x in cav if reader in x]
             pn = [x[reader]['presence'] for x in ctrl_rows if reader in x]
             auc = float(np.mean([[1.0 if a > b else 0.5 if a == b else 0.0 for b in pn] for a in pc])) if pc and pn else None
+            if reader == 'published_paired':
+                auc = None       # not scored: the twin has no receiver noise, so any difference shows (the finding says so)
             named = [x[reader]['named'] == x['world'] for x in cav if reader in x and x[reader].get('named')]
             loc_p, loc_k, loc_n = binary_p(cav, reader, 'location_named', ('WA', 'WA6'))
             shp_p, shp_k, shp_n = binary_p(cav, reader, 'shape_named', ('WA', 'WB'))
