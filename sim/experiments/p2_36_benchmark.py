@@ -587,7 +587,7 @@ def auc_se(auc, n1, n0):
     return float(np.sqrt((auc * (1 - auc) + (n1 - 1) * (q1 - auc * auc) + (n0 - 1) * (q2 - auc * auc)) / (n1 * n0)))
 
 
-def score_mc(g, D0, D1, xs, ys, f_hz, sigma2, amps=(1.0, 800.0), seeds=None, shape=(1024, 64)):
+def score_mc(g, D0, D1, xs, ys, f_hz, sigma2, amps=(1.0, 800.0), seeds=None, shape=(1024, 64), share=None):
     """D2 implemented: the score statistic for the pair's difference, told its pattern and timing but not the speckle,
     on synthesised images (sarsim.synthesize, complex128) of a cyclic patch about the largest difference: scatterers on
     the pixel grid (white circular Gaussian), world 0 moving with its whole motion (the lorry's wave and its own cavity),
@@ -648,6 +648,21 @@ def score_mc(g, D0, D1, xs, ys, f_hz, sigma2, amps=(1.0, 800.0), seeds=None, sha
         ps = np.exp(1j * psi)
         K1, K2 = np.real(dK1 * ph_x * ps), -np.imag(dK1 * ph_x * ps)     # d = K1 cos(2 pi f t) + K2 sin(2 pi f t)
         return float(k0 * np.sum(K1 * q[0] + K2 * q[1]))
+    # each image's statistic kept on disk under everything that defines it, so workers can share the work (`share`:
+    # (k, n), compute every n-th from the k-th and return) and a run cut short resumes
+    unit = {'worlds': WORLDS_HASH, 'f': f_hz, 'sigma2': sigma2, 'patch': list(shape), 'noise_law': S['noise_law'][0]}
+    plain = statistic
+
+    def statistic(sd, amp):
+        return memo(RID, f'mcstat-{sd}-{amp:g}', lambda: plain(sd, amp), __file__, version='mcstat-v1', inputs=unit)
+    if share is not None:
+        w_k, w_n = share                     # named apart from n (the patch's pixel count) and k0
+        jobs = ([(sd, 0.0) for sd in list(S['calibration']) + list(S['null_evaluation'])]
+                + [(S['sign'][0], 0.0), (S['sign'][0], max(amps))]
+                + [(sd, a) for a in amps for sd in S['cavity_evaluation']])
+        for sd, a in jobs[w_k::w_n]:
+            statistic(sd, a)
+        return None
     cal = [statistic(sd, 0.0) for sd in S['calibration']]
     ev0 = [statistic(sd, 0.0) for sd in S['null_evaluation']]
     # the statistic's sign (the model's phase convention) from one separate ground, never from evaluation images
@@ -665,17 +680,20 @@ def score_mc(g, D0, D1, xs, ys, f_hz, sigma2, amps=(1.0, 800.0), seeds=None, sha
         Q = g.band_frac * k0 ** 2 / 2 * (1 + osc) * np.sum(np.abs(amp * dK1) ** 2, axis=0)
         Qc = g.band_frac * k0 ** 2 / 2 * (1 + osc) * np.sum(np.abs(z0p) ** 2, axis=0)
         cert = l1_certificate(Q, Qc, sigma2)
-        from scipy.stats import fisher_exact, mannwhitneyu
-        k1, k0, n1, n0 = int(np.sum(t1 > thr)), int(np.sum(t0 > thr)), len(t1), len(t0)
+        from scipy.stats import fisher_exact, ks_2samp, mannwhitneyu
+        # counts (named apart from k0, the radar wavenumber the statistic uses: v4 overwrote it here, so its second
+        # amplification's statistics were scaled by the false-alarm count over k0)
+        n_hit, n_fa, n1, n0 = int(np.sum(t1 > thr)), int(np.sum(t0 > thr)), len(t1), len(t0)
         rows.append({'amplification': amp, 'auc_achieved': auc, 'auc_predicted': float(ndtr(d / np.sqrt(2))),
                      'auc_se': auc_se(auc, n1, n0),
                      'auc_p_one_sided': float(mannwhitneyu(t1, t0, alternative='greater').pvalue),
-                     'found_at_threshold_achieved': k1 / n1, 'found_count': [k1, n1],
-                     'found_interval_95': binomial_interval(k1, n1),
-                     'false_alarms_at_threshold_achieved': k0 / n0, 'false_alarm_count': [k0, n0],
-                     'false_alarm_interval_95': binomial_interval(k0, n0),
-                     'found_over_false_alarms_p_one_sided': float(fisher_exact([[k1, n1 - k1], [k0, n0 - k0]],
+                     'found_at_threshold_achieved': n_hit / n1, 'found_count': [n_hit, n1],
+                     'found_interval_95': binomial_interval(n_hit, n1),
+                     'false_alarms_at_threshold_achieved': n_fa / n0, 'false_alarm_count': [n_fa, n0],
+                     'false_alarm_interval_95': binomial_interval(n_fa, n0),
+                     'found_over_false_alarms_p_one_sided': float(fisher_exact([[n_hit, n1 - n_hit], [n_fa, n0 - n_fa]],
                                                                                alternative='greater')[1]),
+                     'null_samples_ks_p': float(ks_2samp(t_cal, t0).pvalue),
                      'found_at_005_predicted': float(ndtr(ndtri(0.05) + d)), 'deflection_predicted': d,
                      'tv_predicted': float(2 * ndtr(d / 2) - 1), 'certificate_tv_upper_patch': cert['tv_upper'],
                      'sign': sign, 'mean_shift_over_sd': float((t1.mean() - t0.mean()) / t0.std(ddof=1))})
@@ -900,7 +918,7 @@ def main():
         s2_head = 10 ** (-FROZEN['snr_db_headline'] / 10)
         mc = memo(RID, 'score_mc', lambda: score_mc(g, F['D'][w0][fi], F['D'][w1][fi], F['xs'], F['ys'], f_star,
                                                     s2_head, amps=AN['mc_amplifications'], seeds=AN['mc_seeds']),
-                  __file__, version='mc-v4', inputs={'worlds': WORLDS_HASH, 'f': f_star, 'sigma2': s2_head,
+                  __file__, version='mc-v5', inputs={'worlds': WORLDS_HASH, 'f': f_star, 'sigma2': s2_head,
                                                      'amps': AN['mc_amplifications'], 'seeds': AN['mc_seeds']})
         strong['presence (room)']['score_monte_carlo'] = mc
         run.save({'snr_db_headline': FROZEN['snr_db_headline'], 'snr_db_bright': FROZEN['snr_db_bright'],
@@ -986,8 +1004,10 @@ def finding(quiet, strong, curves, f_star):
                   f"{mcr['cavity_evaluation_grounds']} evaluation grounds disjoint from them: with the difference amplified "
                   f"{hi['amplification']:g} times it finds {pct(hi['found_at_threshold_achieved'])} (95% interval "
                   f"{ci(hi['found_interval_95'])}) at {pct(hi['false_alarms_at_threshold_achieved'])} false alarms "
-                  f"({ci(hi['false_alarm_interval_95'])}), AUC {hi['auc_achieved']:.2f} +- {hi['auc_se']:.2f} (predicted "
-                  f"{hi['auc_predicted']:.2f}); at the real level {pct(lo['found_at_threshold_achieved'])} found at "
+                  f"({ci(hi['false_alarm_interval_95'])}; the null evaluation grounds and the calibration grounds are "
+                  f"not distinguishable as samples, Kolmogorov-Smirnov p {hi.get('null_samples_ks_p', float('nan')):.2f}, "
+                  f"so the excess is the upper tail of these grounds), AUC {hi['auc_achieved']:.2f} +- {hi['auc_se']:.2f} "
+                  f"(predicted {hi['auc_predicted']:.2f}); at the real level {pct(lo['found_at_threshold_achieved'])} found at "
                   f"{pct(lo['false_alarms_at_threshold_achieved'])} false alarms (one-sided p {lo['found_over_false_alarms_p_one_sided']:.2f} "
                   f"that it finds more than it falsely alarms), AUC {lo['auc_achieved']:.2f} +- {lo['auc_se']:.2f} "
                   f"(p {lo['auc_p_one_sided']:.2f}): at chance.")
@@ -1104,8 +1124,23 @@ def report(res):
     L += ['', 'Each cell of the band table: L1 / oracle at the headline SNR.', '']
     return '\n'.join(L)
 
+def mc_worker(k, n):
+    """One worker's share of the score test's images (run several at once, then the main run reads them)."""
+    g = geometry()
+    F = strong_fields(g)
+    disc = [disc_integral(np.abs(F['D']['WA'][i] - F['D']['W0'][i]) ** 2, F['xs'], F['ys'], AN['recorded_disc_m'])
+            for i in range(len(F['f']))]
+    fi = int(np.argmax(disc))
+    w0, w1 = FROZEN['pairs']['presence (room)']
+    score_mc(g, F['D'][w0][fi], F['D'][w1][fi], F['xs'], F['ys'], float(F['f'][fi]), 10 ** (-FROZEN['snr_db_headline'] / 10),
+             amps=AN['mc_amplifications'], seeds=AN['mc_seeds'], share=(k, n))
+
+
 if __name__ == '__main__':
     import sys
+    if len(sys.argv) > 1 and sys.argv[1] == 'mcworker':
+        mc_worker(int(sys.argv[2]), int(sys.argv[3]))
+        sys.exit()
     if len(sys.argv) > 1 and sys.argv[1] == 'solve':
         for w in FROZEN['worlds']:
             solve(w)

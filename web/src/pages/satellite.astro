@@ -56,6 +56,7 @@ const sacsLabs = Object.entries(import.meta.glob('../../public/data/runs/lab_sac
 import Figure from '../components/Figure.astro';
 import Ceiling from '../components/Ceiling.astro';
 import Routes from '../components/Routes.astro';
+import ClaimVerdict from '../components/ClaimVerdict.astro';
 import benchmark36 from '../../public/data/runs/p2_36_benchmark.json';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
@@ -481,9 +482,10 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
   title="The satellite over the same ground"
   kicker="From orbit · what one radar image can show, and what it has not"
   current="satellite"
-  lede="Can one satellite radar image show chambers under the ground? The real ICEYE passes over Giza are simulated over ground whose contents are known, and the published method and a stricter reconstruction of it are run on real and simulated images beside controls. The methods tested do not show chambers, while single images can measure strong vibration of bright targets. Where this rests on models, and what would test it, is set out below."
-  state="status · tested, not closed · 29 September 2026 · revised after each of four independent reviews"
+  lede="Can one satellite radar image show chambers under the ground, as claimed under Khafre? The real ICEYE passes over Giza are simulated over ground whose contents are known, and the published method and a stricter reconstruction of it are run on real and simulated images beside controls. The methods tested do not show chambers, and computed for the claim’s own structures, no way of reading one image could; single images can still measure strong vibration of bright targets. Where this rests on models, and what would test it, is set out below."
+  state="status · tested, not closed · 1 October 2026 · revised after each independent review"
   index={[
+    { id: 'answer', label: 'The claim, answered' },
     { id: 'verdict', label: 'Where it stands' },
     { id: 'bound', label: 'Any method, bounded' },
     { id: 'sure', label: 'How sure' },
@@ -506,6 +508,10 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
     { id: 'record', label: 'Corrections' },
   ]}
 >
+  <section id="answer">
+    <ClaimVerdict heading="h2" />
+  </section>
+
   <section id="verdict">
     <h2>The methods tested here do not show chambers; read from one shaking, the satellite needs {vibMillions} times the force geophones need</h2>
     <Boundary />

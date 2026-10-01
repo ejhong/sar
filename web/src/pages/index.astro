@@ -10,6 +10,7 @@ import Sci from '../components/Sci.astro';
 import Boundary from '../components/Boundary.astro';
 import Ceiling from '../components/Ceiling.astro';
 import Routes from '../components/Routes.astro';
+import ClaimVerdict from '../components/ClaimVerdict.astro';
 import ClaimSection from '../components/ClaimSection.astro';
 import { GATED_CODE } from '../data/credits';
 import every from '../../public/data/runs/p2_23_every_reader.json';
@@ -183,6 +184,9 @@ const explore = [
   <Hero stops={stops} />
 
   <div class="story">
+    <section id="answer" class="found answer-first">
+      <ClaimVerdict />
+    </section>
     <section id="found" class="found">
       <div class="words">
         <p class="label">What we found</p>
@@ -1166,6 +1170,10 @@ const explore = [
 
   .found {
     padding: 56px 20px 8px;
+  }
+  .answer-first {
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
   }
   .found .wide {
     max-width: 960px;

@@ -1,0 +1,129 @@
+---
+/**
+ * The answer to the question readers bring: can one satellite image see what is claimed under Khafre? Built from the
+ * claim computed for its own geometry (P2-38), the published method read blind on images of known ground (P2-37) and the
+ * proof's bounds; every number is the runs' own. A statement, three numbers, what it rests on, what could change it.
+ */
+import claim from '../../public/data/runs/p2_38_claim.json';
+import read from '../../public/data/runs/p2_37_benchmark_read.json';
+
+interface Props { heading?: 'h2' | 'h3' }
+const { heading = 'h2' } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+type ClRow = { l1: Record<string, { tv_upper: number }>; oracle_power_weighted: Record<string, { tv_upper: number }>; l1_growth_to_target: number | null; oracle_growth_to_target: number };
+type ClPass = { headline_db: number; parts: Record<string, { rows: Record<string, ClRow> }> };
+const cl25 = (claim as unknown as { passes: Record<string, ClPass> }).passes['giza-20250827'];
+const key = String(cl25.headline_db);
+const row = cl25.parts['claim (both)'].rows['as computed'];
+const l1 = row.l1[key].tv_upper;
+const orGrowth = row.oracle_growth_to_target;
+type RdR = { named_of_three: number };
+const rd = (read as unknown as { summary: Record<string, { told: RdR; published_blind: RdR }>; manifest: { params: { grounds: number[] } } });
+const pos = rd.summary['x1000'];
+const nGrounds = rd.manifest.params.grounds.length;
+
+const inWords = (n: number) =>
+  n >= 1e9 ? `${+(n / 1e9).toPrecision(2)} billion` : n >= 1e6 ? `${+(n / 1e6).toPrecision(2)} million` : n >= 1e3 ? `${+(n / 1e3).toPrecision(2)} thousand` : `${Math.round(n)}`;
+const times = (v: number) => Number(v.toPrecision(2)).toLocaleString('en-US');
+const pc = (v: number) => `${Math.round(100 * v)}%`;
+const H = heading;
+---
+<div class="claim-verdict">
+  <p class="cv-label">The question readers bring</p>
+  <H class="cv-title">Can one satellite radar image see the shafts and chambers claimed under Khafre? In our assessment, no</H>
+  <p class="cv-lede">
+    Not with the published method, and not with any other way of reading one image. We computed the claimed structures
+    themselves, at their claimed depths, and the trace they leave in the image is far below anything a reading could pick out.
+  </p>
+  <div class="stat-row">
+    <div class="stat"><span class="value">1 in {inWords(1 / l1)}</span><span class="what">the most any way of reading one image of Khafre can do better than a coin toss at telling whether the claimed shafts and void are there: the published method, any future algorithm, a trained network</span><span class="src">P2-38 · computed for the claim · an upper bound</span></div>
+    <div class="stat"><span class="value">{times(orGrowth)}<small>×</small></span><span class="what">how much more the claimed structures would have to move the ground before even a reader told every detail of the scene except the answer could find them reliably</span><span class="src">P2-38 · the oracle · most favourable noise floor</span></div>
+    <div class="stat"><span class="value">{pc(pos.published_blind.named_of_three)}</span><span class="what">how often the published method names the right buried layout on images of known ground, the cavity’s effect amplified a thousandfold: chance. A detector told what to look for names {pc(pos.told.named_of_three)}</span><span class="src">P2-37 · blind · {nGrounds} grounds</span></div>
+  </div>
+  <div class="cv-cols">
+    <div>
+      <p class="cv-sub">What the assessment rests on</p>
+      <p>Calculations on a model of the ground, not field measurements: uniform limestone, the trembling measured 67 km
+      away, the radar maker’s most favourable noise figure, the claim’s own depths and a representative layout, with the
+      pyramid left out, which helps the claim. The bound covers every way of reading one image, not only the published one;
+      the 2022 paper was retracted in August 2026.</p>
+    </div>
+    <div>
+      <p class="cv-sub">What could still change it</p>
+      <p>A mechanism nobody has yet specified that makes the ground move thousands of times more over a void; a bright fixture
+      over a cavity beside strong shaking, the one case these bounds leave open; or a method shown to find surveyed voids
+      blind, on ground withheld from it. None has been shown.</p>
+    </div>
+  </div>
+  <p class="cv-links"><a href={`${base}/proof/`}>The proof, finite and stated →</a> · <a href={`${base}/satellite/`}>every test, on the satellite page →</a></p>
+</div>
+
+<style>
+  .claim-verdict {
+    max-width: var(--page, 1040px);
+    margin: 0 auto;
+  }
+  .cv-label {
+    font: 600 10.5px/1.4 var(--font-mono);
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 6px;
+  }
+  .cv-title {
+    font-family: var(--font-serif);
+    font-size: clamp(22px, 3vw, 30px);
+    font-weight: 500;
+    line-height: 1.2;
+    color: var(--text);
+    margin: 0 0 10px;
+    max-width: 30ch;
+  }
+  h3.cv-title {
+    font-size: clamp(20px, 2.4vw, 24px);
+    max-width: 40ch;
+  }
+  .cv-lede {
+    font-family: var(--font-serif);
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--body);
+    margin: 0 0 16px;
+    max-width: 70ch;
+  }
+  .cv-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px;
+    margin-top: 16px;
+  }
+  .cv-cols p {
+    font-family: var(--font-serif);
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--body);
+    margin: 0;
+  }
+  .cv-cols .cv-sub {
+    font: 600 10.5px/1.4 var(--font-mono);
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 4px;
+  }
+  .cv-links {
+    font: 12px var(--font-mono);
+    margin: 14px 0 0;
+  }
+  @media (max-width: 760px) {
+    .cv-cols {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 600px) {
+    .stat-row {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
