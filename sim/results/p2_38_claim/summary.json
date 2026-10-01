@@ -3,9 +3,9 @@
   "id": "p2_38_claim",
   "title": "The claim computed: the structures announced under Khafre",
   "date": "2026-10-01",
-  "started_utc": "2026-10-01T01:31:32+00:00",
-  "runtime_s": 1097.5,
-  "commit": "a14c584",
+  "started_utc": "2026-10-01T02:19:19+00:00",
+  "runtime_s": 139.5,
+  "commit": "51d2d3f",
   "params": {
    "structure": {
     "centre": [
@@ -193,6 +193,7 @@
      "q_used": 1000.0,
      "integral_e_m4": 6.677e-18,
      "integral_by_q_m4": {
+      "100": 6.647e-18,
       "1000": 6.677e-18
      },
      "integral_power_weighted_m4": 3.251e-16,
@@ -608,6 +609,7 @@
      "q_used": 1000.0,
      "integral_e_m4": 9.917e-17,
      "integral_by_q_m4": {
+      "100": 9.885e-17,
       "1000": 9.917e-17
      },
      "integral_power_weighted_m4": 4.523e-15,
@@ -891,6 +893,7 @@
      "q_used": 1000.0,
      "integral_e_m4": 1.418e-16,
      "integral_by_q_m4": {
+      "100": 1.412e-16,
       "1000": 1.418e-16
      },
      "integral_power_weighted_m4": 6.89e-15,
@@ -1372,6 +1375,7 @@
      "q_used": 1000.0,
      "integral_e_m4": 5.996e-18,
      "integral_by_q_m4": {
+      "100": 5.966e-18,
       "1000": 5.996e-18
      },
      "integral_power_weighted_m4": 2.013e-15,
@@ -1787,6 +1791,7 @@
      "q_used": 1000.0,
      "integral_e_m4": 1.651e-16,
      "integral_by_q_m4": {
+      "100": 1.648e-16,
       "1000": 1.651e-16
      },
      "integral_power_weighted_m4": 2.12e-14,
@@ -2070,6 +2075,7 @@
      "q_used": 1000.0,
      "integral_e_m4": 2.145e-16,
      "integral_by_q_m4": {
+      "100": 2.139e-16,
       "1000": 2.145e-16
      },
      "integral_power_weighted_m4": 3.46e-14,
@@ -2531,48 +2537,6 @@
     "runtime_s": 483.7,
     "last_step_change": 0.0,
     "cells": 1929600
-   }
-  }
- },
- "bench_room_quiet": {
-  "l1_ensemble": {
-   "kl_upper": 9.951e-14,
-   "tv_upper": 2.231e-07,
-   "c_max": 2.000001,
-   "floor_min": 0.96744,
-   "worst_realisation_tv_upper": 9.633e-07,
-   "state": "near chance"
-  },
-  "oracle": {
-   "9.66": {
-    "e_delta2": 6.296e-13,
-    "tv_upper": 3.165e-07,
-    "found_at_5pct_upper": 0.05,
-    "state": "near chance"
-   },
-   "12.66": {
-    "e_delta2": 1.256e-12,
-    "tv_upper": 4.471e-07,
-    "found_at_5pct_upper": 0.05,
-    "state": "near chance"
-   },
-   "18": {
-    "e_delta2": 4.296e-12,
-    "tv_upper": 8.269e-07,
-    "found_at_5pct_upper": 0.050001,
-    "state": "near chance"
-   },
-   "30": {
-    "e_delta2": 6.808e-11,
-    "tv_upper": 3.292e-06,
-    "found_at_5pct_upper": 0.050003,
-    "state": "near chance"
-   },
-   "40": {
-    "e_delta2": 6.808e-10,
-    "tv_upper": 1.041e-05,
-    "found_at_5pct_upper": 0.05001,
-    "state": "near chance"
    }
   }
  },
