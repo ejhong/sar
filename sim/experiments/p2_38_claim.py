@@ -431,6 +431,7 @@ def main():
             res = {}
             for part in ('deep structure', 'shafts', 'claim (both)'):
                 best = None
+                by_q = {}
                 for Q in Q_DYNAMIC:
                     (en, en_max, pk_n), (ef, ef_max, pk_f) = energies(Q, part)
                     S = lines(en, ef)
@@ -440,7 +441,7 @@ def main():
                                 'S_w': lines(en, ef, (wn, wf)), 'S_w_med': lines(en, ef, (wn_med, wf_med)),
                                 'peak': max(pk_n, pk_f), 'rms_peak': float(np.sqrt(max(en.max(), ef.max()))),
                                 'half_area': float((ef >= ef.max() / 2).sum() * GRID_STEP_M ** 2)}
-                    best.setdefault('integ_by_q', {})[f'{Q:g}'] = integ
+                    by_q[f'{Q:g}'] = integ
                 integ_w = float(best['S_w'].sum() * fr['dg'])
                 integ_w_med = float(best['S_w_med'].sum() * fr['dg'])
                 Qm = m36.phase_energy(g, best['S'], 0.0)
@@ -476,7 +477,7 @@ def main():
                     ow = r['oracle_power_weighted'][f'{head:g}']
                     r['oracle_growth_to_target'] = float(np.sqrt(m36.oracle_d2_target() / ow['e_delta2']))
                     rows[label] = r
-                res[part] = {'q_used': best['Q'], 'integral_e_m4': best['integ'], 'integral_by_q_m4': best['integ_by_q'],
+                res[part] = {'q_used': best['Q'], 'integral_e_m4': best['integ'], 'integral_by_q_m4': by_q,
                              'integral_power_weighted_m4': integ_w, 'integral_power_weighted_beyond_at_median_m4': integ_w_med,
                              'oracle_power_weighted_beyond_at_median': m36.oracle(g, integ_w_med, head, 0.0),
                              'peak_los_m': best['peak'],
@@ -497,11 +498,9 @@ def main():
                   f"{res['claim (both)']['rows']['as computed']['l1'][f'{head:g}']['tv_upper']:.2e}, oracle (weighted) "
                   f"{res['claim (both)']['rows']['as computed']['oracle_power_weighted'][f'{head:g}']['tv_upper']:.2e} "
                   f"({time.time() - t0:.0f} s)", flush=True)
-        bench = load('p2_36_benchmark')['quiet']['presence (room)']
         out = {'passes': passes, 'calibration': {'solver_over_column_on_ring': ratios, 'c_cal': c_cal,
                                                  'truncation': truncation},
-               'shaft_solver_info': {f'{k[0]}_{k[1]:g}': v['info'] for k, v in sol.items()},
-               'bench_room_quiet': {'l1_ensemble': bench['l1_ensemble'], 'oracle': bench['oracle']}}
+               'shaft_solver_info': {f'{k[0]}_{k[1]:g}': v['info'] for k, v in sol.items()}}
         out['finding'] = finding(out)
         run.save(out)
         print(out['finding'])
