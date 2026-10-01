@@ -975,6 +975,81 @@ branch), and the desktop's radiometry for both Giza passes (sites/acquisitions, 
   2 x 10^5 times, 4 x 10^3 after a cube's moment, a local level ten times the regional and site amplification three
   times. A lorry's wave does not reach that depth. The eight claimed shafts are not computed.
 
+### Seventh review, 1 October 2026: the page, the claim and the bright corner
+
+A second review of afee349 (the noise floor, revision 2, P2-38 and the proof page). Adopted:
+
+- **The figure that contradicted the page.** The routes figure on the proof page described the bench room 15 m down and
+  ended on the tight layer's old number in the old unit; it now shows the benchmark's room WA under a 5 m roof beside
+  the lorry and ends "found ≤ false alarms + 4.2% (P2-36)" (the band's largest), on the proof page and the overview; the
+  satellite page keeps the bench room, whose section it belongs to.
+- **The claim on the page.** The benchmark's table carries the claim's rows (the shafts and the deep void, under the
+  ground's own trembling; the lorry does not reach the void, and is not computed for the shafts under the pyramid),
+  and the answer section states the claim's result.
+- **The one open corner of the strong case.** At 40 dB, which stands for bright persistent ground (a building, a corner
+  reflector, the pyramid's edge), the oracle's bound is 0.95 to 1.0 for every strong pair and the speckle layer does
+  not apply: a shallow room beside a lorry under a bright persistent target is excluded by no layer. Said in P2-36's
+  finding and first in the open table.
+- **P2-38's wording.** The cube allowance cites the measured solver/sphere ratio (1.22 to 1.36 for the bench room); the
+  loading is "at most as at the surface"; the shafts are computed (below), not left to the last sentence.
+- **The radiometry.** The specification's values are scene-centre values (the site near the centre of a swath from
+  20.6 to 21.0 degrees); the 2022 pass is used with its own SNR (P2-38).
+- **P2-37's two checks.** The told detector succeeds at the positive control (100% named at x1000, p < 0.001; 62% at
+  x200, p = 0.0008), so the experiment can reveal a signal; the published method's blind map is scored at the real
+  level too, at chance (AUC 0.52, names 33%) and at every amplified level.
+
+### Eighth review, 1 October 2026: errors in revision 2, repaired as revision 3
+
+The external reviewer's review of afee349, each point checked against the code before adopting it. All held:
+
+- **The noise floor, misread.** ICEYE's documentation 6.0.0 gives -18 to -15 dB for Dwell and Dwell Fine; 6.0.8 gives
+  Dwell -26.7 to -15.6 dB and Dwell Fine -23.7 to -12.6 dB (Table 2-11, scene centre; both pages read again). The 2025
+  product (SLEDF) is Dwell Fine, the 2022 product (SLED) Dwell. The -26.7 dB withdrawn in the sixth review was Dwell's
+  best in 6.0.8 applied to a Dwell Fine product: traceable, misapplied; "no traceable source" was wrong. And no
+  specified value measures this acquisition's noise. `sarsim.radiometry` now keeps every version's best and worst for
+  the product's mode as scenarios, with the measured lower bound; the headline is the most favourable for the mode,
+  18.4 dB for 2025 (18.8 dB for 2022), the conservative choice for an exclusion, and it is worded as measured
+  backscatter over a specified noise floor. Every oracle row moves with it (P2-25, P2-27, P2-29, P2-30, P2-32, P2-36,
+  P2-38). Beside the lorry the oracle now reaches 0.13 to 0.42 (found at most 18 to 47% at 5%), P2-29's 10 m room under a
+  plane wave 0.55; every case still below 0.9. Resolving the applicable noise needs ICEYE.
+- **The score test's evaluation grounds were calibration grounds** (seeds 3600-3799 and 3700-3759). Seed streams are now
+  named and asserted disjoint; {MC}
+- **Four verification rows were stale**: cached under a version string without the noise level, they came from the
+  earlier 30 dB configuration (the floor they report implies it). `katabasis.runs.memo` now joins a digest of each
+  step's inputs to its key, and every analysis step of P2-36 passes its inputs; the rows are recomputed (the exact
+  divergence is 0.12 to 0.18 of the certificate, as before). P2-25, P2-27 and P2-29's cached steps were checked and do
+  not depend on the noise; P2-32's key already carried it.
+- **P2-38's louder ambient scaled only the cavity's motion.** The allowances for a louder local level and site
+  amplification now scale the background too (its common phase energy per line 0.002 becomes 1.8, past one), and the
+  covariance floor falls back on the receiver noise where the motion's term fails: lambda_min >= sigma^2 +
+  [max(0, 1 - sqrt(Q_c))]^2 (`sarsim.finite`, with a test). The cube allowance stays on the cavity alone.
+- **The worst realisation over a finite pass.** The quiet case's worst-realisation phase energy took the pass mean of
+  cos^2 as one half; over a finite pass it is at most (1 + 1/(omega T))/2, now used (the strong case already did).
+- **The proof page's statements.** A mixture is no easier to detect than the prior's average of its members, not than
+  its hardest member; the Gaussian bound states equal means and ||E|| < 1; the covariance floors use the positive part;
+  the sqrt(N) is the KL-derived ceiling's, with independence to be justified; the location pair's equal-prior accuracy
+  is 1/2 + TV/2 (52.3%), not the detection rate; detecting a room does not imply telling its depth.
+- **P2-38, a representative calculation of the claim.** At 0.2 Hz the shear wavenumber times the depth is 0.84, so the
+  quasi-static field was an approximation: the deep void is now computed through a damped half-space's point-source
+  response at that frequency by wavenumber integration (`katabasis.seismic.halfspace`, equal to Okada's point source at
+  low frequency within 5 x 10^-4 for every moment component), and its dynamic field carries 2.0 times the static one's
+  integral over the image (Q = 100 and 1,000 within 0.5%). The eight shafts are computed: the static solver for one open
+  shaft near the surface (truncated at 100 and 200 m, the near field changing by at most 2%), a column of Eshelby
+  cylinder moments (equal to Lame's hole and the deviatoric Kirsch result) to their full 640 m beyond, through the same
+  half-space at 0.2 Hz, scaled by 1.47, the largest solver/column ratio on the ring where they meet. Both passes, each
+  at its own SNR; the oracle weighted by the image's own brightness from the desktop's 2 km maps (5 m cells placed
+  through their tie points), beyond the map at its brightest cell (29.5 dB over the median for 2025): a bound, and
+  30 times the median's value. On the 2025 pass any reader of one image is at most 2.4 x 10^-5 above chance (1.1 x 10^-4
+  at the worst realisation), the oracle 6.3 x 10^-4; the shafts dominate (peak 1.0 x 10^-10 m on the line of sight
+  against the void's 2.5 x 10^-12 m); margins 3.4 x 10^4 and 2.1 x 10^3, and 96 and 46 with the cube, the louder level
+  and site amplification applied to the background too. The 2022 pass: 2.8 x 10^-5 and 1.3 x 10^-3. The sizes and layout
+  stay representative, the pyramid's load and scattering are omitted, and other excitations of the deep void (a lorry's
+  body waves, local sources) are not computed: the earlier "the regional trembling is the only excitation that loads
+  it" is withdrawn. The brightness map enters only the oracle and does not validate the speckle model for the real
+  acquisition.
+- **Revision 2 preserved.** BENCHMARK.md carries revision 3 and an erratum; revision 2 is at afee349. P2-37 read the
+  images of revision 2, which revision 3 shares (the worlds' hash is unchanged).
+
 ### Motion measured from orbit, 2026
 
 Two papers from the Strathclyde and Trento groups (one co-author, Clemente, also wrote the 2020 tracking papers with

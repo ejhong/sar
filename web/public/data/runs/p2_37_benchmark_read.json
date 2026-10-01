@@ -1,0 +1,3398 @@
+{
+ "manifest": {
+  "id": "p2_37_benchmark_read",
+  "title": "The benchmark read: the published method and a detector told the lorry",
+  "date": "2026-10-01",
+  "started_utc": "2026-10-01T00:31:59+00:00",
+  "runtime_s": 12.0,
+  "commit": "5aa28ff+",
+  "params": {
+   "benchmark_frozen_hash": "4bc4c58f8948",
+   "f_hz": 69.0,
+   "grounds": [
+    3701,
+    3702,
+    3703,
+    3704,
+    3705,
+    3706,
+    3707,
+    3708
+   ],
+   "levels": {
+    "real": 1.0,
+    "x200": 200.0,
+    "x1000": 1000.0
+   },
+   "taper_m": [
+    60.0,
+    70.0
+   ],
+   "top_share": 0.05,
+   "image_px": [
+    2304,
+    256
+   ],
+   "geometry": "giza-20250827",
+   "microseisms": "regional level, each ground its own realisation",
+   "amplified_levels_are_diagnostic": true
+  },
+  "environment": {
+   "python": "3.11.15",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 4,
+   "cpus": 4
+  }
+ },
+ "summary": {
+  "real": {
+   "told": {
+    "presence_auc_vs_controls": 0.526042,
+    "named_of_three": 0.333333,
+    "named_of_three_p": 1.0,
+    "location_correct": "8 of 16",
+    "location_p": 1.0,
+    "shape_correct": "8 of 16",
+    "shape_p": 1.0,
+    "images": 24,
+    "median_presence_z": 1.258815
+   },
+   "published_blind": {
+    "presence_auc_vs_controls": 0.523438,
+    "named_of_three": 0.333333,
+    "named_of_three_p": 1.0,
+    "location_correct": "8 of 16",
+    "location_p": 1.0,
+    "shape_correct": "8 of 16",
+    "shape_p": 1.0,
+    "images": 24,
+    "median_centroid_error_m": 9.501585
+   },
+   "published_paired": {
+    "presence_auc_vs_controls": 0.973958,
+    "named_of_three": 0.333333,
+    "named_of_three_p": 0.58445,
+    "location_correct": "9 of 16",
+    "location_p": 0.5,
+    "shape_correct": "7 of 16",
+    "shape_p": 0.875,
+    "images": 24,
+    "median_centroid_error_m": 7.457613
+   }
+  },
+  "x200": {
+   "told": {
+    "presence_auc_vs_controls": 0.742188,
+    "named_of_three": 0.625,
+    "named_of_three_p": 0.0008,
+    "location_correct": "11 of 16",
+    "location_p": 0.125,
+    "shape_correct": "12 of 16",
+    "shape_p": 0.0625,
+    "images": 24,
+    "median_presence_z": 2.048778
+   },
+   "published_blind": {
+    "presence_auc_vs_controls": 0.533854,
+    "named_of_three": 0.333333,
+    "named_of_three_p": 1.0,
+    "location_correct": "8 of 16",
+    "location_p": 1.0,
+    "shape_correct": "8 of 16",
+    "shape_p": 1.0,
+    "images": 24,
+    "median_centroid_error_m": 9.474984
+   },
+   "published_paired": {
+    "presence_auc_vs_controls": 0.0,
+    "named_of_three": 0.208333,
+    "named_of_three_p": 1.0,
+    "location_correct": "9 of 16",
+    "location_p": 0.5,
+    "shape_correct": "5 of 16",
+    "shape_p": 1.0,
+    "images": 24,
+    "median_centroid_error_m": 3.339762
+   }
+  },
+  "x1000": {
+   "told": {
+    "presence_auc_vs_controls": 1.0,
+    "named_of_three": 1.0,
+    "named_of_three_p": 0.0,
+    "location_correct": "16 of 16",
+    "location_p": 0.003906,
+    "shape_correct": "16 of 16",
+    "shape_p": 0.003906,
+    "images": 24,
+    "median_presence_z": 6.208284
+   },
+   "published_blind": {
+    "presence_auc_vs_controls": 0.523438,
+    "named_of_three": 0.333333,
+    "named_of_three_p": 1.0,
+    "location_correct": "8 of 16",
+    "location_p": 1.0,
+    "shape_correct": "8 of 16",
+    "shape_p": 1.0,
+    "images": 24,
+    "median_centroid_error_m": 9.750376
+   },
+   "published_paired": {
+    "presence_auc_vs_controls": 0.0,
+    "named_of_three": 0.208333,
+    "named_of_three_p": 1.0,
+    "location_correct": "9 of 16",
+    "location_p": 0.5,
+    "shape_correct": "5 of 16",
+    "shape_p": 1.0,
+    "images": 24,
+    "median_centroid_error_m": 3.247629
+   }
+  },
+  "control_centroid_error_m": 9.501585
+ },
+ "rows": [
+  {
+   "seed": 3701,
+   "world": "W0",
+   "level": "control",
+   "told": {
+    "presence": 2.825223,
+    "z": {
+     "WA": 0.795634,
+     "WB": 2.825223,
+     "WA6": 0.228604
+    },
+    "named": null
+   },
+   "published_blind": {
+    "presence": 4.046035,
+    "correlation": {
+     "WA": -0.069551,
+     "WB": -0.078826,
+     "WA6": -0.091946
+    },
+    "named": null
+   }
+  },
+  {
+   "seed": 3701,
+   "world": "motionless",
+   "level": "control",
+   "told": {
+    "presence": 2.798588,
+    "z": {
+     "WA": 0.78878,
+     "WB": 2.798588,
+     "WA6": 0.231147
+    },
+    "named": null
+   },
+   "published_blind": {
+    "presence": 4.045967,
+    "correlation": {
+     "WA": -0.069561,
+     "WB": -0.078823,
+     "WA6": -0.091951
+    },
+    "named": null
+   },
+   "published_paired": {
+    "presence": 12.867824,
+    "correlation": {
+     "WA": -0.041642,
+     "WB": -0.022326,
+     "WA6": -0.0523
+    },
+    "named": null
+   }
+  },
+  {
+   "seed": 3701,
+   "world": "WA",
+   "level": "real",
+   "told": {
+    "presence": 2.826691,
+    "z": {
+     "WA": 0.801279,
+     "WB": 2.826691,
+     "WA6": 0.22821
+    },
+    "named": "WB",
+    "location_named": "WA",
+    "shape_named": "WB"
+   },
+   "published_blind": {
+    "presence": 4.046103,
+    "correlation": {
+     "WA": -0.069547,
+     "WB": -0.078825,
+     "WA6": -0.091944
+    },
+    "named": "WA",
+    "centroid_error_m": 10.008826,
+    "location_named": "WA",
+    "shape_named": "WA"
+   },
+   "published_paired": {
+    "presence": 23.508539,
+    "correlation": {
+     "WA": 0.026147,
+     "WB": 0.032031,
+     "WA6": 0.001969
+    },
+    "named": "WB",
+    "centroid_error_m": 5.356686,
+    "location_named": "WA",
+    "shape_named": "WB"
+   }
+  },
+  {
+   "seed": 3701,
+   "world": "WB",
+   "level": "real",
+   "told": {
+    "presence": 2.83543,
+    "z": {
+     "WA": 0.79713,
+     "WB": 2.83543,
+     "WA6": 0.230024
+    },
+    "named": "WB",
+    "shape_named": "WB"
+   },
+   "published_blind": {
+    "presence": 4.046139,
+    "correlation": {
+     "WA": -0.069554,
+     "WB": -0.078833,
+     "WA6": -0.091947
+    },
+    "named": "WA",
+    "centroid_error_m": 13.063823,
+    "shape_named": "WA"
+   },
+   "published_paired": {
+    "presence": 29.170475,
+    "correlation": {
+     "WA": 0.009194,
+     "WB": 0.020057,
+     "WA6": -0.003017
+    },
+    "named": "WB",
+    "centroid_error_m": 10.225937,
+    "shape_named": "WB"
+   }
+  },
+  {
+   "seed": 3701,
+   "world": "WA6",
+   "level": "real",
+   "told": {
+    "presence": 2.826341,
+    "z": {
+     "WA": 0.795294,
+     "WB": 2.826341,
+     "WA6": 0.234109
+    },
+    "named": "WB",
+    "location_named": "WA"
+   },
+   "published_blind": {
+    "presence": 4.046054,
+    "correlation": {
+     "WA": -0.069555,
+     "WB": -0.078832,
+     "WA6": -0.091949
+    },
+    "named": "WA",
+    "centroid_error_m": 8.604608,
+    "location_named": "WA"
+   },
+   "published_paired": {
+    "presence": 38.489258,
+    "correlation": {
+     "WA": 0.036009,
+     "WB": 0.05952,
+     "WA6": 0.022457
+    },
+    "named": "WB",
+    "centroid_error_m": 6.459162,
+    "location_named": "WA"
+   }
+  },
+  {
+   "seed": 3701,
+   "world": "WA",
+   "level": "x200",
+   "told": {
+    "presence": 3.118771,
+    "z": {
+     "WA": 1.924458,
+     "WB": 3.118771,
+     "WA6": 0.149852
+    },
+    "named": "WB",
+    "location_named": "WA",
+    "shape_named": "WB"
+   },
+   "published_blind": {
+    "presence": 4.059157,
+    "correlation": {
+     "WA": -0.069045,
+     "WB": -0.078951,
+     "WA6": -0.091642
+    },
+    "named": "WA",
+    "centroid_error_m": 9.955624,
+    "location_named": "WA",
+    "shape_named": "WA"
+   },
+   "published_paired": {
+    "presence": 7.588242,
+    "correlation": {
+     "WA": 0.194434,
+     "WB": 0.234535,
+     "WA6": 0.072492
+    },
+    "named": "WB",
+    "centroid_error_m": 2.721221,
+    "location_named": "WA",
+    "shape_named": "WB"
+   }
+  },
+  {
+   "seed": 3701,
+   "world": "WB",
+   "level": "x200",
+   "told": {
+    "presence": 4.86639,
+    "z": {
+     "WA": 1.094818,
+     "WB": 4.86639,
+     "WA6": 0.512499
+    },
+    "named": "WB",
+    "shape_named": "WB"
+   },
+   "published_blind": {
+    "presence": 4.0543,
+    "correlation": {
+     "WA": -0.069791,
+     "WB": -0.079256,
+     "WA6": -0.092014
+    },
+    "named": "WA",
+    "centroid_error_m": 13.020967,
+    "shape_named": "WA"
+   },
+   "published_paired": {
+    "presence": 4.404016,
+    "correlation": {
+     "WA": 0.129548,
+     "WB": 0.134471,
+     "WA6": 0.087082
+    },
+    "named": "WB",
+    "centroid_error_m": 6.707693,
+    "shape_named": "WB"
+   }
+  },
+  {
+   "seed": 3701,
+   "world": "WA6",
+   "level": "x200",
+   "told": {
+    "presence": 3.048791,
+    "z": {
+     "WA": 0.72755,
+     "WB": 3.048791,
+     "WA6": 1.329483
+    },
+    "named": "WB",
+    "location_named": "WA6"
+   },
+   "published_blind": {
+    "presence": 4.052897,
+    "correlation": {
+     "WA": -0.069977,
+     "WB": -0.079128,
+     "WA6": -0.092313
+    },
+    "named": "WA",
+    "centroid_error_m": 8.728718,
+    "location_named": "WA"
+   },
+   "published_paired": {
+    "presence": 5.439251,
+    "correlation": {
+     "WA": 0.200129,
+     "WB": 0.248817,
+     "WA6": 0.210529
+    },
+    "named": "WB",
+    "centroid_error_m": 3.441004,
+    "location_named": "WA6"
+   }
+  },
+  {
+   "seed": 3701,
+   "world": "WA",
+   "level": "x1000",
+   "told": {
+    "presence": 6.432971,
+    "z": {
+     "WA": 6.432971,
+     "WB": 4.292001,
+     "WA6": -0.164079
+    },
+    "named": "WA",
+    "location_named": "WA",
+    "shape_named": "WA"
+   },
+   "published_blind": {
+    "presence": 4.072231,
+    "correlation": {
+     "WA": -0.064873,
+     "WB": -0.076496,
+     "WA6": -0.089489
+    },
+    "named": "WA",
+    "centroid_error_m": 9.955624,
+    "location_named": "WA",
+    "shape_named": "WA"
+   },
+   "published_paired": {
+    "presence": 7.836393,
+    "correlation": {
+     "WA": 0.209449,
+     "WB": 0.238223,
+     "WA6": 0.076826
+    },
+    "named": "WB",
+    "centroid_error_m": 2.736925,
+    "location_named": "WA",
+    "shape_named": "WB"
+   }
+  },
+  {
+   "seed": 3701,
+   "world": "WB",
+   "level": "x1000",
+   "told": {
+    "presence": 13.017404,
+    "z": {
+     "WA": 2.289777,
+     "WB": 13.017404,
+     "WA6": 1.645443
+    },
+    "named": "WB",
+    "shape_named": "WB"
+   },
+   "published_blind": {
+    "presence": 4.095593,
+    "correlation": {
+     "WA": -0.069441,
+     "WB": -0.077988,
+     "WA6": -0.091668
+    },
+    "named": "WA",
+    "centroid_error_m": 13.158056,
+    "shape_named": "WA"
+   },
+   "published_paired": {
+    "presence": 4.049413,
+    "correlation": {
+     "WA": 0.118612,
+     "WB": 0.121863,
+     "WA6": 0.087695
+    },
+    "named": "WB",
+    "centroid_error_m": 6.91085,
+    "shape_named": "WB"
+   }
+  },
+  {
+   "seed": 3701,
+   "world": "WA6",
+   "level": "x1000",
+   "told": {
+    "presence": 5.730008,
+    "z": {
+     "WA": 0.454467,
+     "WB": 3.9426,
+     "WA6": 5.730008
+    },
+    "named": "WA6",
+    "location_named": "WA6"
+   },
+   "published_blind": {
+    "presence": 4.069967,
+    "correlation": {
+     "WA": -0.070411,
+     "WB": -0.079094,
+     "WA6": -0.092557
+    },
+    "named": "WA",
+    "centroid_error_m": 8.941859,
+    "location_named": "WA"
+   },
+   "published_paired": {
+    "presence": 5.44932,
+    "correlation": {
+     "WA": 0.213027,
+     "WB": 0.260561,
+     "WA6": 0.216609
+    },
+    "named": "WB",
+    "centroid_error_m": 3.03528,
+    "location_named": "WA6"
+   }
+  },
+  {
+   "seed": 3702,
+   "world": "W0",
+   "level": "control",
+   "told": {
+    "presence": 1.083661,
+    "z": {
+     "WA": -0.980341,
+     "WB": 0.110187,
+     "WA6": 1.083661
+    },
+    "named": null
+   },
+   "published_blind": {
+    "presence": 3.394271,
+    "correlation": {
+     "WA": 0.036754,
+     "WB": 0.069691,
+     "WA6": 0.021624
+    },
+    "named": null
+   }
+  },
+  {
+   "seed": 3702,
+   "world": "motionless",
+   "level": "control",
+   "told": {
+    "presence": 1.086652,
+    "z": {
+     "WA": -0.987051,
+     "WB": 0.08409,
+     "WA6": 1.086652
+    },
+    "named": null
+   },
+   "published_blind": {
+    "presence": 3.394491,
+    "correlation": {
+     "WA": 0.03674,
+     "WB": 0.069688,
+     "WA6": 0.021609
+    },
+    "named": null
+   },
+   "published_paired": {
+    "presence": 18.548737,
+    "correlation": {
+     "WA": -0.027141,
+     "WB": -0.026889,
+     "WA6": -0.033813
+    },
+    "named": null
+   }
+  },
+  {
+   "seed": 3702,
+   "world": "WA",
+   "level": "real",
+   "told": {
+    "presence": 1.083129,
+    "z": {
+     "WA": -0.97496,
+     "WB": 0.11157,
+     "WA6": 1.083129
+    },
+    "named": "WA6",
+    "location_named": "WA6",
+    "shape_named": "WB"
+   },
+   "published_blind": {
+    "presence": 3.394243,
+    "correlation": {
+     "WA": 0.036752,
+     "WB": 0.06969,
+     "WA6": 0.021624
+    },
+    "named": "WB",
+    "centroid_error_m": 8.994345,
+    "location_named": "WA",
+    "shape_named": "WB"
+   },
+   "published_paired": {
+    "presence": 24.864758,
+    "correlation": {
+     "WA": 0.066709,
+     "WB": 0.076121,
+     "WA6": 0.017117
+    },
+    "named": "WB",
+    "centroid_error_m": 7.478555,
+    "location_named": "WA",
+    "shape_named": "WB"
+   }
+  },
+  {
+   "seed": 3702,
+   "world": "WB",
+   "level": "real",
+   "told": {
+    "presence": 1.084969,
+    "z": {
+     "WA": -0.978984,
+     "WB": 0.120351,
+     "WA6": 1.084969
+    },
+    "named": "WA6",
+    "shape_named": "WB"
+   },
+   "published_blind": {
+    "presence": 3.394268,
+    "correlation": {
+     "WA": 0.03679,
+     "WB": 0.069715,
+     "WA6": 0.021676
+    },
+    "named": "WB",
+    "centroid_error_m": 8.801262,
+    "shape_named": "WB"
+   },
+   "published_paired": {
+    "presence": 28.44253,
+    "correlation": {
+     "WA": 0.432137,
+     "WB": 0.267353,
+     "WA6": 0.583246
+    },
+    "named": "WA6",
+    "centroid_error_m": 6.536672,
+    "shape_named": "WA"
+   }
+  },
+  {
+   "seed": 3702,
+   "world": "WA6",
+   "level": "real",
+   "told": {
+    "presence": 1.088834,
+    "z": {
+     "WA": -0.980768,
+     "WB": 0.111276,
+     "WA6": 1.088834
+    },
+    "named": "WA6",
+    "location_named": "WA6"
+   },
+   "published_blind": {
+    "presence": 3.394274,
+    "correlation": {
+     "WA": 0.03675,
+     "WB": 0.069688,
+     "WA6": 0.021625
+    },
+    "named": "WB",
+    "centroid_error_m": 14.393572,
+    "location_named": "WA"
+   },
+   "published_paired": {
+    "presence": 30.667339,
+    "correlation": {
+     "WA": 0.011335,
+     "WB": 0.002287,
+     "WA6": 0.002283
+    },
+    "named": "WA",
+    "centroid_error_m": 8.749414,
+    "location_named": "WA"
+   }
+  },
+  {
+   "seed": 3702,
+   "world": "WA",
+   "level": "x200",
+   "told": {
+    "presence": 0.977227,
+    "z": {
+     "WA": 0.095822,
+     "WB": 0.386927,
+     "WA6": 0.977227
+    },
+    "named": "WA6",
+    "location_named": "WA6",
+    "shape_named": "WB"
+   },
+   "published_blind": {
+    "presence": 3.396165,
+    "correlation": {
+     "WA": 0.036608,
+     "WB": 0.069443,
+     "WA6": 0.021836
+    },
+    "named": "WB",
+    "centroid_error_m": 8.994345,
+    "location_named": "WA",
+    "shape_named": "WB"
+   },
+   "published_paired": {
+    "presence": 6.373874,
+    "correlation": {
+     "WA": 0.202664,
+     "WB": 0.216262,
+     "WA6": 0.087607
+    },
+    "named": "WB",
+    "centroid_error_m": 2.429674,
+    "location_named": "WA",
+    "shape_named": "WB"
+   }
+  },
+  {
+   "seed": 3702,
+   "world": "WB",
+   "level": "x200",
+   "told": {
+    "presence": 2.142897,
+    "z": {
+     "WA": -0.708945,
+     "WB": 2.142897,
+     "WA6": 1.345326
+    },
+    "named": "WB",
+    "shape_named": "WB"
+   },
+   "published_blind": {
+    "presence": 3.398484,
+    "correlation": {
+     "WA": 0.036812,
+     "WB": 0.069924,
+     "WA6": 0.022106
+    },
+    "named": "WB",
+    "centroid_error_m": 8.801262,
+    "shape_named": "WB"
+   },
+   "published_paired": {
+    "presence": 4.836877,
+    "correlation": {
+     "WA": 0.1729,
+     "WB": 0.15916,
+     "WA6": 0.161256
+    },
+    "named": "WA",
+    "centroid_error_m": 3.400318,
+    "shape_named": "WA"
+   }
+  },
+  {
+   "seed": 3702,
+   "world": "WA6",
+   "level": "x200",
+   "told": {
+    "presence": 2.118194,
+    "z": {
+     "WA": -1.065913,
+     "WB": 0.3281,
+     "WA6": 2.118194
+    },
+    "named": "WA6",
+    "location_named": "WA6"
+   },
+   "published_blind": {
+    "presence": 3.396952,
+    "correlation": {
+     "WA": 0.036715,
+     "WB": 0.069312,
+     "WA6": 0.022043
+    },
+    "named": "WB",
+    "centroid_error_m": 14.393572,
+    "location_named": "WA"
+   },
+   "published_paired": {
+    "presence": 6.793387,
+    "correlation": {
+     "WA": 0.185512,
+     "WB": 0.239339,
+     "WA6": 0.153272
+    },
+    "named": "WB",
+    "centroid_error_m": 3.279206,
+    "location_named": "WA"
+   }
+  },
+  {
+   "seed": 3702,
+   "world": "WA",
+   "level": "x1000",
+   "told": {
+    "presence": 4.395749,
+    "z": {
+     "WA": 4.395749,
+     "WB": 1.492377,
+     "WA6": 0.552132
+    },
+    "named": "WA",
+    "location_named": "WA",
+    "shape_named": "WA"
+   },
+   "published_blind": {
+    "presence": 3.400667,
+    "correlation": {
+     "WA": 0.037244,
+     "WB": 0.069959,
+     "WA6": 0.023614
+    },
+    "named": "WB",
+    "centroid_error_m": 9.545129,
+    "location_named": "WA",
+    "shape_named": "WB"
+   },
+   "published_paired": {
+    "presence": 6.397867,
+    "correlation": {
+     "WA": 0.199699,
+     "WB": 0.233748,
+     "WA6": 0.082041
+    },
+    "named": "WB",
+    "centroid_error_m": 2.826977,
+    "location_named": "WA",
+    "shape_named": "WB"
+   }
+  },
+  {
+   "seed": 3702,
+   "world": "WB",
+   "level": "x1000",
+   "told": {
+    "presence": 10.262585,
+    "z": {
+     "WA": 0.376649,
+     "WB": 10.262585,
+     "WA6": 2.391106
+    },
+    "named": "WB",
+    "shape_named": "WB"
+   },
+   "published_blind": {
+    "presence": 3.419067,
+    "correlation": {
+     "WA": 0.037056,
+     "WB": 0.072824,
+     "WA6": 0.023255
+    },
+    "named": "WB",
+    "centroid_error_m": 9.314998,
+    "shape_named": "WB"
+   },
+   "published_paired": {
+    "presence": 5.013687,
+    "correlation": {
+     "WA": 0.164043,
+     "WB": 0.170391,
+     "WA6": 0.129462
+    },
+    "named": "WB",
+    "centroid_error_m": 3.564583,
+    "shape_named": "WB"
+   }
+  },
+  {
+   "seed": 3702,
+   "world": "WA6",
+   "level": "x1000",
+   "told": {
+    "presence": 6.253009,
+    "z": {
+     "WA": -1.408582,
+     "WB": 1.199331,
+     "WA6": 6.253009
+    },
+    "named": "WA6",
+    "location_named": "WA6"
+   },
+   "published_blind": {
+    "presence": 3.397734,
+    "correlation": {
+     "WA": 0.037043,
+     "WB": 0.067633,
+     "WA6": 0.025013
+    },
+    "named": "WB",
+    "centroid_error_m": 14.969196,
+    "location_named": "WA"
+   },
+   "published_paired": {
+    "presence": 6.6115,
+    "correlation": {
+     "WA": 0.202432,
+     "WB": 0.25346,
+     "WA6": 0.176168
+    },
+    "named": "WB",
+    "centroid_error_m": 3.011232,
+    "location_named": "WA"
+   }
+  },
+  {
+   "seed": 3703,
+   "world": "W0",
+   "level": "control",
+   "told": {
+    "presence": 1.595676,
+    "z": {
+     "WA": 0.094482,
+     "WB": 1.595676,
+     "WA6": -0.267081
+    },
+    "named": null
+   },
+   "published_blind": {
+    "presence": 4.101631,
+    "correlation": {
+     "WA": 0.037159,
+     "WB": 0.011056,
+     "WA6": 0.065449
+    },
+    "named": null
+   }
+  },
+  {
+   "seed": 3703,
+   "world": "motionless",
+   "level": "control",
+   "told": {
+    "presence": 1.568853,
+    "z": {
+     "WA": 0.088086,
+     "WB": 1.568853,
+     "WA6": -0.264409
+    },
+    "named": null
+   },
+   "published_blind": {
+    "presence": 4.101562,
+    "correlation": {
+     "WA": 0.037161,
+     "WB": 0.011082,
+     "WA6": 0.06545
+    },
+    "named": null
+   },
+   "published_paired": {
+    "presence": 12.610372,
+    "correlation": {
+     "WA": 0.009025,
+     "WB": 0.023523,
+     "WA6": -0.036051
+    },
+    "named": null
+   }
+  },
+  {
+   "seed": 3703,
+   "world": "WA",
+   "level": "real",
+   "told": {
+    "presence": 1.597026,
+    "z": {
+     "WA": 0.099815,
+     "WB": 1.597026,
+     "WA6": -0.267559
+    },
+    "named": "WB",
+    "location_named": "WA",
+    "shape_named": "WB"
+   },
+   "published_blind": {
+    "presence": 4.101669,
+    "correlation": {
+     "WA": 0.037161,
+     "WB": 0.011059,
+     "WA6": 0.065451
+    },
+    "named": "WA6",
+    "centroid_error_m": 18.840515,
+    "location_named": "WA6",
+    "shape_named": "WA"
+   },
+   "published_paired": {
+    "presence": 22.095289,
+    "correlation": {
+     "WA": 0.012278,
+     "WB": 0.03308,
+     "WA6": -0.00144
+    },
+    "named": "WB",
+    "centroid_error_m": 2.347732,
+    "location_named": "WA",
+    "shape_named": "WB"
+   }
+  },
+  {
+   "seed": 3703,
+   "world": "WB",
+   "level": "real",
+   "told": {
+    "presence": 1.606014,
+    "z": {
+     "WA": 0.095812,
+     "WB": 1.606014,
+     "WA6": -0.265681
+    },
+    "named": "WB",
+    "shape_named": "WB"
+   },
+   "published_blind": {
+    "presence": 4.101729,
+    "correlation": {
+     "WA": 0.037161,
+     "WB": 0.011059,
+     "WA6": 0.065451
+    },
+    "named": "WA6",
+    "centroid_error_m": 20.108097,
+    "shape_named": "WA"
+   },
+   "published_paired": {
+    "presence": 29.784613,
+    "correlation": {
+     "WA": 0.008362,
+     "WB": 0.022121,
+     "WA6": 0.007566
+    },
+    "named": "WB",
+    "centroid_error_m": 14.988175,
+    "shape_named": "WB"
+   }
+  },
+  {
+   "seed": 3703,
+   "world": "WA6",
+   "level": "real",
+   "told": {
+    "presence": 1.59682,
+    "z": {
+     "WA": 0.094081,
+     "WB": 1.59682,
+     "WA6": -0.261903
+    },
+    "named": "WB",
+    "location_named": "WA"
+   },
+   "published_blind": {
+    "presence": 4.101624,
+    "correlation": {
+     "WA": 0.03716,
+     "WB": 0.011057,
+     "WA6": 0.06545
+    },
+    "named": "WA6",
+    "centroid_error_m": 13.409196,
+    "location_named": "WA6"
+   },
+   "published_paired": {
+    "presence": 30.99707,
+    "correlation": {
+     "WA": 0.036308,
+     "WB": 0.023779,
+     "WA6": 0.011954
+    },
+    "named": "WA",
+    "centroid_error_m": 5.224437,
+    "location_named": "WA"
+   }
+  },
+  {
+   "seed": 3703,
+   "world": "WA",
+   "level": "x200",
+   "told": {
+    "presence": 1.865608,
+    "z": {
+     "WA": 1.161092,
+     "WB": 1.865608,
+     "WA6": -0.362602
+    },
+    "named": "WB",
+    "location_named": "WA",
+    "shape_named": "WB"
+   },
+   "published_blind": {
+    "presence": 4.104487,
+    "correlation": {
+     "WA": 0.037714,
+     "WB": 0.011359,
+     "WA6": 0.065906
+    },
+    "named": "WA6",
+    "centroid_error_m": 18.840515,
+    "location_named": "WA6",
+    "shape_named": "WA"
+   },
+   "published_paired": {
+    "presence": 5.874722,
+    "correlation": {
+     "WA": 0.180736,
+     "WB": 0.187297,
+     "WA6": 0.08019
+    },
+    "named": "WB",
+    "centroid_error_m": 2.7015,
+    "location_named": "WA",
+    "shape_named": "WB"
+   }
+  },
+  {
+   "seed": 3703,
+   "world": "WB",
+   "level": "x200",
+   "told": {
+    "presence": 3.663095,
+    "z": {
+     "WA": 0.360301,
+     "WB": 3.663095,
+     "WA6": 0.013002
+    },
+    "named": "WB",
+    "shape_named": "WB"
+   },
+   "published_blind": {
+    "presence": 4.11153,
+    "correlation": {
+     "WA": 0.037731,
+     "WB": 0.011278,
+     "WA6": 0.06589
+    },
+    "named": "WA6",
+    "centroid_error_m": 20.068235,
+    "shape_named": "WA"
+   },
+   "published_paired": {
+    "presence": 4.724155,
+    "correlation": {
+     "WA": 0.152627,
+     "WB": 0.159522,
+     "WA6": 0.141924
+    },
+    "named": "WB",
+    "centroid_error_m": 5.827067,
+    "shape_named": "WB"
+   }
+  },
+  {
+   "seed": 3703,
+   "world": "WA6",
+   "level": "x200",
+   "told": {
+    "presence": 1.824361,
+    "z": {
+     "WA": 0.014317,
+     "WB": 1.824361,
+     "WA6": 0.768629
+    },
+    "named": "WB",
+    "location_named": "WA6"
+   },
+   "published_blind": {
+    "presence": 4.101852,
+    "correlation": {
+     "WA": 0.037352,
+     "WB": 0.011244,
+     "WA6": 0.065475
+    },
+    "named": "WA6",
+    "centroid_error_m": 13.333876,
+    "location_named": "WA6"
+   },
+   "published_paired": {
+    "presence": 4.937577,
+    "correlation": {
+     "WA": 0.225349,
+     "WB": 0.237897,
+     "WA6": 0.182255
+    },
+    "named": "WB",
+    "centroid_error_m": 2.940984,
+    "location_named": "WA"
+   }
+  },
+  {
+   "seed": 3703,
+   "world": "WA",
+   "level": "x1000",
+   "told": {
+    "presence": 5.423201,
+    "z": {
+     "WA": 5.423201,
+     "WB": 2.944981,
+     "WA6": -0.744717
+    },
+    "named": "WA",
+    "location_named": "WA",
+    "shape_named": "WA"
+   },
+   "published_blind": {
+    "presence": 4.11316,
+    "correlation": {
+     "WA": 0.041702,
+     "WB": 0.014317,
+     "WA6": 0.06918
+    },
+    "named": "WA6",
+    "centroid_error_m": 18.94517,
+    "location_named": "WA6",
+    "shape_named": "WA"
+   },
+   "published_paired": {
+    "presence": 5.702391,
+    "correlation": {
+     "WA": 0.198961,
+     "WB": 0.215009,
+     "WA6": 0.09558
+    },
+    "named": "WB",
+    "centroid_error_m": 2.667215,
+    "location_named": "WA",
+    "shape_named": "WB"
+   }
+  },
+  {
+   "seed": 3703,
+   "world": "WB",
+   "level": "x1000",
+   "told": {
+    "presence": 11.920351,
+    "z": {
+     "WA": 1.422375,
+     "WB": 11.920351,
+     "WA6": 1.130835
+    },
+    "named": "WB",
+    "shape_named": "WB"
+   },
+   "published_blind": {
+    "presence": 4.154813,
+    "correlation": {
+     "WA": 0.040222,
+     "WB": 0.013331,
+     "WA6": 0.067326
+    },
+    "named": "WA6",
+    "centroid_error_m": 20.320934,
+    "shape_named": "WA"
+   },
+   "published_paired": {
+    "presence": 4.921437,
+    "correlation": {
+     "WA": 0.155512,
+     "WB": 0.163506,
+     "WA6": 0.13615
+    },
+    "named": "WB",
+    "centroid_error_m": 6.032636,
+    "shape_named": "WB"
+   }
+  },
+  {
+   "seed": 3703,
+   "world": "WA6",
+   "level": "x1000",
+   "told": {
+    "presence": 4.909171,
+    "z": {
+     "WA": -0.306697,
+     "WB": 2.739166,
+     "WA6": 4.909171
+    },
+    "named": "WA6",
+    "location_named": "WA6"
+   },
+   "published_blind": {
+    "presence": 4.104419,
+    "correlation": {
+     "WA": 0.039761,
+     "WB": 0.013337,
+     "WA6": 0.066613
+    },
+    "named": "WA6",
+    "centroid_error_m": 13.261918,
+    "location_named": "WA6"
+   },
+   "published_paired": {
+    "presence": 5.026193,
+    "correlation": {
+     "WA": 0.228825,
+     "WB": 0.238108,
+     "WA6": 0.200494
+    },
+    "named": "WB",
+    "centroid_error_m": 3.685902,
+    "location_named": "WA"
+   }
+  },
+  {
+   "seed": 3704,
+   "world": "W0",
+   "level": "control",
+   "told": {
+    "presence": 0.663139,
+    "z": {
+     "WA": 0.663139,
+     "WB": 0.100287,
+     "WA6": -1.840775
+    },
+    "named": null
+   },
+   "published_blind": {
+    "presence": 3.535403,
+    "correlation": {
+     "WA": 0.021687,
+     "WB": 0.031446,
+     "WA6": 0.048763
+    },
+    "named": null
+   }
+  },
+  {
+   "seed": 3704,
+   "world": "motionless",
+   "level": "control",
+   "told": {
+    "presence": 0.657303,
+    "z": {
+     "WA": 0.657303,
+     "WB": 0.074184,
+     "WA6": -1.838558
+    },
+    "named": null
+   },
+   "published_blind": {
+    "presence": 3.535128,
+    "correlation": {
+     "WA": 0.021683,
+     "WB": 0.031438,
+     "WA6": 0.048764
+    },
+    "named": null
+   },
+   "published_paired": {
+    "presence": 14.561385,
+    "correlation": {
+     "WA": -0.011564,
+     "WB": 0.014684,
+     "WA6": -0.031779
+    },
+    "named": null
+   }
+  },
+  {
+   "seed": 3704,
+   "world": "WA",
+   "level": "real",
+   "told": {
+    "presence": 0.668439,
+    "z": {
+     "WA": 0.668439,
+     "WB": 0.101645,
+     "WA6": -1.84127
+    },
+    "named": "WA",
+    "location_named": "WA",
+    "shape_named": "WA"
+   },
+   "published_blind": {
+    "presence": 3.535406,
+    "correlation": {
+     "WA": 0.021687,
+     "WB": 0.031444,
+     "WA6": 0.048763
+    },
+    "named": "WA6",
+    "centroid_error_m": 7.444673,
+    "location_named": "WA6",
+    "shape_named": "WB"
+   },
+   "published_paired": {
+    "presence": 20.666203,
+    "correlation": {
+     "WA": 0.084132,
+     "WB": 0.091876,
+     "WA6": 0.051556
+    },
+    "named": "WB",
+    "centroid_error_m": 5.572646,
+    "location_named": "WA",
+    "shape_named": "WB"
+   }
+  },
+  {
+   "seed": 3704,
+   "world": "WB",
+   "level": "real",
+   "told": {
+    "presence": 0.66445,
+    "z": {
+     "WA": 0.66445,
+     "WB": 0.110512,
+     "WA6": -1.839403
+    },
+    "named": "WA",
+    "shape_named": "WA"
+   },
+   "published_blind": {
+    "presence": 3.535347,
+    "correlation": {
+     "WA": 0.021686,
+     "WB": 0.031445,
+     "WA6": 0.048762
+    },
+    "named": "WA6",
+    "centroid_error_m": 7.516162,
+    "shape_named": "WB"
+   },
+   "published_paired": {
+    "presence": 26.774057,
+    "correlation": {
+     "WA": 0.027243,
+     "WB": 0.041616,
+     "WA6": 0.0211
+    },
+    "named": "WB",
+    "centroid_error_m": 8.744578,
+    "shape_named": "WB"
+   }
+  },
+  {
+   "seed": 3704,
+   "world": "WA6",
+   "level": "real",
+   "told": {
+    "presence": 0.66274,
+    "z": {
+     "WA": 0.66274,
+     "WB": 0.101414,
+     "WA6": -1.835647
+    },
+    "named": "WA",
+    "location_named": "WA"
+   },
+   "published_blind": {
+    "presence": 3.535402,
+    "correlation": {
+     "WA": 0.02169,
+     "WB": 0.031449,
+     "WA6": 0.048764
+    },
+    "named": "WA6",
+    "centroid_error_m": 12.819398,
+    "location_named": "WA6"
+   },
+   "published_paired": {
+    "presence": 16.902515,
+    "correlation": {
+     "WA": 0.133556,
+     "WB": 0.169235,
+     "WA6": 0.171199
+    },
+    "named": "WA6",
+    "centroid_error_m": 3.87789,
+    "location_named": "WA6"
+   }
+  },
+  {
+   "seed": 3704,
+   "world": "WA",
+   "level": "x200",
+   "told": {
+    "presence": 1.723232,
+    "z": {
+     "WA": 1.723232,
+     "WB": 0.371988,
+     "WA6": -1.939695
+    },
+    "named": "WA",
+    "location_named": "WA",
+    "shape_named": "WA"
+   },
+   "published_blind": {
+    "presence": 3.541209,
+    "correlation": {
+     "WA": 0.021704,
+     "WB": 0.030957,
+     "WA6": 0.048747
+    },
+    "named": "WA6",
+    "centroid_error_m": 7.444673,
+    "location_named": "WA6",
+    "shape_named": "WB"
+   },
+   "published_paired": {
+    "presence": 5.927186,
+    "correlation": {
+     "WA": 0.236355,
+     "WB": 0.269517,
+     "WA6": 0.102326
+    },
+    "named": "WB",
+    "centroid_error_m": 2.055752,
+    "location_named": "WA",
+    "shape_named": "WB"
+   }
+  },
+  {
+   "seed": 3704,
+   "world": "WB",
+   "level": "x200",
+   "told": {
+    "presence": 2.145363,
+    "z": {
+     "WA": 0.925366,
+     "WB": 2.145363,
+     "WA6": -1.566268
+    },
+    "named": "WB",
+    "shape_named": "WB"
+   },
+   "published_blind": {
+    "presence": 3.538476,
+    "correlation": {
+     "WA": 0.021416,
+     "WB": 0.031323,
+     "WA6": 0.04864
+    },
+    "named": "WA6",
+    "centroid_error_m": 7.606809,
+    "shape_named": "WB"
+   },
+   "published_paired": {
+    "presence": 4.064528,
+    "correlation": {
+     "WA": 0.122011,
+     "WB": 0.144072,
+     "WA6": 0.111833
+    },
+    "named": "WB",
+    "centroid_error_m": 5.978881,
+    "shape_named": "WB"
+   }
+  },
+  {
+   "seed": 3704,
+   "world": "WA6",
+   "level": "x200",
+   "told": {
+    "presence": 0.583474,
+    "z": {
+     "WA": 0.583474,
+     "WB": 0.325774,
+     "WA6": -0.815003
+    },
+    "named": "WA",
+    "location_named": "WA"
+   },
+   "published_blind": {
+    "presence": 3.532609,
+    "correlation": {
+     "WA": 0.022201,
+     "WB": 0.032063,
+     "WA6": 0.049076
+    },
+    "named": "WA6",
+    "centroid_error_m": 12.819398,
+    "location_named": "WA6"
+   },
+   "published_paired": {
+    "presence": 6.593441,
+    "correlation": {
+     "WA": 0.260483,
+     "WB": 0.288592,
+     "WA6": 0.243068
+    },
+    "named": "WB",
+    "centroid_error_m": 3.745429,
+    "location_named": "WA"
+   }
+  },
+  {
+   "seed": 3704,
+   "world": "WA",
+   "level": "x1000",
+   "told": {
+    "presence": 5.959235,
+    "z": {
+     "WA": 5.959235,
+     "WB": 1.458794,
+     "WA6": -2.335231
+    },
+    "named": "WA",
+    "location_named": "WA",
+    "shape_named": "WA"
+   },
+   "published_blind": {
+    "presence": 3.550953,
+    "correlation": {
+     "WA": 0.023173,
+     "WB": 0.030602,
+     "WA6": 0.049721
+    },
+    "named": "WA6",
+    "centroid_error_m": 8.040849,
+    "location_named": "WA6",
+    "shape_named": "WB"
+   },
+   "published_paired": {
+    "presence": 5.68958,
+    "correlation": {
+     "WA": 0.228644,
+     "WB": 0.260135,
+     "WA6": 0.10351
+    },
+    "named": "WB",
+    "centroid_error_m": 2.519281,
+    "location_named": "WA",
+    "shape_named": "WB"
+   }
+  },
+  {
+   "seed": 3704,
+   "world": "WB",
+   "level": "x1000",
+   "told": {
+    "presence": 10.317001,
+    "z": {
+     "WA": 1.973504,
+     "WB": 10.317001,
+     "WA6": -0.469911
+    },
+    "named": "WB",
+    "shape_named": "WB"
+   },
+   "published_blind": {
+    "presence": 3.535398,
+    "correlation": {
+     "WA": 0.019994,
+     "WB": 0.031588,
+     "WA6": 0.046931
+    },
+    "named": "WA6",
+    "centroid_error_m": 7.683226,
+    "shape_named": "WB"
+   },
+   "published_paired": {
+    "presence": 4.096258,
+    "correlation": {
+     "WA": 0.127871,
+     "WB": 0.153299,
+     "WA6": 0.107959
+    },
+    "named": "WB",
+    "centroid_error_m": 5.685921,
+    "shape_named": "WB"
+   }
+  },
+  {
+   "seed": 3704,
+   "world": "WA6",
+   "level": "x1000",
+   "told": {
+    "presence": 3.286064,
+    "z": {
+     "WA": 0.264709,
+     "WB": 1.22811,
+     "WA6": 3.286064
+    },
+    "named": "WA6",
+    "location_named": "WA6"
+   },
+   "published_blind": {
+    "presence": 3.542703,
+    "correlation": {
+     "WA": 0.024633,
+     "WB": 0.034215,
+     "WA6": 0.051163
+    },
+    "named": "WA6",
+    "centroid_error_m": 13.321573,
+    "location_named": "WA6"
+   },
+   "published_paired": {
+    "presence": 6.511001,
+    "correlation": {
+     "WA": 0.215247,
+     "WB": 0.269777,
+     "WA6": 0.209447
+    },
+    "named": "WB",
+    "centroid_error_m": 3.067357,
+    "location_named": "WA"
+   }
+  },
+  {
+   "seed": 3705,
+   "world": "W0",
+   "level": "control",
+   "told": {
+    "presence": 0.9325,
+    "z": {
+     "WA": -1.533091,
+     "WB": 0.375633,
+     "WA6": 0.9325
+    },
+    "named": null
+   },
+   "published_blind": {
+    "presence": 4.421198,
+    "correlation": {
+     "WA": 0.021941,
+     "WB": -0.031946,
+     "WA6": -0.043619
+    },
+    "named": null
+   }
+  },
+  {
+   "seed": 3705,
+   "world": "motionless",
+   "level": "control",
+   "told": {
+    "presence": 0.934723,
+    "z": {
+     "WA": -1.539072,
+     "WB": 0.349082,
+     "WA6": 0.934723
+    },
+    "named": null
+   },
+   "published_blind": {
+    "presence": 4.422326,
+    "correlation": {
+     "WA": 0.022019,
+     "WB": -0.031812,
+     "WA6": -0.043582
+    },
+    "named": null
+   },
+   "published_paired": {
+    "presence": 15.821351,
+    "correlation": {
+     "WA": 0.126665,
+     "WB": 0.243692,
+     "WA6": 0.012732
+    },
+    "named": null
+   }
+  },
+  {
+   "seed": 3705,
+   "world": "WA",
+   "level": "real",
+   "told": {
+    "presence": 0.932049,
+    "z": {
+     "WA": -1.527742,
+     "WB": 0.377005,
+     "WA6": 0.932049
+    },
+    "named": "WA6",
+    "location_named": "WA6",
+    "shape_named": "WB"
+   },
+   "published_blind": {
+    "presence": 4.421236,
+    "correlation": {
+     "WA": 0.021942,
+     "WB": -0.031944,
+     "WA6": -0.043619
+    },
+    "named": "WA",
+    "centroid_error_m": 7.033764,
+    "location_named": "WA",
+    "shape_named": "WA"
+   },
+   "published_paired": {
+    "presence": 30.147362,
+    "correlation": {
+     "WA": 0.029326,
+     "WB": 0.026872,
+     "WA6": 0.004864
+    },
+    "named": "WA",
+    "centroid_error_m": 9.298968,
+    "location_named": "WA",
+    "shape_named": "WA"
+   }
+  },
+  {
+   "seed": 3705,
+   "world": "WB",
+   "level": "real",
+   "told": {
+    "presence": 0.933961,
+    "z": {
+     "WA": -1.531777,
+     "WB": 0.386112,
+     "WA6": 0.933961
+    },
+    "named": "WA6",
+    "shape_named": "WB"
+   },
+   "published_blind": {
+    "presence": 4.422352,
+    "correlation": {
+     "WA": 0.021939,
+     "WB": -0.031951,
+     "WA6": -0.043621
+    },
+    "named": "WA",
+    "centroid_error_m": 4.866031,
+    "shape_named": "WA"
+   },
+   "published_paired": {
+    "presence": 23.557205,
+    "correlation": {
+     "WA": -0.001105,
+     "WB": -0.007899,
+     "WA6": -0.006876
+    },
+    "named": "WA",
+    "centroid_error_m": 18.678912,
+    "shape_named": "WA"
+   }
+  },
+  {
+   "seed": 3705,
+   "world": "WA6",
+   "level": "real",
+   "told": {
+    "presence": 0.937735,
+    "z": {
+     "WA": -1.533469,
+     "WB": 0.376746,
+     "WA6": 0.937735
+    },
+    "named": "WA6",
+    "location_named": "WA6"
+   },
+   "published_blind": {
+    "presence": 4.421199,
+    "correlation": {
+     "WA": 0.021939,
+     "WB": -0.031948,
+     "WA6": -0.043623
+    },
+    "named": "WA",
+    "centroid_error_m": 11.974015,
+    "location_named": "WA"
+   },
+   "published_paired": {
+    "presence": 29.134972,
+    "correlation": {
+     "WA": 0.046523,
+     "WB": 0.047192,
+     "WA6": 0.037878
+    },
+    "named": "WB",
+    "centroid_error_m": 6.647287,
+    "location_named": "WA"
+   }
+  },
+  {
+   "seed": 3705,
+   "world": "WA",
+   "level": "x200",
+   "told": {
+    "presence": 0.84227,
+    "z": {
+     "WA": -0.463268,
+     "WB": 0.650119,
+     "WA6": 0.84227
+    },
+    "named": "WA6",
+    "location_named": "WA6",
+    "shape_named": "WB"
+   },
+   "published_blind": {
+    "presence": 4.424838,
+    "correlation": {
+     "WA": 0.022364,
+     "WB": -0.031355,
+     "WA6": -0.043486
+    },
+    "named": "WA",
+    "centroid_error_m": 7.033764,
+    "location_named": "WA",
+    "shape_named": "WA"
+   },
+   "published_paired": {
+    "presence": 5.43562,
+    "correlation": {
+     "WA": 0.210889,
+     "WB": 0.22603,
+     "WA6": 0.079802
+    },
+    "named": "WB",
+    "centroid_error_m": 1.998562,
+    "location_named": "WA",
+    "shape_named": "WB"
+   }
+  },
+  {
+   "seed": 3705,
+   "world": "WB",
+   "level": "x200",
+   "told": {
+    "presence": 2.471194,
+    "z": {
+     "WA": -1.270232,
+     "WB": 2.471194,
+     "WA6": 1.224567
+    },
+    "named": "WB",
+    "shape_named": "WB"
+   },
+   "published_blind": {
+    "presence": 4.415612,
+    "correlation": {
+     "WA": 0.022112,
+     "WB": -0.032165,
+     "WA6": -0.043558
+    },
+    "named": "WA",
+    "centroid_error_m": 4.866031,
+    "shape_named": "WA"
+   },
+   "published_paired": {
+    "presence": 4.558399,
+    "correlation": {
+     "WA": 0.151359,
+     "WB": 0.145951,
+     "WA6": 0.096572
+    },
+    "named": "WA",
+    "centroid_error_m": 6.139761,
+    "shape_named": "WA"
+   }
+  },
+  {
+   "seed": 3705,
+   "world": "WA6",
+   "level": "x200",
+   "told": {
+    "presence": 1.979362,
+    "z": {
+     "WA": -1.608727,
+     "WB": 0.598353,
+     "WA6": 1.979362
+    },
+    "named": "WA6",
+    "location_named": "WA6"
+   },
+   "published_blind": {
+    "presence": 4.424119,
+    "correlation": {
+     "WA": 0.021668,
+     "WB": -0.032209,
+     "WA6": -0.044336
+    },
+    "named": "WA",
+    "centroid_error_m": 11.490701,
+    "location_named": "WA"
+   },
+   "published_paired": {
+    "presence": 5.68192,
+    "correlation": {
+     "WA": 0.239809,
+     "WB": 0.27164,
+     "WA6": 0.196939
+    },
+    "named": "WB",
+    "centroid_error_m": 2.982587,
+    "location_named": "WA"
+   }
+  },
+  {
+   "seed": 3705,
+   "world": "WA",
+   "level": "x1000",
+   "told": {
+    "presence": 3.812258,
+    "z": {
+     "WA": 3.812258,
+     "WB": 1.747704,
+     "WA6": 0.480844
+    },
+    "named": "WA",
+    "location_named": "WA",
+    "shape_named": "WA"
+   },
+   "published_blind": {
+    "presence": 4.420774,
+    "correlation": {
+     "WA": 0.025522,
+     "WB": -0.027081,
+     "WA6": -0.041996
+    },
+    "named": "WA",
+    "centroid_error_m": 7.033764,
+    "location_named": "WA",
+    "shape_named": "WA"
+   },
+   "published_paired": {
+    "presence": 5.88038,
+    "correlation": {
+     "WA": 0.214313,
+     "WB": 0.222537,
+     "WA6": 0.079427
+    },
+    "named": "WB",
+    "centroid_error_m": 2.467035,
+    "location_named": "WA",
+    "shape_named": "WB"
+   }
+  },
+  {
+   "seed": 3705,
+   "world": "WB",
+   "level": "x1000",
+   "told": {
+    "presence": 10.839093,
+    "z": {
+     "WA": -0.218968,
+     "WB": 10.839093,
+     "WA6": 2.390679
+    },
+    "named": "WB",
+    "shape_named": "WB"
+   },
+   "published_blind": {
+    "presence": 4.403713,
+    "correlation": {
+     "WA": 0.022549,
+     "WB": -0.03127,
+     "WA6": -0.043535
+    },
+    "named": "WA",
+    "centroid_error_m": 4.59153,
+    "shape_named": "WA"
+   },
+   "published_paired": {
+    "presence": 4.641879,
+    "correlation": {
+     "WA": 0.156585,
+     "WB": 0.152773,
+     "WA6": 0.102032
+    },
+    "named": "WA",
+    "centroid_error_m": 5.622121,
+    "shape_named": "WA"
+   }
+  },
+  {
+   "seed": 3705,
+   "world": "WA6",
+   "level": "x1000",
+   "told": {
+    "presence": 6.163559,
+    "z": {
+     "WA": -1.911502,
+     "WB": 1.489243,
+     "WA6": 6.163559
+    },
+    "named": "WA6",
+    "location_named": "WA6"
+   },
+   "published_blind": {
+    "presence": 4.448802,
+    "correlation": {
+     "WA": 0.021868,
+     "WB": -0.032267,
+     "WA6": -0.045778
+    },
+    "named": "WA",
+    "centroid_error_m": 11.439105,
+    "location_named": "WA"
+   },
+   "published_paired": {
+    "presence": 5.204756,
+    "correlation": {
+     "WA": 0.246777,
+     "WB": 0.27109,
+     "WA6": 0.198762
+    },
+    "named": "WB",
+    "centroid_error_m": 2.709288,
+    "location_named": "WA"
+   }
+  },
+  {
+   "seed": 3706,
+   "world": "W0",
+   "level": "control",
+   "told": {
+    "presence": 1.645186,
+    "z": {
+     "WA": 1.645186,
+     "WB": 1.070876,
+     "WA6": 0.392803
+    },
+    "named": null
+   },
+   "published_blind": {
+    "presence": 3.763149,
+    "correlation": {
+     "WA": -0.080538,
+     "WB": -0.037127,
+     "WA6": -0.102332
+    },
+    "named": null
+   }
+  },
+  {
+   "seed": 3706,
+   "world": "motionless",
+   "level": "control",
+   "told": {
+    "presence": 1.638277,
+    "z": {
+     "WA": 1.638277,
+     "WB": 1.042601,
+     "WA6": 0.396066
+    },
+    "named": null
+   },
+   "published_blind": {
+    "presence": 3.763879,
+    "correlation": {
+     "WA": -0.080535,
+     "WB": -0.037121,
+     "WA6": -0.102332
+    },
+    "named": null
+   },
+   "published_paired": {
+    "presence": 18.369526,
+    "correlation": {
+     "WA": -0.035126,
+     "WB": -0.026723,
+     "WA6": -0.04493
+    },
+    "named": null
+   }
+  },
+  {
+   "seed": 3706,
+   "world": "WA",
+   "level": "real",
+   "told": {
+    "presence": 1.650529,
+    "z": {
+     "WA": 1.650529,
+     "WB": 1.072334,
+     "WA6": 0.392319
+    },
+    "named": "WA",
+    "location_named": "WA",
+    "shape_named": "WA"
+   },
+   "published_blind": {
+    "presence": 3.763207,
+    "correlation": {
+     "WA": -0.080537,
+     "WB": -0.037126,
+     "WA6": -0.102331
+    },
+    "named": "WB",
+    "centroid_error_m": 5.43952,
+    "location_named": "WA",
+    "shape_named": "WB"
+   },
+   "published_paired": {
+    "presence": 27.289949,
+    "correlation": {
+     "WA": 0.037315,
+     "WB": 0.050318,
+     "WA6": -0.0008828
+    },
+    "named": "WB",
+    "centroid_error_m": 4.051553,
+    "location_named": "WA",
+    "shape_named": "WB"
+   }
+  },
+  {
+   "seed": 3706,
+   "world": "WB",
+   "level": "real",
+   "told": {
+    "presence": 1.646501,
+    "z": {
+     "WA": 1.646501,
+     "WB": 1.081344,
+     "WA6": 0.394085
+    },
+    "named": "WA",
+    "shape_named": "WA"
+   },
+   "published_blind": {
+    "presence": 3.763201,
+    "correlation": {
+     "WA": -0.080536,
+     "WB": -0.037125,
+     "WA6": -0.10233
+    },
+    "named": "WB",
+    "centroid_error_m": 5.824553,
+    "shape_named": "WB"
+   },
+   "published_paired": {
+    "presence": 26.94305,
+    "correlation": {
+     "WA": -0.009504,
+     "WB": -0.01337,
+     "WA6": -0.012618
+    },
+    "named": "WA",
+    "centroid_error_m": 7.43667,
+    "shape_named": "WA"
+   }
+  },
+  {
+   "seed": 3706,
+   "world": "WA6",
+   "level": "real",
+   "told": {
+    "presence": 1.644806,
+    "z": {
+     "WA": 1.644806,
+     "WB": 1.071962,
+     "WA6": 0.398034
+    },
+    "named": "WA",
+    "location_named": "WA"
+   },
+   "published_blind": {
+    "presence": 3.763154,
+    "correlation": {
+     "WA": -0.080537,
+     "WB": -0.037126,
+     "WA6": -0.102331
+    },
+    "named": "WB",
+    "centroid_error_m": 10.805142,
+    "location_named": "WA"
+   },
+   "published_paired": {
+    "presence": 38.641891,
+    "correlation": {
+     "WA": 0.004747,
+     "WB": 0.007383,
+     "WA6": 0.0007384
+    },
+    "named": "WB",
+    "centroid_error_m": 10.720803,
+    "location_named": "WA"
+   }
+  },
+  {
+   "seed": 3706,
+   "world": "WA",
+   "level": "x200",
+   "told": {
+    "presence": 2.71377,
+    "z": {
+     "WA": 2.71377,
+     "WB": 1.362474,
+     "WA6": 0.296087
+    },
+    "named": "WA",
+    "location_named": "WA",
+    "shape_named": "WA"
+   },
+   "published_blind": {
+    "presence": 3.76647,
+    "correlation": {
+     "WA": -0.080416,
+     "WB": -0.036916,
+     "WA6": -0.102269
+    },
+    "named": "WB",
+    "centroid_error_m": 5.44026,
+    "location_named": "WA",
+    "shape_named": "WB"
+   },
+   "published_paired": {
+    "presence": 5.221682,
+    "correlation": {
+     "WA": 0.155922,
+     "WB": 0.202545,
+     "WA6": 0.018331
+    },
+    "named": "WB",
+    "centroid_error_m": 2.966386,
+    "location_named": "WA",
+    "shape_named": "WB"
+   }
+  },
+  {
+   "seed": 3706,
+   "world": "WB",
+   "level": "x200",
+   "told": {
+    "presence": 3.164324,
+    "z": {
+     "WA": 1.908314,
+     "WB": 3.164324,
+     "WA6": 0.649245
+    },
+    "named": "WB",
+    "shape_named": "WB"
+   },
+   "published_blind": {
+    "presence": 3.753158,
+    "correlation": {
+     "WA": -0.080313,
+     "WB": -0.036675,
+     "WA6": -0.102233
+    },
+    "named": "WB",
+    "centroid_error_m": 5.415613,
+    "shape_named": "WB"
+   },
+   "published_paired": {
+    "presence": 4.472538,
+    "correlation": {
+     "WA": 0.083214,
+     "WB": 0.126267,
+     "WA6": 0.033893
+    },
+    "named": "WB",
+    "centroid_error_m": 7.737999,
+    "shape_named": "WB"
+   }
+  },
+  {
+   "seed": 3706,
+   "world": "WA6",
+   "level": "x200",
+   "told": {
+    "presence": 1.56928,
+    "z": {
+     "WA": 1.56928,
+     "WB": 1.288105,
+     "WA6": 1.438975
+    },
+    "named": "WA",
+    "location_named": "WA"
+   },
+   "published_blind": {
+    "presence": 3.756457,
+    "correlation": {
+     "WA": -0.080421,
+     "WB": -0.036787,
+     "WA6": -0.102219
+    },
+    "named": "WB",
+    "centroid_error_m": 10.805142,
+    "location_named": "WA"
+   },
+   "published_paired": {
+    "presence": 6.509025,
+    "correlation": {
+     "WA": 0.19111,
+     "WB": 0.254513,
+     "WA6": 0.117633
+    },
+    "named": "WB",
+    "centroid_error_m": 4.161785,
+    "location_named": "WA"
+   }
+  },
+  {
+   "seed": 3706,
+   "world": "WA",
+   "level": "x1000",
+   "told": {
+    "presence": 6.982178,
+    "z": {
+     "WA": 6.982178,
+     "WB": 2.528201,
+     "WA6": -0.090635
+    },
+    "named": "WA",
+    "location_named": "WA",
+    "shape_named": "WA"
+   },
+   "published_blind": {
+    "presence": 3.792431,
+    "correlation": {
+     "WA": -0.077915,
+     "WB": -0.034235,
+     "WA6": -0.100681
+    },
+    "named": "WB",
+    "centroid_error_m": 5.116428,
+    "location_named": "WA",
+    "shape_named": "WB"
+   },
+   "published_paired": {
+    "presence": 5.50679,
+    "correlation": {
+     "WA": 0.180848,
+     "WB": 0.237874,
+     "WA6": 0.039404
+    },
+    "named": "WB",
+    "centroid_error_m": 2.629055,
+    "location_named": "WA",
+    "shape_named": "WB"
+   }
+  },
+  {
+   "seed": 3706,
+   "world": "WB",
+   "level": "x1000",
+   "told": {
+    "presence": 11.526179,
+    "z": {
+     "WA": 2.960298,
+     "WB": 11.526179,
+     "WA6": 1.673387
+    },
+    "named": "WB",
+    "shape_named": "WB"
+   },
+   "published_blind": {
+    "presence": 3.678746,
+    "correlation": {
+     "WA": -0.078721,
+     "WB": -0.033445,
+     "WA6": -0.101251
+    },
+    "named": "WB",
+    "centroid_error_m": 5.239536,
+    "shape_named": "WB"
+   },
+   "published_paired": {
+    "presence": 4.764452,
+    "correlation": {
+     "WA": 0.093391,
+     "WB": 0.132978,
+     "WA6": 0.047178
+    },
+    "named": "WB",
+    "centroid_error_m": 7.071717,
+    "shape_named": "WB"
+   }
+  },
+  {
+   "seed": 3706,
+   "world": "WA6",
+   "level": "x1000",
+   "told": {
+    "presence": 5.620105,
+    "z": {
+     "WA": 1.264715,
+     "WB": 2.156669,
+     "WA6": 5.620105
+    },
+    "named": "WA6",
+    "location_named": "WA6"
+   },
+   "published_blind": {
+    "presence": 3.745532,
+    "correlation": {
+     "WA": -0.078952,
+     "WB": -0.034705,
+     "WA6": -0.100678
+    },
+    "named": "WB",
+    "centroid_error_m": 10.427497,
+    "location_named": "WA"
+   },
+   "published_paired": {
+    "presence": 6.621929,
+    "correlation": {
+     "WA": 0.1884,
+     "WB": 0.241217,
+     "WA6": 0.138324
+    },
+    "named": "WB",
+    "centroid_error_m": 3.4279,
+    "location_named": "WA"
+   }
+  },
+  {
+   "seed": 3707,
+   "world": "W0",
+   "level": "control",
+   "told": {
+    "presence": 1.429219,
+    "z": {
+     "WA": -0.040079,
+     "WB": 0.289811,
+     "WA6": 1.429219
+    },
+    "named": null
+   },
+   "published_blind": {
+    "presence": 4.197539,
+    "correlation": {
+     "WA": 0.04119,
+     "WB": -0.027755,
+     "WA6": -0.002453
+    },
+    "named": null
+   }
+  },
+  {
+   "seed": 3707,
+   "world": "motionless",
+   "level": "control",
+   "told": {
+    "presence": 1.431193,
+    "z": {
+     "WA": -0.045944,
+     "WB": 0.263793,
+     "WA6": 1.431193
+    },
+    "named": null
+   },
+   "published_blind": {
+    "presence": 4.197355,
+    "correlation": {
+     "WA": 0.041184,
+     "WB": -0.027776,
+     "WA6": -0.002461
+    },
+    "named": null
+   },
+   "published_paired": {
+    "presence": 14.57175,
+    "correlation": {
+     "WA": -0.021763,
+     "WB": -0.017098,
+     "WA6": -0.040518
+    },
+    "named": null
+   }
+  },
+  {
+   "seed": 3707,
+   "world": "WA",
+   "level": "real",
+   "told": {
+    "presence": 1.428797,
+    "z": {
+     "WA": -0.03488,
+     "WB": 0.291191,
+     "WA6": 1.428797
+    },
+    "named": "WA6",
+    "location_named": "WA6",
+    "shape_named": "WB"
+   },
+   "published_blind": {
+    "presence": 4.197549,
+    "correlation": {
+     "WA": 0.041195,
+     "WB": -0.027751,
+     "WA6": -0.002451
+    },
+    "named": "WA",
+    "centroid_error_m": 18.849193,
+    "location_named": "WA",
+    "shape_named": "WA"
+   },
+   "published_paired": {
+    "presence": 21.740946,
+    "correlation": {
+     "WA": 0.030445,
+     "WB": 0.026884,
+     "WA6": 0.004524
+    },
+    "named": "WA",
+    "centroid_error_m": 10.268933,
+    "location_named": "WA",
+    "shape_named": "WA"
+   }
+  },
+  {
+   "seed": 3707,
+   "world": "WB",
+   "level": "real",
+   "told": {
+    "presence": 1.43065,
+    "z": {
+     "WA": -0.038698,
+     "WB": 0.300017,
+     "WA6": 1.43065
+    },
+    "named": "WA6",
+    "shape_named": "WB"
+   },
+   "published_blind": {
+    "presence": 4.197595,
+    "correlation": {
+     "WA": 0.041195,
+     "WB": -0.027781,
+     "WA6": -0.002448
+    },
+    "named": "WA",
+    "centroid_error_m": 16.292639,
+    "shape_named": "WA"
+   },
+   "published_paired": {
+    "presence": 24.733915,
+    "correlation": {
+     "WA": 0.006821,
+     "WB": 0.151073,
+     "WA6": 0.0001705
+    },
+    "named": "WB",
+    "centroid_error_m": 6.580624,
+    "shape_named": "WB"
+   }
+  },
+  {
+   "seed": 3707,
+   "world": "WA6",
+   "level": "real",
+   "told": {
+    "presence": 1.434409,
+    "z": {
+     "WA": -0.040418,
+     "WB": 0.291006,
+     "WA6": 1.434409
+    },
+    "named": "WA6",
+    "location_named": "WA6"
+   },
+   "published_blind": {
+    "presence": 4.197573,
+    "correlation": {
+     "WA": 0.041191,
+     "WB": -0.027756,
+     "WA6": -0.002453
+    },
+    "named": "WA",
+    "centroid_error_m": 23.423561,
+    "location_named": "WA"
+   },
+   "published_paired": {
+    "presence": 29.793955,
+    "correlation": {
+     "WA": 0.079105,
+     "WB": 0.092324,
+     "WA6": 0.0579
+    },
+    "named": "WB",
+    "centroid_error_m": 4.959192,
+    "location_named": "WA"
+   }
+  },
+  {
+   "seed": 3707,
+   "world": "WA",
+   "level": "x200",
+   "told": {
+    "presence": 1.344717,
+    "z": {
+     "WA": 0.999618,
+     "WB": 0.565716,
+     "WA6": 1.344717
+    },
+    "named": "WA6",
+    "location_named": "WA6",
+    "shape_named": "WA"
+   },
+   "published_blind": {
+    "presence": 4.195469,
+    "correlation": {
+     "WA": 0.042104,
+     "WB": -0.026835,
+     "WA6": -0.001953
+    },
+    "named": "WA",
+    "centroid_error_m": 18.532938,
+    "location_named": "WA",
+    "shape_named": "WA"
+   },
+   "published_paired": {
+    "presence": 5.258831,
+    "correlation": {
+     "WA": 0.202878,
+     "WB": 0.209237,
+     "WA6": 0.066205
+    },
+    "named": "WB",
+    "centroid_error_m": 2.409274,
+    "location_named": "WA",
+    "shape_named": "WB"
+   }
+  },
+  {
+   "seed": 3707,
+   "world": "WB",
+   "level": "x200",
+   "told": {
+    "presence": 2.330694,
+    "z": {
+     "WA": 0.23608,
+     "WB": 2.330694,
+     "WA6": 1.715272
+    },
+    "named": "WB",
+    "shape_named": "WB"
+   },
+   "published_blind": {
+    "presence": 4.202423,
+    "correlation": {
+     "WA": 0.041648,
+     "WB": -0.027504,
+     "WA6": -0.001832
+    },
+    "named": "WA",
+    "centroid_error_m": 16.292639,
+    "shape_named": "WA"
+   },
+   "published_paired": {
+    "presence": 4.62697,
+    "correlation": {
+     "WA": 0.191144,
+     "WB": 0.174687,
+     "WA6": 0.125017
+    },
+    "named": "WA",
+    "centroid_error_m": 8.025842,
+    "shape_named": "WA"
+   }
+  },
+  {
+   "seed": 3707,
+   "world": "WA6",
+   "level": "x200",
+   "told": {
+    "presence": 2.467056,
+    "z": {
+     "WA": -0.107925,
+     "WB": 0.528785,
+     "WA6": 2.467056
+    },
+    "named": "WA6",
+    "location_named": "WA6"
+   },
+   "published_blind": {
+    "presence": 4.19854,
+    "correlation": {
+     "WA": 0.041408,
+     "WB": -0.027991,
+     "WA6": -0.002365
+    },
+    "named": "WA",
+    "centroid_error_m": 23.423561,
+    "location_named": "WA"
+   },
+   "published_paired": {
+    "presence": 5.273417,
+    "correlation": {
+     "WA": 0.188549,
+     "WB": 0.221562,
+     "WA6": 0.147533
+    },
+    "named": "WB",
+    "centroid_error_m": 2.940333,
+    "location_named": "WA"
+   }
+  },
+  {
+   "seed": 3707,
+   "world": "WA",
+   "level": "x1000",
+   "told": {
+    "presence": 5.153422,
+    "z": {
+     "WA": 5.153422,
+     "WB": 1.668638,
+     "WA6": 1.007272
+    },
+    "named": "WA",
+    "location_named": "WA",
+    "shape_named": "WA"
+   },
+   "published_blind": {
+    "presence": 4.183203,
+    "correlation": {
+     "WA": 0.047565,
+     "WB": -0.021394,
+     "WA6": 0.001077
+    },
+    "named": "WA",
+    "centroid_error_m": 18.489118,
+    "location_named": "WA",
+    "shape_named": "WA"
+   },
+   "published_paired": {
+    "presence": 5.631697,
+    "correlation": {
+     "WA": 0.218343,
+     "WB": 0.222448,
+     "WA6": 0.087614
+    },
+    "named": "WB",
+    "centroid_error_m": 2.689552,
+    "location_named": "WA",
+    "shape_named": "WB"
+   }
+  },
+  {
+   "seed": 3707,
+   "world": "WB",
+   "level": "x1000",
+   "told": {
+    "presence": 10.481334,
+    "z": {
+     "WA": 1.340466,
+     "WB": 10.481334,
+     "WA6": 2.857412
+    },
+    "named": "WB",
+    "shape_named": "WB"
+   },
+   "published_blind": {
+    "presence": 4.190465,
+    "correlation": {
+     "WA": 0.044454,
+     "WB": -0.024247,
+     "WA6": 0.0009614
+    },
+    "named": "WA",
+    "centroid_error_m": 16.144091,
+    "shape_named": "WA"
+   },
+   "published_paired": {
+    "presence": 4.355708,
+    "correlation": {
+     "WA": 0.186032,
+     "WB": 0.181944,
+     "WA6": 0.128505
+    },
+    "named": "WA",
+    "centroid_error_m": 8.554952,
+    "shape_named": "WA"
+   }
+  },
+  {
+   "seed": 3707,
+   "world": "WA6",
+   "level": "x1000",
+   "told": {
+    "presence": 6.615427,
+    "z": {
+     "WA": -0.379982,
+     "WB": 1.484235,
+     "WA6": 6.615427
+    },
+    "named": "WA6",
+    "location_named": "WA6"
+   },
+   "published_blind": {
+    "presence": 4.208628,
+    "correlation": {
+     "WA": 0.043202,
+     "WB": -0.027583,
+     "WA6": -0.0006512
+    },
+    "named": "WA",
+    "centroid_error_m": 23.392163,
+    "location_named": "WA"
+   },
+   "published_paired": {
+    "presence": 5.428647,
+    "correlation": {
+     "WA": 0.211746,
+     "WB": 0.25026,
+     "WA6": 0.168091
+    },
+    "named": "WB",
+    "centroid_error_m": 3.442654,
+    "location_named": "WA"
+   }
+  },
+  {
+   "seed": 3708,
+   "world": "W0",
+   "level": "control",
+   "told": {
+    "presence": -0.300986,
+    "z": {
+     "WA": -0.632362,
+     "WB": -0.342095,
+     "WA6": -0.300986
+    },
+    "named": null
+   },
+   "published_blind": {
+    "presence": 3.856733,
+    "correlation": {
+     "WA": -0.028505,
+     "WB": -0.071994,
+     "WA6": -0.020887
+    },
+    "named": null
+   }
+  },
+  {
+   "seed": 3708,
+   "world": "motionless",
+   "level": "control",
+   "told": {
+    "presence": -0.298247,
+    "z": {
+     "WA": -0.638522,
+     "WB": -0.368358,
+     "WA6": -0.298247
+    },
+    "named": null
+   },
+   "published_blind": {
+    "presence": 3.855541,
+    "correlation": {
+     "WA": -0.028524,
+     "WB": -0.072008,
+     "WA6": -0.020883
+    },
+    "named": null
+   },
+   "published_paired": {
+    "presence": 9.176291,
+    "correlation": {
+     "WA": 0.054376,
+     "WB": 0.046239,
+     "WA6": -0.020823
+    },
+    "named": null
+   }
+  },
+  {
+   "seed": 3708,
+   "world": "WA",
+   "level": "real",
+   "told": {
+    "presence": -0.30145,
+    "z": {
+     "WA": -0.627107,
+     "WB": -0.340738,
+     "WA6": -0.30145
+    },
+    "named": "WA6",
+    "location_named": "WA6",
+    "shape_named": "WB"
+   },
+   "published_blind": {
+    "presence": 3.856721,
+    "correlation": {
+     "WA": -0.028532,
+     "WB": -0.072017,
+     "WA6": -0.020896
+    },
+    "named": "WA6",
+    "centroid_error_m": 4.492448,
+    "location_named": "WA6",
+    "shape_named": "WA"
+   },
+   "published_paired": {
+    "presence": 21.226091,
+    "correlation": {
+     "WA": 0.29815,
+     "WB": 0.238841,
+     "WA6": 0.062347
+    },
+    "named": "WA",
+    "centroid_error_m": 15.490193,
+    "location_named": "WA",
+    "shape_named": "WA"
+   }
+  },
+  {
+   "seed": 3708,
+   "world": "WB",
+   "level": "real",
+   "told": {
+    "presence": -0.299695,
+    "z": {
+     "WA": -0.631055,
+     "WB": -0.331991,
+     "WA6": -0.299695
+    },
+    "named": "WA6",
+    "shape_named": "WB"
+   },
+   "published_blind": {
+    "presence": 3.857757,
+    "correlation": {
+     "WA": -0.028528,
+     "WB": -0.072011,
+     "WA6": -0.020893
+    },
+    "named": "WA6",
+    "centroid_error_m": 7.19573,
+    "shape_named": "WA"
+   },
+   "published_paired": {
+    "presence": 15.471665,
+    "correlation": {
+     "WA": 0.2648,
+     "WB": 0.190456,
+     "WA6": 0.061446
+    },
+    "named": "WA",
+    "centroid_error_m": 27.908172,
+    "shape_named": "WA"
+   }
+  },
+  {
+   "seed": 3708,
+   "world": "WA6",
+   "level": "real",
+   "told": {
+    "presence": -0.295833,
+    "z": {
+     "WA": -0.632721,
+     "WB": -0.34099,
+     "WA6": -0.295833
+    },
+    "named": "WA6",
+    "location_named": "WA6"
+   },
+   "published_blind": {
+    "presence": 3.856726,
+    "correlation": {
+     "WA": -0.028506,
+     "WB": -0.071995,
+     "WA6": -0.020889
+    },
+    "named": "WA6",
+    "centroid_error_m": 7.914237,
+    "location_named": "WA6"
+   },
+   "published_paired": {
+    "presence": 24.328564,
+    "correlation": {
+     "WA": 0.015838,
+     "WB": 0.020325,
+     "WA6": 0.010769
+    },
+    "named": "WB",
+    "centroid_error_m": 18.359814,
+    "location_named": "WA"
+   }
+  },
+  {
+   "seed": 3708,
+   "world": "WA",
+   "level": "x200",
+   "told": {
+    "presence": 0.418625,
+    "z": {
+     "WA": 0.418625,
+     "WB": -0.070807,
+     "WA6": -0.393704
+    },
+    "named": "WA",
+    "location_named": "WA",
+    "shape_named": "WA"
+   },
+   "published_blind": {
+    "presence": 3.856032,
+    "correlation": {
+     "WA": -0.028699,
+     "WB": -0.072197,
+     "WA6": -0.021325
+    },
+    "named": "WA6",
+    "centroid_error_m": 4.492448,
+    "location_named": "WA6",
+    "shape_named": "WA"
+   },
+   "published_paired": {
+    "presence": 5.648374,
+    "correlation": {
+     "WA": 0.235493,
+     "WB": 0.241003,
+     "WA6": 0.075689
+    },
+    "named": "WB",
+    "centroid_error_m": 2.084598,
+    "location_named": "WA",
+    "shape_named": "WB"
+   }
+  },
+  {
+   "seed": 3708,
+   "world": "WB",
+   "level": "x200",
+   "told": {
+    "presence": 1.678437,
+    "z": {
+     "WA": -0.370905,
+     "WB": 1.678437,
+     "WA6": -0.042878
+    },
+    "named": "WB",
+    "shape_named": "WB"
+   },
+   "published_blind": {
+    "presence": 3.859828,
+    "correlation": {
+     "WA": -0.028334,
+     "WB": -0.071871,
+     "WA6": -0.02087
+    },
+    "named": "WA6",
+    "centroid_error_m": 7.19573,
+    "shape_named": "WA"
+   },
+   "published_paired": {
+    "presence": 4.154597,
+    "correlation": {
+     "WA": 0.189234,
+     "WB": 0.191028,
+     "WA6": 0.111539
+    },
+    "named": "WB",
+    "centroid_error_m": 5.897717,
+    "shape_named": "WB"
+   }
+  },
+  {
+   "seed": 3708,
+   "world": "WA6",
+   "level": "x200",
+   "told": {
+    "presence": 0.729615,
+    "z": {
+     "WA": -0.704128,
+     "WB": -0.121242,
+     "WA6": 0.729615
+    },
+    "named": "WA6",
+    "location_named": "WA6"
+   },
+   "published_blind": {
+    "presence": 3.856987,
+    "correlation": {
+     "WA": -0.028546,
+     "WB": -0.072042,
+     "WA6": -0.021074
+    },
+    "named": "WA6",
+    "centroid_error_m": 7.914237,
+    "location_named": "WA6"
+   },
+   "published_paired": {
+    "presence": 7.028172,
+    "correlation": {
+     "WA": 0.228548,
+     "WB": 0.255943,
+     "WA6": 0.210499
+    },
+    "named": "WB",
+    "centroid_error_m": 4.296485,
+    "location_named": "WA"
+   }
+  },
+  {
+   "seed": 3708,
+   "world": "WA",
+   "level": "x1000",
+   "told": {
+    "presence": 4.6189,
+    "z": {
+     "WA": 4.6189,
+     "WB": 1.01383,
+     "WA6": -0.764003
+    },
+    "named": "WA",
+    "location_named": "WA",
+    "shape_named": "WA"
+   },
+   "published_blind": {
+    "presence": 3.835491,
+    "correlation": {
+     "WA": -0.027253,
+     "WB": -0.071061,
+     "WA6": -0.02187
+    },
+    "named": "WA6",
+    "centroid_error_m": 4.537691,
+    "location_named": "WA6",
+    "shape_named": "WA"
+   },
+   "published_paired": {
+    "presence": 5.951741,
+    "correlation": {
+     "WA": 0.211697,
+     "WB": 0.220788,
+     "WA6": 0.075489
+    },
+    "named": "WB",
+    "centroid_error_m": 2.553809,
+    "location_named": "WA",
+    "shape_named": "WB"
+   }
+  },
+  {
+   "seed": 3708,
+   "world": "WB",
+   "level": "x1000",
+   "told": {
+    "presence": 9.749289,
+    "z": {
+     "WA": 0.675471,
+     "WB": 9.749289,
+     "WA6": 0.987944
+    },
+    "named": "WB",
+    "shape_named": "WB"
+   },
+   "published_blind": {
+    "presence": 3.882524,
+    "correlation": {
+     "WA": -0.027805,
+     "WB": -0.071218,
+     "WA6": -0.021132
+    },
+    "named": "WA6",
+    "centroid_error_m": 7.161291,
+    "shape_named": "WA"
+   },
+   "published_paired": {
+    "presence": 3.986,
+    "correlation": {
+     "WA": 0.170764,
+     "WB": 0.166735,
+     "WA6": 0.113407
+    },
+    "named": "WA",
+    "centroid_error_m": 6.415542,
+    "shape_named": "WA"
+   }
+  },
+  {
+   "seed": 3708,
+   "world": "WA6",
+   "level": "x1000",
+   "told": {
+    "presence": 4.849529,
+    "z": {
+     "WA": -0.991435,
+     "WB": 0.762074,
+     "WA6": 4.849529
+    },
+    "named": "WA6",
+    "location_named": "WA6"
+   },
+   "published_blind": {
+    "presence": 3.877714,
+    "correlation": {
+     "WA": -0.028252,
+     "WB": -0.072403,
+     "WA6": -0.020553
+    },
+    "named": "WA6",
+    "centroid_error_m": 7.637253,
+    "location_named": "WA6"
+   },
+   "published_paired": {
+    "presence": 6.592359,
+    "correlation": {
+     "WA": 0.248102,
+     "WB": 0.283841,
+     "WA6": 0.217307
+    },
+    "named": "WB",
+    "centroid_error_m": 3.59327,
+    "location_named": "WA"
+   }
+  }
+ ],
+ "null_sd_told": {
+  "WA": 0.007387,
+  "WB": 0.007259,
+  "WA6": 0.005985
+ },
+ "predicted_told": {
+  "presence (room)": {
+   "real": {
+    "deflection": 0.006043,
+    "tv": 0.002411
+   },
+   "x200": {
+    "deflection": 1.208645,
+    "tv": 0.454371
+   },
+   "x1000": {
+    "deflection": 6.043225,
+    "tv": 0.997486
+   }
+  },
+  "presence (L tunnel)": {
+   "real": {
+    "deflection": 0.009475,
+    "tv": 0.00378
+   },
+   "x200": {
+    "deflection": 1.894978,
+    "tv": 0.65661
+   },
+   "x1000": {
+    "deflection": 9.47489,
+    "tv": 0.999998
+   }
+  },
+  "location (6 m)": {
+   "real": {
+    "deflection": 0.008387,
+    "tv": 0.003346
+   },
+   "x200": {
+    "deflection": 1.677344,
+    "tv": 0.598347
+   },
+   "x1000": {
+    "deflection": 8.386719,
+    "tv": 0.999973
+   }
+  },
+  "shape (room or L tunnel)": {
+   "real": {
+    "deflection": 0.009581,
+    "tv": 0.003822
+   },
+   "x200": {
+    "deflection": 1.916254,
+    "tv": 0.662001
+   },
+   "x1000": {
+    "deflection": 9.581271,
+    "tv": 0.999998
+   }
+  }
+ },
+ "finding": "The benchmark's worlds read as images (P2-36's solver fields, a lorry 15 m west at the FTA's truck-over-a-bump level held at 69 Hz, Giza's microseisms, 8 independent grounds). At the real level the detector told the lorry separates cavities from controls with AUC 0.53 and names the world in 33% (chance 33%); the published map read blind, AUC 0.52 and 33%. With the cavity's difference amplified 1,000 times (a diagnostic), the told detector names 100% (p < 0.001, labels permuted within grounds), places the room against the room 6 m east in 16 of 16 and tells room from L tunnel in 16 of 16; the published map read blind names 33% (p = 1), separates cavities from controls with AUC 0.52 and centres its top places 9.8 m from the footprint (controls 9.5 m); its change against the no-cavity image, a diagnostic it never has, names 21%. The told detector recovers the imposed worlds at the positive control, so the experiment can reveal a real signal; what the published method does not read there it does not read in the image. Amplified levels are diagnostics, not physical predictions."
+}

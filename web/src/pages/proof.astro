@@ -268,7 +268,7 @@ const conc = (r: DRes) => r.over_room / r.elsewhere;
       numbers above are bounds within a stated model (one geology, fully developed speckle, the declared excitation), not
       what a particular reader achieves; the benchmark below says what each rests on, which parts are computed, which are
       measured in the real image, which are specified and which are assumed.
-      {cl25 && <>The structures claimed under Khafre, computed (P2-38: the eight shafts and the void 1,220 m down, under
+      {cl25 && <>{' '}The structures claimed under Khafre, computed (P2-38: the eight shafts and the void 1,220 m down, under
       the ground’s own trembling): any reader of one image at most {sci(clL1('claim (both)'))} above chance, the oracle
       {' '}{sci(clOr('claim (both)'))}; the motion would have to grow {sci(clRow('claim (both)')?.l1_growth_to_target ?? NaN)} times,
       {' '}{sci(clWorst?.l1_growth_to_target ?? NaN)} after allowing a louder ground, site amplification and a cube’s larger moment.</>}
@@ -279,7 +279,8 @@ const conc = (r: DRes) => r.over_room / r.elsewhere;
   <section id="benchmark">
     <h2>One auditable comparison: five worlds identical but for the cavity, the same lorry beside each, the whole image read by any method</h2>
     <p class="sub">
-      Frozen after two independent reviews (revision 2); specification in
+      Revision 3, after its third review (only the analysis changed; revision 2 is kept at commit afee349, its errors
+      listed in the erratum); specification in
       {' '}<a href="https://github.com/ejhong/sar/blob/main/BENCHMARK.md">BENCHMARK.md</a>, run P2-36. The lorry is a
       truck over a bump 15 m west at the FTA’s level, held at {Math.round(bm.f_star_hz)} Hz for the whole 25 s pass (a
       frequency fixed by a rule before the bounds); the quiet case is Giza’s regional trembling.
@@ -296,7 +297,7 @@ const conc = (r: DRes) => r.over_room / r.elsewhere;
               <td class={stCls(bm.quiet[p].l1_ensemble?.state ?? bm.quiet[p].l1[bmN].state)}>{found(bmQuiet(p))}</td>
               <td class={stCls(st.l1[bmN].state)}>{found(st.l1[bmN].tv_upper)}<span class="dim"> · band {found(bmBand(p))}</span></td>
               <td class={stCls(st.l1_disc.state ?? 'near chance')}>{found(st.l1_disc.tv_upper)}</td>
-              <td class={stCls(st.oracle[bmN].state)}>{found(st.oracle[bmN].tv_upper)}<span class="dim"> · {bmSnrGen.toFixed(0)} dB: {found(st.oracle[bmG].tv_upper)}</span></td>
+              <td class={stCls(st.oracle[bmN].state)}>{found(st.oracle[bmN].tv_upper)}<span class="dim"> · {bmSnrGen.toFixed(1)} dB: {found(st.oracle[bmG].tv_upper)}</span></td>
             </tr>
           );
         })}
@@ -491,7 +492,7 @@ const conc = (r: DRes) => r.over_room / r.elsewhere;
         <tr><td>The rest of the real acquisition</td><td>the benchmark is one geology and five shallow layouts in fully developed speckle; a shallow room is not by itself an upper bound on larger or deeper structures; the claim is computed under the ground’s own trembling with the pyramid omitted (its load and scattering), its sizes and layout representative</td><td>the pyramid in the model; ground motion measured on the plateau during a pass</td></tr>
         <tr><td>The envelope beyond 70 m</td><td>97–98% of the strong case’s signal is an assumed surface wave carried undiminished to the image’s edge; the measured fall to 70 m supports it, the ×5 test is robustness, not verification</td><td>the scattered field measured to 100 m or more; attenuation measured in the plateau’s rock</td></tr>
         <tr><td>The physical envelopes</td><td>the imprint is the lab’s linear solver in uniform bare rock (P2-04, P2-26) and, for the claim, a damped half-space at 0.2 Hz; the ambient levels are regional; other excitations of the deep structure (a lorry’s body waves, local sources) and nonlinear or parametric coupling are not modelled</td><td>ground motion measured on the plateau during a pass; a proponent’s quantitative prediction of the room-specific motion</td></tr>
-        <tr><td>The noise floor</td><td>neither product carries one, and ICEYE’s specification changed between versions (Dwell Fine at best −18 dB in documentation 6.0.0, {bmSnr.nesz_headline_db} dB in 6.0.8); every oracle row takes the most favourable, {bmSnrNom.toFixed(1)} dB, the older figure {bmOld != null ? `${bmOld.toFixed(1)} dB` : '—'}; the image’s darkest cells bound the ratio only from below ({bmSnr.measured_floor_lower_db.toFixed(1)} dB)</td><td>the applicable noise for this acquisition from ICEYE, or a noise-only record for the product</td></tr>
+        <tr><td>The noise floor</td><td>neither product carries one, and ICEYE’s specification changed between versions (Dwell Fine at best −18 dB in documentation 6.0.0, {String(bmSnr.nesz_headline_db).replace('-', '−')} dB in 6.0.8); every oracle row takes the most favourable, {bmSnrNom.toFixed(1)} dB, the older figure {bmOld != null ? `${bmOld.toFixed(1)} dB` : '—'}; the image’s darkest cells bound the ratio only from below ({bmSnr.measured_floor_lower_db.toFixed(1)} dB)</td><td>the applicable noise for this acquisition from ICEYE, or a noise-only record for the product</td></tr>
         <tr><td>Measured validation</td><td>the geophone-and-satellite comparison (P2-22, P2-23) is simulated</td><td>shaker or reflector data with instruments on them; surveyed voids and matched controls, blind</td></tr>
       </tbody>
     </table>
@@ -603,7 +604,7 @@ const conc = (r: DRes) => r.over_room / r.elsewhere;
       by half of it. The certificate and the tight bound hold within fully developed speckle and the Doppler-to-time relation
       (checked pulse by pulse, P2-25); the oracle holds for any texture with independent phases, at {orc.manifest.params.snr_db.toFixed(1)} dB
       per resolution cell (the site’s median backscatter measured in the image over the best noise floor ICEYE specifies
-      for the product’s mode, {orc.manifest.params.nesz_best_db} dB in documentation 6.0.8: a scenario, not a measurement).
+      for the product’s mode, {String(orc.manifest.params.nesz_best_db).replace('-', '−')} dB in documentation 6.0.8: a scenario, not a measurement).
       The ambient levels are regional, not upper limits at the pyramids. Under traffic or a lorry the ground without a room
       already moves with the source, so these rows’ certificate and tight bound (no such motion in the reference) are
       restricted surrogates, not bounds; the whole image gives no floor with the lorry’s wave in it, but one along-track
@@ -775,7 +776,7 @@ const conc = (r: DRes) => r.over_room / r.elsewhere;
     margin: 2px 0 10px;
   }
   .section-kicker {
-    margin: 34px 0 -6px;
+    margin: 34px 0 0;
     font: 600 11px var(--font-mono);
     letter-spacing: 0.06em;
     text-transform: uppercase;

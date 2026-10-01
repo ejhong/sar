@@ -1520,10 +1520,10 @@
  "p2_25_information_bound": {
   "id": "p2_25_information_bound",
   "title": "What one image can hold about the chamber, whatever reads it",
-  "date": "2026-09-30",
-  "started_utc": "2026-09-30T21:34:31+00:00",
-  "runtime_s": 150.5,
-  "commit": "914a473+",
+  "date": "2026-10-01",
+  "started_utc": "2026-10-01T02:57:05+00:00",
+  "runtime_s": 234.9,
+  "commit": "0f67888",
   "params": {
    "acquisition": "giza-20250827",
    "half_width_m": 45.0,
@@ -1538,7 +1538,7 @@
    ],
    "far_field_from_m": 32.0,
    "reliable_dprime": 3.29,
-   "genie_snr_db": 12.655911,
+   "genie_snr_db": 18.355911,
    "monte_carlo": {
     "estimator": 600,
     "synthesizer": 80,
@@ -1963,10 +1963,10 @@
  "p2_27_requirement": {
   "id": "p2_27_requirement",
   "title": "What one image would need: the motion a room must add to the ground",
-  "date": "2026-09-30",
-  "started_utc": "2026-09-30T21:37:03+00:00",
-  "runtime_s": 9.2,
-  "commit": "914a473+",
+  "date": "2026-10-01",
+  "started_utc": "2026-10-01T03:01:01+00:00",
+  "runtime_s": 7.5,
+  "commit": "0f67888",
   "params": {
    "acquisitions": [
     "giza-20250827",
@@ -2021,7 +2021,7 @@
     198.248217,
     300.0
    ],
-   "genie_snr_db": 12.655911,
+   "genie_snr_db": 18.355911,
    "reflector_scr_db": 50.0,
    "scattering": "fully developed speckle, no reference image",
    "noise_free": true,
@@ -2122,29 +2122,55 @@
  "p2_29_oracle": {
   "id": "p2_29_oracle",
   "title": "The oracle: what an ideal detector could learn, told more than any method knows",
-  "date": "2026-09-30",
-  "started_utc": "2026-09-30T21:37:13+00:00",
-  "runtime_s": 1.4,
-  "commit": "914a473+",
+  "date": "2026-10-01",
+  "started_utc": "2026-10-01T03:01:09+00:00",
+  "runtime_s": 0.5,
+  "commit": "0f67888",
   "params": {
    "acquisition": "giza-20250827",
-   "snr_db": 12.655911,
-   "nesz_best_db": -18.0,
-   "nesz_source": "ICEYE Product Documentation 6.0.0, Product Specification, 2. Imaging Modes, Table 2-11 (Dwell and Dwell Fine): \"Noise Equivalent Sigma-Zero [dBm2/m2]: -18 to -15\" (scene-centre values)",
+   "snr_db": 18.355911,
+   "nesz_best_db": -23.7,
+   "nesz_source": "ICEYE Product Documentation 6.0.8, Table 2-11, SpotlightDwellFine: best end (https://sar.iceye.com/6.0.8/productspecification/imagingmodes/)",
    "snr": {
-    "nominal_db": 12.655911,
-    "generous_db": 18.0,
-    "specified_worst_db": 9.655911,
+    "headline_db": 18.355911,
+    "bright_db": 23.7,
+    "any_dwell_mode_best_db": 21.355911,
+    "scenarios": [
+     {
+      "label": "documentation 6.0.0, best",
+      "nesz_db": -18.0,
+      "snr_db": 12.655911,
+      "source": "https://sar.iceye.com/6.0.0/productspecification/imagingmodes/"
+     },
+     {
+      "label": "documentation 6.0.0, worst",
+      "nesz_db": -15.0,
+      "snr_db": 9.655911,
+      "source": "https://sar.iceye.com/6.0.0/productspecification/imagingmodes/"
+     },
+     {
+      "label": "documentation 6.0.8, best",
+      "nesz_db": -23.7,
+      "snr_db": 18.355911,
+      "source": "https://sar.iceye.com/6.0.8/productspecification/imagingmodes/"
+     },
+     {
+      "label": "documentation 6.0.8, worst",
+      "nesz_db": -12.6,
+      "snr_db": 7.255911,
+      "source": "https://sar.iceye.com/6.0.8/productspecification/imagingmodes/"
+     }
+    ],
     "measured_floor_lower_db": 5.878341,
     "ground_sigma0_median_db": -5.344089,
     "bright_ground_db_assumed": 0.0,
-    "nesz_specified_db": [
-     -18.0,
-     -15.0
-    ],
+    "mode": "SpotlightDwellFine",
+    "nesz_headline_db": -23.7,
+    "nesz_headline_source": "ICEYE Product Documentation 6.0.8, Table 2-11, SpotlightDwellFine: best end (https://sar.iceye.com/6.0.8/productspecification/imagingmodes/)",
     "nesz_in_product": false,
-    "nesz_source": "ICEYE Product Documentation 6.0.0, Product Specification, 2. Imaging Modes, Table 2-11 (Dwell and Dwell Fine): \"Noise Equivalent Sigma-Zero [dBm2/m2]: -18 to -15\" (scene-centre values)",
+    "scene_centre_note": "the specification's values are at scene centre; the site lies near the centre of a swath whose incidence runs 20.6 to 21.0 deg",
     "ground_source": "sigma0 = calibration_factor x mean |z|^2 x sin(local incidence), over 10 m cells of the Giza site in the image; the darkest cells hold the noise floor plus any signal left, so the noise floor is at most their level",
+    "status": "conditional: measured backscatter over an assumed, specification-based noise level",
     "acquisition": "giza-20250827"
    },
    "sigma0_ground_db": -5.344089,
@@ -2191,10 +2217,10 @@
  "p2_30_finite_certificates": {
   "id": "p2_30_finite_certificates",
   "title": "Finite certificates: the bound on every processor, the common background included",
-  "date": "2026-09-30",
-  "started_utc": "2026-09-30T21:37:15+00:00",
+  "date": "2026-10-01",
+  "started_utc": "2026-10-01T03:01:00+00:00",
   "runtime_s": 0.1,
-  "commit": "914a473+",
+  "commit": "0f67888",
   "params": {
    "target": {
     "tpr": 0.95,
@@ -2340,10 +2366,10 @@
  "p2_32_shape_bounds": {
   "id": "p2_32_shape_bounds",
   "title": "Shape discrimination, bounded",
-  "date": "2026-09-30",
-  "started_utc": "2026-09-30T21:37:16+00:00",
-  "runtime_s": 166.4,
-  "commit": "914a473+",
+  "date": "2026-10-01",
+  "started_utc": "2026-10-01T03:01:11+00:00",
+  "runtime_s": 128.1,
+  "commit": "0f67888",
   "params": {
    "layouts": {
     "room": [
@@ -2593,7 +2619,7 @@
     50.0,
     59.0
    ],
-   "snr_db": 12.655911,
+   "snr_db": 18.355911,
    "target_delta": 3.29,
    "ambient_bands": [
     {
@@ -2788,10 +2814,10 @@
  "p2_36_benchmark": {
   "id": "p2_36_benchmark",
   "title": "One auditable comparison: presence, location and shape, bounds beside achieved",
-  "date": "2026-09-30",
-  "started_utc": "2026-09-30T22:29:55+00:00",
-  "runtime_s": 4081.8,
-  "commit": "6f2fff5",
+  "date": "2026-10-01",
+  "started_utc": "2026-10-01T00:37:33+00:00",
+  "runtime_s": 8363.5,
+  "commit": "0f67888",
   "params": {
    "frozen": {
     "worlds": {
@@ -2916,16 +2942,20 @@
      "record_every": 4
     },
     "report_disc_m": 39.0,
-    "snr_db_nominal": 12.66,
-    "snr_db_generous": 18.0,
+    "snr_db_headline": 18.36,
+    "snr_db_bright": 23.7,
     "snr_db_sweep": [
+     5.88,
+     7.26,
      9.66,
      12.66,
-     18.0,
+     18.36,
+     23.7,
      30.0,
      40.0
     ],
-    "revision": "v2, after the sixth review: calibrated SNR, the 10 m room, the quiet case averaged through a linear bound, the microseisms' worst-case envelope in every reference, the score test with one noise law and separate calibration grounds",
+    "snr_status": "conditional: measured backscatter over an assumed, specification-based noise level",
+    "revision": "v3, after the eighth review: the noise floor as conditional scenarios by documentation version and mode (headline Dwell Fine 6.0.8), the score test's evaluation grounds disjoint from its calibration grounds, analysis caches keyed on their inputs, the worst realisation's pass-mean over a finite window, the covariance floor falling back on the receiver noise",
     "acquisition": "giza-20250827",
     "rock": "limestone-mokattam",
     "analysis": {
@@ -2967,10 +2997,36 @@
      "attenuation_q": [
       50.0,
       20.0
-     ]
+     ],
+     "mc_amplifications": [
+      1.0,
+      800.0
+     ],
+     "mc_seeds": {
+      "noise_law": [
+       35900,
+       35901
+      ],
+      "sign": [
+       35950,
+       35951
+      ],
+      "calibration": [
+       36000,
+       36400
+      ],
+      "null_evaluation": [
+       37000,
+       37100
+      ],
+      "cavity_evaluation": [
+       38000,
+       38100
+      ]
+     }
     }
    },
-   "frozen_hash": "4bc4c58f8948",
+   "frozen_hash": "2684dc43b817",
    "image_frame": {
     "dg": 0.432448,
     "half_along_m": 2500.0,
@@ -2990,19 +3046,45 @@
     "strain_amplitude": 1.542e-11
    },
    "snr": {
-    "nominal_db": 12.655911,
-    "generous_db": 18.0,
-    "specified_worst_db": 9.655911,
+    "headline_db": 18.355911,
+    "bright_db": 23.7,
+    "any_dwell_mode_best_db": 21.355911,
+    "scenarios": [
+     {
+      "label": "documentation 6.0.0, best",
+      "nesz_db": -18.0,
+      "snr_db": 12.655911,
+      "source": "https://sar.iceye.com/6.0.0/productspecification/imagingmodes/"
+     },
+     {
+      "label": "documentation 6.0.0, worst",
+      "nesz_db": -15.0,
+      "snr_db": 9.655911,
+      "source": "https://sar.iceye.com/6.0.0/productspecification/imagingmodes/"
+     },
+     {
+      "label": "documentation 6.0.8, best",
+      "nesz_db": -23.7,
+      "snr_db": 18.355911,
+      "source": "https://sar.iceye.com/6.0.8/productspecification/imagingmodes/"
+     },
+     {
+      "label": "documentation 6.0.8, worst",
+      "nesz_db": -12.6,
+      "snr_db": 7.255911,
+      "source": "https://sar.iceye.com/6.0.8/productspecification/imagingmodes/"
+     }
+    ],
     "measured_floor_lower_db": 5.878341,
     "ground_sigma0_median_db": -5.344089,
     "bright_ground_db_assumed": 0.0,
-    "nesz_specified_db": [
-     -18.0,
-     -15.0
-    ],
+    "mode": "SpotlightDwellFine",
+    "nesz_headline_db": -23.7,
+    "nesz_headline_source": "ICEYE Product Documentation 6.0.8, Table 2-11, SpotlightDwellFine: best end (https://sar.iceye.com/6.0.8/productspecification/imagingmodes/)",
     "nesz_in_product": false,
-    "nesz_source": "ICEYE Product Documentation 6.0.0, Product Specification, 2. Imaging Modes, Table 2-11 (Dwell and Dwell Fine): \"Noise Equivalent Sigma-Zero [dBm2/m2]: -18 to -15\" (scene-centre values)",
+    "scene_centre_note": "the specification's values are at scene centre; the site lies near the centre of a swath whose incidence runs 20.6 to 21.0 deg",
     "ground_source": "sigma0 = calibration_factor x mean |z|^2 x sin(local incidence), over 10 m cells of the Giza site in the image; the darkest cells hold the noise floor plus any signal left, so the noise floor is at most their level",
+    "status": "conditional: measured backscatter over an assumed, specification-based noise level",
     "acquisition": "giza-20250827"
    }
   },
@@ -3015,13 +3097,60 @@
   },
   "command": "uv run python experiments/p2_36_benchmark.py"
  },
+ "p2_37_benchmark_read": {
+  "id": "p2_37_benchmark_read",
+  "title": "The benchmark read: the published method and a detector told the lorry",
+  "date": "2026-10-01",
+  "started_utc": "2026-10-01T00:31:59+00:00",
+  "runtime_s": 12.0,
+  "commit": "5aa28ff+",
+  "params": {
+   "benchmark_frozen_hash": "4bc4c58f8948",
+   "f_hz": 69.0,
+   "grounds": [
+    3701,
+    3702,
+    3703,
+    3704,
+    3705,
+    3706,
+    3707,
+    3708
+   ],
+   "levels": {
+    "real": 1.0,
+    "x200": 200.0,
+    "x1000": 1000.0
+   },
+   "taper_m": [
+    60.0,
+    70.0
+   ],
+   "top_share": 0.05,
+   "image_px": [
+    2304,
+    256
+   ],
+   "geometry": "giza-20250827",
+   "microseisms": "regional level, each ground its own realisation",
+   "amplified_levels_are_diagnostic": true
+  },
+  "environment": {
+   "python": "3.11.15",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 4,
+   "cpus": 4
+  },
+  "command": "uv run python experiments/p2_37_benchmark_read.py [worker k n]"
+ },
  "p2_38_claim": {
   "id": "p2_38_claim",
-  "title": "The claim computed: the structure announced 1,220 m under Khafre",
-  "date": "2026-09-30",
-  "started_utc": "2026-09-30T23:37:57+00:00",
-  "runtime_s": 6.7,
-  "commit": "6f2fff5",
+  "title": "The claim computed: the structures announced under Khafre",
+  "date": "2026-10-01",
+  "started_utc": "2026-10-01T02:19:19+00:00",
+  "runtime_s": 139.5,
+  "commit": "51d2d3f",
   "params": {
    "structure": {
     "centre": [
@@ -3036,8 +3165,81 @@
     ],
     "source": "Claimed (egyptianstreets2025: \"additional unidentified structures potentially lying at depths of 4,000 feet\"); size representative."
    },
+   "shafts": {
+    "radius_m": 5.0,
+    "length_claimed_m": 640.0,
+    "positions": [
+     [
+      -67.5,
+      -45.0
+     ],
+     [
+      -22.5,
+      -45.0
+     ],
+     [
+      22.5,
+      -45.0
+     ],
+     [
+      67.5,
+      -45.0
+     ],
+     [
+      -67.5,
+      45.0
+     ],
+     [
+      -22.5,
+      45.0
+     ],
+     [
+      22.5,
+      45.0
+     ],
+     [
+      67.5,
+      45.0
+     ]
+    ]
+   },
+   "shaft_solver": {
+    "h": 2.0,
+    "half_m": 120.0,
+    "bottom_m": -260.0,
+    "top_m": 8.0,
+    "rec_half_m": 90.0,
+    "rec_spacing_m": 2.0,
+    "duration_s": 1.4,
+    "damping": 30.0,
+    "truncations_m": [
+     100.0,
+     200.0
+    ]
+   },
    "grid_half_m": 3600.0,
    "grid_step_m": 10.0,
+   "near_half_m": 200.0,
+   "near_step_m": 2.0,
+   "r_cal_m": [
+    60.0,
+    84.0
+   ],
+   "column_dz_m": 5.0,
+   "taper_m": 10.0,
+   "q_dynamic": [
+    100.0,
+    1000.0
+   ],
+   "f_hz": 0.2,
+   "rock": {
+    "vp": 3300,
+    "vs": 1830,
+    "rho": 2400,
+    "lam": 10061280000,
+    "mu": 8037360000,
+    "nu": 0.277957
+   },
    "cube_allowance": 1.5,
    "allowances": {
     "local ambient level over the regional": 10.0,
@@ -3052,10 +3254,12 @@
     "hv": 0.667438,
     "strain_amplitude": 1.542e-11
    },
-   "model": "Eshelby's void (equal-volume sphere) through Okada's point source in a half-space",
-   "snr_db_nominal": 12.66,
-   "snr_status": "calibrated from the acquisition (sarsim.radiometry)",
-   "benchmark_frozen_hash": "4bc4c58f8948"
+   "passes": [
+    "giza-20250827",
+    "giza-20220715"
+   ],
+   "model": "the deep structure as Eshelby's sphere of its volume, the shafts as columns of Eshelby cylinder moments calibrated by the static solver near the surface, both through a damped half-space's point-source response at the microseisms' frequency (katabasis.seismic.halfspace)",
+   "benchmark_frozen_hash": "2684dc43b817"
   },
   "environment": {
    "python": "3.11.15",

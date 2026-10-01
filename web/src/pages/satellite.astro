@@ -688,7 +688,7 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
         holds to {orChk.background_x1.mean.toFixed(3)} ± {orChk.background_x1.se.toFixed(3)}, and to {orChk.background_x10.mean.toFixed(3)} ± {orChk.background_x10.se.toFixed(3)} with the
         background ten times larger. Each pixel is taken {orc.manifest.params.snr_db.toFixed(1)} dB over the receiver noise: the
         site’s median ground measured in the image over the best noise floor ICEYE specifies for the mode
-        ({orc.manifest.params.nesz_best_db} dB, documentation 6.0.8; a scenario, not a measurement).</p>
+        ({String(orc.manifest.params.nesz_best_db).replace('-', '−')} dB, documentation 6.0.8; a scenario, not a measurement).</p>
       </div>
       <div class="note-card">
         <span class="tag">depth · any method</span>

@@ -203,6 +203,20 @@ Then (29 September, evening; the cloud session, on branch `claude/upbeat-pascal-
   P2-37 reads the benchmark's images with the published method and a told detector. **Next:** the real acquisition, a
   diffuse-plus-bright-scatterer model informed by the image, with Khafre's geometry and a 2 km map of summed power
   (desktop); the claimed shafts; the scattered field measured beyond 70 m.
+- **Seventh and eighth reviews: revision 3, the claim computed** (1 October; audit, seventh and eighth reviews). The
+  noise floor was misread: ICEYE's documentation 6.0.8 gives Dwell Fine (the 2025 product) −23.7 to −12.6 dB, 6.0.0
+  −18 to −15 dB, and neither is a measurement of this acquisition; the SNR is now a set of conditional scenarios with
+  the most favourable, 18.4 dB, as the headline, and every oracle row moved with it (beside the lorry 0.13 to 0.42,
+  still excluded). Revision 2's other errors (the score test's evaluation grounds inside its calibration range, four
+  stale verification rows, the worst realisation's pass mean, no noise fallback in the covariance floor) are repaired
+  in revision 3, its worlds unchanged. P2-37 reads the benchmark's images: the told detector names every world at the
+  positive control, the published method's blind map is at chance at every level. P2-38 computes the claim, shafts and
+  deep void together at 0.2 Hz through a damped half-space (`katabasis.seismic.halfspace`), on both passes, the oracle
+  weighted by the image's own brightness over 2 km: any reader of one image at most 2.4 × 10⁻⁵ above chance, the oracle
+  6.3 × 10⁻⁴. The one open corner of the strong case is bright persistent ground (the oracle at 40 dB 0.95 to 1.0).
+  **Next:** the real acquisition, a diffuse-plus-bright-scatterer model fitted to the image with Khafre's geometry (the
+  open corner); the applicable noise from ICEYE; the pyramid in the claim's model; the scattered field measured beyond
+  70 m.
 
 ## The goal
 
