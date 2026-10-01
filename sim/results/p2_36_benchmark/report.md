@@ -85,7 +85,7 @@ SNR sweep (L1 / oracle):
 | amplification | AUC achieved ± se (p) | AUC predicted | found, achieved [95%] | false alarms, achieved [95%] | found > false alarms, p | found at 5%, predicted | patch certificate |
 |---|---|---|---|---|---|---|---|
 | ×1 | 0.469 ± 0.041 (0.78) | 0.501 | 7/100 [0.03, 0.14] | 15/100 [0.09, 0.24] | 0.98 | 0.05 | 0.004 |
-| ×800 | 0.494 ± 0.041 (0.56) | 0.930 | 0/100 [0.00, 0.04] | 15/100 [0.09, 0.24] | 1 | 0.67 | 0.128 |
+| ×800 | 0.913 ± 0.021 (3.2e-24) | 0.930 | 73/100 [0.63, 0.81] | 15/100 [0.09, 0.24] | 2.4e-17 | 0.67 | 1 |
 
 ## strong: over the sampled FTA band (every 2 Hz; not a proved maximum between samples)
 

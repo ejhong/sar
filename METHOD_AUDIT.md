@@ -647,25 +647,30 @@ investigation's record, and what it leaves open follow.
     ingredients, and these settings finish the look.
 
 28. **One auditable comparison: one image under speckle does not reach 95% at 5% for presence, a 6 m location or
-    shape of a shallow room, quiet or beside a lorry; at the image's calibrated noise level neither does an oracle told
-    every reflectivity (P2-36, BENCHMARK.md, revision 2).** Five worlds identical but for the cavity (none; rooms 6 and
-    10 m on a side under a 5 m roof; an L-shaped tunnel at that depth; the 6 m room 6 m east), the same force 15 m west in
-    every world (the FTA's truck over a bump, held at 69 Hz for the whole pass, the frequency fixed by a rule before the
-    bounds), the same scatterers and noise law, the whole 5 km image observed: the solver's field within 70 m and an
-    assumed surface-wave envelope beyond it to the image's edge (97 to 98% of the signal; a declared assumption, its
+    shape of a shallow room, quiet or beside a lorry; at every specified noise floor over natural ground neither does an
+    oracle told every reflectivity (P2-36, BENCHMARK.md, revision 3).** Five worlds identical but for the cavity (none;
+    rooms 6 and 10 m on a side under a 5 m roof; an L-shaped tunnel at that depth; the 6 m room 6 m east), the same force
+    15 m west in every world (the FTA's truck over a bump, held at 69 Hz for the whole pass, the frequency fixed by a rule
+    before the bounds), the same scatterers and noise law, the whole 5 km image observed: the solver's field within 70 m
+    and an assumed surface-wave envelope beyond it to the image's edge (97 to 98% of the signal; a declared assumption, its
     fall to 70 m measured, not a proved enclosure). The certificate applied along track line by line, each line
     independent once the range band is widened and each line's reference holding that line's own motion (the lorry's
     wave, the microseisms' worst-case envelope, world 0's cavity) and the receiver noise, keeps a floor near one where the
-    whole image gives none: any reader of the one image then finds at most 8.4 to 16% at 5% false alarms (5.6 to 6.7%
-    from the computed field alone, 6.1 to 8.4% with realistic damping), at most 30% with the envelope five times larger;
-    the motion would have to grow 8 times. The oracle, at the SNR calibrated from the image (12.7 dB), finds at most 12 to
-    27%; its bound stops excluding only at 28 to 38 dB. Under Giza's regional microseisms, averaged over the field's
-    realisations through a bound linear in each line's phase energy, every pair is within 10^-6 of chance. Checks: the
-    exact divergence on lines of the model is 0.12 to 0.18 of the certificate; pulse by pulse on fixed scenes the
-    coherent echo difference is 0.994 +- 0.006 of the ensemble formula, the same with the lorry's wave ten times larger.
-    Achieved: the score test implemented on synthesised images reaches its predicted AUC (0.96 against 0.93, the
-    difference amplified 800 times; chance at the real level). Scope: five layouts, one geology, the declared excitation,
-    fully developed speckle (bright points only under the oracle).
+    whole image gives none: any reader of the one image then finds at most 8.4 to 17% at 5% false alarms (5.6 to 6.7%
+    from the computed field alone, 6.1 to 8.5% with realistic damping), at most 31% with the envelope five times larger;
+    the motion would have to grow 8 times. The oracle, at the most favourable specified noise floor (18.4 dB: the site's
+    measured backscatter over ICEYE's best figure for Dwell Fine; a scenario, not a measurement), finds at most 18 to 47%
+    (12 to 27% at documentation 6.0.0's 12.7 dB); its bound stops excluding only at 28 to 38 dB; at 40 dB, bright
+    persistent ground, it does not exclude (0.95 to 1.0), the one open corner of the strong case. Under Giza's regional
+    microseisms, averaged over the field's realisations through a bound linear in each line's phase energy, every pair is
+    within 10^-6 of chance. Checks: the exact divergence on lines of the model is 0.12 to 0.18 of the certificate; pulse by
+    pulse on fixed scenes the coherent echo difference is 0.994 +- 0.006 of the ensemble formula, the same with the
+    lorry's wave ten times larger. Achieved: the score test implemented on synthesised images, its threshold from 400
+    calibration grounds and read on 100 + 100 others, finds 73% (63 to 81%) at 15% false alarms with the difference
+    amplified 800 times, AUC 0.91 against 0.93 predicted; at the real level it is at chance (AUC 0.47). Read as images
+    (P2-37), a detector told the lorry names every world at the positive control, and the published method's blind map
+    is at chance at every level. Scope: five layouts, one geology, the declared excitation, fully developed speckle
+    (bright points only under the oracle), a specified noise floor.
 
 These reasons differ in kind and strength. 4 is algebraic and holds whatever the ground does: the depth axis is a
 frequency axis with a repeat and a mirror, and no validated model turns it into a physical depth; that makes depth
@@ -1013,7 +1018,14 @@ The external reviewer's review of afee349, each point checked against the code b
   P2-38). Beside the lorry the oracle now reaches 0.13 to 0.42 (found at most 18 to 47% at 5%), P2-29's 10 m room under a
   plane wave 0.55; every case still below 0.9. Resolving the applicable noise needs ICEYE.
 - **The score test's evaluation grounds were calibration grounds** (seeds 3600-3799 and 3700-3759). Seed streams are now
-  named and asserted disjoint; {MC}
+  named and asserted disjoint; the score test's Monte Carlo is rerun with 400 calibration grounds and 100 + 100 evaluation grounds,
+  each rate with its interval: with the difference amplified 800 times it finds 73% (63 to 81%) at 15% false alarms
+  (9 to 24%), AUC 0.91 (predicted 0.93); at the real level 7% at 15% false alarms, AUC 0.47: at chance. The false alarms
+  exceed 5% because these 100 null grounds have a heavier upper tail than the calibration's 400; as samples the two are
+  not distinguishable (Kolmogorov-Smirnov p 0.33), so this is reported as measured, not tuned away. A first run of
+  revision 3 reported no separation at x800: its new bookkeeping reused the name of the radar wavenumber for a count,
+  scaling the second amplification's statistics towards zero; it was caught by recomputing every image's statistic
+  apart, and each image's statistic is now kept under its inputs.
 - **Four verification rows were stale**: cached under a version string without the noise level, they came from the
   earlier 30 dB configuration (the floor they report implies it). `katabasis.runs.memo` now joins a digest of each
   step's inputs to its key, and every analysis step of P2-36 passes its inputs; the rows are recomputed (the exact

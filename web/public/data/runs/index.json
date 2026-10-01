@@ -2815,9 +2815,9 @@
   "id": "p2_36_benchmark",
   "title": "One auditable comparison: presence, location and shape, bounds beside achieved",
   "date": "2026-10-01",
-  "started_utc": "2026-10-01T00:37:33+00:00",
-  "runtime_s": 8363.5,
-  "commit": "0f67888",
+  "started_utc": "2026-10-01T05:14:36+00:00",
+  "runtime_s": 60.0,
+  "commit": "057dfdf",
   "params": {
    "frozen": {
     "worlds": {

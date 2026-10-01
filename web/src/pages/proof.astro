@@ -44,7 +44,7 @@ type BmPair = {
   fixed_scenes?: { summary: Record<string, { mean: number; se: number }> };
   verify_line?: { rows: { amplification: number; exact_over_certificate: number | null }[]; floor: number };
   sigma_profile: { slope_40_70: number | null; outer_over_40m: number };
-  score_monte_carlo?: { rows: { amplification: number; auc_achieved: number; auc_predicted: number; found_at_threshold_achieved: number; false_alarms_at_threshold_achieved: number; found_interval_95: number[]; found_over_false_alarms_p_one_sided: number }[]; calibration_grounds: number; evaluation_grounds_each: number };
+  score_monte_carlo?: { rows: { amplification: number; auc_achieved: number; auc_predicted: number; found_at_threshold_achieved: number; false_alarms_at_threshold_achieved: number; found_interval_95: number[]; false_alarm_interval_95: number[]; null_samples_ks_p?: number; found_over_false_alarms_p_one_sided: number }[]; calibration_grounds: number; evaluation_grounds_each: number };
 };
 type BmCurve = { f_hz: number; l1_tv_upper: number; oracle_tv_upper: number; oracle_disc_tv_upper: number; oracle_bright_tv_upper?: number; tail_share: number };
 const bm = bench as unknown as {
@@ -353,7 +353,7 @@ const conc = (r: DRes) => r.over_room / r.elsewhere;
         {bmMC && (() => { const hi = bmMC.rows[bmMC.rows.length - 1], lo = bmMC.rows[0]; return <p><b>Achieved:</b> the score test, told the pattern, on synthesised images with one noise law, its threshold
         from {bmMC.calibration_grounds} calibration grounds and read on {bmMC.evaluation_grounds_each} + {bmMC.evaluation_grounds_each} others: with the difference
         amplified {hi.amplification.toLocaleString('en-US')} times it finds {Math.round(100 * hi.found_at_threshold_achieved)}% (95% interval {Math.round(100 * hi.found_interval_95[0])}–{Math.round(100 * hi.found_interval_95[1])}%)
-        at {Math.round(100 * hi.false_alarms_at_threshold_achieved)}% false alarms, AUC {hi.auc_achieved.toFixed(2)} (predicted {hi.auc_predicted.toFixed(2)}); at the real level
+        at {Math.round(100 * hi.false_alarms_at_threshold_achieved)}% false alarms ({Math.round(100 * hi.false_alarm_interval_95[0])}–{Math.round(100 * hi.false_alarm_interval_95[1])}%: the evaluation grounds’ upper tail, the samples otherwise alike, p {(hi.null_samples_ks_p ?? NaN).toFixed(2)}), AUC {hi.auc_achieved.toFixed(2)} (predicted {hi.auc_predicted.toFixed(2)}); at the real level
         {' '}{Math.round(100 * lo.found_at_threshold_achieved)}% at {Math.round(100 * lo.false_alarms_at_threshold_achieved)}% false alarms (p {lo.found_over_false_alarms_p_one_sided.toFixed(2)}), AUC {lo.auc_achieved.toFixed(2)}: at chance.</p>; })()}
       </div>
     </div>
