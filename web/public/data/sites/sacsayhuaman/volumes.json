@@ -186,6 +186,7 @@
   ],
   "run": "lab_sacsay_fields \u00b7 2026-09-30 \u00b7 2e70040",
   "tint": "gated",
+  "cmap": "magma",
   "caption": "fit scores, unsmoothed; empty where nothing passed"
  },
  {
@@ -213,6 +214,7 @@
   ],
   "run": "lab_sacsay_fields \u00b7 2026-09-30 \u00b7 2e70040",
   "tint": "gated",
+  "cmap": "magma",
   "caption": "fit scores, unsmoothed; empty where nothing passed"
  },
  {
@@ -240,6 +242,7 @@
   ],
   "run": "lab_sacsay_fields \u00b7 2026-09-30 \u00b7 2e70040",
   "tint": "gated",
+  "cmap": "magma",
   "caption": "fit scores, unsmoothed; empty where nothing passed"
  },
  {
@@ -267,6 +270,7 @@
   ],
   "run": "lab_sacsay_fields \u00b7 2026-09-30 \u00b7 2e70040",
   "tint": "gated",
+  "cmap": "magma",
   "caption": "fit scores, unsmoothed; empty where nothing passed"
  },
  {
@@ -294,6 +298,7 @@
   ],
   "run": "lab_sacsay_grid \u00b7 2026-09-30 \u00b7 2e70040",
   "tint": "gated",
+  "cmap": "magma",
   "caption": "fit scores, unsmoothed; empty where nothing passed"
  },
  {
@@ -321,6 +326,7 @@
   ],
   "run": "lab_sacsay_grid \u00b7 2026-09-30 \u00b7 2e70040",
   "tint": "gated",
+  "cmap": "magma",
   "caption": "fit scores, unsmoothed; empty where nothing passed"
  },
  {
@@ -348,6 +354,7 @@
   ],
   "run": "lab_sacsay_grid \u00b7 2026-09-30 \u00b7 2e70040",
   "tint": "gated",
+  "cmap": "magma",
   "caption": "fit scores, unsmoothed; empty where nothing passed"
  },
  {
@@ -375,6 +382,7 @@
   ],
   "run": "lab_sacsay_grid \u00b7 2026-09-30 \u00b7 2e70040",
   "tint": "gated",
+  "cmap": "magma",
   "caption": "fit scores, unsmoothed; empty where nothing passed"
  },
  {
@@ -402,6 +410,7 @@
   ],
   "run": "lab_sacsay_walls \u00b7 2026-09-30 \u00b7 2e70040",
   "tint": "gated",
+  "cmap": "magma",
   "caption": "fit scores, unsmoothed; empty where nothing passed"
  },
  {
@@ -429,6 +438,7 @@
   ],
   "run": "lab_sacsay_walls \u00b7 2026-09-30 \u00b7 2e70040",
   "tint": "gated",
+  "cmap": "magma",
   "caption": "fit scores, unsmoothed; empty where nothing passed"
  },
  {
@@ -456,6 +466,7 @@
   ],
   "run": "lab_sacsay_walls \u00b7 2026-09-30 \u00b7 2e70040",
   "tint": "gated",
+  "cmap": "magma",
   "caption": "fit scores, unsmoothed; empty where nothing passed"
  },
  {
@@ -483,6 +494,7 @@
   ],
   "run": "lab_sacsay_walls \u00b7 2026-09-30 \u00b7 2e70040",
   "tint": "gated",
+  "cmap": "magma",
   "caption": "fit scores, unsmoothed; empty where nothing passed"
  }
 ]

@@ -132,6 +132,7 @@
   ],
   "run": "p2_16_khufu_volume \u00b7 2026-09-29 \u00b7 d8a0060",
   "tint": "gated",
+  "cmap": "magma",
   "caption": "fit scores, unsmoothed; empty where nothing passed"
  },
  {
@@ -159,6 +160,7 @@
   ],
   "run": "p2_16_khufu_volume \u00b7 2026-09-29 \u00b7 d8a0060",
   "tint": "gated",
+  "cmap": "magma",
   "caption": "fit scores, unsmoothed; empty where nothing passed"
  },
  {
@@ -186,6 +188,7 @@
   ],
   "run": "p2_16_khufu_volume \u00b7 2026-09-29 \u00b7 d8a0060",
   "tint": "gated",
+  "cmap": "magma",
   "caption": "fit scores, unsmoothed; empty where nothing passed"
  },
  {
@@ -213,6 +216,7 @@
   ],
   "run": "p2_16_khufu_volume \u00b7 2026-09-29 \u00b7 d8a0060",
   "tint": "gated",
+  "cmap": "magma",
   "caption": "fit scores, unsmoothed; empty where nothing passed"
  },
  {
@@ -240,6 +244,7 @@
   ],
   "run": "p2_17_plateau_control \u00b7 2026-09-29 \u00b7 96d5a6a",
   "tint": "gated",
+  "cmap": "magma",
   "caption": "the in-image control: no monument stands here"
  },
  {
@@ -267,6 +272,7 @@
   ],
   "run": "p2_17_plateau_control \u00b7 2026-09-29 \u00b7 96d5a6a",
   "tint": "gated",
+  "cmap": "magma",
   "caption": "the in-image control: no monument stands here"
  },
  {
@@ -294,6 +300,7 @@
   ],
   "run": "lab_khafre \u00b7 2026-09-29 \u00b7 4af4a3c",
   "tint": "gated",
+  "cmap": "magma",
   "caption": "fit scores, unsmoothed; empty where nothing passed"
  },
  {
@@ -321,6 +328,7 @@
   ],
   "run": "lab_khafre \u00b7 2026-09-29 \u00b7 4af4a3c",
   "tint": "gated",
+  "cmap": "magma",
   "caption": "fit scores, unsmoothed; empty where nothing passed"
  },
  {
@@ -348,6 +356,7 @@
   ],
   "run": "lab_khafre \u00b7 2026-09-29 \u00b7 4af4a3c",
   "tint": "gated",
+  "cmap": "magma",
   "caption": "fit scores, unsmoothed; empty where nothing passed"
  },
  {
@@ -375,6 +384,7 @@
   ],
   "run": "lab_khafre \u00b7 2026-09-29 \u00b7 4af4a3c",
   "tint": "gated",
+  "cmap": "magma",
   "caption": "fit scores, unsmoothed; empty where nothing passed"
  },
  {
@@ -402,6 +412,7 @@
   ],
   "run": "lab_khafre_2025 \u00b7 2026-09-29 \u00b7 c232f06",
   "tint": "gated",
+  "cmap": "magma",
   "caption": "fit scores, unsmoothed; empty where nothing passed"
  },
  {
@@ -429,6 +440,7 @@
   ],
   "run": "lab_khafre_2025 \u00b7 2026-09-29 \u00b7 c232f06",
   "tint": "gated",
+  "cmap": "magma",
   "caption": "fit scores, unsmoothed; empty where nothing passed"
  },
  {
@@ -456,6 +468,7 @@
   ],
   "run": "lab_khafre_2025 \u00b7 2026-09-29 \u00b7 c232f06",
   "tint": "gated",
+  "cmap": "magma",
   "caption": "fit scores, unsmoothed; empty where nothing passed"
  },
  {
@@ -483,6 +496,7 @@
   ],
   "run": "lab_khafre_2025 \u00b7 2026-09-29 \u00b7 c232f06",
   "tint": "gated",
+  "cmap": "magma",
   "caption": "fit scores, unsmoothed; empty where nothing passed"
  },
  {
@@ -510,6 +524,7 @@
   ],
   "run": "lab_khafre_ns \u00b7 2026-09-29 \u00b7 c232f06",
   "tint": "gated",
+  "cmap": "magma",
   "caption": "fit scores, unsmoothed; empty where nothing passed"
  },
  {
@@ -537,6 +552,7 @@
   ],
   "run": "lab_khafre_ns \u00b7 2026-09-29 \u00b7 c232f06",
   "tint": "gated",
+  "cmap": "magma",
   "caption": "fit scores, unsmoothed; empty where nothing passed"
  },
  {
@@ -564,6 +580,7 @@
   ],
   "run": "lab_khafre_ns \u00b7 2026-09-29 \u00b7 c232f06",
   "tint": "gated",
+  "cmap": "magma",
   "caption": "fit scores, unsmoothed; empty where nothing passed"
  },
  {
@@ -591,6 +608,7 @@
   ],
   "run": "lab_khafre_ns \u00b7 2026-09-29 \u00b7 c232f06",
   "tint": "gated",
+  "cmap": "magma",
   "caption": "fit scores, unsmoothed; empty where nothing passed"
  },
  {
@@ -618,6 +636,7 @@
   ],
   "run": "p2_21_what_survives \u00b7 2026-09-29 \u00b7 c232f06",
   "tint": "gated",
+  "cmap": "magma",
   "caption": "the lesser of two fit scores; empty unless both runs scored"
  },
  {
@@ -645,6 +664,7 @@
   ],
   "run": "p2_21_what_survives \u00b7 2026-09-29 \u00b7 c232f06",
   "tint": "gated",
+  "cmap": "magma",
   "caption": "the lesser of two fit scores; empty unless both runs scored"
  }
 ]

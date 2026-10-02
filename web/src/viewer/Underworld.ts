@@ -75,6 +75,8 @@ export class Underworld {
   private legacy?: string;
   /** A link that names one picture opens on its place; otherwise the whole site. */
   private placeOnLoad = false;
+  private linesShown: [number, number] = [0, 0];
+  private gridShown: import('./data/types').LineGrid | undefined;
   /** Labels on the stage for each place the picture covers, and where each stands. */
   private places: { el: HTMLButtonElement; at: [number, number, number] }[] = [];
   private themeName: ThemeName = 'night';
@@ -272,6 +274,9 @@ export class Underworld {
     const chosen = choice ? findChoice(this.methods[m as Instrument], choice.id) : undefined;
     const set = chosen && vol ? viewSet(chosen.method, chosen.choice).filter((c) => c.kind === 'volume') : [];
     b.showVolumes(set.map((c) => c.id));
+    // the lines a lab run laid, on the ground, while one of its pictures is shown
+    this.linesShown = b.showLines(m === 'satellite' ? chosen?.choice.grid : undefined);
+    this.gridShown = m === 'satellite' ? chosen?.choice.grid : undefined;
     b.showSurvey(vol?.survey ? (s.surveys?.find((sv) => sv.id === vol.survey) ?? null) : null);
     if (choice?.kind === 'wave') {
       this.wave = b.showWavefield(choice.id);
@@ -574,11 +579,14 @@ export class Underworld {
       if (this.mode === 'satellite') {
         if (s.radar?.sensors) items.push(['sensor', 'true motion']);
         items.push(['radar', vol ? `the satellite’s picture: ${sel!.method.quantity}` : s.radar?.sensors ? 'what the image reports' : 'the satellite']);
+        const [drawn, of] = this.linesShown;
+        if (of && this.gridShown)
+          items.push(['line', `its ${of} ${this.gridShown.direction === 'ns' ? 'north–south' : 'east–west'} lines, ${this.gridShown.step} m apart${drawn < of ? ` (${drawn} drawn)` : ''}`]);
       }
       legend.innerHTML =
         items.map(([dot, label]) => `<span><span class="uw-dot ${dot}"></span>${esc(label)}</span>`).join('') +
         (vol
-          ? `<span class="uw-ramp ${this.mode === 'satellite' ? 'radar' : 'recovered'}" title="${esc(vol.quantity)}"><i></i>lower · higher</span>`
+          ? `<span class="uw-ramp ${vol.cmap === 'magma' ? 'magma' : this.mode === 'satellite' ? 'radar' : 'recovered'}" title="${esc(vol.quantity)}"><i></i>${vol.cmap === 'magma' ? '0 · fit score · 1' : 'lower · higher'}</span>`
           : '');
     }
   }

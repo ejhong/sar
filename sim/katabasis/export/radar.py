@@ -282,6 +282,14 @@ def real_stats(s: dict) -> dict:
                     f'every pixel its power follows how much the registration wandered ({pmin:.3f}).'}
 
 
+def study_grid(prm: dict, centre) -> dict:
+    """The lines a published gated study laid (P2-16, P2-17), from its own parameters: east-west lines `step` apart, each
+    with its positions `step` apart along it."""
+    st = float(prm['step_m'])
+    return {'direction': 'ew', 'centre': [float(centre[0]), float(centre[1])], 'half_ew': (prm['positions_per_line'] - 1) / 2 * st,
+            'half_ns': (prm['lines'] - 1) / 2 * st, 'step': st}
+
+
 def export_khufu_gated(out: Path = DATA) -> dict | None:
     """The gated reconstruction across the Great Pyramid (P2-16): its fit scores hung below the surface on a 3 m grid, for
     the real 2022 image and a motionless copy, at supports one and four. Unsmoothed, empty where nothing passed, cut at
@@ -335,7 +343,8 @@ def export_khufu_gated(out: Path = DATA) -> dict | None:
                 'range': [0.0, 1.0], 'run': crun, 'tint': 'gated', 'cmap': 'magma',
                 'caption': 'the in-image control: no monument stands here'}, ztop=float(w['z'][ckeep][0])))
             entries.append({'id': vid, 'case': 'plateau', 'support': int(P),
-                            'focus': [cx_, cy_, float(np.median(w['z_surface']))]})
+                            'focus': [cx_, cy_, float(np.median(w['z_surface']))],
+                            'grid': study_grid(c['manifest']['params'], (cx_, cy_))})
     _merge_volumes(d, vols, drop=lambda q: q['id'].startswith('radar-khufu-gated'))
     radar = json.loads(rj.read_text())
     kh = next(t for t in sc['structures'] if t['id'] == 'khufu')['shape']
@@ -347,6 +356,7 @@ def export_khufu_gated(out: Path = DATA) -> dict | None:
         'focus': [kh['centre'][0], kh['centre'][1], kh['centre'][2] + 0.2 * kh['height']],
         'radius_m': 620.0,
         'depth_scale': gated_scale(rid),
+        'grid': study_grid(s['manifest']['params'], s['manifest']['params']['khufu_centre_m']),
         'chambers': {'real': [st['real_p1']['mean_score_in_chambers'], st['real_p1']['mean_score_same_depths_elsewhere']],
                      'twin': [st['twin101_p1']['mean_score_in_chambers'], st['twin101_p1']['mean_score_same_depths_elsewhere']]},
         'note': ("The stricter reconstruction's own code, unchanged, run on the 2022 pass along 95 lines across the pyramid, "
@@ -434,8 +444,9 @@ def export_bench_gated(out: Path = DATA) -> dict | None:
 
 
 def export_lab(out: Path = DATA) -> list[dict]:
-    """Every lab run (katabasis.lab, sim/results/lab_*): its volumes into its site's viewer, drawn in gold as the gated
-    reconstruction's fit scores, and a list of runs in the site's radar.json for the satellite panel."""
+    """Every lab run (katabasis.lab, sim/results/lab_*): its volumes into its site's viewer, the gated reconstruction's
+    fit scores drawn in magma as the derivative protocol's own figures draw them, and a list of runs in the site's
+    radar.json for the satellite panel."""
     from ..compose import load_site
     from .sites import scene as site_scene
     runs = sorted(d for d in RESULTS.glob('lab_*') if (d / 'volumes.npz').exists() and (d / 'summary.json').exists())
@@ -473,7 +484,8 @@ def export_lab(out: Path = DATA) -> list[dict]:
         by_site.setdefault(site, []).append({
             'name': name, 'title': s['manifest']['title'], 'volumes': entries,
             'pass': stamp.group(1) if stamp else 'synthetic', 'lines': prm.get('lines', 'ew'),
-            'focus': [cx, cy, float(np.median(v['z_surface']))], 'radius_m': 620.0, 'note': s['finding'], 'run': run,
+            'focus': [cx, cy, float(np.median(v['z_surface']))], 'note': s['finding'], 'run': run,
+            'radius_m': min(620.0, 4.4 * max(prm['half_ew_m'], prm['half_ns_m'])),   # framed as a volume is (2.2 widths)
             'depth_scale': gated_scale(d.name), **({'area': prm['area']} if prm.get('area') else {}),
             # the lines the run laid: a grid, `step` apart, each running the length of the square
             'grid': {'direction': prm.get('lines', 'ew'), 'centre': [cx, cy], 'half_ew': prm['half_ew_m'],
@@ -521,9 +533,12 @@ def export_survives(out: Path = DATA) -> dict | None:
             'quantity': 'conditional adjusted R2 at each nominal depth below the surface, where both runs scored',
             'units': '0 to 1', 'range': [0.0, 1.0], 'run': run, 'tint': 'gated', 'cmap': 'magma',
             'caption': 'the lesser of two fit scores; empty unless both runs scored'}, ztop=float(z[keep][0])))
+        # both passes ran the 2022 run's east-west lines, so that run's lines are this map's; two layouts have no one grid
+        grid = next((x['grid'] for x in labs if x['name'] == 'khafre' and 'grid' in x), None) if lines == 'ew' else None
         labs.append({'name': name, 'title': title, 'pass': pas, 'lines': lines,
                      'volumes': [{'id': vid, 'case': 'real', 'support': 1}],
-                     'focus': [0.0, 0.0, float(np.median(z[keep][:1]))], 'radius_m': 620.0, 'note': s['finding'], 'run': run})
+                     'focus': [0.0, 0.0, float(np.median(z[keep][:1]))], 'radius_m': 620.0, 'note': s['finding'], 'run': run,
+                     **({'grid': grid} if grid else {})})
     _merge_volumes(d, vols, drop=lambda q: q['id'].startswith('radar-agree-'))
     radar['lab'] = labs
     rj.write_text(json.dumps(radar, separators=(',', ':')))

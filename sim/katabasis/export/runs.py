@@ -37,6 +37,10 @@ def command(rid: str, manifest: dict) -> str | None:
             parts.append(f"--twin {prm['twin_seed']}")
         if prm.get('lines', 'ew') != 'ew':
             parts.append(f"--lines {prm['lines']}")
+        if prm.get('track'):
+            parts.append(f"--track {prm['track']}")
+        if prm.get('depth_max_m'):
+            parts.append(f"--depth-max {prm['depth_max_m']:g}")
         if prm.get('product') and prm['product'] != 'ICEYE_X13_SLC_SLED_868226_20220715T235744.h5':
             parts.append(f"--product <path to {prm['product']}>")
         return ' '.join(parts)

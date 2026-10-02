@@ -85,6 +85,8 @@ export interface VolumeInfo {
   caption?: string;
   /** 'gated': the stricter reconstruction's fit scores, drawn in gold rather than the radar's cinnabar. */
   tint?: 'gated';
+  /** A colour scale in place of the instrument's hue: 'magma', the gated reconstruction's own (its author's figures). */
+  cmap?: 'magma';
 }
 
 /** The gated reconstruction's depth scale on the pass it read (P2-34): one turn of its fit, the depth at which the scale
@@ -95,6 +97,15 @@ export interface DepthScale {
   positions: number;
   shallow: number;
   mirror: number;
+}
+
+/** A lab run's lines: parallel, `step` metres apart, east-west or north-south across a square round `centre`. */
+export interface LineGrid {
+  direction: 'ew' | 'ns';
+  centre: [number, number];
+  half_ew: number;
+  half_ns: number;
+  step: number;
 }
 
 export interface RadarSensors {
@@ -160,11 +171,15 @@ export interface RadarInfo {
       /** This picture's own run, where it differs from the study's. */
       note?: string;
       focus?: [number, number, number];
+      /** The lines this picture's run laid, where they differ from the study's. */
+      grid?: LineGrid;
     }[];
     focus: [number, number, number];
     radius_m: number;
     chambers?: { real: [number | null, number | null]; twin: [number | null, number | null] };
     depth_scale?: DepthScale | null;
+    /** The lines the study laid. */
+    grid?: LineGrid;
     note: string;
   };
   /** Runs made with the lab's processing command (katabasis.lab), each over its own area. */
@@ -182,6 +197,8 @@ export interface RadarInfo {
     note: string;
     run?: string;
     depth_scale?: DepthScale | null;
+    /** The lines the run laid. */
+    grid?: LineGrid;
   }[];
 }
 

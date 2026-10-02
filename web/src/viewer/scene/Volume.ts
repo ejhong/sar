@@ -4,6 +4,8 @@ import {
   BoxGeometry,
   Color,
   Data3DTexture,
+  DataTexture,
+  RGBAFormat,
   LinearFilter,
   Mesh,
   NormalBlending,
@@ -15,6 +17,19 @@ import {
 } from 'three';
 import type { SceneTheme } from '../engine/theme';
 import type { VolumeInfo } from '../data/types';
+import { MAGMA } from './magma';
+
+/** The magma table as a texture, shared by every volume that asks for it. */
+let magmaLut: DataTexture | null = null;
+function magma(): DataTexture {
+  if (magmaLut) return magmaLut;
+  const d = new Uint8Array(MAGMA.length * 4);
+  MAGMA.forEach(([r, g, b], i) => d.set([Math.round(r * 255), Math.round(g * 255), Math.round(b * 255), 255], i * 4));
+  magmaLut = new DataTexture(d, MAGMA.length, 1, RGBAFormat);
+  magmaLut.minFilter = magmaLut.magFilter = LinearFilter;
+  magmaLut.needsUpdate = true;
+  return magmaLut;
+}
 
 /**
  * A voxel volume (a tomogram) ray-marched inside its box, in site
@@ -60,6 +75,8 @@ export class Volume {
         uSteps: { value: Math.min(512, Math.max(160, Math.ceil(1.5 * Math.max(nx, ny, nz)))) },
         uCamLocal: { value: new Vector3() },
         uDay: { value: theme.name === 'day' ? 1 : 0 },
+        uCmap: { value: info.cmap === 'magma' ? 1 : 0 },
+        uLut: { value: magma() },
       },
       vertexShader: VS,
       fragmentShader: FS,
@@ -117,7 +134,8 @@ precision highp float;
 precision highp sampler3D;
 uniform sampler3D uTex;
 uniform vec3 uLo, uHi, uColor, uCamLocal;
-uniform float uThreshold, uDensity, uCutY, uDay;
+uniform float uThreshold, uDensity, uCutY, uDay, uCmap;
+uniform sampler2D uLut;
 uniform int uSteps;
 varying vec3 vLocal;
 
@@ -150,6 +168,8 @@ void main() {
     // one hue, its lightness the value: dim and deep for the lowest shown, near white (by day, near ink) for the highest
     float s = smoothstep(uThreshold, 1.0, v);
     vec3 c = uDay > 0.5 ? mix(mix(uColor, vec3(1.0), 0.55), uColor * 0.55, s) : mix(uColor * 0.45, mix(uColor, vec3(1.0), 0.6), s);
+    // a volume with its own colour scale (the gated reconstruction's magma) takes its colour from the value itself
+    if (uCmap > 0.5) c = texture2D(uLut, vec2((0.5 + clamp(v, 0.0, 1.0) * 32.0) / 33.0, 0.5)).rgb;
     acc.rgb += (1.0 - acc.a) * a * c;
     acc.a += (1.0 - acc.a) * a;
   }

@@ -1,4 +1,4 @@
-import type { DepthScale, SiteScene, VolumeInfo } from './data/types';
+import type { DepthScale, LineGrid, SiteScene, VolumeInfo } from './data/types';
 import { GATED_CODE } from '../data/credits';
 
 /**
@@ -34,6 +34,8 @@ export interface Choice {
   /** Where to stand to see it, when it is small beside the site. */
   focus?: [number, number, number];
   radius_m?: number;
+  /** The lines a lab run laid, drawn on the ground while its picture is shown. */
+  grid?: LineGrid;
   /** A starting threshold for the volume's display (0..1 of its scale). */
   threshold: number;
   /** Order among a method's choices: the picture that might hold something first, its controls after. */
@@ -265,6 +267,7 @@ export function satelliteMethods(s: SiteScene): Method[] {
         run: vol(v.id)?.run,
         focus: r.kind === 'bench' ? undefined : (v.focus ?? g.focus),
         radius_m: r.kind === 'bench' ? undefined : g.radius_m,
+        grid: r.kind === 'bench' ? undefined : (v.grid ?? g.grid),
         threshold: 0.08,
       });
     }
@@ -285,6 +288,7 @@ export function satelliteMethods(s: SiteScene): Method[] {
         sub,
         note: lab.note,
         stats: scaleLine(lab.depth_scale),
+        grid: lab.grid,
         run: lab.run,
         focus: lab.focus,
         radius_m: lab.radius_m,
