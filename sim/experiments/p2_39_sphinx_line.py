@@ -51,7 +51,9 @@ VARIANTS = [('as published', REVISED, 'p22', 0, 0, None), ('one row along track'
 
 
 def fetch(name):
-    data = urllib.request.urlopen(f'{REPO}/{urllib.request.quote(name)}', timeout=60).read()
+    """A file from the repository at its commit, by curl (this Python's own certificate store may be empty)."""
+    import subprocess
+    data = subprocess.run(['curl', '-sSfL', f'{REPO}/{urllib.request.quote(name)}'], check=True, capture_output=True).stdout
     return data, hashlib.sha256(data).hexdigest()
 
 
