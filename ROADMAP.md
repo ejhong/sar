@@ -120,7 +120,9 @@ Then (29 September):
   pixels it states) and its settings (Track 7, supports 1-3, 0-50 m), 7 of our 8 passing positions stand where the
   figure has 9; a one-pixel move (4.6 cm along track, 44 cm across on the ground) keeps 3 to 6; the earlier East line,
   about 2 m west along 22 m of it, matches 1 of the 5 beside it by place; a motionless copy passes 4 of its own, the
-  2025 pass 20 (3 shared). The first record's 15 cm pixel and index comparison were corrected the same evening. 30 s a line on 16 cores. The lab's command takes `--track` and `--depth-max`; gated volumes
+  2025 pass 20 (3 shared). The first record's 15 cm pixel and index comparison were corrected the same evening.
+  `lab_sphinx` lays 151 north-south lines 0.6 m apart across the Sphinx with the same settings (52 minutes): 3,056 of
+  15,251 positions pass at a support of one, 444 at three; its motionless copy 1,518 and 44. 30 s a line on 16 cores. The lab's command takes `--track` and `--depth-max`; gated volumes
   are drawn in the figures' magma colours, and the lab draws the lines a volume was made from.
 
 Then (29 September, evening; the cloud session, on branch `claude/upbeat-pascal-swk910`, to merge):

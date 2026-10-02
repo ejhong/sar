@@ -689,7 +689,10 @@ investigation's record, and what it leaves open follow.
     depends on where its line's pixels fall to within a pixel. Corrected the evening it was published: the first record
     gave the across-track pixel as 15 cm (the 2025 product's slant-range sample, typed by hand) and compared the earlier
     line by index, "2 to 15 m away, keeps none", though its positions do not stand at the revised line's (it is
-    shorter); the sizes are now read from the product and the earlier line is compared by place.
+    shorter); the sizes are now read from the product and the earlier line is compared by place. The same settings over
+    151 north-south lines 0.6 m apart across the Sphinx (`lab_sphinx`, 52 minutes for the image and its copy) pass
+    3,056 of 15,251 positions at a support of one and 444 at three in the real image, 1,518 and 44 in its motionless
+    copy; across Khafre the frozen settings pass 1,218 and 539 at a support of one.
 
 These reasons differ in kind and strength. 4 is algebraic and holds whatever the ground does: the depth axis is a
 frequency axis with a repeat and a mirror, and no validated model turns it into a physical depth; that makes depth

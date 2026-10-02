@@ -25,6 +25,7 @@ import plateau from '../../public/data/runs/p2_17_plateau_control.json';
 import pulses from '../../public/data/runs/p2_18_echo_validation.json';
 import known from '../../public/data/runs/p2_19_known_vibration.json';
 import labKhafre from '../../public/data/runs/lab_khafre.json';
+import labSphinx from '../../public/data/runs/lab_sphinx.json';
 import survives from '../../public/data/runs/p2_21_what_survives.json';
 import bench from '../../public/data/runs/p2_20_bench_gated.json';
 import Boundary from '../components/Boundary.astro';
@@ -1445,12 +1446,29 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
             pixel. A pixel is {(px.along_track_m * 100).toFixed(1)} cm along the track and {Math.round(px.ground_range_m * 100)} cm across it on the
             ground; either way, moving the line by one keeps {Math.min(...keep)} to {Math.max(...keep)} of the {n} columns. The author’s earlier
             line runs {geo.earlier_offset_m[0].toFixed(1)} to {geo.earlier_offset_m[1].toFixed(1)} m to the {geo.earlier_side} along
-            {' '}{Math.round(geo.earlier_length_m)} m of it: it draws {earlier.passed['1'].length} columns, and {earlier.shared_with_reproduction_p1} of
-            the {earlier.ours_beside?.length} ours draws beside it {earlier.shared_with_reproduction_p1 === 1 ? 'has' : 'have'} one of them within
-            a position ({geo.position_spacing_m.toFixed(2)} m); a motionless copy of the image, with nothing moving, draws {row('a motionless copy').passed['1'].length} columns of its own; the 2025
+            {' '}{Math.round(geo.earlier_length_m)} m of it: it draws {earlier.passed['1'].length} columns, and of the {earlier.ours_beside?.length} we
+            draw beside it, {earlier.shared_with_reproduction_p1} {earlier.shared_with_reproduction_p1 === 1 ? 'has' : 'have'} one of them within a
+            position ({geo.position_spacing_m.toFixed(2)} m); a motionless copy of the image, with nothing moving, draws {row('a motionless copy').passed['1'].length} columns of its own; the 2025
             pass draws {row('the 2025 pass').passed['1'].length}, {row('the 2025 pass').shared_with_reproduction_p1} of them shared. One line takes
             about {Math.round(ours.runtime_s)} s on the lab’s desktop.
           </p>
+          {(() => {
+            const sp = labSphinx.manifest.params;
+            const sr = labSphinx.results as unknown as Record<string, { supported_positions: Record<string, number> }>;
+            const lines = Math.round((2 * sp.half_ew_m) / sp.step_m) + 1;
+            const all = lines * (Math.round((2 * sp.half_ns_m) / sp.step_m) + 1);
+            const f = (v: number) => v.toLocaleString('en-US');
+            return (
+              <p class="sub">
+                Laid across the Sphinx as {lines} north–south lines {sp.step_m} m apart, with the same settings, the same code draws a
+                volume under it, in the figure’s own colours (<a href={`${base}/underworld/#giza/satellite/radar-lab-sphinx-real-p1`}>in the lab</a>,
+                its lines drawn on the ground). The real image passes {f(sr.real.supported_positions['1'])} of {f(all)} positions at a support of
+                one and {f(sr.real.supported_positions['3'])} at three; its motionless copy, with nothing moving, {f(sr.twin101.supported_positions['1'])}
+                {' '}and {f(sr.twin101.supported_positions['3'])}. Across Khafre, with the stricter frozen settings, the real image passes
+                {' '}{f(lk.real.supported_positions['1'])} positions to its copy’s {f(lk.twin101.supported_positions['1'])}.
+              </p>
+            );
+          })()}
           <Figure src={`${base}/data/runs/p2_39_sphinx_line/positions.png`} alt="Where the published line's columns stand, reproduced and varied" label="Where the columns stand along the line" caption="filled: a position passing at a support of one; outlined: two in a row. The top row is read off the repository’s figure; every other row is the same code on the lab’s copy of the 2022 pass (or the 2025 pass), the line as published or moved; the earlier line’s columns stand where they lie beside the published line, over the stretch it runs (grey)" aspect="1425 / 621" />
           <RunDetails manifest={sphinx.manifest} />
         </details>
