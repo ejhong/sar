@@ -73,7 +73,8 @@ def published_positions(png):
     white = (im > 200).all(axis=2)
     frames = np.flatnonzero(white.sum(axis=1) > 0.6 * im.shape[1])
     frames = [g[0] for g in np.split(frames, np.flatnonzero(np.diff(frames) > 3) + 1)]
-    left, right = (g[0] for g in [np.flatnonzero(white.sum(axis=0) > 0.25 * im.shape[0])[[0, -1]]])
+    cols = np.flatnonzero(white.sum(axis=0) > 0.25 * im.shape[0])
+    left, right = int(cols[0]), int(cols[-1])
     ticks = np.flatnonzero(white[frames[0] - 16:frames[0] - 2, left + 2:right - 1].any(axis=0)) + left + 2
     ticks = [g.mean() for g in np.split(ticks, np.flatnonzero(np.diff(ticks) > 3) + 1)][-6:]
     per = (ticks[-1] - ticks[0]) / 100.0
