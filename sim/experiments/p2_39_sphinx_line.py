@@ -80,10 +80,11 @@ def published_positions(png):
     per = (ticks[-1] - ticks[0]) / 100.0
     out = {}
     for k in range(0, len(frames) - 1, 2):
-        panel = im[frames[k] + 2:frames[k + 1] - 1, left + 2:right - 1]
-        lit = np.flatnonzero((panel.max(axis=2) > 25).sum(axis=0) > 3) + left + 2
-        pos = sorted({int(round((x - ticks[0]) / per)) for x in lit})
-        out[k // 2 + 1] = pos
+        panel = im[frames[k] + 2:frames[k + 1] - 1]
+        lit = (panel.max(axis=2) > 25).sum(axis=0) > 3                # columns with any colour over the black
+        lit[:left + 4] = lit[right - 3:] = False                       # the frame and its antialiasing
+        # a position is lit when most of its cell is
+        out[k // 2 + 1] = [p for p in range(101) if lit[int(round(ticks[0] + (p - 0.5) * per)):int(round(ticks[0] + (p + 0.5) * per))].mean() > 0.5]
     return out, {'ticks_px': [float(t) for t in ticks], 'px_per_position': float(per)}
 
 
