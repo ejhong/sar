@@ -50,10 +50,10 @@
    "features": {
     "surveyed": 12
    },
-   "volumes": 24,
+   "volumes": 30,
    "instruments": {
     "geophones": 0,
-    "satellite": 24
+    "satellite": 30
    }
   },
   {

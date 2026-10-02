@@ -3598,5 +3598,46 @@
    "cpus": 16
   },
   "command": "uv run --with scikit-image python -m katabasis.lab gated --name sacsay_walls --site sacsayhuaman --centre 14.6,-92.7 --half-ew 150 --half-ns 141 --step 3 --supports 1,4 --twin 101 --product <path to ICEYE_X35_SLC_SLEDF_5907293_20250822T152433.h5>"
+ },
+ "lab_sphinx": {
+  "id": "lab_sphinx",
+  "title": "The gated reconstruction across the Sphinx enclosure, from the 2022 pass, with its author's Sphinx settings (Track 7, supports 1 to 3, 0 to 50 m)",
+  "date": "2026-10-02",
+  "started_utc": "2026-10-02T04:55:41+00:00",
+  "runtime_s": 3149.4,
+  "commit": "6dccba6",
+  "params": {
+   "method": "gated",
+   "site": "giza",
+   "centre_m": [
+    655.7,
+    -86.8
+   ],
+   "half_ew_m": 45.0,
+   "half_ns_m": 30.0,
+   "step_m": 0.6,
+   "supports": [
+    1,
+    2,
+    3
+   ],
+   "twin_seed": 101,
+   "product": "ICEYE_X13_SLC_SLED_868226_20220715T235744.h5",
+   "lines": "ns",
+   "gated_module_sha256": "3e1154c11274b896b91e262198576ffd750732709ad08ac00c6892c4ea5e1b1d",
+   "gated_profile_sha256": "ae84cade31f7e5ffa9b4daa0eba152649d2afc7f1655415bad38553f4f4d69aa",
+   "geoid_m": 15.5,
+   "area": "The Sphinx",
+   "track": 7,
+   "depth_max_m": 50.0
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  },
+  "command": "uv run --with scikit-image python -m katabasis.lab gated --name sphinx --site giza --centre 655.7,-86.8 --half-ew 45 --half-ns 30 --step 0.6 --supports 1,2,3 --twin 101 --lines ns --track 7 --depth-max 50"
  }
 }
