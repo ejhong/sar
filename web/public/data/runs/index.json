@@ -3363,6 +3363,51 @@
   },
   "command": "uv run --with scikit-image python experiments/p2_39_sphinx_line.py"
  },
+ "p2_40_sphinx_passes": {
+  "id": "p2_40_sphinx_passes",
+  "title": "Whether the Sphinx volume's blobs stay put from one pass to the next",
+  "date": "2026-10-02",
+  "started_utc": "2026-10-02T13:59:10+00:00",
+  "runtime_s": 1.0,
+  "commit": "4df2b42",
+  "params": {
+   "runs": {
+    "2022": "lab_sphinx",
+    "2025": "lab_sphinx_2025"
+   },
+   "run_commits": {
+    "2022": "6dccba6",
+    "2025": "084207e"
+   },
+   "window_pairs": 50,
+   "heights_m": [
+    0.0,
+    2.5,
+    5.0,
+    7.5,
+    10.0,
+    12.5,
+    15.0,
+    17.5,
+    20.0,
+    22.5,
+    25.0,
+    27.5,
+    30.0
+   ],
+   "null_shifts": 400,
+   "min_shift_positions": 25,
+   "kmz": "https://raw.githubusercontent.com/BiondiProtocol/Replication-and-Verification-Biondi-Protocol/c0cb293/ICEYE_X13_Great_Sphinx_Ditch_EastWoodAvoidance_GE.kmz"
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  },
+  "command": "uv run python experiments/p2_40_sphinx_passes.py"
+ },
  "lab_khafre": {
   "id": "lab_khafre",
   "title": "The gated reconstruction across Khafre, from the 2022 image",
@@ -3639,5 +3684,46 @@
    "cpus": 16
   },
   "command": "uv run --with scikit-image python -m katabasis.lab gated --name sphinx --site giza --centre 655.7,-86.8 --half-ew 45 --half-ns 30 --step 0.6 --supports 1,2,3 --twin 101 --lines ns --track 7 --depth-max 50"
+ },
+ "lab_sphinx_2025": {
+  "id": "lab_sphinx_2025",
+  "title": "The gated reconstruction across the Sphinx enclosure, from the 2025 pass, with the same Sphinx settings (Track 7, supports 1 to 3, 0 to 50 m)",
+  "date": "2026-10-02",
+  "started_utc": "2026-10-02T12:20:49+00:00",
+  "runtime_s": 3452.6,
+  "commit": "084207e",
+  "params": {
+   "method": "gated",
+   "site": "giza",
+   "centre_m": [
+    655.7,
+    -86.8
+   ],
+   "half_ew_m": 45.0,
+   "half_ns_m": 30.0,
+   "step_m": 0.6,
+   "supports": [
+    1,
+    2,
+    3
+   ],
+   "twin_seed": 101,
+   "product": "ICEYE_X33_SLC_SLEDF_951562307_20250827T202654.h5",
+   "lines": "ns",
+   "gated_module_sha256": "3e1154c11274b896b91e262198576ffd750732709ad08ac00c6892c4ea5e1b1d",
+   "gated_profile_sha256": "ae84cade31f7e5ffa9b4daa0eba152649d2afc7f1655415bad38553f4f4d69aa",
+   "geoid_m": 15.5,
+   "area": "The Sphinx",
+   "track": 7,
+   "depth_max_m": 50.0
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  },
+  "command": "uv run --with scikit-image python -m katabasis.lab gated --name sphinx_2025 --site giza --centre 655.7,-86.8 --half-ew 45 --half-ns 30 --step 0.6 --supports 1,2,3 --twin 101 --lines ns --track 7 --depth-max 50 --product <path to ICEYE_X33_SLC_SLEDF_951562307_20250827T202654.h5>"
  }
 }

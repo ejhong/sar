@@ -694,6 +694,16 @@ investigation's record, and what it leaves open follow.
     3,056 of 15,251 positions at a support of one and 444 at three in the real image, 1,518 and 44 in its motionless
     copy; across Khafre the frozen settings pass 1,218 and 539 at a support of one.
 
+30. **Under the Sphinx, the volume's two blobs do not behave as voids (P2-40).** The same lines from the 2025 pass
+    (`lab_sphinx_2025`: 1,807 of 15,251 positions pass at a support of one, its copy 1,364). The blobs are the 2022
+    real image's two largest clusters. The larger (643 positions, at the statue's south side) does not come
+    back: 13% of its positions pass in 2025, 11% elsewhere, and at most 19% where rock standing up to 30 m
+    above the lines would have moved it (at 27.5 m). The other (336 positions, at the west end) stays put
+    (40%), but both motionless copies gather there too (28% and 31%, against 9% and 8%), and its best
+    scores stand at a median 6.8 m on one pass and 2.9 m on the other. Over the square the passes agree
+    1.37 times chance, the copies 1.70 times. Stated before the 2025 run finished: a void stays put at one depth;
+    the depth comparison was added after the maps were seen.
+
 These reasons differ in kind and strength. 4 is algebraic and holds whatever the ground does: the depth axis is a
 frequency axis with a repeat and a mirror, and no validated model turns it into a physical depth; that makes depth
 uncalibrated and non-unique, and does not by itself decide horizontal location or shape; P2-31 tests those directly, and the published picture recovers neither where a reference detector recovers both (24). 1 and 12 are

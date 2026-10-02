@@ -780,6 +780,174 @@
   "caption": "fit scores, unsmoothed; empty where nothing passed"
  },
  {
+  "id": "radar-lab-sphinx_2025-real-p1",
+  "status": "radar",
+  "file": "vol-radar-lab-sphinx_2025-real-p1.u8",
+  "shape": [
+   151,
+   101,
+   107
+  ],
+  "origin": [
+   610.7,
+   -116.8,
+   33.26929799999999
+  ],
+  "spacing": 0.6,
+  "label": "Satellite \u00b7 lab run sphinx_2025, the real image, support 1",
+  "method": "The gated reconstruction, unchanged, along 151 north-south lines 0.6 m apart across (655.7, -86.8) on giza: real: 1,807 of 15,251 positions pass at support 1, 422 of 15,251 positions pass at support 2, 116 of 15,251 positions pass at support 3; twin101: 1,364 of 15,251 positions pass at support 1, 256 of 15,251 positions pass at support 2, 59 of 15,251 positions pass at support 3.",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "lab_sphinx_2025 \u00b7 2026-10-02 \u00b7 084207e",
+  "tint": "gated",
+  "cmap": "magma",
+  "caption": "fit scores, unsmoothed; empty where nothing passed"
+ },
+ {
+  "id": "radar-lab-sphinx_2025-real-p2",
+  "status": "radar",
+  "file": "vol-radar-lab-sphinx_2025-real-p2.u8",
+  "shape": [
+   151,
+   101,
+   107
+  ],
+  "origin": [
+   610.7,
+   -116.8,
+   33.26929799999999
+  ],
+  "spacing": 0.6,
+  "label": "Satellite \u00b7 lab run sphinx_2025, the real image, support 2",
+  "method": "The gated reconstruction, unchanged, along 151 north-south lines 0.6 m apart across (655.7, -86.8) on giza: real: 1,807 of 15,251 positions pass at support 1, 422 of 15,251 positions pass at support 2, 116 of 15,251 positions pass at support 3; twin101: 1,364 of 15,251 positions pass at support 1, 256 of 15,251 positions pass at support 2, 59 of 15,251 positions pass at support 3.",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "lab_sphinx_2025 \u00b7 2026-10-02 \u00b7 084207e",
+  "tint": "gated",
+  "cmap": "magma",
+  "caption": "fit scores, unsmoothed; empty where nothing passed"
+ },
+ {
+  "id": "radar-lab-sphinx_2025-real-p3",
+  "status": "radar",
+  "file": "vol-radar-lab-sphinx_2025-real-p3.u8",
+  "shape": [
+   151,
+   101,
+   107
+  ],
+  "origin": [
+   610.7,
+   -116.8,
+   33.26929799999999
+  ],
+  "spacing": 0.6,
+  "label": "Satellite \u00b7 lab run sphinx_2025, the real image, support 3",
+  "method": "The gated reconstruction, unchanged, along 151 north-south lines 0.6 m apart across (655.7, -86.8) on giza: real: 1,807 of 15,251 positions pass at support 1, 422 of 15,251 positions pass at support 2, 116 of 15,251 positions pass at support 3; twin101: 1,364 of 15,251 positions pass at support 1, 256 of 15,251 positions pass at support 2, 59 of 15,251 positions pass at support 3.",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "lab_sphinx_2025 \u00b7 2026-10-02 \u00b7 084207e",
+  "tint": "gated",
+  "cmap": "magma",
+  "caption": "fit scores, unsmoothed; empty where nothing passed"
+ },
+ {
+  "id": "radar-lab-sphinx_2025-twin-p1",
+  "status": "radar",
+  "file": "vol-radar-lab-sphinx_2025-twin-p1.u8",
+  "shape": [
+   151,
+   101,
+   107
+  ],
+  "origin": [
+   610.7,
+   -116.8,
+   33.26929799999999
+  ],
+  "spacing": 0.6,
+  "label": "Satellite \u00b7 lab run sphinx_2025, a motionless copy, support 1",
+  "method": "The gated reconstruction, unchanged, along 151 north-south lines 0.6 m apart across (655.7, -86.8) on giza: real: 1,807 of 15,251 positions pass at support 1, 422 of 15,251 positions pass at support 2, 116 of 15,251 positions pass at support 3; twin101: 1,364 of 15,251 positions pass at support 1, 256 of 15,251 positions pass at support 2, 59 of 15,251 positions pass at support 3.",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "lab_sphinx_2025 \u00b7 2026-10-02 \u00b7 084207e",
+  "tint": "gated",
+  "cmap": "magma",
+  "caption": "fit scores, unsmoothed; empty where nothing passed"
+ },
+ {
+  "id": "radar-lab-sphinx_2025-twin-p2",
+  "status": "radar",
+  "file": "vol-radar-lab-sphinx_2025-twin-p2.u8",
+  "shape": [
+   151,
+   101,
+   107
+  ],
+  "origin": [
+   610.7,
+   -116.8,
+   33.26929799999999
+  ],
+  "spacing": 0.6,
+  "label": "Satellite \u00b7 lab run sphinx_2025, a motionless copy, support 2",
+  "method": "The gated reconstruction, unchanged, along 151 north-south lines 0.6 m apart across (655.7, -86.8) on giza: real: 1,807 of 15,251 positions pass at support 1, 422 of 15,251 positions pass at support 2, 116 of 15,251 positions pass at support 3; twin101: 1,364 of 15,251 positions pass at support 1, 256 of 15,251 positions pass at support 2, 59 of 15,251 positions pass at support 3.",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "lab_sphinx_2025 \u00b7 2026-10-02 \u00b7 084207e",
+  "tint": "gated",
+  "cmap": "magma",
+  "caption": "fit scores, unsmoothed; empty where nothing passed"
+ },
+ {
+  "id": "radar-lab-sphinx_2025-twin-p3",
+  "status": "radar",
+  "file": "vol-radar-lab-sphinx_2025-twin-p3.u8",
+  "shape": [
+   151,
+   101,
+   107
+  ],
+  "origin": [
+   610.7,
+   -116.8,
+   33.26929799999999
+  ],
+  "spacing": 0.6,
+  "label": "Satellite \u00b7 lab run sphinx_2025, a motionless copy, support 3",
+  "method": "The gated reconstruction, unchanged, along 151 north-south lines 0.6 m apart across (655.7, -86.8) on giza: real: 1,807 of 15,251 positions pass at support 1, 422 of 15,251 positions pass at support 2, 116 of 15,251 positions pass at support 3; twin101: 1,364 of 15,251 positions pass at support 1, 256 of 15,251 positions pass at support 2, 59 of 15,251 positions pass at support 3.",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "lab_sphinx_2025 \u00b7 2026-10-02 \u00b7 084207e",
+  "tint": "gated",
+  "cmap": "magma",
+  "caption": "fit scores, unsmoothed; empty where nothing passed"
+ },
+ {
   "id": "radar-agree-ew22-ns22",
   "status": "radar",
   "file": "vol-radar-agree-ew22-ns22.u8",

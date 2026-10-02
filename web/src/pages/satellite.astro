@@ -26,6 +26,7 @@ import pulses from '../../public/data/runs/p2_18_echo_validation.json';
 import known from '../../public/data/runs/p2_19_known_vibration.json';
 import labKhafre from '../../public/data/runs/lab_khafre.json';
 import labSphinx from '../../public/data/runs/lab_sphinx.json';
+import sphinxPasses from '../../public/data/runs/p2_40_sphinx_passes.json';
 import survives from '../../public/data/runs/p2_21_what_survives.json';
 import bench from '../../public/data/runs/p2_20_bench_gated.json';
 import Boundary from '../components/Boundary.astro';
@@ -1471,6 +1472,27 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
           })()}
           <Figure src={`${base}/data/runs/p2_39_sphinx_line/positions.png`} alt="Where the published line's columns stand, reproduced and varied" label="Where the columns stand along the line" caption="filled: a position passing at a support of one; outlined: two in a row. The top row is read off the repository’s figure; every other row is the same code on the lab’s copy of the 2022 pass (or the 2025 pass), the line as published or moved; the earlier line’s columns stand where they lie beside the published line, over the stretch it runs (grey)" aspect="1425 / 621" />
           <RunDetails manifest={sphinx.manifest} />
+          {(() => {
+            type Blob = { positions: number; where: string; passing: Record<string, number>; depths: Record<string, { quartiles_m: number[] }> };
+            const [big, small] = sphinxPasses.blobs as unknown as Blob[];
+            const el = sphinxPasses.elsewhere as Record<string, number>;
+            const pc = (v: number) => `${Math.round(v * 100)}%`;
+            return (
+              <>
+                <p class="sub">
+                  Seen again from the 2025 pass, on the same lines, neither of the volume’s two blobs behaves as a void would (P2-40). The
+                  larger, at the statue’s {big.where}, does not come back: {pc(big.passing['2025'])} of its positions pass in 2025, where
+                  {' '}{pc(el['2025'])} pass elsewhere. The other, at its {small.where}, stays put ({pc(small.passing['2025'])}), but the
+                  motionless copies, with nothing moving, gather there too ({pc(small.passing['2022 copy'])} and {pc(small.passing['2025 copy'])},
+                  against {pc(el['2022 copy'])} and {pc(el['2025 copy'])} elsewhere), and its depth does not hold: a median
+                  {' '}{small.depths['2022'].quartiles_m[1].toFixed(1)} m on the 2022 pass and {small.depths['2025'].quartiles_m[1].toFixed(1)} m on
+                  the 2025 pass, where a void would stand at one depth.
+                </p>
+                <Figure src={`${base}/data/runs/p2_40_sphinx_passes/passes.png`} alt="Positions passing under the Sphinx from two passes and their motionless copies" label="Under the Sphinx, two passes" caption="positions passing at a support of one along the same 151 lines, from each pass and from its motionless copy; outlined, the 2022 image’s two blobs; grey, the statue’s outline, and blue, the author’s line, from his KMZ" aspect="1222 / 819" />
+                <RunDetails manifest={sphinxPasses.manifest} />
+              </>
+            );
+          })()}
         </details>
       );
     })()}
