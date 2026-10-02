@@ -3273,6 +3273,96 @@
   },
   "command": "uv run python experiments/p2_38_claim.py"
  },
+ "p2_39_sphinx_line": {
+  "id": "p2_39_sphinx_line",
+  "title": "The published Sphinx tomogram, reproduced, and how far it survives a one-pixel nudge",
+  "date": "2026-10-02",
+  "started_utc": "2026-10-02T05:06:37+00:00",
+  "runtime_s": 32.9,
+  "commit": "db210f5",
+  "params": {
+   "repository": "https://raw.githubusercontent.com/BiondiProtocol/Replication-and-Verification-Biondi-Protocol/c0cb293",
+   "figure": "ICEYE_X13_Great_Sphinx_Ditch_EastWoodAvoidance_Track7_P1toP3_Tomograms_0to50m.png",
+   "kmz": "ICEYE_X13_Great_Sphinx_Ditch_EastWoodAvoidance_GE.kmz",
+   "module_sha256": "3e1154c11274b896b91e262198576ffd750732709ad08ac00c6892c4ea5e1b1d",
+   "profile": "iceye_x13_khafre_w50.json with Track 7, supports 1-3, depths 0-50 m",
+   "profile_sha256": "ae84cade31f7e5ffa9b4daa0eba152649d2afc7f1655415bad38553f4f4d69aa",
+   "variants": [
+    [
+     "as published",
+     "Revised East: NE",
+     0,
+     0,
+     "p22",
+     null
+    ],
+    [
+     "one row along track",
+     "Revised East: NE",
+     -1,
+     0,
+     "p22",
+     null
+    ],
+    [
+     "one row the other way",
+     "Revised East: NE",
+     1,
+     0,
+     "p22",
+     null
+    ],
+    [
+     "one sample across track",
+     "Revised East: NE",
+     0,
+     -1,
+     "p22",
+     null
+    ],
+    [
+     "one sample the other way",
+     "Revised East: NE",
+     0,
+     1,
+     "p22",
+     null
+    ],
+    [
+     "the earlier East line",
+     "Previous East: NE",
+     0,
+     0,
+     "p22",
+     null
+    ],
+    [
+     "a motionless copy",
+     "Revised East: NE",
+     0,
+     0,
+     "p22",
+     101
+    ],
+    [
+     "the 2025 pass",
+     "Revised East: NE",
+     0,
+     0,
+     "p25",
+     null
+    ]
+   ]
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  },
+  "command": "uv run --with scikit-image python experiments/p2_39_sphinx_line.py"
+ },
  "lab_khafre": {
   "id": "lab_khafre",
   "title": "The gated reconstruction across Khafre, from the 2022 image",

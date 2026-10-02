@@ -1,0 +1,355 @@
+{
+ "manifest": {
+  "id": "p2_39_sphinx_line",
+  "title": "The published Sphinx tomogram, reproduced, and how far it survives a one-pixel nudge",
+  "date": "2026-10-02",
+  "started_utc": "2026-10-02T05:06:37+00:00",
+  "runtime_s": 32.9,
+  "commit": "db210f5",
+  "params": {
+   "repository": "https://raw.githubusercontent.com/BiondiProtocol/Replication-and-Verification-Biondi-Protocol/c0cb293",
+   "figure": "ICEYE_X13_Great_Sphinx_Ditch_EastWoodAvoidance_Track7_P1toP3_Tomograms_0to50m.png",
+   "kmz": "ICEYE_X13_Great_Sphinx_Ditch_EastWoodAvoidance_GE.kmz",
+   "module_sha256": "3e1154c11274b896b91e262198576ffd750732709ad08ac00c6892c4ea5e1b1d",
+   "profile": "iceye_x13_khafre_w50.json with Track 7, supports 1-3, depths 0-50 m",
+   "profile_sha256": "ae84cade31f7e5ffa9b4daa0eba152649d2afc7f1655415bad38553f4f4d69aa",
+   "variants": [
+    [
+     "as published",
+     "Revised East: NE",
+     0,
+     0,
+     "p22",
+     null
+    ],
+    [
+     "one row along track",
+     "Revised East: NE",
+     -1,
+     0,
+     "p22",
+     null
+    ],
+    [
+     "one row the other way",
+     "Revised East: NE",
+     1,
+     0,
+     "p22",
+     null
+    ],
+    [
+     "one sample across track",
+     "Revised East: NE",
+     0,
+     -1,
+     "p22",
+     null
+    ],
+    [
+     "one sample the other way",
+     "Revised East: NE",
+     0,
+     1,
+     "p22",
+     null
+    ],
+    [
+     "the earlier East line",
+     "Previous East: NE",
+     0,
+     0,
+     "p22",
+     null
+    ],
+    [
+     "a motionless copy",
+     "Revised East: NE",
+     0,
+     0,
+     "p22",
+     101
+    ],
+    [
+     "the 2025 pass",
+     "Revised East: NE",
+     0,
+     0,
+     "p25",
+     null
+    ]
+   ]
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  }
+ },
+ "published": {
+  "positions": {
+   "1": [
+    6,
+    9,
+    29,
+    30,
+    31,
+    51,
+    71,
+    77,
+    88
+   ],
+   "2": [
+    29,
+    30
+   ]
+  },
+  "axis": {
+   "ticks_px": [
+    122.5,
+    633.5,
+    1144.5,
+    1655.5,
+    2166.5,
+    2677.5
+   ],
+   "px_per_position": 25.55
+  },
+  "figure_sha256": "55df1f0c3e0011e03c307693b917eab0a25bb76d7bb74e6dfd1bb62b689fe5a9",
+  "kmz_sha256": "4f4be67342ea2c5dc4aeb229cb3e771ca1c31a5bb543f821123e11dab638b253",
+  "stated_ends_col_row": [
+   [
+    6956,
+    46541
+   ],
+   [
+    6940,
+    45712
+   ]
+  ]
+ },
+ "reproduction_ends_col_row": [
+  [
+   6955.756654,
+   46540.60302
+  ],
+  [
+   6940.419984,
+   45712.377116
+  ]
+ ],
+ "rows": [
+  {
+   "variant": "as published",
+   "passed": {
+    "1": [
+     6,
+     9,
+     29,
+     31,
+     51,
+     71,
+     77,
+     86
+    ],
+    "2": [],
+    "3": []
+   },
+   "runtime_s": 30.4,
+   "shared_with_reproduction_p1": 8,
+   "shared_with_published_p1": 7
+  },
+  {
+   "variant": "one row along track",
+   "passed": {
+    "1": [
+     5,
+     6,
+     9,
+     11,
+     29,
+     47,
+     51,
+     71,
+     77
+    ],
+    "2": [],
+    "3": []
+   },
+   "runtime_s": 30.4,
+   "shared_with_reproduction_p1": 6,
+   "shared_with_published_p1": 6
+  },
+  {
+   "variant": "one row the other way",
+   "passed": {
+    "1": [
+     9,
+     10,
+     29,
+     30,
+     44,
+     45,
+     65,
+     79,
+     86,
+     87
+    ],
+    "2": [
+     29,
+     30,
+     44,
+     45,
+     86,
+     87
+    ],
+    "3": []
+   },
+   "runtime_s": 30.3,
+   "shared_with_reproduction_p1": 3,
+   "shared_with_published_p1": 3
+  },
+  {
+   "variant": "one sample across track",
+   "passed": {
+    "1": [
+     9,
+     13,
+     18,
+     28,
+     29,
+     47,
+     58,
+     65,
+     71,
+     74,
+     77,
+     79,
+     86
+    ],
+    "2": [],
+    "3": []
+   },
+   "runtime_s": 30.4,
+   "shared_with_reproduction_p1": 5,
+   "shared_with_published_p1": 4
+  },
+  {
+   "variant": "one sample the other way",
+   "passed": {
+    "1": [
+     6,
+     9,
+     29,
+     30,
+     39,
+     45,
+     51,
+     77,
+     90
+    ],
+    "2": [
+     29,
+     30
+    ],
+    "3": []
+   },
+   "runtime_s": 30.3,
+   "shared_with_reproduction_p1": 5,
+   "shared_with_published_p1": 6
+  },
+  {
+   "variant": "the earlier East line",
+   "passed": {
+    "1": [
+     7,
+     50,
+     68
+    ],
+    "2": [],
+    "3": []
+   },
+   "runtime_s": 30.1,
+   "shared_with_reproduction_p1": 0,
+   "shared_with_published_p1": 0
+  },
+  {
+   "variant": "a motionless copy",
+   "passed": {
+    "1": [
+     24,
+     25,
+     28,
+     87
+    ],
+    "2": [
+     24,
+     25
+    ],
+    "3": []
+   },
+   "runtime_s": 28.7,
+   "shared_with_reproduction_p1": 0,
+   "shared_with_published_p1": 0
+  },
+  {
+   "variant": "the 2025 pass",
+   "passed": {
+    "1": [
+     6,
+     12,
+     22,
+     23,
+     25,
+     26,
+     27,
+     28,
+     29,
+     41,
+     42,
+     46,
+     47,
+     48,
+     50,
+     51,
+     55,
+     57,
+     66,
+     76
+    ],
+    "2": [
+     22,
+     23,
+     26,
+     27,
+     28,
+     41,
+     42,
+     46,
+     47,
+     48
+    ],
+    "3": [
+     46,
+     47,
+     48
+    ]
+   },
+   "runtime_s": 31.4,
+   "shared_with_reproduction_p1": 3,
+   "shared_with_published_p1": 3
+  }
+ ],
+ "matched_p1": [
+  6,
+  9,
+  29,
+  31,
+  51,
+  71,
+  77
+ ],
+ "finding": "The published Sphinx tomogram reproduces with its author's code, unchanged, on its line and settings: the line's ends land within half a pixel of the pixels the KMZ states, and 7 of the 8 positions our run passes at a support of one stand in the published figure at the same places (9 there: [6, 9, 29, 30, 31, 51, 71, 77, 88]; ours [6, 9, 29, 31, 51, 71, 77, 86]). The published figure's support-two pair ([29, 30]) appears in our runs when the line moves by one pixel. Moving the line one pixel along track (4.6 cm) or across it (15 cm) keeps 3 to 6 of those 8 positions; the author's earlier East line, 2 to 15 m away, keeps 0; a motionless copy of the image, with nothing moving, passes 4 positions of its own; the 2025 pass passes 20, 3 of them shared. One line takes 30 s here."
+}
