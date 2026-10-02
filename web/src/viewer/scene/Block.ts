@@ -33,7 +33,7 @@ import {
   type Object3D,
 } from 'three';
 import type { SceneTheme } from '../engine/theme';
-import { terrainHeight } from '../data/sample';
+import { surfaceHeight, terrainHeight } from '../data/sample';
 import type { Feature, LineGrid, Shape, SiteScene, Structure, SurveyInfo, VolumeInfo } from '../data/types';
 import { drawSection, faceSpecs, type SectionSpec } from './sections';
 import { Radar } from './Radar';
@@ -280,7 +280,8 @@ export class Block {
         const a = -along + (2 * along * j) / m;
         const b2 = -along + (2 * along * (j + 1)) / m;
         const [x1, y1, x2, y2] = ew ? [cx + a, cy + off, cx + b2, cy + off] : [cx + off, cy + a, cx + off, cy + b2];
-        pts.push(new Vector3(x1, y1, terrainHeight(this.scene, x1, y1) + 0.4), new Vector3(x2, y2, terrainHeight(this.scene, x2, y2) + 0.4));
+        // on the surface the line was laid on, up a pyramid's faces where it crosses one, as its positions were
+        pts.push(new Vector3(x1, y1, surfaceHeight(this.scene, x1, y1) + 0.4), new Vector3(x2, y2, surfaceHeight(this.scene, x2, y2) + 0.4));
       }
     }
     const mat = new LineBasicMaterial({ color: this.theme.radar, transparent: true, opacity: 0.45, depthTest: false, clippingPlanes: [this.clip] });
