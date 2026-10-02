@@ -10,13 +10,20 @@ and the settings in the figure's title: W50, modes 1-10, b:a >= 0.10, Track 7, s
 1. Reproduced: the repository's v1.8 module, unchanged (its hash recorded), the line projected through the product's own
    RPC (both ends land within half a pixel of the pixels the KMZ states), the frozen profile with the title's settings.
    The positions that pass are compared with those in the published figure, read off its tick marks.
-2. Varied, each through the same code: the line nudged by one pixel along track (4.6 cm) and across it (one slant-range
-   sample, 15 cm), the author's earlier East line (2 to 15 m from the revised one, in the same KMZ), a motionless copy
-   of the image along the line (sarsim.looks.motionless_twin), and the same ground in the 2025 pass.
+2. Varied, each through the same code: the line nudged by one pixel along track and across it (one row, one
+   slant-range sample; their size on the ground read from the product), the author's earlier East line (in the same
+   KMZ, shorter, running beside part of the revised one), a motionless copy of the image along the line
+   (sarsim.looks.motionless_twin), and the same ground in the 2025 pass.
+
+Positions are compared by index where the line is the same (the nudges, the copy, the 2025 pass, which projects the same
+points) and by place for the earlier line: each of its positions is carried onto the revised line, and counts as shared
+when the revised line passes a position within one position spacing of it.
 
 A ground feature would stay where it is under a one-pixel nudge, show on the earlier line where the two run close, and
 not show in a motionless copy; a reading of the image's texture would move with the nudge, differ on the earlier line
 and draw columns in the copy too. The variants were first run while checking the reproduction; this run records them.
+The first record gave the across-track pixel as 15 cm (the 2025 product's slant-range sample, typed by hand) and
+compared the earlier line by index; both are corrected here.
 """
 import hashlib
 import importlib.util
@@ -59,6 +66,25 @@ def fetch(name):
 
 def sha256(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def pixel_size(product):
+    """A pixel's size from the product's own metadata: along track on the ground, across it in slant range and on the
+    ground (slant over the sine of the incidence at the scene centre)."""
+    import h5py
+    with h5py.File(product, 'r') as f:
+        az, sr, inc = (float(f[k][()]) for k in ('azimuth_ground_spacing', 'slant_range_spacing', 'incidence_center'))
+    return {'along_track_m': az, 'slant_range_m': sr, 'ground_range_m': sr / np.sin(np.deg2rad(inc)), 'incidence_deg': inc}
+
+
+def local_xy(pts, lon0, lat0):
+    """Points [lon, lat, ...] as metres east and north of (lon0, lat0), with the WGS84 radii of curvature there."""
+    a, f = 6378137.0, 1 / 298.257223563
+    e2 = f * (2 - f)
+    phi = np.deg2rad(lat0)
+    w = 1 - e2 * np.sin(phi) ** 2
+    n, m = a / np.sqrt(w), a * (1 - e2) / w ** 1.5
+    return np.stack([n * np.cos(phi) * np.deg2rad(pts[:, 0] - lon0), m * np.deg2rad(pts[:, 1] - lat0)], -1)
 
 
 def kml_line(kml, label):
@@ -150,12 +176,36 @@ def main():
             results = dict(pool.map(run_variant, VARIANTS))
         ours = results['as published']
         pub1 = set(published[1])
+        pixel = pixel_size(P22)
+        # the lines on the ground: the revised one's spacing, and where the earlier one runs beside it
+        rev, ear = kml_line(kml, REVISED), kml_line(kml, EARLIER)
+        r_xy, e_xy = (local_xy(x, rev[:, 0].mean(), rev[:, 1].mean()) for x in (rev, ear))
+        length = float(np.linalg.norm(np.diff(r_xy, axis=0), axis=1).sum())
+        u = (r_xy[-1] - r_xy[0]) / np.linalg.norm(r_xy[-1] - r_xy[0])
+        on_revised = lambda q: float(np.dot(q - r_xy[0], u) / length * 100)        # a place as a revised-line index
+        offset = [float(u[0] * (q[1] - r_xy[0][1]) - u[1] * (q[0] - r_xy[0][0])) for q in e_xy]   # across it, + to its left
+        side = np.sign(np.mean(offset)) * np.array([-u[1], u[0]])
+        rose = ['north', 'north-east', 'east', 'south-east', 'south', 'south-west', 'west', 'north-west']
+        geometry = {'position_spacing_m': length / 100, 'line_length_m': length,
+                    'earlier_length_m': float(np.linalg.norm(np.diff(e_xy, axis=0), axis=1).sum()),
+                    'earlier_offset_m': [min(map(abs, offset)), max(map(abs, offset))],
+                    'earlier_side': rose[int((np.degrees(np.arctan2(side[0], side[1])) % 360 + 22.5) // 45) % 8],
+                    'earlier_span_on_revised': [on_revised(e_xy[0]), on_revised(e_xy[-1])]}
         rows = []
         for name, r in results.items():
             p1 = set(r['passed'][1])
-            rows.append({'variant': name, 'passed': r['passed'], 'runtime_s': r['runtime_s'],
-                         'shared_with_reproduction_p1': len(p1 & set(ours['passed'][1])),
-                         'shared_with_published_p1': len(p1 & pub1)})
+            row = {'variant': name, 'passed': r['passed'], 'runtime_s': r['runtime_s']}
+            if name == 'the earlier East line':
+                # by place: each passing position carried onto the revised line, shared within one position of ours
+                at = [on_revised(e_xy[k]) for k in r['passed'][1]]
+                lo, hi = sorted(geometry['earlier_span_on_revised'])
+                beside = [k for k in ours['passed'][1] if lo <= k <= hi]
+                row.update(at_revised_index=at, ours_beside=beside,
+                           shared_with_reproduction_p1=sum(any(abs(a - k) <= 1 for a in at) for k in beside),
+                           shared_with_published_p1=sum(any(abs(a - k) <= 1 for a in at) for k in pub1 if lo <= k <= hi))
+            else:
+                row.update(shared_with_reproduction_p1=len(p1 & set(ours['passed'][1])), shared_with_published_p1=len(p1 & pub1))
+            rows.append(row)
             print(f"  {name}: P1 {r['passed'][1]} P2 {r['passed'][2]} ({r['runtime_s']} s)", flush=True)
         # the strip figure: where columns stand along the line, published, reproduced and varied
         import matplotlib
@@ -168,13 +218,20 @@ def main():
         fig, ax = plt.subplots(figsize=(9.5, 0.36 * len(labels) + 0.9))
         for i, (lab, s) in enumerate(zip(labels, sets)):
             y = len(labels) - 1 - i
+            if lab == 'the earlier East line':          # drawn where it lies along the revised line, over the stretch it runs
+                ear_row = next(r for r in rows if r['variant'] == lab)
+                lo, hi = sorted(geometry['earlier_span_on_revised'])
+                ax.plot([lo, hi], [y, y], color='0.75', lw=3, solid_capstyle='butt', zorder=2)
+                ax.scatter(ear_row['at_revised_index'], [y] * len(s[1]), marker='s', s=34, color='#b6367a', zorder=3)
+                continue
             ax.scatter(s[1], [y] * len(s[1]), marker='s', s=34, color='#b6367a', zorder=3)
             if s.get(2):
                 ax.scatter(s[2], [y] * len(s[2]), marker='s', s=34, facecolor='none', edgecolor='#fbc488', lw=1.4, zorder=4)
         ax.set_yticks(range(len(labels)))
         ax.set_yticklabels(labels[::-1], fontsize=8)
         ax.set_xlim(-1, 101)
-        ax.set_xlabel('position along the line (P0 at the north-east end, P100 at the south-east; 0.39 m apart)', fontsize=8)
+        ax.set_xlabel(f"position along the line (P0 at the north-east end, P100 at the south-east; {geometry['position_spacing_m']:.2f} m "
+                      f"apart); the earlier line's positions placed where they lie along it, over the stretch it runs", fontsize=8)
         ax.grid(axis='x', color='0.85', lw=0.5)
         ax.tick_params(axis='x', labelsize=7)
         for sp in ('top', 'right'):
@@ -185,22 +242,31 @@ def main():
                             line_lon_lat_h=kml_line(kml, REVISED))
         match = sorted(pub1 & set(ours['passed'][1]))
         nudges = [r for r in rows if r['variant'].startswith('one ')]
+        ends_off = float(np.max(np.abs(np.array(ours['ends_col_row']) - np.array(stated))))
+        ear_row = next(r for r in rows if r['variant'] == 'the earlier East line')
+        g = geometry
         finding = (
             f"The published Sphinx tomogram reproduces with its author's code, unchanged, on its line and settings: the line's "
-            f"ends land within half a pixel of the pixels the KMZ states, and {len(match)} of the {len(ours['passed'][1])} "
+            f"ends land within {ends_off:.2f} pixel of the pixels the KMZ states, and {len(match)} of the {len(ours['passed'][1])} "
             f"positions our run passes at a support of one stand in the published figure at the same places "
             f"({len(pub1)} there: {sorted(pub1)}; ours {ours['passed'][1]}). The published figure's support-two pair "
             f"({published.get(2)}) appears in our runs when the line moves by one pixel. Moving the line one pixel along track "
-            f"(4.6 cm) or across it (15 cm) keeps {min(r['shared_with_reproduction_p1'] for r in nudges)} to "
+            f"({pixel['along_track_m'] * 100:.1f} cm) or across it ({pixel['slant_range_m'] * 100:.1f} cm in slant range, "
+            f"{pixel['ground_range_m'] * 100:.0f} cm on the ground) keeps {min(r['shared_with_reproduction_p1'] for r in nudges)} to "
             f"{max(r['shared_with_reproduction_p1'] for r in nudges)} of those {len(ours['passed'][1])} positions; the author's "
-            f"earlier East line, 2 to 15 m away, keeps {next(r for r in rows if r['variant'] == 'the earlier East line')['shared_with_reproduction_p1']}; "
+            f"earlier East line, {g['earlier_offset_m'][0]:.1f} to {g['earlier_offset_m'][1]:.1f} m to the {g['earlier_side']} "
+            f"along {g['earlier_length_m']:.0f} m of it, passes {len(ear_row['passed'][1])} positions, and "
+            f"{ear_row['shared_with_reproduction_p1']} of the {len(ear_row['ours_beside'])} ours passes beside it "
+            f"{'has' if ear_row['shared_with_reproduction_p1'] == 1 else 'have'} one of them within a position "
+            f"({g['position_spacing_m']:.2f} m); "
             f"a motionless copy of the image, with nothing moving, passes {len(results['a motionless copy']['passed'][1])} positions of "
             f"its own; the 2025 pass passes {len(results['the 2025 pass']['passed'][1])}, "
             f"{next(r for r in rows if r['variant'] == 'the 2025 pass')['shared_with_reproduction_p1']} of them shared. One line "
             f"takes {ours['runtime_s']:.0f} s here.")
         run.save({'published': {'positions': published, 'axis': axis, 'figure_sha256': png_sha, 'kmz_sha256': kmz_sha,
                                 'stated_ends_col_row': stated},
-                  'reproduction_ends_col_row': ours['ends_col_row'], 'rows': rows, 'matched_p1': match, 'finding': finding})
+                  'reproduction_ends_col_row': ours['ends_col_row'], 'ends_offset_px': ends_off, 'pixel': pixel,
+                  'geometry': geometry, 'rows': rows, 'matched_p1': match, 'finding': finding})
         print(finding)
 
 

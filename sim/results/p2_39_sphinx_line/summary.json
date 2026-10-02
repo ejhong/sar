@@ -3,9 +3,9 @@
   "id": "p2_39_sphinx_line",
   "title": "The published Sphinx tomogram, reproduced, and how far it survives a one-pixel nudge",
   "date": "2026-10-02",
-  "started_utc": "2026-10-02T05:06:37+00:00",
-  "runtime_s": 32.9,
-  "commit": "db210f5",
+  "started_utc": "2026-10-02T05:35:51+00:00",
+  "runtime_s": 30.9,
+  "commit": "5fdc90b+",
   "params": {
    "repository": "https://raw.githubusercontent.com/BiondiProtocol/Replication-and-Verification-Biondi-Protocol/c0cb293",
    "figure": "ICEYE_X13_Great_Sphinx_Ditch_EastWoodAvoidance_Track7_P1toP3_Tomograms_0to50m.png",
@@ -140,6 +140,27 @@
    45712.377116
   ]
  ],
+ "ends_offset_px": 0.419984,
+ "pixel": {
+  "along_track_m": 0.046167,
+  "slant_range_m": 0.252695,
+  "ground_range_m": 0.440837,
+  "incidence_deg": 34.974754
+ },
+ "geometry": {
+  "position_spacing_m": 0.388525,
+  "line_length_m": 38.852471,
+  "earlier_length_m": 21.564566,
+  "earlier_offset_m": [
+   1.799424,
+   2.502888
+  ],
+  "earlier_side": "west",
+  "earlier_span_on_revised": [
+   5.920381,
+   61.394558
+  ]
+ },
  "rows": [
   {
    "variant": "as published",
@@ -157,7 +178,7 @@
     "2": [],
     "3": []
    },
-   "runtime_s": 30.4,
+   "runtime_s": 28.7,
    "shared_with_reproduction_p1": 8,
    "shared_with_published_p1": 7
   },
@@ -178,7 +199,7 @@
     "2": [],
     "3": []
    },
-   "runtime_s": 30.4,
+   "runtime_s": 28.7,
    "shared_with_reproduction_p1": 6,
    "shared_with_published_p1": 6
   },
@@ -207,7 +228,7 @@
     ],
     "3": []
    },
-   "runtime_s": 30.3,
+   "runtime_s": 28.7,
    "shared_with_reproduction_p1": 3,
    "shared_with_published_p1": 3
   },
@@ -232,7 +253,7 @@
     "2": [],
     "3": []
    },
-   "runtime_s": 30.4,
+   "runtime_s": 28.7,
    "shared_with_reproduction_p1": 5,
    "shared_with_published_p1": 4
   },
@@ -256,7 +277,7 @@
     ],
     "3": []
    },
-   "runtime_s": 30.3,
+   "runtime_s": 28.7,
    "shared_with_reproduction_p1": 5,
    "shared_with_published_p1": 6
   },
@@ -271,9 +292,21 @@
     "2": [],
     "3": []
    },
-   "runtime_s": 30.1,
-   "shared_with_reproduction_p1": 0,
-   "shared_with_published_p1": 0
+   "runtime_s": 28.7,
+   "at_revised_index": [
+    9.803574,
+    33.65747,
+    43.642821
+   ],
+   "ours_beside": [
+    6,
+    9,
+    29,
+    31,
+    51
+   ],
+   "shared_with_reproduction_p1": 1,
+   "shared_with_published_p1": 1
   },
   {
    "variant": "a motionless copy",
@@ -337,7 +370,7 @@
      48
     ]
    },
-   "runtime_s": 31.4,
+   "runtime_s": 29.2,
    "shared_with_reproduction_p1": 3,
    "shared_with_published_p1": 3
   }
@@ -351,5 +384,5 @@
   71,
   77
  ],
- "finding": "The published Sphinx tomogram reproduces with its author's code, unchanged, on its line and settings: the line's ends land within half a pixel of the pixels the KMZ states, and 7 of the 8 positions our run passes at a support of one stand in the published figure at the same places (9 there: [6, 9, 29, 30, 31, 51, 71, 77, 88]; ours [6, 9, 29, 31, 51, 71, 77, 86]). The published figure's support-two pair ([29, 30]) appears in our runs when the line moves by one pixel. Moving the line one pixel along track (4.6 cm) or across it (15 cm) keeps 3 to 6 of those 8 positions; the author's earlier East line, 2 to 15 m away, keeps 0; a motionless copy of the image, with nothing moving, passes 4 positions of its own; the 2025 pass passes 20, 3 of them shared. One line takes 30 s here."
+ "finding": "The published Sphinx tomogram reproduces with its author's code, unchanged, on its line and settings: the line's ends land within 0.42 pixel of the pixels the KMZ states, and 7 of the 8 positions our run passes at a support of one stand in the published figure at the same places (9 there: [6, 9, 29, 30, 31, 51, 71, 77, 88]; ours [6, 9, 29, 31, 51, 71, 77, 86]). The published figure's support-two pair ([29, 30]) appears in our runs when the line moves by one pixel. Moving the line one pixel along track (4.6 cm) or across it (25.3 cm in slant range, 44 cm on the ground) keeps 3 to 6 of those 8 positions; the author's earlier East line, 1.8 to 2.5 m to the west along 22 m of it, passes 3 positions, and 1 of the 5 ours passes beside it has one of them within a position (0.39 m); a motionless copy of the image, with nothing moving, passes 4 positions of its own; the 2025 pass passes 20, 3 of them shared. One line takes 29 s here."
 }
