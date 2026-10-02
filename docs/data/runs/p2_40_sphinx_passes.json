@@ -1,0 +1,346 @@
+{
+ "manifest": {
+  "id": "p2_40_sphinx_passes",
+  "title": "Whether the Sphinx volume's blobs stay put from one pass to the next",
+  "date": "2026-10-02",
+  "started_utc": "2026-10-02T13:59:10+00:00",
+  "runtime_s": 1.0,
+  "commit": "4df2b42",
+  "params": {
+   "runs": {
+    "2022": "lab_sphinx",
+    "2025": "lab_sphinx_2025"
+   },
+   "run_commits": {
+    "2022": "6dccba6",
+    "2025": "084207e"
+   },
+   "window_pairs": 50,
+   "heights_m": [
+    0.0,
+    2.5,
+    5.0,
+    7.5,
+    10.0,
+    12.5,
+    15.0,
+    17.5,
+    20.0,
+    22.5,
+    25.0,
+    27.5,
+    30.0
+   ],
+   "null_shifts": 400,
+   "min_shift_positions": 25,
+   "kmz": "https://raw.githubusercontent.com/BiondiProtocol/Replication-and-Verification-Biondi-Protocol/c0cb293/ICEYE_X13_Great_Sphinx_Ditch_EastWoodAvoidance_GE.kmz"
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  }
+ },
+ "acquisitions": {
+  "2022": {
+   "incidence_deg": 34.974754,
+   "heading_deg": 349.79183,
+   "look_side": "right"
+  },
+  "2025": {
+   "incidence_deg": 20.805112,
+   "heading_deg": 348.868801,
+   "look_side": "right"
+  }
+ },
+ "turn_m": {
+  "2022": 6.182488,
+  "2025": 3.813763
+ },
+ "elsewhere": {
+  "2022": 0.14553,
+  "2022 copy": 0.089686,
+  "2025": 0.111197,
+  "2025 copy": 0.082399
+ },
+ "blobs": [
+  {
+   "positions": 643,
+   "centre_m": [
+    663.511198,
+    -90.974806
+   ],
+   "x_m": [
+    651.5,
+    676.1
+   ],
+   "y_m": [
+    -101.8,
+    -79.0
+   ],
+   "where": "south side",
+   "passing": {
+    "2022": 1.0,
+    "2022 copy": 0.222395,
+    "2025": 0.133748,
+    "2025 copy": 0.132193
+   },
+   "depths": {
+    "2022": {
+     "quartiles_m": [
+      1.245147,
+      4.717553,
+      18.775202
+     ],
+     "median_turns": 0.763051
+    },
+    "2025": {
+     "quartiles_m": [
+      3.796876,
+      7.975491,
+      14.557436
+     ],
+     "median_turns": 2.091239
+    }
+   },
+   "if_rock": [
+    {
+     "height_m": 0.0,
+     "shift_m": 0.0,
+     "inside_share": 1.0,
+     "passing_2025": 0.133748
+    },
+    {
+     "height_m": 2.5,
+     "shift_m": 3.005808,
+     "inside_share": 1.0,
+     "passing_2025": 0.147745
+    },
+    {
+     "height_m": 5.0,
+     "shift_m": 6.011615,
+     "inside_share": 1.0,
+     "passing_2025": 0.158631
+    },
+    {
+     "height_m": 7.5,
+     "shift_m": 9.017423,
+     "inside_share": 1.0,
+     "passing_2025": 0.139969
+    },
+    {
+     "height_m": 10.0,
+     "shift_m": 12.02323,
+     "inside_share": 1.0,
+     "passing_2025": 0.138414
+    },
+    {
+     "height_m": 12.5,
+     "shift_m": 15.029038,
+     "inside_share": 1.0,
+     "passing_2025": 0.116641
+    },
+    {
+     "height_m": 15.0,
+     "shift_m": 18.034845,
+     "inside_share": 1.0,
+     "passing_2025": 0.122862
+    },
+    {
+     "height_m": 17.5,
+     "shift_m": 21.040653,
+     "inside_share": 1.0,
+     "passing_2025": 0.119751
+    },
+    {
+     "height_m": 20.0,
+     "shift_m": 24.046461,
+     "inside_share": 1.0,
+     "passing_2025": 0.139969
+    },
+    {
+     "height_m": 22.5,
+     "shift_m": 27.052268,
+     "inside_share": 1.0,
+     "passing_2025": 0.161742
+    },
+    {
+     "height_m": 25.0,
+     "shift_m": 30.058076,
+     "inside_share": 1.0,
+     "passing_2025": 0.163297
+    },
+    {
+     "height_m": 27.5,
+     "shift_m": 33.063883,
+     "inside_share": 1.0,
+     "passing_2025": 0.192846
+    },
+    {
+     "height_m": 30.0,
+     "shift_m": 36.069691,
+     "inside_share": 1.0,
+     "passing_2025": 0.175739
+    }
+   ]
+  },
+  {
+   "positions": 336,
+   "centre_m": [
+    627.921429,
+    -85.860714
+   ],
+   "x_m": [
+    620.9,
+    637.1
+   ],
+   "y_m": [
+    -94.0,
+    -77.2
+   ],
+   "where": "west end",
+   "passing": {
+    "2022": 1.0,
+    "2022 copy": 0.282738,
+    "2025": 0.39881,
+    "2025 copy": 0.306548
+   },
+   "depths": {
+    "2022": {
+     "quartiles_m": [
+      4.206901,
+      6.786774,
+      11.940566
+     ],
+     "median_turns": 1.097741
+    },
+    "2025": {
+     "quartiles_m": [
+      1.907784,
+      2.938292,
+      4.524588
+     ],
+     "median_turns": 0.770444
+    }
+   },
+   "if_rock": [
+    {
+     "height_m": 0.0,
+     "shift_m": 0.0,
+     "inside_share": 1.0,
+     "passing_2025": 0.39881
+    },
+    {
+     "height_m": 2.5,
+     "shift_m": 3.005808,
+     "inside_share": 1.0,
+     "passing_2025": 0.470238
+    },
+    {
+     "height_m": 5.0,
+     "shift_m": 6.011615,
+     "inside_share": 1.0,
+     "passing_2025": 0.39881
+    },
+    {
+     "height_m": 7.5,
+     "shift_m": 9.017423,
+     "inside_share": 1.0,
+     "passing_2025": 0.318452
+    },
+    {
+     "height_m": 10.0,
+     "shift_m": 12.02323,
+     "inside_share": 0.931548,
+     "passing_2025": 0.201278
+    },
+    {
+     "height_m": 12.5,
+     "shift_m": 15.029038,
+     "inside_share": 0.708333,
+     "passing_2025": 0.147059
+    },
+    {
+     "height_m": 15.0,
+     "shift_m": 18.034845,
+     "inside_share": 0.446429,
+     "passing_2025": 0.066667
+    },
+    {
+     "height_m": 17.5,
+     "shift_m": 21.040653,
+     "inside_share": 0.244048,
+     "passing_2025": 0.04878
+    },
+    {
+     "height_m": 20.0,
+     "shift_m": 24.046461,
+     "inside_share": 0.053571,
+     "passing_2025": 0.055556
+    },
+    {
+     "height_m": 22.5,
+     "shift_m": 27.052268,
+     "inside_share": 0.008929,
+     "passing_2025": 0.0
+    },
+    {
+     "height_m": 25.0,
+     "shift_m": 30.058076,
+     "inside_share": 0.0,
+     "passing_2025": null
+    },
+    {
+     "height_m": 27.5,
+     "shift_m": 33.063883,
+     "inside_share": 0.0,
+     "passing_2025": null
+    },
+    {
+     "height_m": 30.0,
+     "shift_m": 36.069691,
+     "inside_share": 0.0,
+     "passing_2025": null
+    }
+   ]
+  }
+ ],
+ "agreement": {
+  "2022 & 2025": {
+   "both": 496,
+   "chance": 362.087207,
+   "ratio": 1.369836,
+   "shifted_mean": 357.58,
+   "shifted_p95": 438.05,
+   "share_shifted_at_or_above": 0.0075
+  },
+  "2022 copy & 2025 copy": {
+   "both": 231,
+   "chance": 135.764999,
+   "ratio": 1.701469,
+   "shifted_mean": 133.2825,
+   "shifted_p95": 160.05,
+   "share_shifted_at_or_above": 0.0
+  },
+  "2022 & 2025 copy": {
+   "both": 387,
+   "chance": 273.318733,
+   "ratio": 1.415929,
+   "shifted_mean": 268.715,
+   "shifted_p95": 329.15,
+   "share_shifted_at_or_above": 0.0025
+  },
+  "2022 copy & 2025": {
+   "both": 278,
+   "chance": 179.858763,
+   "ratio": 1.545657,
+   "shifted_mean": 179.2425,
+   "shifted_p95": 221.0,
+   "share_shifted_at_or_above": 0.0
+  }
+ },
+ "kmz_sha256": "4f4be67342ea2c5dc4aeb229cb3e771ca1c31a5bb543f821123e11dab638b253",
+ "finding": "The 2022 volume's largest blob (643 positions, at the statue's south side) does not come back on the 2025 pass: 13% of its positions pass there, where 11% pass elsewhere; carried toward the satellite as rock standing up to 30 m above the lines would be, it reaches at most 19% (at 27.5 m). The second (336 positions, at the statue's west end) stays put: 40% of its positions pass in 2025, against 11% elsewhere, and the motionless copies, with nothing moving, gather there too (28% and 31%, against 9% and 8%). Its depth does not hold: its best scores stand at a median 6.8 m in 2022 and 2.9 m in 2025 (1.10 and 0.77 turns of fits that span 6.18 and 3.81 m a turn), where a void would stand at one depth. Across the square, 496 positions pass in both passes against 362 by chance (1.37 times; shifted maps 358), and the two motionless copies agree 1.70 times chance: the passes agree no more than the images' texture does on its own. Neither blob behaves as a void would."
+}
