@@ -1422,8 +1422,11 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
 
   <section id="sphinx" class="folded">
     {(() => {
-      type SR = { variant: string; passed: Record<string, number[]>; runtime_s: number; shared_with_reproduction_p1: number };
+      type SR = { variant: string; passed: Record<string, number[]>; runtime_s: number; shared_with_reproduction_p1: number; ours_beside?: number[] };
       const rows = sphinx.rows as unknown as SR[];
+      const px = sphinx.pixel;
+      const geo = sphinx.geometry;
+      const earlier = rows.find((r) => r.variant === 'the earlier East line')!;
       const row = (v: string) => rows.find((r) => r.variant === v)!;
       const ours = row('as published');
       const pub = sphinx.published.positions as unknown as Record<string, number[]>;
@@ -1439,13 +1442,16 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
             7, supports 1 to 3, 0 to 50 m, the 2022 pass). Run with that code, unchanged, on that line: its ends land within half a
             pixel of the pixels the line file states, and {sphinx.matched_p1.length} of our {n} columns stand where the published
             figure has them. Its pair at a support of two ({pub['2'].join(' and ')}) appears in our runs when the line moves by one
-            pixel. A pixel is 4.6 cm along the track and 15 cm across it; either way, moving the line by one keeps {Math.min(...keep)} to{' '}
-            {Math.max(...keep)} of the {n} columns. The author’s earlier line, 2 to 15 m away, keeps {row('the earlier East line').shared_with_reproduction_p1};
-            a motionless copy of the image, with nothing moving, draws {row('a motionless copy').passed['1'].length} columns of its own; the 2025
+            pixel. A pixel is {(px.along_track_m * 100).toFixed(1)} cm along the track and {Math.round(px.ground_range_m * 100)} cm across it on the
+            ground; either way, moving the line by one keeps {Math.min(...keep)} to {Math.max(...keep)} of the {n} columns. The author’s earlier
+            line runs {geo.earlier_offset_m[0].toFixed(1)} to {geo.earlier_offset_m[1].toFixed(1)} m to the {geo.earlier_side} along
+            {' '}{Math.round(geo.earlier_length_m)} m of it: it draws {earlier.passed['1'].length} columns, and {earlier.shared_with_reproduction_p1} of
+            the {earlier.ours_beside?.length} ours draws beside it {earlier.shared_with_reproduction_p1 === 1 ? 'has' : 'have'} one of them within
+            a position ({geo.position_spacing_m.toFixed(2)} m); a motionless copy of the image, with nothing moving, draws {row('a motionless copy').passed['1'].length} columns of its own; the 2025
             pass draws {row('the 2025 pass').passed['1'].length}, {row('the 2025 pass').shared_with_reproduction_p1} of them shared. One line takes
             about {Math.round(ours.runtime_s)} s on the lab’s desktop.
           </p>
-          <Figure src={`${base}/data/runs/p2_39_sphinx_line/positions.png`} alt="Where the published line's columns stand, reproduced and varied" label="Where the columns stand along the line" caption="filled: a position passing at a support of one; outlined: two in a row. The top row is read off the repository’s figure; every other row is the same code on the lab’s copy of the 2022 pass (or the 2025 pass), the line as published or moved" aspect="1425 / 615" />
+          <Figure src={`${base}/data/runs/p2_39_sphinx_line/positions.png`} alt="Where the published line's columns stand, reproduced and varied" label="Where the columns stand along the line" caption="filled: a position passing at a support of one; outlined: two in a row. The top row is read off the repository’s figure; every other row is the same code on the lab’s copy of the 2022 pass (or the 2025 pass), the line as published or moved; the earlier line’s columns stand where they lie beside the published line, over the stretch it runs (grey)" aspect="1425 / 621" />
           <RunDetails manifest={sphinx.manifest} />
         </details>
       );
@@ -1731,6 +1737,11 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
         <span class="tag measured">ours · corrected</span>
         <h3>We first ran the stricter reconstruction on the wrong lines</h3>
         <p>Its “70.5 m” is Khafre’s base height above sea level; we read it as a height above the base and drew loops up the faces (P2-13). Its own base lines, as sent and corrected for the geoid, are run in P2-14, with their hashes.</p>
+      </div>
+      <div class="note-card">
+        <span class="tag measured">ours · corrected</span>
+        <h3>We gave the Sphinx line’s pixel as 15 cm across, and compared the author’s earlier line by index</h3>
+        <p>15 cm is the 2025 product’s slant-range sample, typed by hand; on the 2022 pass the line uses, a pixel is {(sphinx.pixel.ground_range_m * 100).toFixed(0)} cm across on the ground, now read from the product (P2-39). The earlier line is shorter than the published one, so its positions do not stand at the same places; we first counted shared positions by index and wrote that it kept none. Compared by place, {sphinx.rows.find((r) => r.variant === 'the earlier East line')!.shared_with_reproduction_p1} of the columns beside it has one of its own within a position.</p>
       </div>
       <div class="note-card">
         <span class="tag measured">ours · corrected</span>

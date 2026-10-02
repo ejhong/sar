@@ -681,10 +681,15 @@ investigation's record, and what it leaves open follow.
     read by a stated rule (a position counts as lit when most of its cell is, the frame excluded; the first reading
     counted the frame's edges and one cell's spill as positions, and was corrected after the first comparison);
     the figure's support-two pair (29, 30) appears when the line moves one pixel. Moving the line one pixel along track
-    (4.6 cm) or across it (15 cm) keeps 3 to 6 of the 8; the repository's earlier East line, 2 to 15 m away, keeps none;
-    a motionless copy of the image passes 4 positions of its own, the 2025 pass 20, 3 of them shared. A line takes
-    30 s on the lab's 16 cores. This settles that the lab runs the same algorithm the same way; what the figure shows
-    depends on where its line's pixels fall to within a pixel.
+    (4.6 cm) or across it (25.3 cm in slant range, 44 cm on the ground; both read from the product) keeps 3 to 6 of the
+    8; the repository's earlier East line, 1.8 to 2.5 m to the west along 22 m of the revised one, passes 3 positions,
+    and 1 of the 5 the reproduction passes beside it has one of them within a position (0.39 m), compared by place; a
+    motionless copy of the image passes 4 positions of its own, the 2025 pass 20, 3 of them shared. A line takes 30 s
+    on the lab's 16 cores. This settles that the lab runs the same algorithm the same way; what the figure shows
+    depends on where its line's pixels fall to within a pixel. Corrected the evening it was published: the first record
+    gave the across-track pixel as 15 cm (the 2025 product's slant-range sample, typed by hand) and compared the earlier
+    line by index, "2 to 15 m away, keeps none", though its positions do not stand at the revised line's (it is
+    shorter); the sizes are now read from the product and the earlier line is compared by place.
 
 These reasons differ in kind and strength. 4 is algebraic and holds whatever the ground does: the depth axis is a
 frequency axis with a repeat and a mirror, and no validated model turns it into a physical depth; that makes depth
