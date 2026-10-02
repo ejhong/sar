@@ -149,7 +149,7 @@ def curtains_to_volume(F, z_m, z_surf, zc, step, lines='ew'):
 
 
 def run_gated(name, site='giza', centre=(0.0, 0.0), half_ew=150.0, half_ns=141.0, step=3.0, supports=(1, 4),
-              twin=None, product=PRODUCT, title=None, lines='ew', area=None, shift=(0.0, 0.0)):
+              twin=None, product=PRODUCT, title=None, lines='ew', area=None, shift=(0.0, 0.0), track=None, depth_max=None):
     from sarsim.looks import motionless_twin
     if not re.fullmatch(r'[a-z0-9_]+', name):
         raise SystemExit('a run name is lower-case letters, digits and underscores')
@@ -161,13 +161,20 @@ def run_gated(name, site='giza', centre=(0.0, 0.0), half_ew=150.0, half_ns=141.0
         raise SystemExit(f'positions along a line are 2 x {flag[2:]} / 100 apart; for a {step:g} m grid use {flag} {50 * step:g}')
     sc = site_scene(load_site(site))
     profile = json.loads(PROFILE.read_text())
-    profile['gates'] = dict(profile['gates'], pixel_support_variants=list(supports))
+    profile['gates'] = dict(profile['gates'], pixel_support_variants=list(supports),
+                            **({'same_mode_contiguous_windows': int(track)} if track else {}))
+    if depth_max:
+        profile['steering'] = dict(profile['steering'], depth_grid_m=dict(profile['steering']['depth_grid_m'], maximum=float(depth_max)))
     rid = f'lab_{name}'
     params = {'method': 'gated', 'site': site, 'centre_m': list(centre), 'half_ew_m': half_ew, 'half_ns_m': half_ns,
               'step_m': step, 'supports': list(supports), 'twin_seed': twin, 'product': Path(product).name, 'lines': lines,
               'gated_module_sha256': sha256(MODULE), 'gated_profile_sha256': sha256(PROFILE), 'geoid_m': site_geoid(sc)}
     if area:
         params['area'] = area
+    if track:
+        params['track'] = int(track)
+    if depth_max:
+        params['depth_max_m'] = float(depth_max)
     if any(shift):
         params['shift_px'] = [float(v) for v in shift]
     with Run(rid, title or f'The gated reconstruction across ({centre[0]:g}, {centre[1]:g}) on {site}', params) as run:
@@ -235,10 +242,12 @@ def main(argv=None):
     g.add_argument('--lines', default='ew', choices=['ew', 'ns'], help='lines east-west (default) or north-south')
     g.add_argument('--area', default=None, help='the place the lab names this run by (a name the other methods use)')
     g.add_argument('--shift', default='0,0', help='residual offset in lines,samples added to the RPC placement')
+    g.add_argument('--track', type=int, default=None, help='windows that must agree on the mode (the frozen profile: 10)')
+    g.add_argument('--depth-max', type=float, default=None, help='the depth grid\'s floor in metres (the frozen profile: 300)')
     a = ap.parse_args(argv)
     cx, cy = (float(v) for v in a.centre.split(','))
     run_gated(a.name, a.site, (cx, cy), a.half_ew, a.half_ns, a.step, tuple(int(s) for s in a.supports.split(',')),
-              a.twin, Path(a.product), a.title, a.lines, a.area, tuple(float(v) for v in a.shift.split(',')))
+              a.twin, Path(a.product), a.title, a.lines, a.area, tuple(float(v) for v in a.shift.split(',')), a.track, a.depth_max)
 
 
 if __name__ == '__main__':
