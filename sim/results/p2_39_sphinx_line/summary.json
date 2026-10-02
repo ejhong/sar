@@ -3,9 +3,9 @@
   "id": "p2_39_sphinx_line",
   "title": "The published Sphinx tomogram, reproduced, and how far it survives a one-pixel nudge",
   "date": "2026-10-02",
-  "started_utc": "2026-10-02T05:35:51+00:00",
-  "runtime_s": 30.9,
-  "commit": "5fdc90b+",
+  "started_utc": "2026-10-02T05:36:44+00:00",
+  "runtime_s": 29.2,
+  "commit": "04f110f",
   "params": {
    "repository": "https://raw.githubusercontent.com/BiondiProtocol/Replication-and-Verification-Biondi-Protocol/c0cb293",
    "figure": "ICEYE_X13_Great_Sphinx_Ditch_EastWoodAvoidance_Track7_P1toP3_Tomograms_0to50m.png",
@@ -178,7 +178,7 @@
     "2": [],
     "3": []
    },
-   "runtime_s": 28.7,
+   "runtime_s": 27.4,
    "shared_with_reproduction_p1": 8,
    "shared_with_published_p1": 7
   },
@@ -199,7 +199,7 @@
     "2": [],
     "3": []
    },
-   "runtime_s": 28.7,
+   "runtime_s": 27.3,
    "shared_with_reproduction_p1": 6,
    "shared_with_published_p1": 6
   },
@@ -228,7 +228,7 @@
     ],
     "3": []
    },
-   "runtime_s": 28.7,
+   "runtime_s": 27.4,
    "shared_with_reproduction_p1": 3,
    "shared_with_published_p1": 3
   },
@@ -253,7 +253,7 @@
     "2": [],
     "3": []
    },
-   "runtime_s": 28.7,
+   "runtime_s": 27.3,
    "shared_with_reproduction_p1": 5,
    "shared_with_published_p1": 4
   },
@@ -277,7 +277,7 @@
     ],
     "3": []
    },
-   "runtime_s": 28.7,
+   "runtime_s": 27.3,
    "shared_with_reproduction_p1": 5,
    "shared_with_published_p1": 6
   },
@@ -292,7 +292,7 @@
     "2": [],
     "3": []
    },
-   "runtime_s": 28.7,
+   "runtime_s": 27.2,
    "at_revised_index": [
     9.803574,
     33.65747,
@@ -323,7 +323,7 @@
     ],
     "3": []
    },
-   "runtime_s": 28.7,
+   "runtime_s": 26.6,
    "shared_with_reproduction_p1": 0,
    "shared_with_published_p1": 0
   },
@@ -370,7 +370,7 @@
      48
     ]
    },
-   "runtime_s": 29.2,
+   "runtime_s": 27.8,
    "shared_with_reproduction_p1": 3,
    "shared_with_published_p1": 3
   }
@@ -384,5 +384,5 @@
   71,
   77
  ],
- "finding": "The published Sphinx tomogram reproduces with its author's code, unchanged, on its line and settings: the line's ends land within 0.42 pixel of the pixels the KMZ states, and 7 of the 8 positions our run passes at a support of one stand in the published figure at the same places (9 there: [6, 9, 29, 30, 31, 51, 71, 77, 88]; ours [6, 9, 29, 31, 51, 71, 77, 86]). The published figure's support-two pair ([29, 30]) appears in our runs when the line moves by one pixel. Moving the line one pixel along track (4.6 cm) or across it (25.3 cm in slant range, 44 cm on the ground) keeps 3 to 6 of those 8 positions; the author's earlier East line, 1.8 to 2.5 m to the west along 22 m of it, passes 3 positions, and 1 of the 5 ours passes beside it has one of them within a position (0.39 m); a motionless copy of the image, with nothing moving, passes 4 positions of its own; the 2025 pass passes 20, 3 of them shared. One line takes 29 s here."
+ "finding": "The published Sphinx tomogram reproduces with its author's code, unchanged, on its line and settings: the line's ends land within 0.42 pixel of the pixels the KMZ states, and 7 of the 8 positions our run passes at a support of one stand in the published figure at the same places (9 there: [6, 9, 29, 30, 31, 51, 71, 77, 88]; ours [6, 9, 29, 31, 51, 71, 77, 86]). The published figure's support-two pair ([29, 30]) appears in our runs when the line moves by one pixel. Moving the line one pixel along track (4.6 cm) or across it (25.3 cm in slant range, 44 cm on the ground) keeps 3 to 6 of those 8 positions; the author's earlier East line, 1.8 to 2.5 m to the west along 22 m of it, passes 3 positions, and 1 of the 5 ours passes beside it has one of them within a position (0.39 m); a motionless copy of the image, with nothing moving, passes 4 positions of its own; the 2025 pass passes 20, 3 of them shared. One line takes 27 s here."
 }

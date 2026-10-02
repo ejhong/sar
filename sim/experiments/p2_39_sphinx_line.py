@@ -231,7 +231,7 @@ def main():
         ax.set_yticklabels(labels[::-1], fontsize=8)
         ax.set_xlim(-1, 101)
         ax.set_xlabel(f"position along the line (P0 at the north-east end, P100 at the south-east; {geometry['position_spacing_m']:.2f} m "
-                      f"apart); the earlier line's positions placed where they lie along it, over the stretch it runs", fontsize=8)
+                      f"apart)\nthe earlier line's positions drawn where they lie beside it, over the stretch it runs (grey)", fontsize=8)
         ax.grid(axis='x', color='0.85', lw=0.5)
         ax.tick_params(axis='x', labelsize=7)
         for sp in ('top', 'right'):
