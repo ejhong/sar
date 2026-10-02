@@ -313,7 +313,7 @@ def export_khufu_gated(out: Path = DATA) -> dict | None:
                 'method': ("The 2022 ICEYE pass through the gated reconstruction's own code, unchanged (317 pairs; ellipse, "
                            f"Track10 and support-{P} gates), along 95 lines across the Great Pyramid 3 m apart"),
                 'quantity': 'conditional adjusted R2 at each nominal depth below the surface', 'units': '0 to 1',
-                'range': [0.0, 1.0], 'run': run, 'tint': 'gated',
+                'range': [0.0, 1.0], 'run': run, 'tint': 'gated', 'cmap': 'magma',
                 'caption': 'fit scores, unsmoothed; empty where nothing passed'}, ztop=float(z[keep][0])))
             entries.append({'id': vid, 'case': short, 'support': int(P)})
     # the same raster over open plateau (P2-17), where no monument stands: the in-image control
@@ -332,7 +332,7 @@ def export_khufu_gated(out: Path = DATA) -> dict | None:
                 'label': f'Satellite · the gated reconstruction over open plateau, support {P}',
                 'method': "The same raster as at Khufu, laid on open plateau south-west of Menkaure, through the same unchanged code",
                 'quantity': 'conditional adjusted R2 at each nominal depth below the surface', 'units': '0 to 1',
-                'range': [0.0, 1.0], 'run': crun, 'tint': 'gated',
+                'range': [0.0, 1.0], 'run': crun, 'tint': 'gated', 'cmap': 'magma',
                 'caption': 'the in-image control: no monument stands here'}, ztop=float(w['z'][ckeep][0])))
             entries.append({'id': vid, 'case': 'plateau', 'support': int(P),
                             'focus': [cx_, cy_, float(np.median(w['z_surface']))]})
@@ -391,7 +391,7 @@ def export_bench_gated(out: Path = DATA) -> dict | None:
                 'method': ("Synthetic products in the 2022 layout, shaken as Giza shakes, through the gated reconstruction's "
                            "own code, unchanged, along 51 lines 2.4 m apart"),
                 'quantity': 'conditional adjusted R2 at each nominal depth below the surface', 'units': '0 to 1',
-                'range': [0.0, 1.0], 'run': run, 'tint': 'gated',
+                'range': [0.0, 1.0], 'run': run, 'tint': 'gated', 'cmap': 'magma',
                 'caption': 'fit scores, unsmoothed; empty where nothing passed'}, ztop=float(v['z'][keep][0])))
             entries.append({'id': vid, 'case': kind, 'support': int(P), 'shaking': 'ambient',
                             **({'boost': float(boost)} if kind == 'boosted' else {})})
@@ -415,7 +415,7 @@ def export_bench_gated(out: Path = DATA) -> dict | None:
                     'method': ("Synthetic products of the bench shaken by P2-22's vibrator at the reflectors' boundary force, with the "
                                "reflectors and the real image's bright points, through the gated reconstruction's own code, unchanged"),
                     'quantity': 'conditional adjusted R2 at each nominal depth below the surface', 'units': '0 to 1',
-                    'range': [0.0, 1.0], 'run': run24, 'tint': 'gated',
+                    'range': [0.0, 1.0], 'run': run24, 'tint': 'gated', 'cmap': 'magma',
                     'caption': 'fit scores, unsmoothed; empty where nothing passed'}, ztop=float(v24['z'][keep24][0])))
                 entries.append({'id': vid, 'case': kind, 'support': int(P), 'shaking': 'vibrator', 'note': s24['finding']})
     _merge_volumes(d, vols, drop=lambda q: q['id'].startswith('radar-gated-'))
@@ -464,7 +464,7 @@ def export_lab(out: Path = DATA) -> list[dict]:
                 vols.append(_write_volume(sd, vid, V, u8, [float(v['x'][0]), float(v['y'][0])], h, {
                     'label': f"Satellite · lab run {name}, {'the real image' if short == 'real' else 'a motionless copy'}, support {P}",
                     'method': s['finding'], 'quantity': 'conditional adjusted R2 at each nominal depth below the surface',
-                    'units': '0 to 1', 'range': [0.0, 1.0], 'run': run, 'tint': 'gated',
+                    'units': '0 to 1', 'range': [0.0, 1.0], 'run': run, 'tint': 'gated', 'cmap': 'magma',
                     'caption': 'fit scores, unsmoothed; empty where nothing passed'}, ztop=float(v['z'][keep][0])))
                 entries.append({'id': vid, 'case': short, 'support': int(P)})
         _merge_volumes(sd, vols, drop=lambda q, name=name: q['id'].startswith(f'radar-lab-{name}-'))
@@ -474,7 +474,10 @@ def export_lab(out: Path = DATA) -> list[dict]:
             'name': name, 'title': s['manifest']['title'], 'volumes': entries,
             'pass': stamp.group(1) if stamp else 'synthetic', 'lines': prm.get('lines', 'ew'),
             'focus': [cx, cy, float(np.median(v['z_surface']))], 'radius_m': 620.0, 'note': s['finding'], 'run': run,
-            'depth_scale': gated_scale(d.name), **({'area': prm['area']} if prm.get('area') else {})})
+            'depth_scale': gated_scale(d.name), **({'area': prm['area']} if prm.get('area') else {}),
+            # the lines the run laid: a grid, `step` apart, each running the length of the square
+            'grid': {'direction': prm.get('lines', 'ew'), 'centre': [cx, cy], 'half_ew': prm['half_ew_m'],
+                     'half_ns': prm['half_ns_m'], 'step': prm['step_m']}})
     for site, labs in by_site.items():
         rj = out / 'sites' / site / 'radar.json'
         radar = json.loads(rj.read_text())
@@ -516,7 +519,7 @@ def export_survives(out: Path = DATA) -> dict | None:
             'label': f'Satellite · {title}',
             'method': 'The lesser of two runs\' fit scores wherever both scored (P2-21), support 1',
             'quantity': 'conditional adjusted R2 at each nominal depth below the surface, where both runs scored',
-            'units': '0 to 1', 'range': [0.0, 1.0], 'run': run, 'tint': 'gated',
+            'units': '0 to 1', 'range': [0.0, 1.0], 'run': run, 'tint': 'gated', 'cmap': 'magma',
             'caption': 'the lesser of two fit scores; empty unless both runs scored'}, ztop=float(z[keep][0])))
         labs.append({'name': name, 'title': title, 'pass': pas, 'lines': lines,
                      'volumes': [{'id': vid, 'case': 'real', 'support': 1}],
