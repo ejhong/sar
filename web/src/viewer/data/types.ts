@@ -172,14 +172,14 @@ export interface RadarInfo {
       note?: string;
       focus?: [number, number, number];
       /** The lines this picture's run laid, where they differ from the study's. */
-      grid?: LineGrid;
+      grid?: LineGrid | LineGrid[];
     }[];
     focus: [number, number, number];
     radius_m: number;
     chambers?: { real: [number | null, number | null]; twin: [number | null, number | null] };
     depth_scale?: DepthScale | null;
     /** The lines the study laid. */
-    grid?: LineGrid;
+    grid?: LineGrid | LineGrid[];
     note: string;
   };
   /** Runs made with the lab's processing command (katabasis.lab), each over its own area. */
@@ -198,7 +198,7 @@ export interface RadarInfo {
     run?: string;
     depth_scale?: DepthScale | null;
     /** The lines the run laid. */
-    grid?: LineGrid;
+    grid?: LineGrid | LineGrid[];
   }[];
 }
 

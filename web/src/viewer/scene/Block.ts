@@ -254,42 +254,48 @@ export class Block {
     }
   }
 
-  /** The lines a lab run laid, on the ground: one in every few so that those drawn stand at least 4 m apart (all of them
-   * when they are farther apart than that), each following the terrain. Returns how many were drawn of how many. */
-  showLines(grid: LineGrid | undefined): [number, number] {
+  /** The lines a satellite run laid (both sets, for a map made of two layouts), on the surface they were laid on: one in
+   * every few so that those drawn stand at least 6 m apart (all of them when they are farther apart than that), faint, so
+   * the volume reads through them. Returns how many were drawn of how many, per set. */
+  showLines(grid: LineGrid | LineGrid[] | undefined): [number, number][] {
     const g = this.gridLines;
     for (const c of [...g.children]) {
       g.remove(c);
       disposeTree(c);
     }
-    if (!grid) return [0, 0];
-    const [cx, cy] = grid.centre;
-    const ew = grid.direction === 'ew';
-    const across = ew ? grid.half_ns : grid.half_ew;
-    const along = ew ? grid.half_ew : grid.half_ns;
-    const n = Math.floor((2 * across) / grid.step + 1e-6) + 1;
-    const every = Math.max(1, Math.ceil(4 / grid.step));
+    const grids = Array.isArray(grid) ? grid : grid ? [grid] : [];
+    if (!grids.length) return [];
     const pts: Vector3[] = [];
-    let drawn = 0;
-    for (let i = 0; i < n; i++) {
-      if (i % every !== 0 && i !== n - 1) continue;
-      drawn++;
-      const off = -across + i * grid.step;
-      const m = Math.max(2, Math.ceil((2 * along) / 3));
-      for (let j = 0; j < m; j++) {
-        const a = -along + (2 * along * j) / m;
-        const b2 = -along + (2 * along * (j + 1)) / m;
-        const [x1, y1, x2, y2] = ew ? [cx + a, cy + off, cx + b2, cy + off] : [cx + off, cy + a, cx + off, cy + b2];
-        // on the surface the line was laid on, up a pyramid's faces where it crosses one, as its positions were
-        pts.push(new Vector3(x1, y1, surfaceHeight(this.scene, x1, y1) + 0.4), new Vector3(x2, y2, surfaceHeight(this.scene, x2, y2) + 0.4));
+    const counts: [number, number][] = [];
+    for (const gr of grids) {
+      const [cx, cy] = gr.centre;
+      const ew = gr.direction === 'ew';
+      const across = ew ? gr.half_ns : gr.half_ew;
+      const along = ew ? gr.half_ew : gr.half_ns;
+      const n = Math.floor((2 * across) / gr.step + 1e-6) + 1;
+      const every = Math.max(1, Math.ceil(6 / gr.step));
+      let drawn = 0;
+      for (let i = 0; i < n; i++) {
+        if (i % every !== 0 && i !== n - 1) continue;
+        drawn++;
+        const off = -across + i * gr.step;
+        const m = Math.max(2, Math.ceil((2 * along) / 3));
+        for (let j = 0; j < m; j++) {
+          const a = -along + (2 * along * j) / m;
+          const b2 = -along + (2 * along * (j + 1)) / m;
+          const [x1, y1, x2, y2] = ew ? [cx + a, cy + off, cx + b2, cy + off] : [cx + off, cy + a, cx + off, cy + b2];
+          // on the surface the line was laid on, up a pyramid's faces where it crosses one, as its positions were
+          pts.push(new Vector3(x1, y1, surfaceHeight(this.scene, x1, y1) + 0.4), new Vector3(x2, y2, surfaceHeight(this.scene, x2, y2) + 0.4));
+        }
       }
+      counts.push([drawn, n]);
     }
-    const mat = new LineBasicMaterial({ color: this.theme.radar, transparent: true, opacity: 0.45, depthTest: false, clippingPlanes: [this.clip] });
+    const mat = new LineBasicMaterial({ color: this.theme.radar, transparent: true, opacity: 0.16, depthTest: false, clippingPlanes: [this.clip] });
     this.themed.push({ obj: mat, apply: (th) => mat.color.set(th.radar) });
     const l = new LineSegments(new BufferGeometry().setFromPoints(pts), mat);
     l.renderOrder = 6;
     g.add(l);
-    return [drawn, n];
+    return counts;
   }
 
   setVolumeThreshold(t: number) {

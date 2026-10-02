@@ -405,6 +405,8 @@ def export_bench_gated(out: Path = DATA) -> dict | None:
                 'caption': 'fit scores, unsmoothed; empty where nothing passed'}, ztop=float(v['z'][keep][0])))
             entries.append({'id': vid, 'case': kind, 'support': int(P), 'shaking': 'ambient',
                             **({'boost': float(boost)} if kind == 'boosted' else {})})
+    bench_grid = lambda prm: {'direction': 'ew', 'centre': [0.0, 0.0], 'half_ew': float(prm['half_m']), 'half_ns': float(prm['half_m']),
+                              'step': float(prm['step_m'])}       # east-west lines across the bench, centred on it
     # the one shaking (P2-24): the vibrator at the force where reflectors let the favourable detector find the chamber
     rid24 = 'p2_24_gated_on_the_shaking'
     v24path = RESULTS / rid24 / 'volumes.npz'
@@ -427,7 +429,8 @@ def export_bench_gated(out: Path = DATA) -> dict | None:
                     'quantity': 'conditional adjusted R2 at each nominal depth below the surface', 'units': '0 to 1',
                     'range': [0.0, 1.0], 'run': run24, 'tint': 'gated', 'cmap': 'magma',
                     'caption': 'fit scores, unsmoothed; empty where nothing passed'}, ztop=float(v24['z'][keep24][0])))
-                entries.append({'id': vid, 'case': kind, 'support': int(P), 'shaking': 'vibrator', 'note': s24['finding']})
+                entries.append({'id': vid, 'case': kind, 'support': int(P), 'shaking': 'vibrator', 'note': s24['finding'],
+                                'grid': bench_grid(s24['manifest']['params'])})
     _merge_volumes(d, vols, drop=lambda q: q['id'].startswith('radar-gated-'))
     radar = json.loads(rj.read_text())
     radar['gated'] = {
@@ -436,6 +439,7 @@ def export_bench_gated(out: Path = DATA) -> dict | None:
         'volumes': entries,
         'focus': [0.0, 0.0, -15.0],
         'radius_m': 200.0,
+        'grid': bench_grid(s['manifest']['params']),
         'note': s['finding'],
         'run': run,
     }
@@ -533,8 +537,10 @@ def export_survives(out: Path = DATA) -> dict | None:
             'quantity': 'conditional adjusted R2 at each nominal depth below the surface, where both runs scored',
             'units': '0 to 1', 'range': [0.0, 1.0], 'run': run, 'tint': 'gated', 'cmap': 'magma',
             'caption': 'the lesser of two fit scores; empty unless both runs scored'}, ztop=float(z[keep][0])))
-        # both passes ran the 2022 run's east-west lines, so that run's lines are this map's; two layouts have no one grid
-        grid = next((x['grid'] for x in labs if x['name'] == 'khafre' and 'grid' in x), None) if lines == 'ew' else None
+        # both passes ran the 2022 run's east-west lines, so that run's lines are this map's; two layouts, both sets
+        lab_grid = {x['name']: x['grid'] for x in labs if 'grid' in x}
+        grid = (lab_grid.get('khafre') if lines == 'ew' else
+                [lab_grid[k] for k in ('khafre', 'khafre_ns')] if all(k in lab_grid for k in ('khafre', 'khafre_ns')) else None)
         labs.append({'name': name, 'title': title, 'pass': pas, 'lines': lines,
                      'volumes': [{'id': vid, 'case': 'real', 'support': 1}],
                      'focus': [0.0, 0.0, float(np.median(z[keep][:1]))], 'radius_m': 620.0, 'note': s['finding'], 'run': run,

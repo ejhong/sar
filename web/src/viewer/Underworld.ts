@@ -75,8 +75,8 @@ export class Underworld {
   private legacy?: string;
   /** A link that names one picture opens on its place; otherwise the whole site. */
   private placeOnLoad = false;
-  private linesShown: [number, number] = [0, 0];
-  private gridShown: import('./data/types').LineGrid | undefined;
+  private linesShown: [number, number][] = [];
+  private gridShown: import('./data/types').LineGrid[] = [];
   /** Labels on the stage for each place the picture covers, and where each stands. */
   private places: { el: HTMLButtonElement; at: [number, number, number] }[] = [];
   private themeName: ThemeName = 'night';
@@ -276,7 +276,8 @@ export class Underworld {
     b.showVolumes(set.map((c) => c.id));
     // the lines a lab run laid, on the ground, while one of its pictures is shown
     this.linesShown = b.showLines(m === 'satellite' ? chosen?.choice.grid : undefined);
-    this.gridShown = m === 'satellite' ? chosen?.choice.grid : undefined;
+    const gs = m === 'satellite' ? chosen?.choice.grid : undefined;
+    this.gridShown = Array.isArray(gs) ? gs : gs ? [gs] : [];
     b.showSurvey(vol?.survey ? (s.surveys?.find((sv) => sv.id === vol.survey) ?? null) : null);
     if (choice?.kind === 'wave') {
       this.wave = b.showWavefield(choice.id);
@@ -579,9 +580,14 @@ export class Underworld {
       if (this.mode === 'satellite') {
         if (s.radar?.sensors) items.push(['sensor', 'true motion']);
         items.push(['radar', vol ? `the satellite’s picture: ${sel!.method.quantity}` : s.radar?.sensors ? 'what the image reports' : 'the satellite']);
-        const [drawn, of] = this.linesShown;
-        if (of && this.gridShown)
-          items.push(['line', `its ${of} ${this.gridShown.direction === 'ns' ? 'north–south' : 'east–west'} lines, ${this.gridShown.step} m apart${drawn < of ? ` (${drawn} drawn)` : ''}`]);
+        // the lines the run laid: one set, or both for a map made of two layouts
+        const sets = this.gridShown.map((gr, i) => ({ gr, of: this.linesShown[i]?.[1] ?? 0, drawn: this.linesShown[i]?.[0] ?? 0 }));
+        if (sets.length && sets.every((x) => x.of)) {
+          const dir = (gr: { direction: string }) => (gr.direction === 'ns' ? 'north–south' : 'east–west');
+          const drawn = sets.reduce((t, x) => t + x.drawn, 0);
+          const of = sets.reduce((t, x) => t + x.of, 0);
+          items.push(['line', `its ${sets.map((x) => `${x.of} ${dir(x.gr)}`).join(' and ')} lines, ${sets[0].gr.step} m apart${drawn < of ? ` (${drawn} drawn)` : ''}`]);
+        }
       }
       legend.innerHTML =
         items.map(([dot, label]) => `<span><span class="uw-dot ${dot}"></span>${esc(label)}</span>`).join('') +
