@@ -1,0 +1,75 @@
+{
+ "manifest": {
+  "id": "lab_sphinx_2025",
+  "title": "The gated reconstruction across the Sphinx enclosure, from the 2025 pass, with the same Sphinx settings (Track 7, supports 1 to 3, 0 to 50 m)",
+  "date": "2026-10-02",
+  "started_utc": "2026-10-02T12:20:49+00:00",
+  "runtime_s": 3452.6,
+  "commit": "084207e",
+  "params": {
+   "method": "gated",
+   "site": "giza",
+   "centre_m": [
+    655.7,
+    -86.8
+   ],
+   "half_ew_m": 45.0,
+   "half_ns_m": 30.0,
+   "step_m": 0.6,
+   "supports": [
+    1,
+    2,
+    3
+   ],
+   "twin_seed": 101,
+   "product": "ICEYE_X33_SLC_SLEDF_951562307_20250827T202654.h5",
+   "lines": "ns",
+   "gated_module_sha256": "3e1154c11274b896b91e262198576ffd750732709ad08ac00c6892c4ea5e1b1d",
+   "gated_profile_sha256": "ae84cade31f7e5ffa9b4daa0eba152649d2afc7f1655415bad38553f4f4d69aa",
+   "geoid_m": 15.5,
+   "area": "The Sphinx",
+   "track": 7,
+   "depth_max_m": 50.0
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  }
+ },
+ "method": "gated",
+ "results": {
+  "real": {
+   "supported_positions": {
+    "1": 1807,
+    "2": 422,
+    "3": 116
+   }
+  },
+  "twin101": {
+   "supported_positions": {
+    "1": 1364,
+    "2": 256,
+    "3": 59
+   }
+  }
+ },
+ "cases": [
+  "real",
+  "twin101"
+ ],
+ "grid": {
+  "x0": 610.7,
+  "y0": -116.8,
+  "z_top": 33.269298,
+  "step_m": 0.6,
+  "shape": [
+   151,
+   101,
+   107
+  ]
+ },
+ "finding": "The gated reconstruction, unchanged, along 151 north-south lines 0.6 m apart across (655.7, -86.8) on giza: real: 1,807 of 15,251 positions pass at support 1, 422 of 15,251 positions pass at support 2, 116 of 15,251 positions pass at support 3; twin101: 1,364 of 15,251 positions pass at support 1, 256 of 15,251 positions pass at support 2, 59 of 15,251 positions pass at support 3."
+}
