@@ -114,6 +114,13 @@ Then (29 September):
 - **Rungs and rooms (P2-35)**: as the paper states the method its bands stay beads (0.48) and its repeat block is faint
   (1.2 times the mean); neighbouring pixels sharing their shifts make rungs (up to 0.96), and 20 closely spaced pairs make
   a room (4.4 times). The site's "draws the same shapes" is corrected on the satellite page, the overview and the lab.
+- **The published Sphinx tomogram reproduced (P2-39)** (the owner: are we running the same algorithm?): the derivative
+  protocol's public repository added Sphinx figures and their line on 1 October (c0cb293), its gated module unchanged
+  and byte for byte the lab's. On its line (from its KMZ, through the 2022 product's RPC, within half a pixel of the
+  pixels it states) and its settings (Track 7, supports 1-3, 0-50 m), 7 of our 8 passing positions stand where the
+  figure has 9; a one-pixel move keeps 3 to 6, the earlier East line none, a motionless copy passes 4 of its own, the
+  2025 pass 20 (3 shared). 30 s a line on 16 cores. The lab's command takes `--track` and `--depth-max`; gated volumes
+  are drawn in the figures' magma colours, and the lab draws the lines a volume was made from.
 
 Then (29 September, evening; the cloud session, on branch `claude/upbeat-pascal-swk910`, to merge):
 

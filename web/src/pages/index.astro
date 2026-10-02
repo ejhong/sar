@@ -28,6 +28,7 @@ import bench from '../../public/data/runs/p2_36_benchmark.json';
 import claim from '../../public/data/runs/p2_38_claim.json';
 import lib from '../../public/data/ambient.json';
 import labKhafre from '../../public/data/runs/lab_khafre.json';
+import sphinx from '../../public/data/runs/p2_39_sphinx_line.json';
 import type { TourStop } from '../viewer/Underworld';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -96,6 +97,9 @@ const roomY = (100 * 12) / zmax;
 // the stricter reconstruction, run unchanged (P2-20, P2-21, the lab's Khafre run)
 const lk = labKhafre.results as unknown as Record<string, { supported_positions: Record<string, number> }>;
 const oneIn = Math.round(9595 / lk.real.supported_positions['1']);
+// the repository's own Sphinx line (P2-39): our columns where its figure has them, and what a one-pixel move keeps
+const sphOurs = sphinx.rows.find((r) => r.variant === 'as published')!.passed['1'].length;
+const sphKeep = sphinx.rows.filter((r) => r.variant.startsWith('one ')).map((r) => r.shared_with_reproduction_p1);
 type SCmp = { ratio: number; same_depth_share: number; same_depth_chance_p95: number };
 // P2-21, when exported: does what the reconstruction draws survive a change of pass?
 const survives = Object.values(import.meta.glob('../../public/data/runs/p2_21_what_survives.json', { eager: true, import: 'default' }))[0] as
@@ -569,7 +573,7 @@ const explore = [
         </details>
         <details class="q">
           <summary>What about stricter versions that filter out the noise?</summary>
-          <p>Later versions keep only readings that pass a row of tests. We ran the public one, <a href={GATED_CODE.url}>{GATED_CODE.name}</a> ({GATED_CODE.version}), unchanged. Motionless copies of the image pass its tests too; across the pyramids it passes about one position in {oneIn}, as over open plateau; over our known room its picture changes no more with the room than with random noise of the room’s size{survivesPass === undefined ? '.' : `; and across Khafre what it draws, and at what depth, ${survivesPass ? 'survives' : 'does not survive'} a change from one satellite pass to another.`} <a href={`${base}/satellite/#gates`}>The gates, measured</a>.</p>
+          <p>Later versions keep only readings that pass a row of tests. We ran the public one, <a href={GATED_CODE.url}>{GATED_CODE.name}</a> ({GATED_CODE.version}), unchanged. On the repository’s own line in front of the Sphinx it reproduces the published picture ({sphinx.matched_p1.length} of our {sphOurs} columns where its figure has them), and moving that line by one pixel loses {sphOurs - Math.max(...sphKeep)} to {sphOurs - Math.min(...sphKeep)} of them. Motionless copies of the image pass its tests too; across the pyramids it passes about one position in {oneIn}, as over open plateau; over our known room its picture changes no more with the room than with random noise of the room’s size{survivesPass === undefined ? '.' : `; and across Khafre what it draws, and at what depth, ${survivesPass ? 'survives' : 'does not survive'} a change from one satellite pass to another.`} <a href={`${base}/satellite/#gates`}>The gates, measured</a>; <a href={`${base}/satellite/#sphinx`}>the Sphinx line</a>.</p>
         </details>
         <details class="q">
           <summary>Hasn’t vibration been measured from space?</summary>

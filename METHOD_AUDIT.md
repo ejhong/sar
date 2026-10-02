@@ -672,6 +672,20 @@ investigation's record, and what it leaves open follow.
     is at chance at every level. Scope: five layouts, one geology, the declared excitation, fully developed speckle
     (bright points only under the oracle), a specified noise floor.
 
+29. **The published Sphinx tomogram reproduces with its author's code, and changes when its line moves one pixel
+    (P2-39).** The derivative protocol's public repository added its Sphinx figures and the line they follow on
+    1 October 2026 (commit c0cb293); its gated module is byte for byte the one the lab runs (sha256 3e1154c1...). The
+    line, read from the repository's KMZ and projected through the 2022 product's RPC model, lands within half a pixel
+    of the pixels the KMZ states. Run unchanged on that line with the figure's stated settings (Track 7, supports 1 to 3,
+    0 to 50 m), 7 of the 8 positions it passes at a support of one stand where the published figure has 9, the figure
+    read by a stated rule (a position counts as lit when most of its cell is, the frame excluded; the first reading
+    counted the frame's edges and one cell's spill as positions, and was corrected after the first comparison);
+    the figure's support-two pair (29, 30) appears when the line moves one pixel. Moving the line one pixel along track
+    (4.6 cm) or across it (15 cm) keeps 3 to 6 of the 8; the repository's earlier East line, 2 to 15 m away, keeps none;
+    a motionless copy of the image passes 4 positions of its own, the 2025 pass 20, 3 of them shared. A line takes
+    30 s on the lab's 16 cores. This settles that the lab runs the same algorithm the same way; what the figure shows
+    depends on where its line's pixels fall to within a pixel.
+
 These reasons differ in kind and strength. 4 is algebraic and holds whatever the ground does: the depth axis is a
 frequency axis with a repeat and a mirror, and no validated model turns it into a physical depth; that makes depth
 uncalibrated and non-unique, and does not by itself decide horizontal location or shape; P2-31 tests those directly, and the published picture recovers neither where a reference detector recovers both (24). 1 and 12 are

@@ -13,6 +13,7 @@ import dep from '../../public/data/runs/p2_06_depth_is_frequency.json';
 import chain from '../../public/data/runs/p2_07_whole_chain.json';
 import pill from '../../public/data/runs/p2_08_pillars_and_boxes.json';
 import rungs from '../../public/data/runs/p2_35_rungs_and_rooms.json';
+import sphinx from '../../public/data/runs/p2_39_sphinx_line.json';
 import vsens from '../../public/data/runs/p2_09_virtual_sensors.json';
 import every from '../../public/data/runs/p2_11_every_way_in.json';
 import realpass from '../../public/data/runs/p2_12_real_pass.json';
@@ -1417,6 +1418,38 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
     </div>
     <RunDetails manifest={own.manifest} />
     </details>
+  </section>
+
+  <section id="sphinx" class="folded">
+    {(() => {
+      type SR = { variant: string; passed: Record<string, number[]>; runtime_s: number; shared_with_reproduction_p1: number };
+      const rows = sphinx.rows as unknown as SR[];
+      const row = (v: string) => rows.find((r) => r.variant === v)!;
+      const ours = row('as published');
+      const pub = sphinx.published.positions as unknown as Record<string, number[]>;
+      const nudges = rows.filter((r) => r.variant.startsWith('one '));
+      const keep = nudges.map((r) => r.shared_with_reproduction_p1);
+      const n = ours.passed['1'].length;
+      return (
+        <details class="fold">
+          <summary><h2>The published Sphinx tomogram reproduces with its author’s code, and changes when its line moves one pixel</h2></summary>
+          <p class="sub">
+            The <a href={GATED_CODE.url}>{GATED_CODE.name}</a> repository shows its gated reconstruction along a line in front of the
+            Sphinx, the “revised East wood-avoidance line”, with the line itself and the settings in the figure’s title (persistence
+            7, supports 1 to 3, 0 to 50 m, the 2022 pass). Run with that code, unchanged, on that line: its ends land within half a
+            pixel of the pixels the line file states, and {sphinx.matched_p1.length} of our {n} columns stand where the published
+            figure has them. Its pair at a support of two ({pub['2'].join(' and ')}) appears in our runs when the line moves by one
+            pixel. A pixel is 4.6 cm along the track and 15 cm across it; either way, moving the line by one keeps {Math.min(...keep)} to{' '}
+            {Math.max(...keep)} of the {n} columns. The author’s earlier line, 2 to 15 m away, keeps {row('the earlier East line').shared_with_reproduction_p1};
+            a motionless copy of the image, with nothing moving, draws {row('a motionless copy').passed['1'].length} columns of its own; the 2025
+            pass draws {row('the 2025 pass').passed['1'].length}, {row('the 2025 pass').shared_with_reproduction_p1} of them shared. One line takes
+            about {Math.round(ours.runtime_s)} s on the lab’s desktop.
+          </p>
+          <Figure src={`${base}/data/runs/p2_39_sphinx_line/positions.png`} alt="Where the published line's columns stand, reproduced and varied" label="Where the columns stand along the line" caption="filled: a position passing at a support of one; outlined: two in a row. The top row is read off the repository’s figure; every other row is the same code on the lab’s copy of the 2022 pass (or the 2025 pass), the line as published or moved" aspect="1425 / 615" />
+          <RunDetails manifest={sphinx.manifest} />
+        </details>
+      );
+    })()}
   </section>
 
   <section id="khufu3d" class="folded">
