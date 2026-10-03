@@ -3408,6 +3408,35 @@
   },
   "command": "uv run python experiments/p2_40_sphinx_passes.py"
  },
+ "p2_41_khufu_passes": {
+  "id": "p2_41_khufu_passes",
+  "title": "What survives a change of pass across Khufu",
+  "date": "2026-10-03",
+  "started_utc": "2026-10-03T12:37:39+00:00",
+  "runtime_s": 0.2,
+  "commit": "f2ed0e0",
+  "params": {
+   "runs": {
+    "2022": "p2_16_khufu_volume",
+    "2025": "lab_khufu_2025"
+   },
+   "run_commits": {
+    "2022": "d8a0060",
+    "2025": "c50a62f+"
+   },
+   "cycle_m": 6.17,
+   "shuffles": 1000,
+   "test": "p2_21_what_survives.compare"
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  },
+  "command": "uv run python experiments/p2_41_khufu_passes.py"
+ },
  "lab_khafre": {
   "id": "lab_khafre",
   "title": "The gated reconstruction across Khafre, from the 2022 image",
@@ -3517,6 +3546,44 @@
    "cpus": 16
   },
   "command": "uv run --with scikit-image python -m katabasis.lab gated --name khafre_ns --site giza --centre 0,0 --half-ew 141 --half-ns 150 --step 3 --supports 1,4 --twin 101 --lines ns"
+ },
+ "lab_khufu_2025": {
+  "id": "lab_khufu_2025",
+  "title": "The gated reconstruction across Khufu, from the 2025 pass, on the lines P2-16 laid",
+  "date": "2026-10-03",
+  "started_utc": "2026-10-03T11:56:08+00:00",
+  "runtime_s": 2383.8,
+  "commit": "c50a62f+",
+  "params": {
+   "method": "gated",
+   "site": "giza",
+   "centre_m": [
+    324.26,
+    349.19
+   ],
+   "half_ew_m": 150.0,
+   "half_ns_m": 141.0,
+   "step_m": 3.0,
+   "supports": [
+    1,
+    4
+   ],
+   "twin_seed": 101,
+   "product": "ICEYE_X33_SLC_SLEDF_951562307_20250827T202654.h5",
+   "lines": "ew",
+   "gated_module_sha256": "3e1154c11274b896b91e262198576ffd750732709ad08ac00c6892c4ea5e1b1d",
+   "gated_profile_sha256": "ae84cade31f7e5ffa9b4daa0eba152649d2afc7f1655415bad38553f4f4d69aa",
+   "geoid_m": 15.5,
+   "area": "Khufu"
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  },
+  "command": "uv run --with scikit-image python -m katabasis.lab gated --name khufu_2025 --site giza --centre 324.26,349.19 --half-ew 150 --half-ns 141 --step 3 --supports 1,4 --twin 101 --product <path to ICEYE_X33_SLC_SLEDF_951562307_20250827T202654.h5>"
  },
  "lab_sacsay_fields": {
   "id": "lab_sacsay_fields",
