@@ -6,7 +6,8 @@ P2-16 ran the gated reconstruction across Khufu from the 2022 pass, along 95 eas
 motionless copy of the image; the lab's command has run the same lines from the 2025 pass (lab_khufu_2025), beside a
 motionless copy of its own. Something inside or under Khufu would not move with the pass that looked at it; what the
 processing makes of each image's texture would. Measured as P2-21 measures Khafre, with its own functions: the positions
-both passes pass against chance (a b / n), the share of those whose best depths lie within half the fit's cycle of each
+both passes pass against chance (a b / n, beyond it only when the excess is at least twice its Poisson spread,
+sqrt(a b / n)), the share of those whose best depths lie within half the fit's cycle of each
 other against shuffled pairings, and each pass against its own motionless copy, which shares its texture and has nothing
 under it. Written for the lab: where the passes agree, the lesser of their two fit scores wherever both scored, at each
 support.
@@ -54,6 +55,7 @@ def main():
         np.savez_compressed(run.dir / 'volumes.npz', **agree, x=xs, y=ys, z=zs, z_surface=zsurf, step=float(a['step']))
         r1 = res['p1']
         P, C, S = r1['passes'], r1['copies'], r1['2022_vs_copy']
+        z = (P['both'] - P['chance_both']) / np.sqrt(P['chance_both'])         # the overlap's excess in Poisson spreads
         pct = lambda v: f'{v * 100:.0f}%'
         finding = (
             f"Across Khufu, of {P['positions']:,} positions on the same lines the 2022 pass passes {P['passing'][0]:,} at a support of one "
@@ -61,10 +63,11 @@ def main():
             f"{pct(P['same_depth_share'])} of those the best depths agree within half a cycle, against {pct(P['same_depth_chance'])} when "
             f"paired at random. The two motionless copies, with nothing moving and nothing inside, share positions at "
             f"{C['ratio']:.2f} times chance; the 2022 image and its own copy at {S['ratio']:.2f} times. "
-            + ('Across the two passes they agree beyond chance, but no more than the images\' texture does on its own.'
+            + ('Across the two passes they agree no more than chance allows.' if z < 2 else
+               'Across the two passes they agree beyond chance, but no more than the images\' texture does on its own.'
                if P['ratio'] <= max(C['ratio'], S['ratio']) else
                'Across the two passes they agree more than the images\' texture does on its own.'))
-        run.save({'supports': supports, 'results': res, 'agree_positions': {P: int(np.isfinite(agree[f'agree_p{P}'].astype(np.float32)).any(axis=2).sum()) for P in supports},
+        run.save({'supports': supports, 'results': res, 'overlap_excess_sd': float(z), 'agree_positions': {P: int(np.isfinite(agree[f'agree_p{P}'].astype(np.float32)).any(axis=2).sum()) for P in supports},
                   'finding': finding})
         print(finding)
 
