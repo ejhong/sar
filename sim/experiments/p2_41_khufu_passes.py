@@ -60,8 +60,11 @@ def main():
         finding = (
             f"Across Khufu, of {P['positions']:,} positions on the same lines the 2022 pass passes {P['passing'][0]:,} at a support of one "
             f"and the 2025 pass {P['passing'][1]:,}; {P['both']:,} pass in both, {P['ratio']:.2f} times chance, and at "
-            f"{pct(P['same_depth_share'])} of those the best depths agree within half a cycle, against {pct(P['same_depth_chance'])} when "
-            f"paired at random. The two motionless copies, with nothing moving and nothing inside, share positions at "
+            f"{pct(P['same_depth_share'])} of those the best depths agree within half a cycle, "
+            + (f"within what random pairings give ({pct(P['same_depth_chance'])}, up to {pct(P['same_depth_chance_p95'])})"
+               if P['same_depth_share'] <= P['same_depth_chance_p95'] else
+               f"against {pct(P['same_depth_chance'])} when paired at random (95% of pairings below {pct(P['same_depth_chance_p95'])})")
+            + ". The two motionless copies, with nothing moving and nothing inside, share positions at "
             f"{C['ratio']:.2f} times chance; the 2022 image and its own copy at {S['ratio']:.2f} times. "
             + ('Across the two passes they agree no more than chance allows.' if z < 2 else
                'Across the two passes they agree beyond chance, but no more than the images\' texture does on its own.'
