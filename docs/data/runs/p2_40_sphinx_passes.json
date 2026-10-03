@@ -2,10 +2,10 @@
  "manifest": {
   "id": "p2_40_sphinx_passes",
   "title": "Whether the Sphinx volume's blobs stay put from one pass to the next",
-  "date": "2026-10-02",
-  "started_utc": "2026-10-02T13:59:10+00:00",
-  "runtime_s": 1.0,
-  "commit": "4df2b42",
+  "date": "2026-10-03",
+  "started_utc": "2026-10-03T12:05:15+00:00",
+  "runtime_s": 1.2,
+  "commit": "c849418",
   "params": {
    "runs": {
     "2022": "lab_sphinx",
@@ -64,6 +64,11 @@
   "2022 copy": 0.089686,
   "2025": 0.111197,
   "2025 copy": 0.082399
+ },
+ "agree_positions": {
+  "1": 496,
+  "2": 85,
+  "3": 15
  },
  "blobs": [
   {

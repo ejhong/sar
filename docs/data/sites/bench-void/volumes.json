@@ -239,7 +239,9 @@
   "run": "p2_20_bench_gated \u00b7 2026-09-29 \u00b7 3c68cdf",
   "tint": "gated",
   "cmap": "magma",
-  "caption": "fit scores, unsmoothed; empty where nothing passed"
+  "caption": "fit scores, unsmoothed; empty where nothing passed",
+  "passing": 275,
+  "positions": 2601
  },
  {
   "id": "radar-gated-without-p4",
@@ -267,7 +269,9 @@
   "run": "p2_20_bench_gated \u00b7 2026-09-29 \u00b7 3c68cdf",
   "tint": "gated",
   "cmap": "magma",
-  "caption": "fit scores, unsmoothed; empty where nothing passed"
+  "caption": "fit scores, unsmoothed; empty where nothing passed",
+  "passing": 0,
+  "positions": 2601
  },
  {
   "id": "radar-gated-with-p1",
@@ -295,7 +299,9 @@
   "run": "p2_20_bench_gated \u00b7 2026-09-29 \u00b7 3c68cdf",
   "tint": "gated",
   "cmap": "magma",
-  "caption": "fit scores, unsmoothed; empty where nothing passed"
+  "caption": "fit scores, unsmoothed; empty where nothing passed",
+  "passing": 277,
+  "positions": 2601
  },
  {
   "id": "radar-gated-with-p4",
@@ -323,7 +329,9 @@
   "run": "p2_20_bench_gated \u00b7 2026-09-29 \u00b7 3c68cdf",
   "tint": "gated",
   "cmap": "magma",
-  "caption": "fit scores, unsmoothed; empty where nothing passed"
+  "caption": "fit scores, unsmoothed; empty where nothing passed",
+  "passing": 0,
+  "positions": 2601
  },
  {
   "id": "radar-gated-null-p1",
@@ -351,7 +359,9 @@
   "run": "p2_20_bench_gated \u00b7 2026-09-29 \u00b7 3c68cdf",
   "tint": "gated",
   "cmap": "magma",
-  "caption": "fit scores, unsmoothed; empty where nothing passed"
+  "caption": "fit scores, unsmoothed; empty where nothing passed",
+  "passing": 276,
+  "positions": 2601
  },
  {
   "id": "radar-gated-null-p4",
@@ -379,7 +389,9 @@
   "run": "p2_20_bench_gated \u00b7 2026-09-29 \u00b7 3c68cdf",
   "tint": "gated",
   "cmap": "magma",
-  "caption": "fit scores, unsmoothed; empty where nothing passed"
+  "caption": "fit scores, unsmoothed; empty where nothing passed",
+  "passing": 0,
+  "positions": 2601
  },
  {
   "id": "radar-gated-boost-1e4-p1",
@@ -407,7 +419,9 @@
   "run": "p2_20_bench_gated \u00b7 2026-09-29 \u00b7 3c68cdf",
   "tint": "gated",
   "cmap": "magma",
-  "caption": "fit scores, unsmoothed; empty where nothing passed"
+  "caption": "fit scores, unsmoothed; empty where nothing passed",
+  "passing": 277,
+  "positions": 2601
  },
  {
   "id": "radar-gated-boost-1e4-p4",
@@ -435,7 +449,9 @@
   "run": "p2_20_bench_gated \u00b7 2026-09-29 \u00b7 3c68cdf",
   "tint": "gated",
   "cmap": "magma",
-  "caption": "fit scores, unsmoothed; empty where nothing passed"
+  "caption": "fit scores, unsmoothed; empty where nothing passed",
+  "passing": 0,
+  "positions": 2601
  },
  {
   "id": "radar-gated-boost-1e8-p1",
@@ -463,7 +479,9 @@
   "run": "p2_20_bench_gated \u00b7 2026-09-29 \u00b7 3c68cdf",
   "tint": "gated",
   "cmap": "magma",
-  "caption": "fit scores, unsmoothed; empty where nothing passed"
+  "caption": "fit scores, unsmoothed; empty where nothing passed",
+  "passing": 280,
+  "positions": 2601
  },
  {
   "id": "radar-gated-boost-1e8-p4",
@@ -491,7 +509,9 @@
   "run": "p2_20_bench_gated \u00b7 2026-09-29 \u00b7 3c68cdf",
   "tint": "gated",
   "cmap": "magma",
-  "caption": "fit scores, unsmoothed; empty where nothing passed"
+  "caption": "fit scores, unsmoothed; empty where nothing passed",
+  "passing": 0,
+  "positions": 2601
  },
  {
   "id": "radar-gated-vibrator-without-p1",
@@ -519,7 +539,9 @@
   "run": "p2_24_gated_on_the_shaking \u00b7 2026-09-29 \u00b7 6e4e32e",
   "tint": "gated",
   "cmap": "magma",
-  "caption": "fit scores, unsmoothed; empty where nothing passed"
+  "caption": "fit scores, unsmoothed; empty where nothing passed",
+  "passing": 633,
+  "positions": 2601
  },
  {
   "id": "radar-gated-vibrator-without-p4",
@@ -547,7 +569,9 @@
   "run": "p2_24_gated_on_the_shaking \u00b7 2026-09-29 \u00b7 6e4e32e",
   "tint": "gated",
   "cmap": "magma",
-  "caption": "fit scores, unsmoothed; empty where nothing passed"
+  "caption": "fit scores, unsmoothed; empty where nothing passed",
+  "passing": 67,
+  "positions": 2601
  },
  {
   "id": "radar-gated-vibrator-with-p1",
@@ -575,7 +599,9 @@
   "run": "p2_24_gated_on_the_shaking \u00b7 2026-09-29 \u00b7 6e4e32e",
   "tint": "gated",
   "cmap": "magma",
-  "caption": "fit scores, unsmoothed; empty where nothing passed"
+  "caption": "fit scores, unsmoothed; empty where nothing passed",
+  "passing": 635,
+  "positions": 2601
  },
  {
   "id": "radar-gated-vibrator-with-p4",
@@ -603,7 +629,9 @@
   "run": "p2_24_gated_on_the_shaking \u00b7 2026-09-29 \u00b7 6e4e32e",
   "tint": "gated",
   "cmap": "magma",
-  "caption": "fit scores, unsmoothed; empty where nothing passed"
+  "caption": "fit scores, unsmoothed; empty where nothing passed",
+  "passing": 71,
+  "positions": 2601
  },
  {
   "id": "radar-gated-vibrator-null-p1",
@@ -631,7 +659,9 @@
   "run": "p2_24_gated_on_the_shaking \u00b7 2026-09-29 \u00b7 6e4e32e",
   "tint": "gated",
   "cmap": "magma",
-  "caption": "fit scores, unsmoothed; empty where nothing passed"
+  "caption": "fit scores, unsmoothed; empty where nothing passed",
+  "passing": 639,
+  "positions": 2601
  },
  {
   "id": "radar-gated-vibrator-null-p4",
@@ -659,6 +689,8 @@
   "run": "p2_24_gated_on_the_shaking \u00b7 2026-09-29 \u00b7 6e4e32e",
   "tint": "gated",
   "cmap": "magma",
-  "caption": "fit scores, unsmoothed; empty where nothing passed"
+  "caption": "fit scores, unsmoothed; empty where nothing passed",
+  "passing": 67,
+  "positions": 2601
  }
 ]

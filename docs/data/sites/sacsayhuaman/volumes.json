@@ -187,7 +187,9 @@
   "run": "lab_sacsay_fields \u00b7 2026-09-30 \u00b7 2e70040",
   "tint": "gated",
   "cmap": "magma",
-  "caption": "fit scores, unsmoothed; empty where nothing passed"
+  "caption": "fit scores, unsmoothed; empty where nothing passed",
+  "passing": 1126,
+  "positions": 9595
  },
  {
   "id": "radar-lab-sacsay_fields-real-p4",
@@ -215,7 +217,9 @@
   "run": "lab_sacsay_fields \u00b7 2026-09-30 \u00b7 2e70040",
   "tint": "gated",
   "cmap": "magma",
-  "caption": "fit scores, unsmoothed; empty where nothing passed"
+  "caption": "fit scores, unsmoothed; empty where nothing passed",
+  "passing": 63,
+  "positions": 9595
  },
  {
   "id": "radar-lab-sacsay_fields-twin-p1",
@@ -243,7 +247,9 @@
   "run": "lab_sacsay_fields \u00b7 2026-09-30 \u00b7 2e70040",
   "tint": "gated",
   "cmap": "magma",
-  "caption": "fit scores, unsmoothed; empty where nothing passed"
+  "caption": "fit scores, unsmoothed; empty where nothing passed",
+  "passing": 657,
+  "positions": 9595
  },
  {
   "id": "radar-lab-sacsay_fields-twin-p4",
@@ -271,7 +277,9 @@
   "run": "lab_sacsay_fields \u00b7 2026-09-30 \u00b7 2e70040",
   "tint": "gated",
   "cmap": "magma",
-  "caption": "fit scores, unsmoothed; empty where nothing passed"
+  "caption": "fit scores, unsmoothed; empty where nothing passed",
+  "passing": 5,
+  "positions": 9595
  },
  {
   "id": "radar-lab-sacsay_grid-real-p1",
@@ -299,7 +307,9 @@
   "run": "lab_sacsay_grid \u00b7 2026-09-30 \u00b7 2e70040",
   "tint": "gated",
   "cmap": "magma",
-  "caption": "fit scores, unsmoothed; empty where nothing passed"
+  "caption": "fit scores, unsmoothed; empty where nothing passed",
+  "passing": 2411,
+  "positions": 9595
  },
  {
   "id": "radar-lab-sacsay_grid-real-p4",
@@ -327,7 +337,9 @@
   "run": "lab_sacsay_grid \u00b7 2026-09-30 \u00b7 2e70040",
   "tint": "gated",
   "cmap": "magma",
-  "caption": "fit scores, unsmoothed; empty where nothing passed"
+  "caption": "fit scores, unsmoothed; empty where nothing passed",
+  "passing": 125,
+  "positions": 9595
  },
  {
   "id": "radar-lab-sacsay_grid-twin-p1",
@@ -355,7 +367,9 @@
   "run": "lab_sacsay_grid \u00b7 2026-09-30 \u00b7 2e70040",
   "tint": "gated",
   "cmap": "magma",
-  "caption": "fit scores, unsmoothed; empty where nothing passed"
+  "caption": "fit scores, unsmoothed; empty where nothing passed",
+  "passing": 1743,
+  "positions": 9595
  },
  {
   "id": "radar-lab-sacsay_grid-twin-p4",
@@ -383,7 +397,9 @@
   "run": "lab_sacsay_grid \u00b7 2026-09-30 \u00b7 2e70040",
   "tint": "gated",
   "cmap": "magma",
-  "caption": "fit scores, unsmoothed; empty where nothing passed"
+  "caption": "fit scores, unsmoothed; empty where nothing passed",
+  "passing": 33,
+  "positions": 9595
  },
  {
   "id": "radar-lab-sacsay_walls-real-p1",
@@ -411,7 +427,9 @@
   "run": "lab_sacsay_walls \u00b7 2026-09-30 \u00b7 2e70040",
   "tint": "gated",
   "cmap": "magma",
-  "caption": "fit scores, unsmoothed; empty where nothing passed"
+  "caption": "fit scores, unsmoothed; empty where nothing passed",
+  "passing": 463,
+  "positions": 9595
  },
  {
   "id": "radar-lab-sacsay_walls-real-p4",
@@ -439,7 +457,9 @@
   "run": "lab_sacsay_walls \u00b7 2026-09-30 \u00b7 2e70040",
   "tint": "gated",
   "cmap": "magma",
-  "caption": "fit scores, unsmoothed; empty where nothing passed"
+  "caption": "fit scores, unsmoothed; empty where nothing passed",
+  "passing": 4,
+  "positions": 9595
  },
  {
   "id": "radar-lab-sacsay_walls-twin-p1",
@@ -467,7 +487,9 @@
   "run": "lab_sacsay_walls \u00b7 2026-09-30 \u00b7 2e70040",
   "tint": "gated",
   "cmap": "magma",
-  "caption": "fit scores, unsmoothed; empty where nothing passed"
+  "caption": "fit scores, unsmoothed; empty where nothing passed",
+  "passing": 293,
+  "positions": 9595
  },
  {
   "id": "radar-lab-sacsay_walls-twin-p4",
@@ -495,6 +517,8 @@
   "run": "lab_sacsay_walls \u00b7 2026-09-30 \u00b7 2e70040",
   "tint": "gated",
   "cmap": "magma",
-  "caption": "fit scores, unsmoothed; empty where nothing passed"
+  "caption": "fit scores, unsmoothed; empty where nothing passed",
+  "passing": 0,
+  "positions": 9595
  }
 ]
