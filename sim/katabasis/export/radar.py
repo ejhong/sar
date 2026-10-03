@@ -295,7 +295,7 @@ def study_grid(prm: dict, centre) -> dict:
 def export_khufu_gated(out: Path = DATA) -> dict | None:
     """The gated reconstruction across the Great Pyramid (P2-16): its fit scores hung below the surface on a 3 m grid, for
     the real 2022 image and a motionless copy, at supports one and four. Unsmoothed, empty where nothing passed, cut at
-    the site's floor; drawn in gold beside the paper-style pipeline's cinnabar."""
+    the site's floor; drawn in magma, its author's colour scale, beside the paper-style pipeline's cinnabar."""
     rid = 'p2_16_khufu_volume'
     vpath = RESULTS / rid / 'volumes.npz'
     rj = out / 'sites' / 'giza' / 'radar.json'
