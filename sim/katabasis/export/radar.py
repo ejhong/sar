@@ -56,8 +56,10 @@ def _write_volume(d: Path, vid: str, V: np.ndarray, u8: np.ndarray, origin: list
     nx, ny, nz = V.shape
     (d / f'vol-{vid}.u8').write_bytes(np.ascontiguousarray(u8.transpose(2, 1, 0)).tobytes())
     ztop = -h / 2 if ztop is None else ztop      # centre of the top layer (just below the ground at z = 0 on a bench)
+    # the gated reconstruction lays one column per position: how many of them passed, for the lab to quote
+    count = {'passing': int(np.isfinite(V).any(axis=2).sum()), 'positions': int(nx * ny)} if info.get('tint') == 'gated' else {}
     return {'id': vid, 'status': 'radar', 'file': f'vol-{vid}.u8', 'shape': [nx, ny, nz],
-            'origin': [origin[0], origin[1], ztop], 'spacing': h, **info}
+            'origin': [origin[0], origin[1], ztop], 'spacing': h, **info, **count}
 
 
 def _acquisition(g) -> dict:
@@ -545,6 +547,32 @@ def export_survives(out: Path = DATA) -> dict | None:
                      'volumes': [{'id': vid, 'case': 'real', 'support': 1}],
                      'focus': [0.0, 0.0, float(np.median(z[keep][:1]))], 'radius_m': 620.0, 'note': s['finding'], 'run': run,
                      **({'grid': grid} if grid else {})})
+    # the Sphinx (P2-40): where the 2022 and 2025 passes agree, on the lab's Sphinx lines, at each support
+    rid40 = 'p2_40_sphinx_passes'
+    v40path = RESULTS / rid40 / 'volumes.npz'
+    sph = next((x for x in labs if x['name'] == 'sphinx'), None)
+    if v40path.exists() and sph:
+        s40 = load(rid40)
+        w = np.load(v40path)
+        h40 = float(w['step'])
+        keep40 = w['z'] >= sc['extent']['z'][0] + h40 / 2
+        run40 = f"{rid40} · {s40['manifest']['date']} · {s40['manifest']['commit']}"
+        title = 'Where the 2022 and 2025 passes agree, across the Sphinx, north-south lines'
+        entries = []
+        for P in sorted(int(k.split('_p')[1]) for k in w.files if k.startswith('agree_p')):
+            V = w[f'agree_p{P}'].astype(np.float32)[:, :, keep40]
+            u8 = np.where(np.isfinite(V), 1 + np.round(254 * np.clip(np.nan_to_num(V, nan=0.0), 0, 1)), 0).astype(np.uint8)
+            vid = f'radar-agree-sphinx-p{P}'
+            vols.append(_write_volume(d, vid, V, u8, [float(w['x'][0]), float(w['y'][0])], h40, {
+                'label': f'Satellite · {title}, support {P}',
+                'method': f"The lesser of two runs' fit scores wherever both scored (P2-40), support {P}",
+                'quantity': 'conditional adjusted R2 at each nominal depth below the surface, where both runs scored',
+                'units': '0 to 1', 'range': [0.0, 1.0], 'run': run40, 'tint': 'gated', 'cmap': 'magma',
+                'caption': 'the lesser of two fit scores; empty unless both runs scored'}, ztop=float(w['z'][keep40][0])))
+            entries.append({'id': vid, 'case': 'real', 'support': P})
+        labs.append({'name': 'agree_sphinx_pass', 'title': title, 'pass': 'both', 'lines': sph['lines'], 'area': sph.get('area'),
+                     'volumes': entries, 'focus': sph['focus'], 'radius_m': sph['radius_m'], 'note': s40['finding'], 'run': run40,
+                     'grid': sph['grid']})
     _merge_volumes(d, vols, drop=lambda q: q['id'].startswith('radar-agree-'))
     radar['lab'] = labs
     rj.write_text(json.dumps(radar, separators=(',', ':')))

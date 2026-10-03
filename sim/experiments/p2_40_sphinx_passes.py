@@ -18,7 +18,8 @@ wavenumbers, as P2-34 reads them); for the blob that does not stay put, the shar
 if it were rock standing 0 to 30 m above the lines, carried toward the satellite by 1.2 times that height; and over the
 whole square, the positions passing in both passes, against chance (a b / n) and against the same maps shifted by more
 than their clumps (wrapping), with the two copies' agreement as the texture's own. The blobs' depths were added after
-the four maps had been seen; a void would also stand at one depth.
+the four maps had been seen; a void would also stand at one depth. Written for the lab, as P2-21 writes Khafre's: where
+the passes agree, the lesser of their two fit scores wherever both scored, at each support.
 """
 import hashlib
 import json
@@ -160,6 +161,16 @@ def main():
                     'share_shifted_at_or_above': float(np.mean(np.array(null) >= k))}
         agreement = {f'{p} & {q}': both(p, q) for p, q in (('2022', '2025'), ('2022 copy', '2025 copy'), ('2022', '2025 copy'), ('2022 copy', '2025'))}
 
+        # where the passes agree, for the lab: the lesser of the two scores wherever both scored (as P2-21 writes Khafre's)
+        assert np.allclose(V['2025']['z'], V['2022']['z'])
+        supports = sorted(int(k.split('_p')[1]) for k in V['2022'].files if k.startswith('real_p'))
+        agree = {}
+        for P in supports:
+            A, B = V['2022'][f'real_p{P}'].astype(np.float32), V['2025'][f'real_p{P}'].astype(np.float32)
+            agree[f'agree_p{P}'] = np.where(np.isfinite(A) & np.isfinite(B), np.minimum(A, B), np.nan).astype(np.float16)
+        np.savez_compressed(run.dir / 'volumes.npz', **agree, x=x, y=y, z=V['2022']['z'], z_surface=V['2022']['z_surface'], step=step)
+        agree_positions = {P: int(np.isfinite(agree[f'agree_p{P}'].astype(np.float32)).any(axis=2).sum()) for P in supports}
+
         # the figure: the four maps, the blobs outlined, the statue's outline and the author's line from his KMZ
         import matplotlib
         matplotlib.use('Agg')
@@ -214,7 +225,7 @@ def main():
                                            "the passes agree more than the copies do. ")
             + ("Neither blob behaves as a void would." if big_gone and copies_gather and depth_moves else
                "Whether either blob behaves as a void would is not settled by these numbers."))
-        run.save({'acquisitions': acq, 'turn_m': turn, 'elsewhere': elsewhere,
+        run.save({'acquisitions': acq, 'turn_m': turn, 'elsewhere': elsewhere, 'agree_positions': agree_positions,
                   'blobs': [{k: v for k, v in b.items() if k != 'mask'} for b in blobs], 'agreement': agreement,
                   'kmz_sha256': kmz_sha, 'finding': finding})
         print(finding)
