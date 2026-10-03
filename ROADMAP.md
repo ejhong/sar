@@ -126,7 +126,15 @@ Then (29 September):
 - **The Sphinx's blobs tested across passes (P2-40)** (the owner: voids or artifacts?): the same lines from the 2025
   pass (`lab_sphinx_2025`). The larger blob does not come back (13% of its positions against 11% elsewhere); the
   smaller stays put but the copies gather there too and its depth moves from 6.8 m to 2.9 m. Neither
-  behaves as a void would. 30 s a line on 16 cores. The lab's command takes `--track` and `--depth-max`; gated volumes
+  behaves as a void would.
+- **The lab, made clearer** (the owner: "a lot of text jammed in there"; lines everywhere, in another colour): the pass in
+  one mono line; each open card lays its choices in labelled rows (where · pass · lines · input · in a row, supports in
+  order), gives the count of positions passing beside its motionless copy (exported with every gated volume), and folds
+  notes, the depth scale, "why it looks like this", code and run under "About this picture"; View and Composition folded.
+  Every satellite picture shows where it read the image: the gated reconstruction's lines in faint ochre (the sensors'
+  colour) for every area at once in the whole-site view, the bench's and both layouts' too; a picture read from a patch
+  its outline. The stage names the site; the panel holds its summary. For consistency, the Sphinx and Khufu gain "both
+  agree" maps (P2-40, P2-41), and Khufu a 2025 run (`lab_khufu_2025`) on P2-16's lines. 30 s a line on 16 cores. The lab's command takes `--track` and `--depth-max`; gated volumes
   are drawn in the figures' magma colours, and the lab draws the lines a volume was made from.
 
 Then (29 September, evening; the cloud session, on branch `claude/upbeat-pascal-swk910`, to merge):

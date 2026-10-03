@@ -648,6 +648,126 @@
   "positions": 9595
  },
  {
+  "id": "radar-lab-khufu_2025-real-p1",
+  "status": "radar",
+  "file": "vol-radar-lab-khufu_2025-real-p1.u8",
+  "shape": [
+   101,
+   95,
+   109
+  ],
+  "origin": [
+   174.26,
+   208.19,
+   206.6
+  ],
+  "spacing": 3.0,
+  "label": "Satellite \u00b7 lab run khufu_2025, the real image, support 1",
+  "method": "The gated reconstruction, unchanged, along 95 east-west lines 3 m apart across (324.26, 349.19) on giza: real: 593 of 9,595 positions pass at support 1, 0 of 9,595 positions pass at support 4; twin101: 419 of 9,595 positions pass at support 1, 0 of 9,595 positions pass at support 4.",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "lab_khufu_2025 \u00b7 2026-10-03 \u00b7 c50a62f+",
+  "tint": "gated",
+  "cmap": "magma",
+  "caption": "fit scores, unsmoothed; empty where nothing passed",
+  "passing": 593,
+  "positions": 9595
+ },
+ {
+  "id": "radar-lab-khufu_2025-real-p4",
+  "status": "radar",
+  "file": "vol-radar-lab-khufu_2025-real-p4.u8",
+  "shape": [
+   101,
+   95,
+   109
+  ],
+  "origin": [
+   174.26,
+   208.19,
+   206.6
+  ],
+  "spacing": 3.0,
+  "label": "Satellite \u00b7 lab run khufu_2025, the real image, support 4",
+  "method": "The gated reconstruction, unchanged, along 95 east-west lines 3 m apart across (324.26, 349.19) on giza: real: 593 of 9,595 positions pass at support 1, 0 of 9,595 positions pass at support 4; twin101: 419 of 9,595 positions pass at support 1, 0 of 9,595 positions pass at support 4.",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "lab_khufu_2025 \u00b7 2026-10-03 \u00b7 c50a62f+",
+  "tint": "gated",
+  "cmap": "magma",
+  "caption": "fit scores, unsmoothed; empty where nothing passed",
+  "passing": 0,
+  "positions": 9595
+ },
+ {
+  "id": "radar-lab-khufu_2025-twin-p1",
+  "status": "radar",
+  "file": "vol-radar-lab-khufu_2025-twin-p1.u8",
+  "shape": [
+   101,
+   95,
+   109
+  ],
+  "origin": [
+   174.26,
+   208.19,
+   206.6
+  ],
+  "spacing": 3.0,
+  "label": "Satellite \u00b7 lab run khufu_2025, a motionless copy, support 1",
+  "method": "The gated reconstruction, unchanged, along 95 east-west lines 3 m apart across (324.26, 349.19) on giza: real: 593 of 9,595 positions pass at support 1, 0 of 9,595 positions pass at support 4; twin101: 419 of 9,595 positions pass at support 1, 0 of 9,595 positions pass at support 4.",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "lab_khufu_2025 \u00b7 2026-10-03 \u00b7 c50a62f+",
+  "tint": "gated",
+  "cmap": "magma",
+  "caption": "fit scores, unsmoothed; empty where nothing passed",
+  "passing": 419,
+  "positions": 9595
+ },
+ {
+  "id": "radar-lab-khufu_2025-twin-p4",
+  "status": "radar",
+  "file": "vol-radar-lab-khufu_2025-twin-p4.u8",
+  "shape": [
+   101,
+   95,
+   109
+  ],
+  "origin": [
+   174.26,
+   208.19,
+   206.6
+  ],
+  "spacing": 3.0,
+  "label": "Satellite \u00b7 lab run khufu_2025, a motionless copy, support 4",
+  "method": "The gated reconstruction, unchanged, along 95 east-west lines 3 m apart across (324.26, 349.19) on giza: real: 593 of 9,595 positions pass at support 1, 0 of 9,595 positions pass at support 4; twin101: 419 of 9,595 positions pass at support 1, 0 of 9,595 positions pass at support 4.",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "lab_khufu_2025 \u00b7 2026-10-03 \u00b7 c50a62f+",
+  "tint": "gated",
+  "cmap": "magma",
+  "caption": "fit scores, unsmoothed; empty where nothing passed",
+  "passing": 0,
+  "positions": 9595
+ },
+ {
   "id": "radar-lab-sphinx-real-p1",
   "status": "radar",
   "file": "vol-radar-lab-sphinx-real-p1.u8",
@@ -1156,5 +1276,65 @@
   "caption": "the lesser of two fit scores; empty unless both runs scored",
   "passing": 15,
   "positions": 15251
+ },
+ {
+  "id": "radar-agree-khufu-p1",
+  "status": "radar",
+  "file": "vol-radar-agree-khufu-p1.u8",
+  "shape": [
+   101,
+   95,
+   109
+  ],
+  "origin": [
+   174.25999450683594,
+   208.19000244140625,
+   206.60000610351562
+  ],
+  "spacing": 3.0,
+  "label": "Satellite \u00b7 Where the 2022 and 2025 passes agree, across Khufu, east-west lines, support 1",
+  "method": "The lesser of two runs' fit scores wherever both scored (P2-41), support 1",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface, where both runs scored",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "p2_41_khufu_passes \u00b7 2026-10-03 \u00b7 f2ed0e0",
+  "tint": "gated",
+  "cmap": "magma",
+  "caption": "the lesser of two fit scores; empty unless both runs scored",
+  "passing": 83,
+  "positions": 9595
+ },
+ {
+  "id": "radar-agree-khufu-p4",
+  "status": "radar",
+  "file": "vol-radar-agree-khufu-p4.u8",
+  "shape": [
+   101,
+   95,
+   109
+  ],
+  "origin": [
+   174.25999450683594,
+   208.19000244140625,
+   206.60000610351562
+  ],
+  "spacing": 3.0,
+  "label": "Satellite \u00b7 Where the 2022 and 2025 passes agree, across Khufu, east-west lines, support 4",
+  "method": "The lesser of two runs' fit scores wherever both scored (P2-41), support 4",
+  "quantity": "conditional adjusted R2 at each nominal depth below the surface, where both runs scored",
+  "units": "0 to 1",
+  "range": [
+   0.0,
+   1.0
+  ],
+  "run": "p2_41_khufu_passes \u00b7 2026-10-03 \u00b7 f2ed0e0",
+  "tint": "gated",
+  "cmap": "magma",
+  "caption": "the lesser of two fit scores; empty unless both runs scored",
+  "passing": 0,
+  "positions": 9595
  }
 ]

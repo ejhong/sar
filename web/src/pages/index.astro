@@ -107,6 +107,12 @@ const survives = Object.values(import.meta.glob('../../public/data/runs/p2_21_wh
   | undefined;
 const svP = survives?.results.ew22_ew25.real;
 const survivesPass = svP ? svP.ratio > 1.5 && svP.same_depth_share > svP.same_depth_chance_p95 : undefined;
+// the same test across Khufu (P2-41): whether the two pyramids tell the same story
+const k41 = Object.values(import.meta.glob('../../public/data/runs/p2_41_khufu_passes.json', { eager: true, import: 'default' }))[0] as
+  | { results: { p1: { passes: { ratio: number; same_depth_share: number; same_depth_chance_p95: number } } } }
+  | undefined;
+const khufuSurvives = k41 ? k41.results.p1.passes.ratio > 1.5 && k41.results.p1.passes.same_depth_share > k41.results.p1.passes.same_depth_chance_p95 : undefined;
+const passPlaces = khufuSurvives === survivesPass ? 'Khafre and Khufu' : 'Khafre';
 // the decisive benchmark (P2-23): one vibrator, geophones against the satellite
 const e23 = every as unknown as {
   geophones: Record<string, { bench: { force_n: number } }>;
@@ -210,7 +216,7 @@ const explore = [
             <li>Over a known room, at the ground’s real shaking, it draws the same picture with the room and without it; so does the stricter version.</li>
             <li>Its patterns appear in motionless copies of an image and over open ground.</li>
             <li>Its depth scale is set by the processing (a frequency of the registration), so absolute depth is uncalibrated and repeats. That alone does not decide whether it finds where things are, or their shape: that is tested separately.</li>
-            {survivesPass === false && <li>What it draws across Khafre changes from one satellite pass to the next.</li>}
+            {survivesPass === false && <li>What it draws across {passPlaces} changes from one satellite pass to the next.</li>}
             {gatedReads === false && <li>Where the data demonstrably hold a chamber, shaken hard enough for reflectors to find it, the stricter version still does not read it.</li>}
           </ul>
         </div>
@@ -573,7 +579,7 @@ const explore = [
         </details>
         <details class="q">
           <summary>What about stricter versions that filter out the noise?</summary>
-          <p>Later versions keep only readings that pass a row of tests. We ran the public one, <a href={GATED_CODE.url}>{GATED_CODE.name}</a> ({GATED_CODE.version}), unchanged. On the repository’s own line in front of the Sphinx it reproduces the published picture ({sphinx.matched_p1.length} of our {sphOurs} columns where its figure has them), and moving that line by one pixel loses {sphOurs - Math.max(...sphKeep)} to {sphOurs - Math.min(...sphKeep)} of them. Motionless copies of the image pass its tests too; across the pyramids it passes about one position in {oneIn}, as over open plateau; over our known room its picture changes no more with the room than with random noise of the room’s size{survivesPass === undefined ? '.' : `; and across Khafre what it draws, and at what depth, ${survivesPass ? 'survives' : 'does not survive'} a change from one satellite pass to another.`} <a href={`${base}/satellite/#gates`}>The gates, measured</a>; <a href={`${base}/satellite/#sphinx`}>the Sphinx line</a>.</p>
+          <p>Later versions keep only readings that pass a row of tests. We ran the public one, <a href={GATED_CODE.url}>{GATED_CODE.name}</a> ({GATED_CODE.version}), unchanged. On the repository’s own line in front of the Sphinx it reproduces the published picture ({sphinx.matched_p1.length} of our {sphOurs} columns where its figure has them), and moving that line by one pixel loses {sphOurs - Math.max(...sphKeep)} to {sphOurs - Math.min(...sphKeep)} of them. Motionless copies of the image pass its tests too; across the pyramids it passes about one position in {oneIn}, as over open plateau; over our known room its picture changes no more with the room than with random noise of the room’s size{survivesPass === undefined ? '.' : `; and across ${passPlaces} what it draws, and at what depth, ${survivesPass ? 'survives' : 'does not survive'} a change from one satellite pass to another.`} <a href={`${base}/satellite/#gates`}>The gates, measured</a>; <a href={`${base}/satellite/#sphinx`}>the Sphinx line</a>.</p>
         </details>
         <details class="q">
           <summary>Hasn’t vibration been measured from space?</summary>

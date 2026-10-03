@@ -704,6 +704,15 @@ investigation's record, and what it leaves open follow.
     1.37 times chance, the copies 1.70 times. Stated before the 2025 run finished: a void stays put at one depth;
     the depth comparison was added after the maps were seen.
 
+31. **Across Khufu, the gated reconstruction's picture does not survive a change of pass (P2-41).** P2-16's 95 east-west
+    lines from the 2025 pass (`lab_khufu_2025`: 593 of 9,595 positions pass at a support of one, none at four; its copy
+    419 and none), compared with the 2022 run by P2-21's own functions: 83 positions pass in both against
+    84 by chance (0.99 times, -0.08 Poisson spreads), and at 24% of those the best depths agree within
+    half a cycle, within what random pairings give (19%, up to 25%). The two copies share positions
+    at 1.21 times chance and the 2022 image its own copy at 1.68: the image's texture repeats from an image to its copy,
+    and nothing repeats from one pass to the other. The verdict's first wording ("beyond chance") was wrong for a ratio of
+    0.99 and was corrected before publication: the overlap must exceed chance by twice its Poisson spread.
+
 These reasons differ in kind and strength. 4 is algebraic and holds whatever the ground does: the depth axis is a
 frequency axis with a repeat and a mirror, and no validated model turns it into a physical depth; that makes depth
 uncalibrated and non-unique, and does not by itself decide horizontal location or shape; P2-31 tests those directly, and the published picture recovers neither where a reference detector recovers both (24). 1 and 12 are

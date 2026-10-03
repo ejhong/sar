@@ -1,0 +1,150 @@
+{
+ "manifest": {
+  "id": "p2_41_khufu_passes",
+  "title": "What survives a change of pass across Khufu",
+  "date": "2026-10-03",
+  "started_utc": "2026-10-03T12:37:39+00:00",
+  "runtime_s": 0.2,
+  "commit": "f2ed0e0",
+  "params": {
+   "runs": {
+    "2022": "p2_16_khufu_volume",
+    "2025": "lab_khufu_2025"
+   },
+   "run_commits": {
+    "2022": "d8a0060",
+    "2025": "c50a62f+"
+   },
+   "cycle_m": 6.17,
+   "shuffles": 1000,
+   "test": "p2_21_what_survives.compare"
+  },
+  "environment": {
+   "python": "3.11.3",
+   "numpy": "2.4.6",
+   "numba": "0.67.0",
+   "threads": 16,
+   "cpus": 16
+  }
+ },
+ "supports": [
+  1,
+  4
+ ],
+ "results": {
+  "p1": {
+   "passes": {
+    "positions": 9595,
+    "passing": [
+     1355,
+     593
+    ],
+    "both": 83,
+    "chance_both": 83.743095,
+    "ratio": 0.991126,
+    "same_depth_share": 0.240964,
+    "same_depth_chance": 0.187096,
+    "same_depth_chance_p95": 0.253012
+   },
+   "copies": {
+    "positions": 9595,
+    "passing": [
+     660,
+     419
+    ],
+    "both": 35,
+    "chance_both": 28.821261,
+    "ratio": 1.214381,
+    "same_depth_share": 0.485714,
+    "same_depth_chance": 0.216714,
+    "same_depth_chance_p95": 0.314286
+   },
+   "2022_vs_copy": {
+    "positions": 9595,
+    "passing": [
+     1355,
+     660
+    ],
+    "both": 157,
+    "chance_both": 93.204794,
+    "ratio": 1.684463,
+    "same_depth_share": 0.452229,
+    "same_depth_chance": 0.199433,
+    "same_depth_chance_p95": 0.254777
+   },
+   "2025_vs_copy": {
+    "positions": 9595,
+    "passing": [
+     593,
+     419
+    ],
+    "both": 30,
+    "chance_both": 25.895466,
+    "ratio": 1.158504,
+    "same_depth_share": 0.233333,
+    "same_depth_chance": 0.208267,
+    "same_depth_chance_p95": 0.333333
+   }
+  },
+  "p4": {
+   "passes": {
+    "positions": 9595,
+    "passing": [
+     4,
+     0
+    ],
+    "both": 0,
+    "chance_both": 0.0,
+    "ratio": null,
+    "same_depth_share": null,
+    "same_depth_chance": null,
+    "same_depth_chance_p95": null
+   },
+   "copies": {
+    "positions": 9595,
+    "passing": [
+     4,
+     0
+    ],
+    "both": 0,
+    "chance_both": 0.0,
+    "ratio": null,
+    "same_depth_share": null,
+    "same_depth_chance": null,
+    "same_depth_chance_p95": null
+   },
+   "2022_vs_copy": {
+    "positions": 9595,
+    "passing": [
+     4,
+     4
+    ],
+    "both": 0,
+    "chance_both": 0.001668,
+    "ratio": 0.0,
+    "same_depth_share": null,
+    "same_depth_chance": null,
+    "same_depth_chance_p95": null
+   },
+   "2025_vs_copy": {
+    "positions": 9595,
+    "passing": [
+     0,
+     0
+    ],
+    "both": 0,
+    "chance_both": 0.0,
+    "ratio": null,
+    "same_depth_share": null,
+    "same_depth_chance": null,
+    "same_depth_chance_p95": null
+   }
+  }
+ },
+ "overlap_excess_sd": -0.081203,
+ "agree_positions": {
+  "1": 83,
+  "4": 0
+ },
+ "finding": "Across Khufu, of 9,595 positions on the same lines the 2022 pass passes 1,355 at a support of one and the 2025 pass 593; 83 pass in both, 0.99 times chance, and at 24% of those the best depths agree within half a cycle, within what random pairings give (19%, up to 25%). The two motionless copies, with nothing moving and nothing inside, share positions at 1.21 times chance; the 2022 image and its own copy at 1.68 times. Across the two passes they agree no more than chance allows."
+}

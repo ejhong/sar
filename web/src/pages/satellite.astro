@@ -28,6 +28,8 @@ import labKhafre from '../../public/data/runs/lab_khafre.json';
 import labSphinx from '../../public/data/runs/lab_sphinx.json';
 import sphinxPasses from '../../public/data/runs/p2_40_sphinx_passes.json';
 import survives from '../../public/data/runs/p2_21_what_survives.json';
+import khufuPasses from '../../public/data/runs/p2_41_khufu_passes.json';
+import labKhufu25 from '../../public/data/runs/lab_khufu_2025.json';
 import bench from '../../public/data/runs/p2_20_bench_gated.json';
 import Boundary from '../components/Boundary.astro';
 import { GATED_CODE } from '../data/credits';
@@ -314,16 +316,22 @@ const svP = sv.ew22_ew25.real;
 const svC = sv.ew22_ew25.ew22_vs_copy;
 const svAbove = (r: SCmp) => r.ratio > 1.5 && r.same_depth_share > r.same_depth_chance_p95;
 const svBeyondCopy = (r: SCmp) => r.ratio > svC.ratio && r.same_depth_share > svC.same_depth_share;
+// the same test across Khufu (P2-41), on the lines P2-16 laid
+const k41 = (khufuPasses.results as unknown as Record<string, Record<string, SCmp>>).p1;
 const svHeading =
-  svAbove(svP) && svBeyondCopy(svP)
-    ? 'Across Khafre, what the gated reconstruction draws survives a change of pass beyond chance'
-    : svAbove(svP)
-      ? 'Across Khafre, two passes agree beyond chance, but no more than an image agrees with its own motionless copy'
-      : 'Across Khafre, what the gated reconstruction draws does not survive a change of pass';
+  !svAbove(svP) && !svAbove(k41.passes)
+    ? 'Across Khafre and Khufu, what the gated reconstruction draws does not survive a change of pass'
+    : svAbove(svP) && svBeyondCopy(svP)
+      ? 'Across Khafre, what the gated reconstruction draws survives a change of pass beyond chance'
+      : svAbove(svP)
+        ? 'Across Khafre, two passes agree beyond chance, but no more than an image agrees with its own motionless copy'
+        : 'Across Khafre, what the gated reconstruction draws does not survive a change of pass';
 const svRows: [string, SCmp][] = [
-  ['lines laid east–west, then north–south (2022)', svL],
-  ['the 2022 pass, then the 2025 pass (east–west)', svP],
-  ['for scale: the 2022 image, then its motionless copy', svC],
+  ['Khafre: lines laid east–west, then north–south (2022)', svL],
+  ['Khafre: the 2022 pass, then the 2025 pass (east–west)', svP],
+  ['Khafre, for scale: the 2022 image, then its motionless copy', svC],
+  ['Khufu: the 2022 pass, then the 2025 pass (east–west)', k41.passes],
+  ['Khufu, for scale: the 2022 image, then its motionless copy', k41['2022_vs_copy']],
 ];
 const svPct = (x: number) => `${Math.round(x * 100)}%`;
 // ---- P2-24: the gated reconstruction on the one shaking
@@ -779,7 +787,7 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
         <tr><td>The gated reconstruction does not respond to a known vibration a standard tracker measures</td><td>measured in simulation</td><td>synthetic products through its own loader (P2-19)</td><td>a frozen setting at which it recovers a planted vibration’s frequency, place and amplitude</td></tr>
         <tr><td>{bFirst === undefined ? 'Over a known chamber, the gated reconstruction’s picture does not depend on the chamber' : 'Over a known chamber, the gated reconstruction’s picture changes where the chamber is'}</td><td>measured in simulation</td><td>the one-chamber bench as synthetic products, shaken inside the band it reads, the chamber boosted up to ×10⁸, beside a null (P2-20)</td><td>real ground over a known void, or a forward model with more physics, that behaves otherwise</td></tr>
         <tr><td>Shaken by one vibrator, geophones find a chamber the satellite could find only with {vibMillions} times the force, reflectors laid over it</td><td>measured in simulation</td><td>the elastic solver (P1-01), the pulse-checked radar simulator (P2-18), a tracker calibrated on known reflectors (P2-22, P2-23)</td><td>a single-image reading far more precise than tracking bright points, or ground carrying far brighter points than open plateau</td></tr>
-        <tr><td>What the gated reconstruction draws across Khafre {svAbove(svP) ? 'survives' : 'does not survive'} a change of pass</td><td>measured on real images</td><td>three runs of one square, each beside a motionless copy (P2-21)</td><td>agreement beyond chance and beyond an image’s own copy, over surveyed voids and matched controls</td></tr>
+        <tr><td>What the gated reconstruction draws across Khafre{svAbove(svP) === svAbove(k41.passes) ? ' and Khufu' : ''} {svAbove(svP) ? 'survives' : 'does not survive'} a change of pass</td><td>measured on real images</td><td>runs of one square, each beside a motionless copy (P2-21; Khufu, P2-41)</td><td>agreement beyond chance and beyond an image’s own copy, over surveyed voids and matched controls</td></tr>
         <tr><td>The gated reconstruction’s patterns also appear with nothing moving and nothing inside</td><td>measured, not a calibrated rate</td><td>two synthetic twins and open desert (P2-13, P2-14)</td><td>a frozen recipe that beats nulls with the same correlations on withheld truth</td></tr>
         <tr><td>A small chamber changes ambient motion by under a ten-thousandth; one dwell falls far short</td><td>modelled</td><td>uniform rock, quasi-static strain, regional ambient level (P2-04, P2-05)</td><td>motion measured on the plateau during a pass; resonant or larger structures</td></tr>
         <tr><td>Other routes carry far too little at X band</td><td>modelled estimates</td><td>penetration, loads, heat, surface (P2-11)</td><td>measured penetration in Mokattam limestone; deformation over known voids</td></tr>
@@ -1553,8 +1561,9 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
           {svRows.map(([label, r]) => <tr><td>{label}</td><td class="num">{r.passing[0].toLocaleString('en-US')} · {r.passing[1].toLocaleString('en-US')}</td><td class="num">{r.both.toLocaleString('en-US')}</td><td class="num">{r.ratio.toFixed(2)}</td><td class="num">{svPct(r.same_depth_share)}</td><td class="num">{svPct(r.same_depth_chance)}</td></tr>)}
         </tbody>
       </table>
-      <p>Something under Khafre would not move with the pass that looked at it or with the way the lines were laid; what the
-      processing makes of an image would. The lab’s command ran the same square three ways, each beside a motionless copy.
+      <p>Something under Khafre or Khufu would not move with the pass that looked at it or with the way the lines were laid;
+      what the processing makes of an image would. The lab’s command ran Khafre’s square three ways and Khufu’s two (P2-41,
+      on P2-16’s lines), each beside a motionless copy.
       “Same depth” is the share of positions passing both ways whose best depths lie within half the fit’s cycle, against
       the same pairs shuffled. A real image and its own motionless copy, which keeps only its smoothed brightness and has
       nothing under it, set the scale for agreement that owes nothing to what is below. In the lab, the pass and the
@@ -1564,6 +1573,8 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
     <RunDetails manifest={plateau.manifest} />
     <RunDetails manifest={labKhafre.manifest} />
     <RunDetails manifest={survives.manifest} />
+    <RunDetails manifest={labKhufu25.manifest} />
+    <RunDetails manifest={khufuPasses.manifest} />
     </details>
   </section>
 
