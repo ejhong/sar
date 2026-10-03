@@ -214,16 +214,17 @@ export class Block {
   }
 
   /** Several volumes at once: one method's pictures of every place it was run, each place outlined on the ground so
-   * that ground outside every outline reads as not yet computed, not as empty. */
-  showVolumes(ids: string[]) {
+   * that ground outside every outline reads as not yet computed, not as empty. With `outline`, only those are outlined,
+   * however many are shown: a picture read from a patch of the image shows its patch, one read along lines its lines. */
+  showVolumes(ids: string[], outline?: string[]) {
     for (const [k, v] of this.volumes) v.mesh.visible = ids.includes(k);
     const g = this.footprints;
     for (const c of [...g.children]) {
       g.remove(c);
       disposeTree(c);
     }
-    if (ids.length < 2) return;
-    for (const id of ids) {
+    const edged = outline ?? (ids.length < 2 ? [] : ids);
+    for (const id of edged) {
       const info = this.volumes.get(id)?.info;
       if (!info) continue;
       const h = info.spacing / 2;
@@ -290,8 +291,17 @@ export class Block {
       }
       counts.push([drawn, n]);
     }
-    const mat = new LineBasicMaterial({ color: this.theme.radar, transparent: true, opacity: 0.16, depthTest: false, clippingPlanes: [this.clip] });
-    this.themed.push({ obj: mat, apply: (th) => mat.color.set(th.radar) });
+    // ochre, the colour of sensors: the positions along these lines are where the method reads the image
+    // fainter on night's dark ground than on day's light one, where the darker ochre needs a little more
+    const opacity = (th: { name: string }) => (th.name === 'day' ? 0.34 : 0.22);
+    const mat = new LineBasicMaterial({ color: this.theme.sensor, transparent: true, opacity: opacity(this.theme), depthTest: false, clippingPlanes: [this.clip] });
+    this.themed.push({
+      obj: mat,
+      apply: (th) => {
+        mat.color.set(th.sensor);
+        mat.opacity = opacity(th);
+      },
+    });
     const l = new LineSegments(new BufferGeometry().setFromPoints(pts), mat);
     l.renderOrder = 6;
     g.add(l);

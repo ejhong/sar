@@ -1437,7 +1437,7 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
       const n = ours.passed['1'].length;
       return (
         <details class="fold">
-          <summary><h2>The published Sphinx tomogram reproduces with its author’s code, and changes when its line moves one pixel</h2></summary>
+          <summary><h2>The published Sphinx tomogram reproduces with its author’s code; moved one pixel, or seen from another pass, it changes</h2></summary>
           <p class="sub">
             The <a href={GATED_CODE.url}>{GATED_CODE.name}</a> repository shows its gated reconstruction along a line in front of the
             Sphinx, the “revised East wood-avoidance line”, with the line itself and the settings in the figure’s title (persistence
@@ -1453,23 +1453,6 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
             pass draws {row('the 2025 pass').passed['1'].length}, {row('the 2025 pass').shared_with_reproduction_p1} of them shared. One line takes
             about {Math.round(ours.runtime_s)} s on the lab’s desktop.
           </p>
-          {(() => {
-            const sp = labSphinx.manifest.params;
-            const sr = labSphinx.results as unknown as Record<string, { supported_positions: Record<string, number> }>;
-            const lines = Math.round((2 * sp.half_ew_m) / sp.step_m) + 1;
-            const all = lines * (Math.round((2 * sp.half_ns_m) / sp.step_m) + 1);
-            const f = (v: number) => v.toLocaleString('en-US');
-            return (
-              <p class="sub">
-                Laid across the Sphinx as {lines} north–south lines {sp.step_m} m apart, with the same settings, the same code draws a
-                volume under it, in the figure’s own colours (<a href={`${base}/underworld/#giza/satellite/radar-lab-sphinx-real-p1`}>in the lab</a>,
-                its lines drawn on the ground). The real image passes {f(sr.real.supported_positions['1'])} of {f(all)} positions at a support of
-                one and {f(sr.real.supported_positions['3'])} at three; its motionless copy, with nothing moving, {f(sr.twin101.supported_positions['1'])}
-                {' '}and {f(sr.twin101.supported_positions['3'])}. Across Khafre, with the stricter frozen settings, the real image passes
-                {' '}{f(lk.real.supported_positions['1'])} positions to its copy’s {f(lk.twin101.supported_positions['1'])}.
-              </p>
-            );
-          })()}
           <Figure src={`${base}/data/runs/p2_39_sphinx_line/positions.png`} alt="Where the published line's columns stand, reproduced and varied" label="Where the columns stand along the line" caption="filled: a position passing at a support of one; outlined: two in a row. The top row is read off the repository’s figure; every other row is the same code on the lab’s copy of the 2022 pass (or the 2025 pass), the line as published or moved; the earlier line’s columns stand where they lie beside the published line, over the stretch it runs (grey)" aspect="1425 / 621" />
           <RunDetails manifest={sphinx.manifest} />
           {(() => {
@@ -1477,8 +1460,21 @@ const umText = (m: number) => (m >= 1e-3 ? `${+(m * 1e3).toPrecision(2)} mm` : m
             const [big, small] = sphinxPasses.blobs as unknown as Blob[];
             const el = sphinxPasses.elsewhere as Record<string, number>;
             const pc = (v: number) => `${Math.round(v * 100)}%`;
+            const sp = labSphinx.manifest.params;
+            const sr = labSphinx.results as unknown as Record<string, { supported_positions: Record<string, number> }>;
+            const lines = Math.round((2 * sp.half_ew_m) / sp.step_m) + 1;
+            const all = lines * (Math.round((2 * sp.half_ns_m) / sp.step_m) + 1);
+            const f = (v: number) => v.toLocaleString('en-US');
             return (
               <>
+                <p class="sub">
+                  Laid across the Sphinx as {lines} north–south lines {sp.step_m} m apart, with the same settings, the same code draws a
+                  volume under it, in the figure’s own colours (<a href={`${base}/underworld/#giza/satellite/radar-lab-sphinx-real-p1`}>in the lab</a>,
+                  its lines drawn on the ground). The real image passes {f(sr.real.supported_positions['1'])} of {f(all)} positions at a support of
+                  one and {f(sr.real.supported_positions['3'])} at three; its motionless copy, with nothing moving, {f(sr.twin101.supported_positions['1'])}
+                  {' '}and {f(sr.twin101.supported_positions['3'])}. Across Khafre, with the stricter frozen settings, the real image passes
+                  {' '}{f(lk.real.supported_positions['1'])} positions to its copy’s {f(lk.twin101.supported_positions['1'])}.
+                </p>
                 <p class="sub">
                   Seen again from the 2025 pass, on the same lines, neither of the volume’s two blobs behaves as a void would (P2-40). The
                   larger, at the statue’s {big.where}, does not come back: {pc(big.passing['2025'])} of its positions pass in 2025, where

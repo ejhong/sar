@@ -20,7 +20,7 @@ PUBLISHED = ['p1_01_forward_validation', 'p1_02_traveltime', 'p1_03_scattered', 
              'p2_25_information_bound', 'p2_26_imprint_spectrum', 'p2_27_requirement', 'p2_28_two_depths', 'p2_29_oracle',
              'p2_30_finite_certificates', 'p2_31_shape_test', 'p2_32_shape_bounds', 'p2_33_sacsayhuaman',
              'p2_34_gated_depth_scale', 'p2_35_rungs_and_rooms', 'p2_36_benchmark', 'p2_37_benchmark_read', 'p2_38_claim',
-             'p2_39_sphinx_line', 'p2_40_sphinx_passes']
+             'p2_39_sphinx_line', 'p2_40_sphinx_passes', 'p2_41_khufu_passes']
 
 EXPERIMENTS = Path(__file__).resolve().parents[2] / 'experiments'
 

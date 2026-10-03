@@ -83,8 +83,11 @@ export interface VolumeInfo {
   range: [number, number];
   run?: string;
   caption?: string;
-  /** 'gated': the stricter reconstruction's fit scores, drawn in gold rather than the radar's cinnabar. */
+  /** 'gated': the stricter reconstruction's fit scores, drawn in its author's magma (cmap) rather than the radar's cinnabar. */
   tint?: 'gated';
+  /** The gated reconstruction lays one column per position: how many passed, of how many. */
+  passing?: number;
+  positions?: number;
   /** A colour scale in place of the instrument's hue: 'magma', the gated reconstruction's own (its author's figures). */
   cmap?: 'magma';
 }

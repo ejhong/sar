@@ -27,7 +27,16 @@ const MODES: Mode[] = ['truth', 'geophones', 'satellite'];
 /** Names the lab used before it was arranged by instrument, still honoured in links. */
 const LEGACY: Record<string, Mode> = { recovered: 'geophones', waves: 'geophones', instruments: 'geophones', ground: 'truth' };
 const INSTRUMENT_NAME: Record<Mode, string> = { truth: 'The ground', geophones: 'Geophones', satellite: 'Satellite' };
-const DIM_LABEL: Record<Dimension, string> = { area: 'go to a place', pass: 'the pass', lines: 'the lines', input: 'what went in', support: 'support' };
+const DIM_LABEL: Record<Dimension, string> = { area: 'where', pass: 'pass', lines: 'lines', input: 'input', support: 'in a row' };
+/** A choice's value as its chip reads, short: the row's label already says what it is. */
+function chipLabel(key: Dimension, v: string | number): string {
+  if (key === 'support') return String(v);
+  const t = String(v);
+  if (key === 'pass') return t === 'Both passes agree' ? 'both agree' : t.replace(/ pass$/, '');
+  if (key === 'lines') return t === 'Both layouts agree' ? 'both agree' : t.replace(/ lines$/, '').toLowerCase();
+  if (key === 'input') return t === 'Motionless copy' ? 'motionless copy' : t.charAt(0).toLowerCase() + t.slice(1);
+  return t;
+}
 
 export interface TourStop {
   site: string;
@@ -76,6 +85,8 @@ export class Underworld {
   /** A link that names one picture opens on its place; otherwise the whole site. */
   private placeOnLoad = false;
   private linesShown: [number, number][] = [];
+  /** The camera shows the whole site rather than one place (the "all" chip). */
+  private wholeSite = true;
   private gridShown: import('./data/types').LineGrid[] = [];
   /** Labels on the stage for each place the picture covers, and where each stands. */
   private places: { el: HTMLButtonElement; at: [number, number, number] }[] = [];
@@ -273,11 +284,12 @@ export class Underworld {
     const vol = choice?.kind === 'volume' ? s.volumes.find((v) => v.id === choice!.id) : undefined;
     const chosen = choice ? findChoice(this.methods[m as Instrument], choice.id) : undefined;
     const set = chosen && vol ? viewSet(chosen.method, chosen.choice).filter((c) => c.kind === 'volume') : [];
-    b.showVolumes(set.map((c) => c.id));
-    // the lines a lab run laid, on the ground, while one of its pictures is shown
-    this.linesShown = b.showLines(m === 'satellite' ? chosen?.choice.grid : undefined);
-    const gs = m === 'satellite' ? chosen?.choice.grid : undefined;
-    this.gridShown = Array.isArray(gs) ? gs : gs ? [gs] : [];
+    // where each picture read the image: the gated reconstruction its lines, a picture read from a patch its patch
+    const grids = m === 'satellite' ? dedupeGrids(set.flatMap((c) => (Array.isArray(c.grid) ? c.grid : c.grid ? [c.grid] : []))) : [];
+    // (a picture placed where a claim puts it, on a site with no pass of its own, was not read there: no patch is drawn)
+    b.showVolumes(set.map((c) => c.id), m === 'satellite' ? (s.radar ? set.filter((c) => !c.grid).map((c) => c.id) : []) : undefined);
+    this.linesShown = b.showLines(grids);
+    this.gridShown = grids;
     b.showSurvey(vol?.survey ? (s.surveys?.find((sv) => sv.id === vol.survey) ?? null) : null);
     if (choice?.kind === 'wave') {
       this.wave = b.showWavefield(choice.id);
@@ -293,6 +305,10 @@ export class Underworld {
     if (sel && vol) {
       if (this.threshold.method !== sel.method.key) this.threshold = { method: sel.method.key, value: sel.choice.threshold };
       b.setVolumeThreshold(this.threshold.value);
+    }
+    if (reframe && !this.opts.tour) {
+      if (place && choice?.focus && choice.radius_m) this.wholeSite = false;
+      else if (refit) this.wholeSite = true;
     }
     this.renderModeUI();
     this.renderNow();
@@ -354,7 +370,7 @@ export class Underworld {
     if (!ctx) return;
     if (this.mode === 'truth') {
       const counts = s.features.reduce<Record<string, number>>((a, f) => ((a[f.status] = (a[f.status] ?? 0) + 1), a), {});
-      ctx.innerHTML = `<p class="uw-ctx-note">What is really in the ground: ${Object.entries(counts)
+      ctx.innerHTML = `<p class="uw-lede">What is really in the ground: ${Object.entries(counts)
         .map(([k, v]) => `<span class="uw-inline"><span class="uw-dot ${k}"></span>${v} ${STATUS_LABEL[k] ?? k}</span>`)
         .join(' ')}. Click one to pin its details. Every picture the instruments make is scored against this.</p>`;
       return;
@@ -370,23 +386,12 @@ export class Underworld {
     const pictures = methods.filter((m) => m.dot !== 'wave');
     const intro =
       inst === 'geophones'
-        ? `<p class="uw-ctx-note">Geophones on the ground or down boreholes record waves from a hammer, or the ground’s own hum.
-            Each method below turns those records into a picture of the rock, drawn in green.</p>`
+        ? `<p class="uw-lede">Geophones on the ground or in boreholes record waves; each method turns the records into a picture of the rock.</p>`
         : this.passHTML(s);
     ctx.innerHTML = `${intro}
       ${waves.length ? `<div class="uw-subhead">What they record</div>${waves.map((m) => this.methodHTML(m, sel)).join('')}` : ''}
       <div class="uw-subhead">${inst === 'geophones' ? 'What each method recovers' : 'What each method draws from the image'}</div>
-      ${pictures.map((m) => this.methodHTML(m, sel)).join('')}
-      ${
-        inst === 'satellite'
-          ? `<p class="uw-more">${sel ? '<button type="button" class="uw-link" data-choice="none">Hide the picture</button> · ' : ''}more methods join as they are built</p>`
-          : ''
-      }
-      ${
-        sel?.choice.kind === 'volume'
-          ? `<label class="uw-range"><span>Show values above · ${esc(sel.method.quantity)}</span><input type="range" min="0.02" max="0.95" step="0.01" value="${this.threshold.value}" data-uw="threshold" /></label>`
-          : ''
-      }`;
+      ${pictures.map((m) => this.methodHTML(m, sel)).join('')}`;
     ctx.querySelectorAll<HTMLButtonElement>('[data-open]').forEach((el) =>
       el.addEventListener('click', () => {
         const m = methods.find((x) => x.key === el.dataset.open);
@@ -408,6 +413,8 @@ export class Underworld {
     const th = ctx.querySelector<HTMLInputElement>('[data-uw=threshold]');
     th?.addEventListener('input', () => {
       this.threshold.value = Number(th.value);
+      const tv = ctx.querySelector('[data-uw=threshold-v]');
+      if (tv) tv.textContent = this.threshold.value.toFixed(2);
       this.block?.setVolumeThreshold(this.threshold.value);
       this.engine.poke();
     });
@@ -417,48 +424,68 @@ export class Underworld {
 
   private methodHTML(m: Method, sel?: { method: Method; choice: Choice }): string {
     const c = sel?.method.key === m.key ? sel.choice : undefined;
-    const chips = c
-      ? dimensions(m)
-          .map(
-            (d) =>
-              `<div class="uw-chips" role="group" aria-label="${DIM_LABEL[d.key]}">${d.key === 'area' ? '<span class="uw-chips-label">go to</span><button type="button" class="uw-chip" data-uw="all-places">the whole site</button>' : ''}${d.values
-                .map((v) => {
-                  const control = m.choices.filter((x) => x[d.key] === v).every((x) => x.control);
-                  const label = d.key === 'support' ? supportName(v as number) : String(v);
-                  const pressed = d.key === 'area' ? false : c[d.key] === v;
-                  return `<button type="button" class="uw-chip${control ? ' control' : ''}${d.key === 'area' ? ' place' : ''}" data-dim="${d.key}" data-value="${esc(String(v))}" aria-pressed="${pressed}"${
-                    control ? ' title="a control: nothing here for the method to find"' : ''
-                  }>${esc(label)}</button>`;
-                })
-                .join('')}</div>`,
-          )
-          .join('')
-      : '';
-    return `<div class="uw-method${c ? ' open' : ''}">
-      <button type="button" class="uw-method-head" data-open="${esc(m.key)}" aria-expanded="${!!c}">
+    const head = `<button type="button" class="uw-method-head" data-open="${esc(m.key)}" aria-expanded="${!!c}">
         <span class="uw-dot ${m.dot}"></span><span class="uw-method-name">${esc(m.name)}</span><span class="uw-badge">${m.quantity}</span>
       </button>
-      <p class="uw-method-line">${esc(m.line)}</p>
+      <p class="uw-method-line">${esc(m.line)}</p>`;
+    if (!c) return `<div class="uw-method">${head}</div>`;
+    const bench = this.scene?.radar?.kind === 'bench';
+    const rows = dimensions(m)
+      .map((d) => {
+        const values = d.key === 'support' ? [...d.values].sort((a, b) => Number(a) - Number(b)) : d.values;
+        const chips = values
+          .map((v) => {
+            const control = m.choices.filter((x) => x[d.key] === v).every((x) => x.control);
+            const pressed = d.key === 'area' ? c.area === v && !this.wholeSite : c[d.key] === v;
+            const title = control ? 'a control: nothing here for the method to find' : d.key === 'support' ? `${v} position${v === 1 ? '' : 's'} in a row must pass together` : '';
+            return `<button type="button" class="uw-chip${control ? ' control' : ''}" data-dim="${d.key}" data-value="${esc(String(v))}" aria-pressed="${pressed}"${
+              title ? ` title="${esc(title)}"` : ''
+            }>${esc(chipLabel(d.key, v))}</button>`;
+          })
+          .join('');
+        const all = d.key === 'area' ? `<button type="button" class="uw-chip" data-uw="all-places" aria-pressed="${this.wholeSite}">all</button>` : '';
+        const label = d.key === 'pass' && bench ? 'shaking' : DIM_LABEL[d.key];
+        return `<div class="uw-dim"><span class="uw-dim-label">${label}</span><div class="uw-chips" role="group" aria-label="${label}">${all}${chips}</div></div>`;
+      })
+      .join('');
+    // how many positions passed, beside the same picture of the other input (the real image and its motionless copy)
+    const vol = c.kind === 'volume' ? this.scene?.volumes.find((v) => v.id === c.id) : undefined;
+    const sibs = m.choices.filter((x) => x !== c && x.area === c.area && x.pass === c.pass && x.lines === c.lines && x.support === c.support && x.control !== c.control);
+    const sibVol = sibs.length === 1 ? this.scene?.volumes.find((v) => v.id === sibs[0].id) : undefined;
+    const n = (v: number) => v.toLocaleString('en-US');
+    const stat =
+      vol?.passing !== undefined && vol.positions
+        ? `<p class="uw-stat" title="positions passing, of the ${n(vol.positions)} the lines hold"><b>${n(vol.passing)}</b> pass${
+            sibVol?.passing !== undefined ? ` · ${sibs[0].control ? 'its copy' : 'the real image'} ${n(sibVol.passing)}` : ''
+          }<span> · of ${n(vol.positions)} positions</span></p>`
+        : '';
+    const about = [
+      c.note ? `<p>${esc(c.note)}</p>` : '',
+      c.stats ? `<p>${esc(c.stats)}</p>` : '',
+      m.why ? `<p><b>Why it looks like this.</b> ${esc(m.why)}</p>` : '',
+      m.code ? `<p class="uw-run">code <a href="${esc(m.code.url)}" target="_blank" rel="noopener">${esc(m.code.name)}</a> · ${esc(m.code.version)}, unchanged</p>` : '',
+      c.run ? `<p class="uw-run">run ${esc(c.run)}</p>` : '',
+    ].join('');
+    return `<div class="uw-method open">${head}
+      <div class="uw-dims">${rows}</div>
+      ${stat}
+      <p class="uw-pick">${c.control ? '<span class="uw-tag">control</span> ' : ''}${esc(c.sub)}</p>
       ${
-        c
-          ? `${chips}
-        <p class="uw-ctx-note">${c.control ? '<span class="uw-tag">control</span> ' : ''}${esc(c.sub)}</p>
-        ${c.note ? `<p class="uw-ctx-note">${esc(c.note)}</p>` : ''}
-        ${c.stats ? `<p class="uw-ctx-note">${esc(c.stats)}</p>` : ''}
-        ${m.why ? `<p class="uw-why"><b>Why it looks like this.</b> ${esc(m.why)}</p>` : ''}
-        ${
-          c.kind === 'wave'
-            ? `<div class="uw-timeline">
+        c.kind === 'wave'
+          ? `<div class="uw-timeline">
           <button type="button" class="uw-play" data-uw="play" aria-label="Pause">❚❚</button>
           <input type="range" min="0" max="1" step="0.001" value="0" data-uw="scrub" aria-label="Time" />
           <span class="uw-time" data-uw="time">0.0 ms</span>
         </div>`
-            : ''
-        }
-        ${m.code ? `<p class="uw-run">code <a href="${esc(m.code.url)}" target="_blank" rel="noopener">${esc(m.code.name)}</a> · ${esc(m.code.version)}, unchanged</p>` : ''}
-        ${c.run ? `<p class="uw-run">run ${esc(c.run)}</p>` : ''}`
           : ''
       }
+      ${
+        c.kind === 'volume'
+          ? `<label class="uw-range"><span>show ${esc(m.quantity === 'fit score' ? 'scores' : 'values')} above <b data-uw="threshold-v">${this.threshold.value.toFixed(2)}</b></span><input type="range" min="0.02" max="0.95" step="0.01" value="${this.threshold.value}" data-uw="threshold" /></label>`
+          : ''
+      }
+      ${about ? `<details class="uw-about"><summary>About this picture</summary>${about}</details>` : ''}
+      ${m.instrument === 'satellite' ? '<p class="uw-hide"><button type="button" class="uw-link" data-choice="none">hide the picture</button></p>' : ''}
     </div>`;
   }
 
@@ -473,9 +500,8 @@ export class Underworld {
       const sv = r.sensors;
       const pct = (g: number) => `${Math.round(g * 100)}%`;
       const reading = this.block?.radar?.reading ?? 'complex';
-      return `<p class="uw-ctx-note">An ICEYE dwell on the real Giza geometry: ${a.aperture_s.toFixed(1)} s, ${a.track_km.toFixed(1)} km
-          of track, ${Math.round(a.slant_range_km)} km away, looking ${Math.round(a.incidence_deg)}° from straight down (satellite and
-          beam not to scale). On the ground lies the image it makes of this shaking desert.</p>
+      return `<p class="uw-spec" title="satellite and beam not to scale"><b>ICEYE dwell</b> · the real Giza geometry · ${a.aperture_s.toFixed(1)} s · ${Math.round(a.incidence_deg)}° from vertical</p>
+        <p class="uw-lede">Simulated: on the ground lies the image it makes of this shaking desert.</p>
         <details class="uw-sub"><summary>The image’s virtual sensors: the true motion beside what it reports</summary>
           <p class="uw-ctx-note"><span class="uw-inline"><span class="uw-dot sensor"></span>the true motion</span> under each sensor
             (a test wave ${sv.test_wave.wavelength_m} m long, put into the image itself) beside
@@ -491,10 +517,8 @@ export class Underworld {
           </div>
         </details>`;
     }
-    return `<p class="uw-ctx-note">The real ${esc(a.satellite ?? 'ICEYE')} pass of ${esc(a.date ?? '')}: ${a.aperture_s.toFixed(1)} s,
-        ${a.track_km.toFixed(1)} km of track, ${Math.round(a.slant_range_km)} km away, looking ${Math.round(a.incidence_deg)}° from straight
-        down (satellite and beam not to scale). On the ground lies the image it made, resampled onto the terrain; it reaches about
-        ${Math.round((r.reach_m ?? 0.3) * 100)} cm into the driest sand, less into rock.</p>
+    return `<p class="uw-spec" title="${esc(`${a.track_km.toFixed(1)} km of track; satellite and beam not to scale`)}"><b>${esc(a.satellite ?? 'ICEYE')}</b> · ${esc(fmtDate(a.date))} · ${a.aperture_s.toFixed(1)} s · ${Math.round(a.incidence_deg)}° from vertical · ${Math.round(a.slant_range_km)} km away</p>
+      <p class="uw-lede">This pass’s image lies on the ground; radar of this band reaches about ${Math.round((r.reach_m ?? 0.3) * 100)} cm into dry sand, less into rock.</p>
       <label class="uw-check"><input type="checkbox" data-uw="sat-image" ${r.image_hidden ? '' : 'checked'} /><span class="uw-dot radar"></span>Show the image</label>`;
   }
 
@@ -555,9 +579,9 @@ export class Underworld {
         const parts = [
           m.name,
           places > 1 ? undefined : c.area,
-          c.pass,
-          lines > 1 ? c.lines : undefined,
-          c.input !== m.name ? c.input : undefined,
+          c.pass ? (/^\d{4} pass$/.test(c.pass) ? c.pass : chipLabel('pass', c.pass)) : undefined,
+          lines > 1 && c.lines ? `${chipLabel('lines', c.lines)}${c.lines.startsWith('Both') ? '' : ' lines'}` : undefined,
+          c.input !== m.name ? chipLabel('input', c.input) : undefined,
           c.support ? supportName(c.support) : undefined,
         ].filter(Boolean) as string[];
         now.innerHTML = `<span class="uw-dot ${m.dot}"></span><b>${INSTRUMENT_NAME[this.mode]}</b><span>${parts.map(esc).join(' · ')}</span>${
@@ -580,14 +604,16 @@ export class Underworld {
       if (this.mode === 'satellite') {
         if (s.radar?.sensors) items.push(['sensor', 'true motion']);
         items.push(['radar', vol ? `the satellite’s picture: ${sel!.method.quantity}` : s.radar?.sensors ? 'what the image reports' : 'the satellite']);
-        // the lines the run laid: one set, or both for a map made of two layouts
+        // where the picture read the image: the lines its run laid (one set, or both for a map of two layouts), or its patch
         const sets = this.gridShown.map((gr, i) => ({ gr, of: this.linesShown[i]?.[1] ?? 0, drawn: this.linesShown[i]?.[0] ?? 0 }));
         if (sets.length && sets.every((x) => x.of)) {
           const dir = (gr: { direction: string }) => (gr.direction === 'ns' ? 'north–south' : 'east–west');
           const drawn = sets.reduce((t, x) => t + x.drawn, 0);
           const of = sets.reduce((t, x) => t + x.of, 0);
-          items.push(['line', `its ${sets.map((x) => `${x.of} ${dir(x.gr)}`).join(' and ')} lines, ${sets[0].gr.step} m apart${drawn < of ? ` (${drawn} drawn)` : ''}`]);
-        }
+          const kinds = [...new Set(sets.map((x) => dir(x.gr)))];
+          const steps = [...new Set(sets.map((x) => x.gr.step))];
+          items.push(['line', `where it reads the image: ${of.toLocaleString('en-US')} ${kinds.join(' and ')} lines${steps.length === 1 ? `, ${steps[0]} m apart` : ''}${drawn < of ? ` (${drawn} drawn)` : ''}`]);
+        } else if (vol && !sets.length && s.radar) items.push(['patch', 'the patch it read, every point in it']);
       }
       legend.innerHTML =
         items.map(([dot, label]) => `<span><span class="uw-dot ${dot}"></span>${esc(label)}</span>`).join('') +
@@ -641,6 +667,7 @@ export class Underworld {
 
   private frame(animate: boolean) {
     const b = this.block!;
+    this.setWholeSite(true);
     const h = b.worldHeight;
     // with the satellite shown, stand further back and look higher, so its beam and the block both fit
     // on a bench the satellite and its beam are the story; over a real site, the ground and what lies under it
@@ -660,7 +687,15 @@ export class Underworld {
   }
 
   /** Stand off from one place in the site (site coordinates, metres), from the south-east and a little above. */
+  /** The "all" chip follows the camera: pressed while it shows the whole site, not one place. */
+  private setWholeSite(on: boolean) {
+    if (this.wholeSite === on) return;
+    this.wholeSite = on;
+    if (this.mode !== 'truth') this.renderModeUI();
+  }
+
   private frameOn(focus: [number, number, number], radius_m: number, animate = true) {
+    this.setWholeSite(false);
     const b = this.block!;
     const c = b.world(focus);
     const r = b.world([focus[0] + radius_m, focus[1], focus[2]]).distanceTo(c);
@@ -858,14 +893,14 @@ export class Underworld {
           ins.satellite ? `<span class="uw-inline"><span class="uw-dot radar"></span>satellite</span>` : '',
         ].join(' ')
       : '';
-    meta.innerHTML = `${esc(firstSentence(s.summary))}.${dots ? ` <span class="uw-site-ins">${dots}</span>` : ''}`;
+    meta.innerHTML = `${esc(s.summary)}${dots ? ` <span class="uw-site-ins">${dots}</span>` : ''}`;
   }
 
   private renderSiteInfo(s: SiteScene) {
     const title = this.$('[data-uw=title]');
     if (title)
       title.innerHTML = `<span class="uw-kind">${s.kind === 'test' ? 'test bench · simulated ground' : 'real site'}</span>
-        <h2>${esc(s.name)}</h2><p>${esc(s.summary)}</p>`;
+        <h2>${esc(s.name)}</h2>`;
     const legend = this.$('[data-uw=composition]');
     if (legend) {
       const used = new Set<string>([...s.cover.map((c) => c.material), ...s.strata.map((x) => x.material)]);
@@ -919,5 +954,20 @@ function isVisible(o: { visible: boolean; parent: any }): boolean {
 }
 
 const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
-const firstSentence = (s: string) => (s.match(/^[^.:]+[.:]?/)?.[0] ?? s).replace(/[.:]$/, '');
 const fmtV = (v: number) => (v === 0 ? '0' : Math.round(v).toLocaleString('en-US'));
+
+/** '2025-08-27' as '27 Aug 2025'. */
+function fmtDate(iso?: string): string {
+  const m = iso?.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (!m) return iso ?? '';
+  return `${Number(m[3])} ${['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][Number(m[2]) - 1]} ${m[1]}`;
+}
+
+/** The same lines laid by several runs (two passes over one raster) are drawn once. */
+function dedupeGrids<T>(grids: T[]): T[] {
+  const seen = new Set<string>();
+  return grids.filter((g) => {
+    const k = JSON.stringify(g);
+    return seen.has(k) ? false : (seen.add(k), true);
+  });
+}

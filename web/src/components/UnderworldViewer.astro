@@ -36,7 +36,7 @@ const { mode = 'full', initial } = Astro.props;
         </div>
         <div class="uw-mode-context" data-uw="mode-context"></div>
       </section>
-      <details class="uw-block" open>
+      <details class="uw-block">
         <summary class="uw-label">View</summary>
         <label class="uw-range"><span>Ground</span><input type="range" min="0" max="1" step="0.01" value="0.62" data-uw="ground" /></label>
         <label class="uw-range"><span>Cut from the south</span><input type="range" min="0" max="0.95" step="0.005" value="0" data-uw="cut" /></label>
@@ -54,7 +54,7 @@ const { mode = 'full', initial } = Astro.props;
         <label class="uw-check"><input type="checkbox" data-layer="walls" checked /><span class="uw-dot strata"></span>Strata on the faces</label>
         <label class="uw-check"><input type="checkbox" data-layer="frame" checked /><span class="uw-dot frame"></span>Frame and north</label>
       </details>
-      <details class="uw-block" open>
+      <details class="uw-block">
         <summary class="uw-label">Composition</summary>
         <div data-uw="composition"></div>
       </details>
@@ -474,8 +474,17 @@ const { mode = 'full', initial } = Astro.props;
     width: 12px;
     height: 2px;
     border-radius: 1px;
-    background: var(--cinnabar-night);
-    opacity: 0.45;
+    background: var(--ochre-night);
+    box-shadow: none;
+    opacity: 0.75;
+  }
+  .uw-dot.patch {
+    width: 10px;
+    height: 8px;
+    border-radius: 1px;
+    background: transparent;
+    border: 1px solid var(--cinnabar-night);
+    box-shadow: none;
   }
   .uw-badge {
     display: inline-block;
@@ -619,6 +628,109 @@ const { mode = 'full', initial } = Astro.props;
   }
   details.uw-sub[open] > summary::before {
     content: '▾ ';
+  }
+  .uw-lede {
+    font-size: 11px;
+    line-height: 1.45;
+    color: var(--panel-muted);
+    margin: 6px 0 4px;
+  }
+  .uw-spec {
+    font: 500 10px/1.5 var(--font-mono);
+    color: var(--panel-muted);
+    margin: 0;
+  }
+  .uw-spec b {
+    color: var(--panel-text);
+    font-weight: 600;
+  }
+  .uw-dims {
+    display: grid;
+    gap: 5px;
+    margin: 8px 0 2px;
+  }
+  .uw-dim {
+    display: grid;
+    grid-template-columns: 50px 1fr;
+    align-items: start;
+    gap: 6px;
+  }
+  .uw-dim-label {
+    font: 500 9px/22px var(--font-mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--panel-faint);
+    white-space: nowrap;
+  }
+  .uw-dim .uw-chips {
+    margin: 0;
+    gap: 3px;
+  }
+  .uw-dim .uw-chip {
+    padding: 4px 8px;
+  }
+  .uw-stat {
+    font: 500 10.5px/1.4 var(--font-mono);
+    color: var(--panel-faint);
+    margin: 9px 0 0;
+  }
+  .uw-stat b {
+    font: 600 13px/1 var(--font-sans);
+    color: var(--panel-text);
+    margin-right: 2px;
+  }
+  .uw-stat span {
+    color: var(--panel-faint);
+  }
+  .uw-pick {
+    font-size: 11px;
+    line-height: 1.45;
+    color: var(--panel-muted);
+    margin: 4px 0 0;
+  }
+  .uw-method .uw-range {
+    margin-top: 8px;
+  }
+  .uw-range b {
+    color: var(--panel-text);
+    font-weight: 600;
+  }
+  details.uw-about {
+    margin: 8px 0 0;
+    border-top: 1px solid var(--panel-line);
+    padding-top: 6px;
+  }
+  details.uw-about > summary {
+    font: 600 9.5px/1.6 var(--font-mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--panel-faint);
+    cursor: pointer;
+    list-style: none;
+  }
+  details.uw-about > summary::-webkit-details-marker {
+    display: none;
+  }
+  details.uw-about > summary::before {
+    content: '▸ ';
+  }
+  details.uw-about[open] > summary::before {
+    content: '▾ ';
+  }
+  details.uw-about p {
+    font-size: 10.5px;
+    line-height: 1.5;
+    color: var(--panel-muted);
+    margin: 6px 0 0;
+  }
+  details.uw-about p b {
+    color: var(--panel-text);
+    font-weight: 600;
+  }
+  .uw-hide {
+    font: 10px/1.4 var(--font-mono);
+    margin: 8px 0 0;
+    text-align: right;
   }
   .uw-why {
     margin: 6px 0 2px;

@@ -573,6 +573,32 @@ def export_survives(out: Path = DATA) -> dict | None:
         labs.append({'name': 'agree_sphinx_pass', 'title': title, 'pass': 'both', 'lines': sph['lines'], 'area': sph.get('area'),
                      'volumes': entries, 'focus': sph['focus'], 'radius_m': sph['radius_m'], 'note': s40['finding'], 'run': run40,
                      'grid': sph['grid']})
+    # Khufu (P2-41): where the 2022 and 2025 passes agree, on the lines P2-16 laid
+    rid41 = 'p2_41_khufu_passes'
+    v41path = RESULTS / rid41 / 'volumes.npz'
+    g16 = radar.get('gated')
+    if v41path.exists() and g16:
+        s41 = load(rid41)
+        w = np.load(v41path)
+        h41 = float(w['step'])
+        keep41 = w['z'] >= sc['extent']['z'][0] + h41 / 2
+        run41 = f"{rid41} · {s41['manifest']['date']} · {s41['manifest']['commit']}"
+        title = 'Where the 2022 and 2025 passes agree, across Khufu, east-west lines'
+        entries = []
+        for P in s41['supports']:
+            V = w[f'agree_p{P}'].astype(np.float32)[:, :, keep41]
+            u8 = np.where(np.isfinite(V), 1 + np.round(254 * np.clip(np.nan_to_num(V, nan=0.0), 0, 1)), 0).astype(np.uint8)
+            vid = f'radar-agree-khufu-p{P}'
+            vols.append(_write_volume(d, vid, V, u8, [float(w['x'][0]), float(w['y'][0])], h41, {
+                'label': f'Satellite · {title}, support {P}',
+                'method': f"The lesser of two runs' fit scores wherever both scored (P2-41), support {P}",
+                'quantity': 'conditional adjusted R2 at each nominal depth below the surface, where both runs scored',
+                'units': '0 to 1', 'range': [0.0, 1.0], 'run': run41, 'tint': 'gated', 'cmap': 'magma',
+                'caption': 'the lesser of two fit scores; empty unless both runs scored'}, ztop=float(w['z'][keep41][0])))
+            entries.append({'id': vid, 'case': 'real', 'support': int(P)})
+        labs.append({'name': 'agree_khufu_pass', 'title': title, 'pass': 'both', 'lines': 'ew', 'area': 'Khufu',
+                     'volumes': entries, 'focus': g16['focus'], 'radius_m': g16['radius_m'], 'note': s41['finding'], 'run': run41,
+                     **({'grid': g16['grid']} if g16.get('grid') else {})})
     _merge_volumes(d, vols, drop=lambda q: q['id'].startswith('radar-agree-'))
     radar['lab'] = labs
     rj.write_text(json.dumps(radar, separators=(',', ':')))
